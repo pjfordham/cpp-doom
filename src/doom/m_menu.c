@@ -1887,7 +1887,25 @@ void M_ChangeDetail(int choice)
 void M_SizeDisplay(int choice)
 {
     // [crispy] initialize screenSize_min
-    screenSize_min = crispy->widescreen ? 8 : 0;
+	if (!crispy->widescreen)
+	{
+		screenSize_min = 0;
+	}
+
+	else if (crispy->widescreen == 1)
+	{
+		screenSize_min = 8;
+	}
+
+	else
+	{
+		screenSize_min = 7;
+	}
+
+	if (screenSize < screenSize_min)
+	{
+		screenSize = screenSize_min; //for switching to widescreen wide HUD mode when in status bar
+	}
 
     switch(choice)
     {
