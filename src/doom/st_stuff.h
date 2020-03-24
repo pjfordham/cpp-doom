@@ -59,6 +59,8 @@ void ST_Init (void);
 // [crispy] forcefully initialize the status bar backing screen
 extern void ST_refreshBackground(boolean force);
 
+// [crispy] forcefully create widgets
+void ST_createWidgets (void);
 
 // States for status bar code.
 typedef enum

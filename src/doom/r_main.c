@@ -37,7 +37,7 @@
 #include "p_local.h" // [crispy] MLOOKUNIT
 #include "r_local.h"
 #include "r_sky.h"
-#include "st_stuff.h" // [crispy] ST_refreshBackground()
+#include "st_stuff.h" // [crispy] ST_refreshBackground(),  ST_createWidgets()
 
 
 
@@ -920,6 +920,10 @@ void R_ExecuteSetViewSize (void)
 
     // [crispy] forcefully initialize the status bar backing screen
     ST_refreshBackground(true);
+    if (gamestate == GS_LEVEL)
+    {
+		ST_createWidgets();
+    }
 }
 
 
