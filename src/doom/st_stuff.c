@@ -270,6 +270,8 @@ extern boolean inhelpscreens; // [crispy] prevent palette changes
 
 // graphics are drawn to a backing screen and blitted to the real screen
 pixel_t			*st_backing_screen;
+
+pixel_t			*stbar_backup;
 	    
 // main player in game
 static player_t*	plyr; 
@@ -474,11 +476,18 @@ void ST_Stop(void);
 void ST_refreshBackground(boolean force)
 {
 
+    int tilecount = 1;
+
     if (st_classicstatusbar || force)
     {
-        V_UseBuffer(st_backing_screen);
+        V_UseBuffer (stbar_backup); //backup the status bar for copying the rectangles from it to tile the widescreen status bar
+		V_DrawPatch(ST_X, 0, sbar);
 
-	V_DrawPatch(ST_X, 0, sbar);
+		V_RestoreBuffer();
+
+		V_UseBuffer(st_backing_screen);
+		V_DrawPatch(ST_X, 0, sbar);
+    }
 
 	// draw right side of bar if needed (Doom 1.0)
 	if (sbarr)
@@ -495,8 +504,23 @@ void ST_refreshBackground(boolean force)
 
 	if (!force)
 	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
+	
+	if (crispy->widescreen && screenblocks <= 10)
+	{
+		while (tilecount*(faceback->width-2) <= DELTAWIDTH)
+		{
+			V_CopyRect(ST_FX+DELTAWIDTH+1, 1, stbar_backup, faceback->width-2, faceback->height, ST_X+DELTAWIDTH-tilecount*(faceback->width-2), ST_Y+1);
+			V_CopyRect(ST_FX+DELTAWIDTH+10+faceback->width, 0, stbar_backup, faceback->width-2, 1, ST_X+DELTAWIDTH-tilecount*(faceback->width-2), ST_Y);
+			V_CopyRect(ST_FX+DELTAWIDTH+1, 1, stbar_backup, faceback->width-2, faceback->height, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y+1);
+			V_CopyRect(ST_FX+DELTAWIDTH+10+faceback->width, 0, stbar_backup, faceback->width-2, 1, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y);
+			tilecount++;
+		}
+		V_CopyRect(ST_FX+(faceback->width+(tilecount-1)*(faceback->width-2))-1, 1, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), faceback->height, ST_X, ST_Y+1);
+		V_CopyRect(ST_FX+DELTAWIDTH+10+faceback->width, 0, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), 1, ST_X, ST_Y);
+		V_CopyRect(ST_FX+DELTAWIDTH+1, 1, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), faceback->height, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y+1);
+		V_CopyRect(ST_FX+DELTAWIDTH+10+faceback->width, 0, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), 1, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y);
     }
-
+    
 }
 
 // [crispy] adapted from boom202s/M_CHEAT.C:467-498
@@ -2376,6 +2400,7 @@ void ST_Init (void)
 
     ST_loadData();
     st_backing_screen = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*st_backing_screen), PU_STATIC, 0);
+    stbar_backup = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*stbar_backup), PU_STATIC, 0);
 }
 
 // [crispy] Demo Timer widget
