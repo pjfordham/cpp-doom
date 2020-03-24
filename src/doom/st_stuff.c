@@ -504,9 +504,8 @@ void ST_refreshBackground(boolean force)
 	
 	if (!force)
 	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
-    }
 
-	if (crispy->widescreen && screenblocks <= 10)
+	if (crispy->widescreen)
 	{
 		while (tilecount*(faceback->width-2) <= DELTAWIDTH)
 		{
@@ -521,6 +520,7 @@ void ST_refreshBackground(boolean force)
 		V_CopyRect(ST_FX+DELTAWIDTH+1, 1, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), faceback->height, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y+1);
 		V_CopyRect(ST_FX+DELTAWIDTH+10+faceback->width, 0, stbar_backup, DELTAWIDTH-(tilecount-1)*(faceback->width-2), 1, ST_X+DELTAWIDTH+ST_WIDTH+(tilecount-1)*(faceback->width-2), ST_Y);
     }
+	}
 }
 
 // [crispy] adapted from boom202s/M_CHEAT.C:467-498
