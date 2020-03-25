@@ -38,8 +38,6 @@
 #include "r_local.h"
 #include "r_sky.h"
 #include "st_stuff.h" // [crispy] ST_refreshBackground(),  ST_createWidgets()
-#include "v_video.h"
-
 
 
 
@@ -1076,8 +1074,7 @@ void R_SetupFrame (player_t* player)
 //
 void R_RenderPlayerView (player_t* player)
 {	
-    // included from "v_video.h"
-    // extern void V_DrawFilledBox (int x, int y, int w, int h, int c);
+    extern void V_DrawFilledBox (int x, int y, int w, int h, int c);
     extern void R_InterpolateTextureOffsets (void);
 
     R_SetupFrame (player);
