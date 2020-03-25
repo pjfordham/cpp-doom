@@ -58,15 +58,15 @@ void V_CopyRect(int srcx, int srcy, pixel_t *source,
 
 // e6y's code adapted by Zodomaniac
 
-void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags);
+void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height);
 
-#define V_FillFlatName(flatname, buffer, x, y, width, height, flags) \
-  V_FillFlat(R_FlatNumForName(flatname), (buffer), (x), (y), (width), (height), (flags))
+#define V_FillFlatName(flatname, buffer, x, y, width, height) \
+  V_FillFlat(R_FlatNumForName(flatname), (buffer), (x), (y), (width), (height))
 
-void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags);
+void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height);
 
-#define V_FillPatchName(name, buffer, x, y, width, height, flags) \
-  V_FillPatch(W_GetNumForName(name), (buffer), (x), (y), (width), (height), (flags))
+#define V_FillPatchName(name, buffer, x, y, width, height) \
+  V_FillPatch(W_GetNumForName(name), (buffer), (x), (y), (width), (height))
 
 void V_DrawPatch(int x, int y, patch_t *patch);
 void V_DrawPatchFlipped(int x, int y, patch_t *patch);

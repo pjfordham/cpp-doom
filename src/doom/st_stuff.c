@@ -490,10 +490,8 @@ void ST_refreshBackground(boolean force)
 
     if (st_classicstatusbar || force)
     {
-		V_UseBuffer (test_buffer); //backup the status bar for copying the rectangles from it to tile the widescreen status bar
-		V_FillFlatName(name, test_buffer, 0, 0, MAXWIDTH, ST_HEIGHT << crispy->hires, VPT_NONE);
-
-		V_RestoreBuffer();
+		
+		V_FillFlatName(name, test_buffer, 0, 0, DELTAWIDTH, ST_HEIGHT<<1);
 
         V_UseBuffer(st_backing_screen);
 
@@ -510,11 +508,6 @@ void ST_refreshBackground(boolean force)
 	if (netgame)
 	    V_DrawPatch(ST_FX, 0, faceback);
 
-	if (crispy->widescreen)
-		{
-			
-		}
-
         V_RestoreBuffer();
 
 	if (!force)
@@ -522,7 +515,7 @@ void ST_refreshBackground(boolean force)
 
 	if (crispy->widescreen)
 	{
-	V_CopyRect(ST_X, 0, test_buffer, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y+11);
+	V_CopyRect(0, 0, test_buffer, DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
 	}
 
     }
@@ -2405,7 +2398,7 @@ void ST_Init (void)
 
     ST_loadData();
     st_backing_screen = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*st_backing_screen), PU_STATIC, 0);
-    test_buffer = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*test_buffer), PU_STATIC, 0);
+    test_buffer = (pixel_t *) Z_Malloc(DELTAWIDTH * (ST_HEIGHT << 1) * sizeof(*test_buffer), PU_STATIC, 0);
 }
 
 // [crispy] Demo Timer widget

@@ -175,24 +175,47 @@ void V_CopyRect(int srcx, int srcy, pixel_t *source,
   }\
 }\*/
 
-void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags)
+void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height)
 {
   /* erase the entire screen to a tiled background */
   const byte *data;
-  int sx, sy, w, h;
+  //int sx, sy, w, h;
+  int sx, sy;
   //int i, j, pitch;
-  int j, pitch;
+  int i,j;
 
-  const byte *src, *src_p;
-  byte *dest, *dest_p;
+  //const byte *src, *src_p;
+  //byte *dest, *dest_p;
+
+  const byte *src;
+  byte *dest;
 
   lump += firstflat;
 
   // killough 4/17/98:
   data = W_CacheLumpNum(lump, PU_STATIC);
 
-    pitch = 1; //width of one line
+src = data;
+dest = buffer;
+sx=x+width;
+sy=y+height;
 
+//much simpler routine by Fabian Greffrath
+
+	for (j=y; j < sy; j++)
+	{
+		for (i = x; i < sx; i++)
+		{
+#ifndef CRISPY_TRUECOLOR
+			*dest++ = src[(j & 63) * 64 + (i & 63)];
+#else
+			*dest++ = colormaps[src[(j & 63) * 64 + (i & 63)]];
+#endif
+		}
+	}
+
+//    pitch = DELTAWIDTH; //width of one line
+/*
     for (sy = y ; sy < y + height; sy += 64)
     {
       h = (y + height - sy < 64 ? y + height - sy : 64);
@@ -212,11 +235,11 @@ void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height, 
         dest += 64;
       }
     }
-
+*/
   W_ReleaseLumpNum(lump);
 }
 
-/*void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags)
+/*void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height)
 {
   int sx, sy, w, h;
 
