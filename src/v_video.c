@@ -73,6 +73,8 @@ static pixel_t *dest_screen = NULL;
 
 int dirtybox[4]; 
 
+extern int firstflat;
+
 // haleyjd 08/28/10: clipping callback function for patches.
 // This is needed for Chocolate Strife, which clips patches to the screen.
 static vpatchclipfunc_t patchclip_callback = NULL;
@@ -142,7 +144,94 @@ void V_CopyRect(int srcx, int srcy, pixel_t *source,
         dest += SCREENWIDTH; 
     } 
 } 
- 
+
+// [PrBoom+] adapted by Zodomaniac
+
+/*#define FILL_FLAT(dest_type, dest_pitch, pal_func)\
+{\
+  const byte *src, *src_p;\
+  dest_type *dest, *dest_p;\
+  for (sy = y ; sy < y + height; sy += 64)\
+  {\
+    h = (y + height - sy < 64 ? y + height - sy : 64);\
+    dest = (dest_type *)screens[scrn].data + dest_pitch * sy + x;\
+    src = data + 64 * ((sy - y) % 64);\
+    for (sx = x; sx < x + width; sx += 64)\
+    {\
+      src_p = src;\
+      dest_p = dest;\
+      w = (x + width - sx < 64 ? x + width - sx : 64);\
+      for (j = 0; j < h; j++)\
+      {\
+        for (i = 0; i < w; i++)\
+        {\
+          dest_p[i] = pal_func(src_p[i], VID_COLORWEIGHTMASK);\
+        }\
+        dest_p += dest_pitch;\
+        src_p += 64;\
+      }\
+      dest += 64;\
+    }\
+  }\
+}\*/
+
+void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags)
+{
+  /* erase the entire screen to a tiled background */
+  const byte *data;
+  int sx, sy, w, h;
+  //int i, j, pitch;
+  int j, pitch;
+
+  const byte *src, *src_p;
+  byte *dest, *dest_p;
+
+  lump += firstflat;
+
+  // killough 4/17/98:
+  data = W_CacheLumpNum(lump, PU_STATIC);
+
+    pitch = 1; //width of one line
+
+    for (sy = y ; sy < y + height; sy += 64)
+    {
+      h = (y + height - sy < 64 ? y + height - sy : 64);
+      dest = buffer + pitch * sy + x;
+      src = data + 64 * ((sy - y) % 64);
+      for (sx = x; sx < x + width; sx += 64)
+      {
+        src_p = src;
+        dest_p = dest;
+        w = (x + width - sx < 64 ? x + width - sx : 64);
+        for (j = 0; j < h; j++)
+        {
+          memcpy (dest_p, src_p, w);
+          dest_p += pitch;
+          src_p += 64;
+        }
+        dest += 64;
+      }
+    }
+
+  W_ReleaseLumpNum(lump);
+}
+
+/*void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height, enum patch_translation_e flags)
+{
+  int sx, sy, w, h;
+
+  w = R_NumPatchWidth(lump);
+  h = R_NumPatchHeight(lump);
+
+  for (sy = y; sy < y + height; sy += h)
+  {
+    for (sx = x; sx < x + width; sx += w)
+    {
+      V_DrawNumPatch(sx, sy, buffer, lump, CR_DEFAULT, flags);
+    }
+  }
+}*/
+
 //
 // V_SetPatchClipCallback
 //

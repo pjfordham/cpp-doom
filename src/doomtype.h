@@ -143,5 +143,25 @@ typedef int64_t dpixel_t;
 
 #define arrlen(array) (sizeof(array) / sizeof(*array))
 
+enum patch_translation_e {
+  // e6y: wide-res
+  VPT_ALIGN_LEFT         = 1,
+  VPT_ALIGN_RIGHT        = 2,
+  VPT_ALIGN_TOP          = 3,
+  VPT_ALIGN_LEFT_TOP     = 4,
+  VPT_ALIGN_RIGHT_TOP    = 5,
+  VPT_ALIGN_BOTTOM       = 6,
+  VPT_ALIGN_WIDE         = 7,
+  VPT_ALIGN_LEFT_BOTTOM  = 8,
+  VPT_ALIGN_RIGHT_BOTTOM = 9,
+  VPT_ALIGN_MAX          = 10,
+  VPT_STRETCH            = 16, // Stretch to compensate for high-res
+
+  VPT_NONE    = 128, // Normal
+  VPT_FLIP    = 256, // Flip image horizontally
+  VPT_TRANS   = 512, // Translate image via a translation table
+  VPT_NOOFFSET = 1024,
+};
+
 #endif
 

@@ -1887,7 +1887,7 @@ void M_ChangeDetail(int choice)
 void M_SizeDisplay(int choice)
 {
     // [crispy] initialize screenSize_min
-    screenSize_min = crispy->widescreen ? 8 : 0;
+    screenSize_min = crispy->widescreen ? 7 : 0;
 
     switch(choice)
     {

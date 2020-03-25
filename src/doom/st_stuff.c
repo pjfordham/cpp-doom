@@ -138,7 +138,7 @@ extern boolean inhelpscreens; // [crispy] prevent palette changes
 //       into a buffer,
 //       or into the frame buffer?
 
-#define HORIZDELTA (crispy->widescreen == 1 ? DELTAWIDTH : 0)
+#define HORIZDELTA ((crispy->widescreen == 1 && screenblocks > 10) ? DELTAWIDTH : 0)
 
 // AMMO number pos.
 #define ST_AMMOWIDTH		3	
@@ -270,6 +270,8 @@ extern boolean inhelpscreens; // [crispy] prevent palette changes
 
 // graphics are drawn to a backing screen and blitted to the real screen
 pixel_t			*st_backing_screen;
+
+pixel_t			*test_buffer;
 	    
 // main player in game
 static player_t*	plyr; 
@@ -473,9 +475,26 @@ void ST_Stop(void);
 
 void ST_refreshBackground(boolean force)
 {
+    // DOOM border patch.
+    const char *name1 = DEH_String("FLOOR7_2");
+
+    // DOOM II border patch.
+    const char *name2 = DEH_String("GRNROCK");
+
+    const char *name;
+
+    if (gamemode == commercial)
+	name = name2;
+    else
+	name = name1;
 
     if (st_classicstatusbar || force)
     {
+		V_UseBuffer (test_buffer); //backup the status bar for copying the rectangles from it to tile the widescreen status bar
+		V_FillFlatName(name, test_buffer, 0, 0, MAXWIDTH, ST_HEIGHT << crispy->hires, VPT_NONE);
+
+		V_RestoreBuffer();
+
         V_UseBuffer(st_backing_screen);
 
 	V_DrawPatch(ST_X, 0, sbar);
@@ -491,12 +510,22 @@ void ST_refreshBackground(boolean force)
 	if (netgame)
 	    V_DrawPatch(ST_FX, 0, faceback);
 
+	if (crispy->widescreen)
+		{
+			
+		}
+
         V_RestoreBuffer();
 
 	if (!force)
 	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
-    }
 
+	if (crispy->widescreen)
+	{
+	V_CopyRect(ST_X, 0, test_buffer, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y+11);
+	}
+
+    }
 }
 
 // [crispy] adapted from boom202s/M_CHEAT.C:467-498
@@ -1945,13 +1974,13 @@ void ST_diffDraw(void)
 void ST_Drawer (boolean fullscreen, boolean refresh)
 {
   
-    st_statusbaron = (!fullscreen) || (automapactive && !crispy->automapoverlay && !crispy->widescreen);
+    st_statusbaron = (!fullscreen) || (automapactive && !crispy->automapoverlay);
     // [crispy] immediately redraw status bar after help screens have been shown
     st_firsttime = st_firsttime || refresh || inhelpscreens;
 
     // [crispy] distinguish classic status bar with background and player face from Crispy HUD
     st_crispyhud = screenblocks >= CRISPY_HUD && (!automapactive || crispy->automapoverlay);
-    st_classicstatusbar = st_statusbaron && !st_crispyhud && !crispy->widescreen;
+    st_classicstatusbar = st_statusbaron && !st_crispyhud;
     st_statusbarface = st_classicstatusbar || (st_crispyhud && screenblocks == CRISPY_HUD);
 
     if (crispy->cleanscreenshot == 2)
@@ -2376,6 +2405,7 @@ void ST_Init (void)
 
     ST_loadData();
     st_backing_screen = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*st_backing_screen), PU_STATIC, 0);
+    test_buffer = (pixel_t *) Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*test_buffer), PU_STATIC, 0);
 }
 
 // [crispy] Demo Timer widget

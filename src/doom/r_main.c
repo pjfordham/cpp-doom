@@ -37,8 +37,8 @@
 #include "p_local.h" // [crispy] MLOOKUNIT
 #include "r_local.h"
 #include "r_sky.h"
-#include "st_stuff.h" // [crispy] ST_refreshBackground()
-
+#include "st_stuff.h" // [crispy] ST_refreshBackground(),  ST_createWidgets()
+#include "v_video.h"
 
 
 
@@ -802,16 +802,16 @@ void R_ExecuteSetViewSize (void)
     int		i;
     int		j;
     int		level;
-    int		startmap; 	
+    int		startmap;
 
     setsizeneeded = false;
 
-	// [crispy] make absolutely sure screenblocks is never < 11 in widescreen mode
+	// [crispy] make absolutely sure screenblocks is never < 10 in widescreen mode
 	if (crispy->widescreen)
 	{
 		extern void M_SizeDisplay(int choice);
 
-		while (setblocks < 11)
+		while (setblocks < 10)
 		{
 			M_SizeDisplay(1);
 			R_ExecuteSetViewSize();
@@ -920,6 +920,10 @@ void R_ExecuteSetViewSize (void)
 
     // [crispy] forcefully initialize the status bar backing screen
     ST_refreshBackground(true);
+    if (gamestate == GS_LEVEL)
+    {
+		ST_createWidgets();
+    }
 }
 
 
@@ -1072,7 +1076,8 @@ void R_SetupFrame (player_t* player)
 //
 void R_RenderPlayerView (player_t* player)
 {	
-    extern void V_DrawFilledBox (int x, int y, int w, int h, int c);
+    // included from "v_video.h"
+    // extern void V_DrawFilledBox (int x, int y, int w, int h, int c);
     extern void R_InterpolateTextureOffsets (void);
 
     R_SetupFrame (player);
