@@ -173,7 +173,7 @@ boolean D_Display (void)
     static  boolean		viewactivestate = false;
     static  boolean		menuactivestate = false;
     static  boolean		inhelpscreensstate = false;
-    //static  boolean		fullscreen = false;
+    static  boolean		fullscreen;
     static  gamestate_t		oldgamestate = -1;
     static  int			borderdrawcount;
     int				y;
