@@ -824,6 +824,11 @@ void R_ExecuteSetViewSize (void)
 	scaledviewwidth = SCREENWIDTH;
 	viewheight = SCREENHEIGHT;
     }
+    else if (crispy->widescreen && setblocks == 10)
+    {
+    scaledviewwidth = SCREENWIDTH;
+    viewheight = ((setblocks*168/10)&~7)<<crispy->hires;
+    }
     else
     {
 	scaledviewwidth = (setblocks*32)<<crispy->hires;
