@@ -175,7 +175,7 @@ void V_CopyRect(int srcx, int srcy, pixel_t *source,
   }\
 }\*/
 
-void V_FillFlat(int lump, pixel_t* buffer, int x, int y, int width, int height)
+void V_FillFlat(int lump, pixel_t* buffer, int bufferwidth, int x, int y, int width, int height)
 {
   /* erase the entire screen to a tiled background */
   const byte *data;
@@ -207,15 +207,15 @@ sy=y+height;
 		for (i = x; i < sx; i++)
 		{
 #ifndef CRISPY_TRUECOLOR
-			*dest++ = src[(j & 63) * 64 + (i & 63)];
+			dest[((i-x)+bufferwidth*(j-y))] = src[((j-y) & 63) * 64 + ((i-x) & 63)];
 #else
-			*dest++ = colormaps[src[(j & 63) * 64 + (i & 63)]];
+			dest[((i-x)+bufferwidth*(j-y))] = colormaps[src[((j-y) & 63) * 64 + ((i-x) & 63)]];
 #endif
 		}
 	}
 
-//    pitch = DELTAWIDTH; //width of one line
-/*
+/*    pitch = MAXWIDTH; //width of one line of the buffer
+
     for (sy = y ; sy < y + height; sy += 64)
     {
       h = (y + height - sy < 64 ? y + height - sy : 64);
@@ -239,21 +239,24 @@ sy=y+height;
   W_ReleaseLumpNum(lump);
 }
 
-/*void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height)
+void V_FillPatch(char* lumpname, pixel_t* buffer, int x, int y, int width, int height)
 {
   int sx, sy, w, h;
-
-  w = R_NumPatchWidth(lump);
-  h = R_NumPatchHeight(lump);
+  patch_t* patch;
+  patch = W_CacheLumpName(lumpname,PU_CACHE);
+  V_UseBuffer(buffer);
+  w = 8;
+  h = 3;
 
   for (sy = y; sy < y + height; sy += h)
   {
     for (sx = x; sx < x + width; sx += w)
     {
-      V_DrawNumPatch(sx, sy, buffer, lump, CR_DEFAULT, flags);
+      V_DrawPatch(sx, sy, patch);
     }
   }
-}*/
+	V_RestoreBuffer();
+}
 
 //
 // V_SetPatchClipCallback
