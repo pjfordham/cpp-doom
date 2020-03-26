@@ -508,24 +508,16 @@ void ST_refreshBackground(boolean force)
 
         V_RestoreBuffer();
 
-	if (crispy->widescreen)
-	{
-	V_FillFlatName(name, st_backing_screen, ST_WIDTH+DELTAWIDTH, ST_Y+11, DELTAWIDTH, ST_HEIGHT-1);
-	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH+DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
-	}
-
-	
-
 	if (!force)
 	//V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
-	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
+	V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH+DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
 
-	}
-	/*if (crispy->widescreen)
+	if (crispy->widescreen)
 	{
-	V_CopyRect(0, 0, test_buffer, DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
-	}*/
-
+	V_FillFlatName(name, st_backing_screen, -DELTAWIDTH, 0, DELTAWIDTH, ST_HEIGHT-1);
+	V_CopyRect(ST_X, 0, st_backing_screen, DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
+	}
+	}
 }
 
 // [crispy] adapted from boom202s/M_CHEAT.C:467-498
