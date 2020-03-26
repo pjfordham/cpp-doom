@@ -503,7 +503,7 @@ void ST_refreshBackground(boolean force)
         V_RestoreBuffer();
 	
 	if (!force)
-	//V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH+DELTAWIDTH, ST_HEIGHT, ST_X, ST_Y);
+	//V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
 	V_CopyRect(ST_X+DELTAWIDTH, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X+DELTAWIDTH, ST_Y);
 
 	if (crispy->widescreen)
