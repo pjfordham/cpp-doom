@@ -196,8 +196,6 @@ void V_FillFlat(int lump, pixel_t* buffer, int bufferwidth, int x, int y, int wi
 
 src = data;
 dest = buffer;
-sx=x+width;
-sy=y+height;
 
 //much simpler routine by Fabian Greffrath
 
@@ -213,7 +211,7 @@ sy=y+height;
 		}
 	}
 
-/*    pitch = MAXWIDTH; //width of one line of the buffer
+/*    pitch = bufferwidth; //width of one line of the buffer
 
     for (sy = y ; sy < y + height; sy += 64)
     {
@@ -244,8 +242,8 @@ void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height)
   patch_t* patch;
   patch = W_CacheLumpNum(lump,PU_STATIC);
   V_UseBuffer(buffer);
-  w = 8;
-  h = 3;
+  w = 8; //width and
+  h = 3; //height of the border patch
 
   for (sy = y; sy < y + height; sy += h)
   {
