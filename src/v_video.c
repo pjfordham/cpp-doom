@@ -182,7 +182,6 @@ void V_FillFlat(int lump, pixel_t* buffer, int bufferwidth, int x, int y, int wi
   //int sx, sy, w, h;
   int sx, sy;
   //int i, j, pitch;
-  int i,j;
 
   //const byte *src, *src_p;
   //byte *dest, *dest_p;
@@ -202,14 +201,14 @@ sy=y+height;
 
 //much simpler routine by Fabian Greffrath
 
-	for (j=y; j < sy; j++)
+	for (sy=y; sy < y+height; sy++)
 	{
-		for (i = x; i < sx; i++)
+		for (sx = x; sx < x+height; sx++)
 		{
 #ifndef CRISPY_TRUECOLOR
-			dest[((i-x)+bufferwidth*(j-y))] = src[((j-y) & 63) * 64 + ((i-x) & 63)];
+			dest[(sx+bufferwidth*sy)] = src[((sy-y) & 63) * 64 + ((sx-x) & 63)];
 #else
-			dest[((i-x)+bufferwidth*(j-y))] = colormaps[src[((j-y) & 63) * 64 + ((i-x) & 63)]];
+			dest[(sx+bufferwidth*sy)] = colormaps[src[((sy-y) & 63) * 64 + ((sx-x) & 63)]];
 #endif
 		}
 	}
