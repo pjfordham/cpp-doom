@@ -63,10 +63,10 @@ void V_FillFlat(int lump, pixel_t* buffer, int bufferwidth, int x, int y, int wi
 #define V_FillFlatName(flatname, buffer, bufferwidth, x, y, width, height) \
   V_FillFlat(R_FlatNumForName(flatname), (buffer), (bufferwidth), (x), (y), (width), (height))
 
-void V_FillPatch(char* lumpname, pixel_t* buffer, int x, int y, int width, int height);
+void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height);
 
-/*#define V_FillPatchName(name, buffer, x, y, width, height) \
-V_FillPatch(W_GetNumForName(name), (buffer), (x), (y), (width), (height))*/
+#define V_FillPatchName(name, buffer, x, y, width, height) \
+  V_FillPatch(W_GetNumForName(name), (buffer), (x), (y), (width), (height))
 
 void V_DrawPatch(int x, int y, patch_t *patch);
 void V_DrawPatchFlipped(int x, int y, patch_t *patch);

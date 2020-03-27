@@ -239,11 +239,11 @@ sy=y+height;
   W_ReleaseLumpNum(lump);
 }
 
-void V_FillPatch(char* lumpname, pixel_t* buffer, int x, int y, int width, int height)
+void V_FillPatch(int lump, pixel_t* buffer, int x, int y, int width, int height)
 {
   int sx, sy, w, h;
   patch_t* patch;
-  patch = W_CacheLumpName(lumpname,PU_CACHE);
+  patch = W_CacheLumpNum(lump,PU_STATIC);
   V_UseBuffer(buffer);
   w = 8;
   h = 3;
@@ -256,6 +256,7 @@ void V_FillPatch(char* lumpname, pixel_t* buffer, int x, int y, int width, int h
     }
   }
 	V_RestoreBuffer();
+	W_ReleaseLumpNum(lump);
 }
 
 //

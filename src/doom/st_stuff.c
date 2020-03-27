@@ -515,9 +515,9 @@ void ST_refreshBackground(boolean force)
 	if (crispy->widescreen)
 	{
 	//V_FillFlatName(name, test_buffer, MAXWIDTH, ST_X, 1, DELTAWIDTH, ST_HEIGHT-1);
-	V_FillPatch(DEH_String("brdr_b"), test_buffer, ST_X, 0, MAXWIDTH, 1);
-	V_CopyRect(ST_X, 0, test_buffer, DELTAWIDTH, 3, ST_X, ST_Y-1); //don't understand why with ST_Y it draws the line 1 pixel lower
-	V_CopyRect(ST_X, 0, test_buffer, DELTAWIDTH, 3, ST_X+DELTAWIDTH+ST_WIDTH, ST_Y-1);
+	V_FillPatchName(DEH_String("brdr_b"), test_buffer, ST_X, 0, MAXWIDTH, 1);
+	V_CopyRect(ST_X+DELTAWIDTH, 0, test_buffer, DELTAWIDTH, 3, ST_X, ST_Y);
+	V_CopyRect(ST_X+DELTAWIDTH, 0, test_buffer, DELTAWIDTH, 3, ST_X+DELTAWIDTH+ST_WIDTH, ST_Y);
 	}
 	}
 }
