@@ -40,7 +40,6 @@
 #include "st_stuff.h" // [crispy] ST_refreshBackground(),  ST_createWidgets()
 
 
-
 // Fineangles in the SCREENWIDTH wide window.
 #define FIELDOFVIEW		2048	
 
@@ -822,12 +821,12 @@ void R_ExecuteSetViewSize (void)
 	scaledviewwidth = SCREENWIDTH;
 	viewheight = SCREENHEIGHT;
     }
-    else if (crispy->widescreen && setblocks == 10)
-    {
-    scaledviewwidth = SCREENWIDTH;
-    viewheight = ((setblocks*168/10)&~7)<<crispy->hires;
-    }
-    else
+    else if (crispy->widescreen && setblocks <= 10)
+	{
+		viewheight = ((setblocks*168/10)&~7)<<crispy->hires;
+		scaledviewwidth = viewheight*SCREENWIDTH/(SCREENHEIGHT-(ST_HEIGHT<<crispy->hires));
+	}
+	else
     {
 	scaledviewwidth = (setblocks*32)<<crispy->hires;
 	viewheight = ((setblocks*168/10)&~7)<<crispy->hires;
