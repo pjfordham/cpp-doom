@@ -23,7 +23,7 @@
 #define __D_THINK__
 
 #include <tuple>
-
+#include <cassert>
 
 
 //
@@ -36,26 +36,29 @@
 struct mobj_t;
 struct player_t;
 struct pspdef_t;
-struct thinker_t;
 
-typedef void (*actionf_t1)(thinker_t *mo);
 typedef void (*actionf_m1)(mobj_t *mo);
 typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp);
 
 struct actionf_t {
   constexpr actionf_t() = default;
 
-  explicit constexpr actionf_t(actionf_m1 p)
-  {
-    std::get<actionf_m1>(data) = p;
-  }
-
-  explicit constexpr actionf_t(actionf_p3 p)
+  explicit constexpr actionf_t(const actionf_p3 p)
   {
     std::get<actionf_p3>(data) = p;
   }
 
+  explicit constexpr actionf_t(const actionf_m1 p)
+  {
+    std::get<actionf_m1>(data) = p;
+  }
+
   constexpr actionf_t &operator=(actionf_p3 p) {
+    data = actionf_t{p}.data;
+    return *this;
+  }
+
+  constexpr actionf_t &operator=(actionf_m1 p) {
     data = actionf_t{p}.data;
     return *this;
   }
@@ -70,41 +73,35 @@ struct actionf_t {
     return std::get<const void *>(data);
   }
 
-  template <typename... Param>
-  [[nodiscard]] constexpr bool operator==(void (*p)(Param...)) const {
+  [[nodiscard]] constexpr bool operator==(actionf_p3 p) const {
     return std::get<decltype(p)>(data) == p;
   }
 
-  template <typename... Param> constexpr bool call_iff(Param... param) {
-     const auto func = std::get<void (*)(Param...)>(data);
-     if (func) {
-        func(param...);
-        return true;
-     } else {
-        return false;
-     }
+  [[nodiscard]] constexpr bool operator==(actionf_m1 p) const {
+    return std::get<decltype(p)>(data) == p;
   }
 
-   bool call_if( thinker_t *thinker ){
-      return
-         call_iff( reinterpret_cast<mobj_t*>(thinker) ) ||
-         call_iff( reinterpret_cast<mobj_t*>(thinker),
-                   (player_t*)nullptr,
-                   (pspdef_t*)nullptr );
-   }
+  constexpr bool call_if( mobj_t *mo, player_t *player, pspdef_t *psp ){
+    const auto func = std::get<actionf_p3>(data);
+    if (func) {
+       func(mo,player,psp);
+      return true;
+    } else {
+       assert(*this == actionf_t{});
+       return false;
+    }
+  }
 
-   bool call_if( mobj_t *thinker ){
-      return
-         call_iff( reinterpret_cast<mobj_t*>(thinker) ) ||
-         call_iff( reinterpret_cast<mobj_t*>(thinker),
-                   (player_t*)nullptr,
-                   (pspdef_t*)nullptr );
-   }
-
-   bool call_if( mobj_t *mo, player_t *player, pspdef_t *psp ){
-      return call_iff( mo ) ||
-         call_iff( mo, player, psp );
-   }
+   constexpr bool call_if(mobj_t *mo) {
+    const auto func = std::get<actionf_m1>(data);
+    if (func) {
+      func(mo);
+      return true;
+    } else {
+       assert(*this == actionf_t{});
+       return false;
+    }
+  }
 
    constexpr explicit operator bool() const {
     return *this != actionf_t{};
@@ -120,7 +117,9 @@ private:
 };
 
 
+struct thinker_t;
 
+typedef void (*thinkerf)(thinker_t *mo);
 
 // Historically, "think_t" is yet another
 //  function pointer to a routine to handle
@@ -129,9 +128,9 @@ class think_t {
 public:
   constexpr think_t() = default;
 
-  explicit constexpr think_t(actionf_t1 p)
+  explicit constexpr think_t(thinkerf p)
   {
-    std::get<actionf_t1>(data) = p;
+    std::get<thinkerf>(data) = p;
   }
 
   constexpr think_t(int        p)
@@ -139,7 +138,7 @@ public:
     std::get<int>(data) = p;
   }
 
-  constexpr think_t &operator=(actionf_t1 p) {
+  constexpr think_t &operator=(thinkerf p) {
     data = think_t{p}.data;
     return *this;
   }
@@ -154,13 +153,13 @@ public:
     return std::get<const void *>(data);
   }
 
-  [[nodiscard]] constexpr bool operator==(actionf_t1 p) const {
+  [[nodiscard]] constexpr bool operator==(thinkerf p) const {
     return std::get<decltype(p)>(data) == p;
   }
 
   // Called only from p_tick.cpp P_RunThinkers
   bool call_if( thinker_t *thinker) {
-     const auto func = std::get<actionf_t1>(data);
+     const auto func = std::get<thinkerf>(data);
      if (func) {
       func(thinker);
       return true;
@@ -176,7 +175,7 @@ public:
   constexpr bool operator==(const think_t &) const = default;
 
 private:
-   std::tuple<int, const void *, actionf_t1> data{};
+   std::tuple<int, const void *, thinkerf> data{};
 
 };
 
