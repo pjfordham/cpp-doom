@@ -76,8 +76,7 @@ P_SetMobjState
 
 	// Modified handling.
 	// Call action functions when the state is set
-        st->action.call_if(mobj, static_cast<player_t *>(nullptr),
-                           static_cast<pspdef_t *>(nullptr));
+        st->action.call_if(mobj);
 
 	state = st->nextstate;
 
@@ -565,7 +564,7 @@ void P_MobjThinker (thinker_t *thinker)
     {
 	P_XYMovement (mobj);
 
-	if (mobj->function == actionf_t{-1})
+	if (mobj->function == think_t{-1})
 	    return;		// mobj was removed
     }
     if ( (mobj->z != mobj->floorz)
@@ -573,7 +572,7 @@ void P_MobjThinker (thinker_t *thinker)
     {
 	P_ZMovement (mobj);
 	
-	if (mobj->function == actionf_t{-1})
+	if (mobj->function == think_t{-1})
 	    return;		// mobj was removed
     }
 
