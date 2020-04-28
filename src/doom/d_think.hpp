@@ -50,29 +50,9 @@ struct actionf_t {
     std::get<actionf_m1>(data) = p;
   }
 
-  explicit constexpr actionf_t(actionf_t1 p)
-  {
-    std::get<actionf_t1>(data) = p;
-  }
-
   explicit constexpr actionf_t(actionf_p3 p)
   {
     std::get<actionf_p3>(data) = p;
-  }
-
-  constexpr actionf_t(int        p)
-  {
-    std::get<int>(data) = p;
-  }
-
-  constexpr actionf_t &operator=(actionf_m1 p) {
-    data = actionf_t{p}.data;
-    return *this;
-  }
-
-  constexpr actionf_t &operator=(actionf_t1 p) {
-    data = actionf_t{p}.data;
-    return *this;
   }
 
   constexpr actionf_t &operator=(actionf_p3 p) {
@@ -106,7 +86,7 @@ struct actionf_t {
   }
 
    bool call_if( thinker_t *thinker ){
-      return call_iff( thinker ) ||
+      return
          call_iff( reinterpret_cast<mobj_t*>(thinker) ) ||
          call_iff( reinterpret_cast<mobj_t*>(thinker),
                    (player_t*)nullptr,
@@ -114,7 +94,7 @@ struct actionf_t {
    }
 
    bool call_if( mobj_t *thinker ){
-      return call_iff( thinker ) ||
+      return
          call_iff( reinterpret_cast<mobj_t*>(thinker) ) ||
          call_iff( reinterpret_cast<mobj_t*>(thinker),
                    (player_t*)nullptr,
@@ -133,8 +113,7 @@ struct actionf_t {
   constexpr bool operator==(const actionf_t &) const = default;
 
 private:
-   std::tuple<int, const void *,
-              actionf_t1,
+   std::tuple<const void *,
               actionf_m1,
               actionf_p3>
       data{};
@@ -146,7 +125,61 @@ private:
 // Historically, "think_t" is yet another
 //  function pointer to a routine to handle
 //  an actor.
-typedef actionf_t  think_t;
+class think_t {
+public:
+  constexpr think_t() = default;
+
+  explicit constexpr think_t(actionf_t1 p)
+  {
+    std::get<actionf_t1>(data) = p;
+  }
+
+  constexpr think_t(int        p)
+  {
+    std::get<int>(data) = p;
+  }
+
+  constexpr think_t &operator=(actionf_t1 p) {
+    data = think_t{p}.data;
+    return *this;
+  }
+
+  constexpr think_t &operator=(const void *p) {
+    data = think_t{}.data;
+    std::get<const void *>(data) = p;
+    return *this;
+  }
+
+  [[nodiscard]] constexpr explicit operator const void *() {
+    return std::get<const void *>(data);
+  }
+
+  [[nodiscard]] constexpr bool operator==(actionf_t1 p) const {
+    return std::get<decltype(p)>(data) == p;
+  }
+
+  // Called only from p_tick.cpp P_RunThinkers
+  bool call_if( thinker_t *thinker) {
+     const auto func = std::get<actionf_t1>(data);
+     if (func) {
+      func(thinker);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  constexpr explicit operator bool() const {
+    return *this != think_t{};
+  }
+
+  constexpr bool operator==(const think_t &) const = default;
+
+private:
+   std::tuple<int, const void *, actionf_t1> data{};
+
+};
+
 
 
 // Doubly linked list of actors.
