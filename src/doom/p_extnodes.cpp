@@ -95,7 +95,7 @@ void P_LoadSegs_DeePBSP (int lump)
     mapseg_deepbsp_t *data;
 
     numsegs = W_LumpLength(lump) / sizeof(mapseg_deepbsp_t);
-    segs = zmalloc<decltype(segs)>(numsegs * sizeof(seg_t), PU_LEVEL, 0);
+    segs = zone_malloc_ptr<decltype(segs)>(PU_LEVEL, numsegs );
     data = (mapseg_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
 
     for (i = 0; i < numsegs; i++)
@@ -160,7 +160,7 @@ void P_LoadSubsectors_DeePBSP (int lump)
     int i;
 
     numsubsectors = W_LumpLength(lump) / sizeof(mapsubsector_deepbsp_t);
-    subsectors = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU_LEVEL, 0);
+    subsectors = zone_malloc_ptr<decltype(subsectors)>(PU_LEVEL, numsubsectors);
     data = (mapsubsector_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
 
     // [crispy] fail on missing subsectors
@@ -181,7 +181,7 @@ void P_LoadNodes_DeePBSP (int lump)
 {
 
     numnodes = (W_LumpLength (lump) - 8) / sizeof(mapnode_deepbsp_t);
-    nodes = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU_LEVEL, 0);
+    nodes = zone_malloc_ptr<decltype(nodes)>(PU_LEVEL, numnodes);
     auto *data = cache_lump_num<const byte *>(lump, PU_STATIC);
 
     // [crispy] warn about missing nodes
@@ -255,7 +255,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	// first estimate for compression rate:
 	// output buffer size == 2.5 * input size
 	outlen = 2.5 * len;
-	output = zmalloc<decltype(output)>(outlen, PU_STATIC, 0);
+	output = zone_malloc<byte>(PU_STATIC, outlen);
 
 	// initialize stream state for decompression
 	zstream = malloc(sizeof(*zstream));
@@ -316,7 +316,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     }
     else
     {
-	newvertarray = zmalloc<decltype(newvertarray)>((orgVerts + newVerts) * sizeof(vertex_t), PU_LEVEL, 0);
+	newvertarray = zone_malloc_ptr<decltype(newvertarray)>(PU_LEVEL, orgVerts + newVerts);
 	memcpy(newvertarray, vertexes, orgVerts * sizeof(vertex_t));
 	memset(newvertarray + orgVerts, 0, newVerts * sizeof(vertex_t));
     }
@@ -354,7 +354,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	I_Error("P_LoadNodes: No subsectors in map!");
 
     numsubsectors = numSubs;
-    subsectors = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU_LEVEL, 0);
+    subsectors = zone_malloc_ptr<decltype(subsectors)>(PU_LEVEL, numsubsectors);
 
     for (i = currSeg = 0; i < numsubsectors; i++)
     {
@@ -379,7 +379,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     }
 
     numsegs = numSegs;
-    segs = zmalloc<decltype(segs)>(numsegs * sizeof(seg_t), PU_LEVEL, 0);
+    segs = zone_malloc_ptr<decltype(segs)>(PU_LEVEL, numsegs);
 
     for (i = 0; i < numsegs; i++)
     {
@@ -440,7 +440,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     data += sizeof(numNodes);
 
     numnodes = numNodes;
-    nodes = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU_LEVEL, 0);
+    nodes = zone_malloc_ptr<decltype(nodes)>(PU_LEVEL, numnodes);
 
     for (i = 0; i < numnodes; i++)
     {
@@ -516,7 +516,7 @@ void P_LoadLineDefs_Hexen (int lump)
     int warn; // [crispy] warn about unknown linedef types
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
-    lines = zmalloc<decltype(lines)>(numlines * sizeof(line_t), PU_LEVEL, 0);
+    lines = zone_malloc_ptr<decltype(lines)>(PU_LEVEL, numlines);
     memset(lines, 0, numlines * sizeof(line_t));
     auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
 
