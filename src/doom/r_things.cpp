@@ -312,7 +312,7 @@ void R_InitSpriteDefs(const char **namelist)
 	// allocate space for the frames present and copy sprtemp to it
 	sprites[i].numframes = maxframe;
 	sprites[i].spriteframes = zone_malloc<spriteframe_t> (PU_STATIC, maxframe);
-	memcpy (sprites[i].spriteframes, sprtemp, maxframe*sizeof(spriteframe_t));
+        std::copy( sprtemp, sprtemp + maxframe, sprites[i].spriteframes );
     }
 
 }

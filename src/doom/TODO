@@ -4,6 +4,9 @@ zmalloc all gone src/doom grep zmalloc *
 Z_Malloc all gone
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 
+calloc
+realloc
+
  and all variants of free
 memcmp also suspicous
 memcpy
