@@ -300,12 +300,13 @@ void F_TextWrite (void)
 #ifndef CRISPY_TRUECOLOR
 	for (x=0 ; x<SCREENWIDTH/64 ; x++)
 	{
-	    memcpy (dest, src+((y&63)<<6), 64);
-	    dest += 64;
+            std::copy(src+((y&63)<<6), src+((y&63)<<6) + 64, dest);
+            dest += 64;
 	}
 	if (SCREENWIDTH&63)
 	{
-	    memcpy (dest, src+((y&63)<<6), SCREENWIDTH&63);
+           std::copy( src+((y&63)<<6),
+                      src+((y&63)<<6) + (SCREENWIDTH&63), dest);
 	    dest += (SCREENWIDTH&63);
 	}
 #else

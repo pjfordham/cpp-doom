@@ -231,7 +231,7 @@ R_DrawColumnInCache
 
 	if (count > 0)
 	{
-	    memcpy (cache + position, source, count);
+            std::copy(source, source + count, cache + position);
 
 	    // killough 4/9/98: remember which cells in column have been drawn,
 	    // so that column can later be converted into a series of posts, to

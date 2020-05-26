@@ -2509,7 +2509,7 @@ static void IncreaseDemoBuffer(void)
 
     // Copy over the old data
 
-    memcpy(new_demobuffer, demobuffer, current_length);
+    std::copy( demobuffer, demobuffer + current_length, new_demobuffer);
 
     // Free the old buffer and point the demo pointers at the new buffer.
 
