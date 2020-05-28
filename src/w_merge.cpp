@@ -203,11 +203,8 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
 
     if (num_sprite_frames >= sprite_frames_alloced)
     {
-        sprite_frame_t *newframes;
-
-        newframes = zone_malloc<sprite_frame_t>(PU_STATIC, sprite_frames_alloced * 2);
-        memcpy(newframes, sprite_frames,
-               sprite_frames_alloced * sizeof(*sprite_frames));
+        auto newframes = zone_malloc<sprite_frame_t>(PU_STATIC, sprite_frames_alloced * 2);
+        std::copy( sprite_frames, sprite_frames + sprite_frames_alloced, newframes );
         Z_Free(sprite_frames);
         sprite_frames_alloced *= 2;
         sprite_frames = newframes;
@@ -216,7 +213,7 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
     // Add to end of list
     
     result = &sprite_frames[num_sprite_frames];
-    memcpy(result->sprname, name, 4);
+    strncpy(result->sprname, name, 4);
     result->frame = frame;
 
     for (i=0; i<8; ++i)
@@ -392,7 +389,7 @@ static void DoMerge(void)
     int i, n;
 
     // Can't ever have more lumps than we already have
-    newlumps = static_cast<decltype(newlumps)>(calloc(numlumps, sizeof(lumpinfo_t *)));
+    newlumps = static_cast<lumpinfo_t**>(calloc(numlumps, sizeof(lumpinfo_t *)));
     num_newlumps = 0;
 
     // Add IWAD lumps
@@ -615,8 +612,7 @@ static void W_NWTAddLumps(searchlist_t *list)
 
         if (index > 0)
         {
-            memcpy(list->lumps[i], pwad.lumps[index],
-                   sizeof(lumpinfo_t));
+           *(list->lumps[i]) = *(pwad.lumps[index]);
         }
     }
 }
@@ -724,16 +720,15 @@ void W_NWTDashMerge(const char *filename)
 int W_MergeDump (const char *file)
 {
     FILE *fp = NULL;
-    char *lump_p = NULL;
     uint32_t i, dir_p;
 
     // [crispy] WAD directory structure
     typedef struct {
-	uint32_t pos;
-	uint32_t size;
-	char name[8];
+       uint32_t pos;
+       uint32_t size;
+	// [crispy] lump names are zero-byte padded
+       char name[8]{0};
     } directory_t;
-    directory_t *dir = NULL;
 
     // [crispy] open file for writing
     fp = fopen(file, "wb");
@@ -743,7 +738,7 @@ int W_MergeDump (const char *file)
     }
 
     // [crispy] prepare directory
-    dir = static_cast<decltype(dir)>(calloc(numlumps, sizeof(*dir)));
+    auto dir = new directory_t[numlumps];
     if (!dir)
     {
 	I_Error("W_MergeDump: Error allocating memory!");
@@ -755,21 +750,19 @@ int W_MergeDump (const char *file)
     {
 	dir[i].pos = LONG(ftell(fp));
 	dir[i].size = LONG(lumpinfo[i]->size);
-	// [crispy] lump names are zero-byte padded
-	memset(dir[i].name, 0, 8);
 	strncpy(dir[i].name, lumpinfo[i]->name, 8);
 
 	// [crispy] avoid flooding Doom's Zone Memory
-	lump_p = static_cast<decltype(lump_p)>(I_Realloc(lump_p, lumpinfo[i]->size));
+	auto lump_p = new char[lumpinfo[i]->size];
 	W_ReadLump(i, lump_p);
 	fwrite(lump_p, 1, lumpinfo[i]->size, fp);
+        delete [] lump_p;
     }
-    free(lump_p);
 
     // [crispy] write directory
     dir_p = LONG(ftell(fp));
     fwrite(dir, sizeof(*dir), i, fp);
-    free(dir);
+    delete [] dir;
 
     // [crispy] write WAD header
     fseek(fp, 0, SEEK_SET);
