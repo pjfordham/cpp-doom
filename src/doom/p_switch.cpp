@@ -18,6 +18,7 @@
 //
 
 #include <stdio.h>
+#include <vector>
 
 #include "i_system.hpp"
 #include "deh_main.hpp"
@@ -96,7 +97,8 @@ switchlist_t alphSwitchList_vanilla[] =
 };
 
 // [crispy] remove MAXSWITCHES limit
-int		*switchlist;
+std::vector<int> switchlist;
+
 int		numswitches;
 static size_t	maxswitches;
 button_t        *buttonlist; // [crispy] remove MAXBUTTONS limit
@@ -152,7 +154,7 @@ void P_InitSwitchList(void)
 	if (slindex + 1 >= maxswitches)
 	{
 	    size_t newmax = maxswitches ? 2 * maxswitches : MAXSWITCHES;
-	    switchlist = static_cast<decltype(switchlist)>(I_Realloc(switchlist, newmax * sizeof(*switchlist)));
+	    switchlist.resize( newmax );
 	    maxswitches = newmax;
 	}
 
