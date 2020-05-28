@@ -727,15 +727,13 @@ void HU_Start(void)
     // map is from a PWAD or if the map title string has been dehacked
     if (DEH_HasStringReplacement(s) || (!W_IsIWADLump(maplumpinfo) && (!nervewadfile || gamemission != pack_nerve)))
     {
-	char *m;
+	auto str = std::string( crstr[CR_GOLD] ) +
+           W_WadNameForLump(maplumpinfo) + ": " + crstr[CR_GRAY] + maplumpinfo->name;
 
-	ptr = M_StringJoin(crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name, NULL);
-	m = ptr;
+	const char *m = str.c_str();
 
 	while (*m)
 	    HUlib_addCharToTextLine(&w_map, *(m++));
-
-	free(ptr);
     }
 
     // dehacked substitution to get modified level name
