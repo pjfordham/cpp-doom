@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 
-#include "i_system.hpp" // [crispy] I_Realloc()
+#include <vector>
 #include "m_bbox.hpp"
 
 #include "doomdef.hpp"
@@ -537,7 +537,7 @@ P_BlockThingsIterator
 //
 // INTERCEPT ROUTINES
 //
-static intercept_t*	intercepts; // [crispy] remove INTERCEPTS limit
+static std::vector<intercept_t>	intercepts; // [crispy] remove INTERCEPTS limit
 intercept_t*	intercept_p;
 
 // [crispy] remove INTERCEPTS limit
@@ -545,13 +545,13 @@ intercept_t*	intercept_p;
 static void check_intercept(void)
 {
 	static size_t num_intercepts;
-	const size_t offset = intercept_p - intercepts;
+	const size_t offset = intercept_p - intercepts.data();
 
 	if (offset >= num_intercepts)
 	{
 		num_intercepts = num_intercepts ? num_intercepts * 2 : MAXINTERCEPTS_ORIGINAL;
-		intercepts = static_cast<decltype(intercepts)>(I_Realloc(intercepts, sizeof(*intercepts) * num_intercepts));
-		intercept_p = intercepts + offset;
+		intercepts.resize( num_intercepts );
+		intercept_p = intercepts.data() + offset;
 	}
 }
 
@@ -620,9 +620,9 @@ PIT_AddLineIntercepts (line_t* ld)
     intercept_p->frac = frac;
     intercept_p->isaline = true;
     intercept_p->d.line = ld;
-    InterceptsOverrun(intercept_p - intercepts, intercept_p);
+    InterceptsOverrun(intercept_p - intercepts.data(), intercept_p);
     // [crispy] intercepts overflow guard
-    if (intercept_p - intercepts == MAXINTERCEPTS_ORIGINAL + 1)
+    if (intercept_p - intercepts.data() == MAXINTERCEPTS_ORIGINAL + 1)
     {
 	if (crispy->crosshair & CROSSHAIR_INTERCEPT)
 	    return false;
@@ -696,9 +696,9 @@ boolean PIT_AddThingIntercepts (mobj_t* thing)
     intercept_p->frac = frac;
     intercept_p->isaline = false;
     intercept_p->d.thing = thing;
-    InterceptsOverrun(intercept_p - intercepts, intercept_p);
+    InterceptsOverrun(intercept_p - intercepts.data(), intercept_p);
     // [crispy] intercepts overflow guard
-    if (intercept_p - intercepts == MAXINTERCEPTS_ORIGINAL + 1)
+    if (intercept_p - intercepts.data() == MAXINTERCEPTS_ORIGINAL + 1)
     {
 	if (crispy->crosshair & CROSSHAIR_INTERCEPT)
 	    return false;
@@ -727,14 +727,14 @@ P_TraverseIntercepts
     intercept_t*	scan;
     intercept_t*	in;
 	
-    count = intercept_p - intercepts;
+    count = intercept_p - intercepts.data();
     
     in = 0;			// shut up compiler warning
 	
     while (count--)
     {
 	dist = INT_MAX;
-	for (scan = intercepts ; scan<intercept_p ; scan++)
+	for (scan = intercepts.data() ; scan<intercept_p ; scan++)
 	{
 	    if (scan->frac < dist)
 	    {
@@ -749,8 +749,8 @@ P_TraverseIntercepts
 #if 0  // UNUSED
     {
 	// don't check these yet, there may be others inserted
-	in = scan = intercepts;
-	for ( scan = intercepts ; scan<intercept_p ; scan++)
+       in = scan = intercepts.data();
+       for ( scan = intercepts.data() ; scan<intercept_p ; scan++)
 	    if (scan->frac > maxfrac)
 		*in++ = *scan;
 	intercept_p = in;
@@ -929,7 +929,7 @@ P_PathTraverse
     earlyout = (flags & PT_EARLYOUT) != 0;
 		
     validcount++;
-    intercept_p = intercepts;
+    intercept_p = intercepts.data();
 	
     if ( ((x1-bmaporgx)&(MAPBLOCKSIZE-1)) == 0)
 	x1 += FRACUNIT;	// don't side exactly on a line
