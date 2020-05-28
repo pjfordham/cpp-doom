@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "i_sound.hpp"
 #include "i_system.hpp"
@@ -80,8 +81,8 @@ typedef struct
 
 // The set of channels available
 
-static channel_t *channels;
-static degenmobj_t *sobjs;
+static std::vector<channel_t> channels;
+static std::vector<degenmobj_t> sobjs;
 
 // Maximum volume of a sound effect.
 // Internal default is max out of 0-15.
@@ -266,8 +267,8 @@ void S_Init(int sfxVolume, int musicVolume)
     // (the maximum numer of sounds rendered
     // simultaneously) within zone memory.
     // [crispy] variable number of sound channels
-    channels = static_cast<decltype(channels)>(I_Realloc(NULL, snd_channels*sizeof(channel_t)));
-    sobjs = static_cast<decltype(sobjs)>(I_Realloc(NULL, snd_channels*sizeof(degenmobj_t)));
+    channels.resize( snd_channels );
+    sobjs.resize( snd_channels );
 
     // Free all channels for use
     for (i=0 ; i<snd_channels ; i++)
@@ -1101,8 +1102,8 @@ void S_UpdateSndChannels (void)
 		snd_channels = 8;
 	}
 
-	channels = static_cast<decltype(channels)>(I_Realloc(channels, snd_channels * sizeof(channel_t)));
-	sobjs = static_cast<decltype(sobjs)>(I_Realloc(sobjs, snd_channels * sizeof(degenmobj_t)));
+	channels.resize( snd_channels );
+	sobjs.resize( snd_channels );
 
 	for (i = 0; i < snd_channels; i++)
 	{
