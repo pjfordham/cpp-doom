@@ -1020,7 +1020,6 @@ static void R_InitTranMap()
 	// Compose a default transparent filter map based on PLAYPAL.
 	unsigned char *playpal = cache_lump_name<unsigned char *>("PLAYPAL", PU_STATIC);
 	FILE *cachefp;
-	char *fname = NULL;
 	extern char *configdir;
 
 	struct {
@@ -1029,10 +1028,10 @@ static void R_InitTranMap()
 	} cache;
 
 	tranmap = zone_malloc<byte>( PU_STATIC, 256*256);
-	fname = M_StringJoin(configdir, "tranmap.dat", NULL);
+	auto fname = std::string( configdir ) + "tranmap.dat";
 
 	// [crispy] open file readable
-	if ((cachefp = fopen(fname, "rb")) &&
+	if ((cachefp = fopen(fname.c_str(), "rb")) &&
 	    // [crispy] could read struct cache from file
 	    fread(&cache, 1, sizeof(cache), cachefp) == sizeof(cache) &&
 	    // [crispy] same filter percents
@@ -1082,7 +1081,7 @@ static void R_InitTranMap()
 	    }
 
 	    // [crispy] file not readable, open writable
-	    if ((cachefp = fopen(fname, "wb")))
+	    if ((cachefp = fopen(fname.c_str(), "wb")))
 	    {
 		// [crispy] set filter percents
 		cache.pct = tran_filter_pct;
@@ -1107,8 +1106,6 @@ static void R_InitTranMap()
 
 	if (cachefp)
 	    fclose(cachefp);
-
-	free(fname);
 
 	W_ReleaseLumpName("PLAYPAL");
     }
