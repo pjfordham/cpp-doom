@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <memory>
+#include <vector>
 
 #include "deh_main.hpp"
 #include "i_swap.hpp"
@@ -673,19 +674,19 @@ void R_InitTextures (void)
 	short pnamesoffset;
     } texturelump_t;
 
-    pnameslump_t	*pnameslumps = NULL;
-    texturelump_t	*texturelumps = NULL, *texturelump;
+    int			numpnameslumps = 0;
+    int			numtexturelumps = 0;
 
     int			maxpnameslumps = 1; // PNAMES
     int			maxtexturelumps = 2; // TEXTURE1, TEXTURE2
 
-    int			numpnameslumps = 0;
-    int			numtexturelumps = 0;
-
     // [crispy] allocate memory for the pnameslumps and texturelumps arrays
-    pnameslumps = static_cast<decltype(pnameslumps)>(I_Realloc(pnameslumps, maxpnameslumps * sizeof(*pnameslumps)));
-    texturelumps = static_cast<decltype(texturelumps)>(I_Realloc(texturelumps, maxtexturelumps * sizeof(*texturelumps)));
+    std::vector<pnameslump_t> pnameslumps;
+    std::vector<texturelump_t> texturelumps;
 
+    pnameslumps.resize(	maxpnameslumps );
+    texturelumps.resize( maxtexturelumps );
+    
     // [crispy] make sure the first available TEXTURE1/2 lumps
     // are always processed first
     texturelumps[numtexturelumps++].lumpnum = W_GetNumForName(DEH_String("TEXTURE1"));
@@ -704,9 +705,8 @@ void R_InitTextures (void)
 	    if (numpnameslumps == maxpnameslumps)
 	    {
 		maxpnameslumps++;
-		pnameslumps = static_cast<decltype(pnameslumps)>(I_Realloc(pnameslumps, maxpnameslumps * sizeof(*pnameslumps)));
+		pnameslumps.resize(maxpnameslumps);
 	    }
-
 	    pnameslumps[numpnameslumps].lumpnum = i;
 	    pnameslumps[numpnameslumps].names = W_CacheLumpNum(pnameslumps[numpnameslumps].lumpnum, PU_STATIC);
 	    pnameslumps[numpnameslumps].nummappatches = LONG(*((int *) pnameslumps[numpnameslumps].names));
@@ -737,7 +737,7 @@ void R_InitTextures (void)
 	    if (numtexturelumps == maxtexturelumps)
 	    {
 		maxtexturelumps++;
-		texturelumps = static_cast<decltype(texturelumps)>(I_Realloc(texturelumps, maxtexturelumps * sizeof(*texturelumps)));
+		texturelumps.resize(maxtexturelumps);
 	    }
 
 	    // [crispy] do not proceed any further, yet
@@ -801,10 +801,9 @@ void R_InitTextures (void)
     {
 	W_ReleaseLumpNum(pnameslumps[i].lumpnum);
     }
-    free(pnameslumps);
 
     // [crispy] pointer to (i.e. actually before) the first texture file
-    texturelump = texturelumps - 1; // [crispy] gets immediately increased below
+    auto texturelump = texturelumps.begin() - 1; // [crispy] gets immediately increased below
 
     textures = zone_malloc<texture_t*> (PU_STATIC, numtextures );
     texturecolumnlump = zone_malloc<short*> (PU_STATIC, numtextures );
@@ -852,7 +851,7 @@ void R_InitTextures (void)
 
 	// [crispy] initialize for the first texture file lump,
 	// skip through empty texture file lumps which do not contain any texture
-	while (texturelump == texturelumps - 1 || i == texturelump->sumtextures)
+	while (texturelump == texturelumps.begin() - 1 || i == texturelump->sumtextures)
 	{
 	    // [crispy] start looking in next texture file
 	    texturelump++;
@@ -926,7 +925,6 @@ void R_InitTextures (void)
     {
 	W_ReleaseLumpNum(texturelumps[i].lumpnum);
     }
-    free(texturelumps);
     
     // Precalculate whatever possible.	
 
