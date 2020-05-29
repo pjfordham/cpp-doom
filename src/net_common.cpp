@@ -385,7 +385,8 @@ net_packet_t *NET_Conn_NewReliable(net_connection_t *conn, int packet_type)
 
     // Add to the list of reliable packets
 
-    auto *rp = create_struct<net_reliable_packet_t>();
+    auto *rp = static_cast<net_reliable_packet_t*>(
+       malloc( sizeof(net_reliable_packet_t ) ) );
     rp->packet = packet;
     rp->next = NULL;
     rp->seq = conn->reliable_send_seq;
