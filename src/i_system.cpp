@@ -67,7 +67,7 @@ static atexit_listentry_t *exit_funcs = NULL;
 
 void I_AtExit(atexit_func_t func, boolean run_on_error)
 {
-    auto *entry = create_struct<atexit_listentry_t>();
+    auto *entry = new atexit_listentry_t;
 
     entry->func = func;
     entry->run_on_error = run_on_error;
