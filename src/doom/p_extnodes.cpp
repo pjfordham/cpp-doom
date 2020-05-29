@@ -28,6 +28,7 @@
 // [crispy] support maps with compressed ZDBSP nodes
 #include "config.h"
 #ifdef HAVE_LIBZ
+#include <vector>
 #include <zlib.h>
 #endif
 
@@ -232,7 +233,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 {
     unsigned int i;
 #ifdef HAVE_LIBZ
-    byte *output;
+    std::vector<byte> output;
 #endif
 
     unsigned int orgVerts, newVerts;
@@ -255,13 +256,13 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	// first estimate for compression rate:
 	// output buffer size == 2.5 * input size
 	outlen = 2.5 * len;
-	output = zone_malloc<byte>(PU_STATIC, outlen);
+	output.resize( outlen );
 
 	// initialize stream state for decompression
 	memset(&zstream, 0, sizeof(*zstream));
 	zstream.next_in = data + 4;
 	zstream.avail_in = len - 4;
-	zstream.next_out = output;
+	zstream.next_out = output.data();
 	zstream.avail_out = outlen;
 
 	if (inflateInit(&zstream) != Z_OK)
@@ -272,9 +273,9 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	{
 	    int outlen_old = outlen;
 	    outlen = 2 * outlen_old;
-	    output = I_Realloc(output, outlen);
-	    zstream.next_out = output + outlen_old;
-	    zstream.avail_out = outlen - outlen_old;
+	    output.resize( outlen );
+	    zstream.next_out = output.data() + outlen_old;
+	    zstream.avail_out = outlen.data() - outlen_old;
 	}
 
 	if (err != Z_STREAM_END)
@@ -283,7 +284,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	fprintf(stderr, "P_LoadNodes: ZDBSP nodes compression ratio %.3f\n",
 	        (float)zstream.total_out/zstream.total_in);
 
-	data = output;
+	data = output.data();
 
 	if (inflateEnd(&zstream) != Z_OK)
 	    I_Error("P_LoadNodes: Error during ZDBSP nodes decompression shut-down!");
@@ -463,9 +464,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     }
 
 #ifdef HAVE_LIBZ
-    if (compressed)
-	Z_Free(output);
-    else
+    if (!compressed)
 #endif
     W_ReleaseLumpNum(lump);
 }
