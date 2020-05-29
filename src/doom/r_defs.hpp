@@ -377,48 +377,48 @@ typedef struct drawseg_s
 // A vissprite_t is a thing
 //  that will be drawn during a refresh.
 // I.e. a sprite object that is partly visible.
-typedef struct vissprite_s
+struct vissprite_t
 {
     // Doubly linked list.
-    struct vissprite_s*	prev;
-    struct vissprite_s*	next;
+   struct vissprite_t*	prev{};
+   struct vissprite_t*	next{};
     
-    int			x1;
-    int			x2;
+   int			x1{};
+   int			x2{};
 
     // for line side calculation
-    fixed_t		gx;
-    fixed_t		gy;		
+   fixed_t		gx{};
+   fixed_t		gy{};		
 
     // global bottom / top for silhouette clipping
-    fixed_t		gz;
-    fixed_t		gzt;
+   fixed_t		gz{};
+   fixed_t		gzt{};
 
     // horizontal position of x1
-    fixed_t		startfrac;
+   fixed_t		startfrac{};
     
-    fixed_t		scale;
+   fixed_t		scale{};
     
     // negative if flipped
-    fixed_t		xiscale;	
+   fixed_t		xiscale{};	
 
-    fixed_t		texturemid;
-    int			patch;
+   fixed_t		texturemid{};
+   int			patch{};
 
     // for color translation and shadow draw,
     //  maxbright frames as well
     // [crispy] brightmaps for select sprites
-    lighttable_t*	colormap[2];
-    byte		*brightmap;
+   lighttable_t*	colormap[2]{};
+   byte		*brightmap{};
    
-    int			mobjflags;
+   int			mobjflags{};
     // [crispy] color translation table for blood colored by monster class
     byte*			translation;
 #ifdef CRISPY_TRUECOLOR
-    const pixel_t	(*blendfunc)(const pixel_t fg, const pixel_t bg);
+   const pixel_t	(*blendfunc)(const pixel_t fg, const pixel_t bg){};
 #endif
     
-} vissprite_t;
+};
 
 
 //	

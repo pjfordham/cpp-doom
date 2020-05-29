@@ -21,7 +21,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <vector>
+#include <algorithm>
 
 #include "deh_main.hpp"
 #include "doomdef.hpp"
@@ -323,8 +324,9 @@ void R_InitSpriteDefs(const char **namelist)
 //
 // GAME FUNCTIONS
 //
-vissprite_t*	vissprites = NULL;
-vissprite_t*	vissprite_p;
+static std::vector<vissprite_t>	vissprites;
+static std::vector<vissprite_t>::iterator vissprite_p;
+
 int		newvissprite;
 static int	numvissprites;
 
@@ -354,7 +356,7 @@ void R_InitSprites(const char **namelist)
 //
 void R_ClearSprites (void)
 {
-    vissprite_p = vissprites;
+   vissprite_p = vissprites.begin();
 }
 
 
@@ -363,10 +365,10 @@ void R_ClearSprites (void)
 //
 vissprite_t	overflowsprite;
 
-vissprite_t* R_NewVisSprite (void)
+static std::vector<vissprite_t>::iterator R_NewVisSprite (void)
 {
     // [crispy] remove MAXVISSPRITE Vanilla limit
-    if (vissprite_p == &vissprites[numvissprites])
+    if (vissprite_p == vissprites.begin() + numvissprites)
     {
 	static int max;
 	int numvissprites_old = numvissprites;
@@ -379,13 +381,12 @@ vissprite_t* R_NewVisSprite (void)
 	}
 
 	if (max)
-	return &overflowsprite;
+           return vissprites.end();
 
 	numvissprites = numvissprites ? 2 * numvissprites : MAXVISSPRITES;
-	vissprites = static_cast<decltype(vissprites)>(I_Realloc(vissprites, numvissprites * sizeof(*vissprites)));
-	memset(vissprites + numvissprites_old, 0, (numvissprites - numvissprites_old) * sizeof(*vissprites));
+	vissprites.resize( numvissprites );
 
-	vissprite_p = vissprites + numvissprites_old;
+	vissprite_p = vissprites.begin() + numvissprites_old;
 
 	if (numvissprites_old)
 	    fprintf(stderr, "R_NewVisSprite: Hit MAXVISSPRITES limit at %d, raised to %d.\n", numvissprites_old, numvissprites);
@@ -581,8 +582,6 @@ void R_ProjectSprite (mobj_t* thing)
     
     int			index;
 
-    vissprite_t*	vis;
-    
     angle_t		ang;
     fixed_t		iscale;
     
@@ -725,7 +724,11 @@ void R_ProjectSprite (mobj_t* thing)
     }
 
     // store information in a vissprite
-    vis = R_NewVisSprite ();
+    auto vis = R_NewVisSprite ();
+    if (vis == vissprites.end()) {
+       return;
+    }
+
     vis->translation = NULL; // [crispy] no color translation
     vis->mobjflags = thing->flags;
     vis->scale = xscale<<detailshift;
@@ -867,7 +870,6 @@ static void R_DrawLSprite (void)
 {
     fixed_t		xscale;
     fixed_t		tx, tz;
-    vissprite_t*	vis;
 
     static int		lump;
     static patch_t*	patch;
@@ -904,8 +906,10 @@ static void R_DrawLSprite (void)
     if (abs(tx) > (tz<<2))
 	return;
 
-    vis = R_NewVisSprite();
-    memset(vis, 0, sizeof(*vis)); // [crispy] set all fields to NULL, except ...
+    auto vis = R_NewVisSprite();
+    if ( vis == vissprites.end() ) {
+       return;
+    }
     vis->patch = lump - firstspritelump; // [crispy] not a sprite patch
     vis->colormap[0] = vis->colormap[1] = fixedcolormap ? fixedcolormap : colormaps; // [crispy] always full brightness
     vis->brightmap = dc_brightmap;
@@ -927,7 +931,7 @@ static void R_DrawLSprite (void)
         vis->x2 < 0 || vis->x2 >= viewwidth)
 	return;
 
-    R_DrawVisSprite (vis, vis->x1, vis->x2);
+    R_DrawVisSprite (&*vis, vis->x1, vis->x2);
 }
 
 
@@ -1133,91 +1137,13 @@ void R_DrawPlayerSprites (void)
 //
 // R_SortVisSprites
 //
-#ifdef HAVE_QSORT
-// [crispy] use stdlib's qsort() function for sorting the vissprites[] array
-static inline int cmp_vissprites (const void *a, const void *b)
-{
-    const vissprite_t *vsa = (const vissprite_t *) a;
-    const vissprite_t *vsb = (const vissprite_t *) b;
-
-    const int ret = vsa->scale - vsb->scale;
-
-    return ret ? ret : vsa->next - vsb->next;
-}
-
 void R_SortVisSprites (void)
 {
-    int count;
-    vissprite_t *ds;
-
-    count = vissprite_p - vissprites;
-
-    if (!count)
-	return;
-
-    // [crispy] maintain a stable sort for deliberately overlaid sprites
-    for (ds = vissprites; ds < vissprite_p; ds++)
-    {
-	ds->next = ds + 1;
-    }
-
-    qsort(vissprites, count, sizeof(*vissprites), cmp_vissprites);
+   std::sort( vissprites.begin(), vissprite_p,
+              [](const vissprite_t &vsa, const vissprite_t &vsb) {
+                 return vsa.scale < vsb.scale;
+              } );
 }
-#else
-vissprite_t	vsprsortedhead;
-
-
-void R_SortVisSprites (void)
-{
-    int			i;
-    int			count;
-    vissprite_t*	ds;
-    vissprite_t*	best;
-    vissprite_t		unsorted;
-    fixed_t		bestscale;
-
-    count = vissprite_p - vissprites;
-	
-    unsorted.next = unsorted.prev = &unsorted;
-
-    if (!count)
-	return;
-		
-    for (ds=vissprites ; ds<vissprite_p ; ds++)
-    {
-	ds->next = ds+1;
-	ds->prev = ds-1;
-    }
-    
-    vissprites[0].prev = &unsorted;
-    unsorted.next = &vissprites[0];
-    (vissprite_p-1)->next = &unsorted;
-    unsorted.prev = vissprite_p-1;
-    
-    // pull the vissprites out by scale
-
-    vsprsortedhead.next = vsprsortedhead.prev = &vsprsortedhead;
-    for (i=0 ; i<count ; i++)
-    {
-	bestscale = INT_MAX;
-        best = unsorted.next;
-	for (ds=unsorted.next ; ds!= &unsorted ; ds=ds->next)
-	{
-	    if (ds->scale < bestscale)
-	    {
-		bestscale = ds->scale;
-		best = ds;
-	    }
-	}
-	best->next->prev = best->prev;
-	best->prev->next = best->next;
-	best->next = &vsprsortedhead;
-	best->prev = vsprsortedhead.prev;
-	vsprsortedhead.prev->next = best;
-	vsprsortedhead.prev = best;
-    }
-}
-#endif
 
 
 
@@ -1342,26 +1268,19 @@ void R_DrawSprite (vissprite_t* spr)
 //
 void R_DrawMasked (void)
 {
-    vissprite_t*	spr;
     drawseg_t*		ds;
 	
     R_SortVisSprites ();
 
-    if (vissprite_p > vissprites)
+    if (vissprite_p > vissprites.begin())
     {
 	// draw all vissprites back to front
-#ifdef HAVE_QSORT
-	for (spr = vissprites;
+       for (auto spr = vissprites.begin();
 	     spr < vissprite_p;
 	     spr++)
-#else
-	for (spr = vsprsortedhead.next ;
-	     spr != &vsprsortedhead ;
-	     spr=spr->next)
-#endif
 	{
 	    
-	    R_DrawSprite (spr);
+	    R_DrawSprite (&*spr);
 	}
     }
     
