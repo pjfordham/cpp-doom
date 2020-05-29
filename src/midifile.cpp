@@ -54,17 +54,17 @@ typedef PACKED_STRUCT (
 #pragma pack(pop)
 #endif
 
-typedef struct
+struct midi_track_t
 {
     // Length in bytes:
 
-    unsigned int data_len;
+   unsigned int data_len{};
 
     // Events in this track:
 
-    midi_event_t *events;
-    int num_events;
-} midi_track_t;
+   midi_event_t *events{};
+   int num_events{};
+};
 
 struct midi_track_iter_s
 {
@@ -171,9 +171,9 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
     byte *result;
 
     // Allocate a buffer. Allocate one extra byte, as malloc(0) is
-    // non-portable.
+    // non-portable.z
 
-    result = static_cast<byte *>(malloc(num_bytes + 1));
+    result = new byte[ num_bytes + 1 ];
 
     if (result == NULL)
     {
@@ -189,7 +189,7 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
         {
             fprintf(stderr, "ReadByteSequence: Error while reading byte %u\n",
                             i);
-            free(result);
+            delete result;
             return NULL;
         }
     }
@@ -397,11 +397,11 @@ static void FreeEvent(midi_event_t *event)
     {
         case MIDI_EVENT_SYSEX:
         case MIDI_EVENT_SYSEX_SPLIT:
-            free(event->data.sysex.data);
+            delete event->data.sysex.data;
             break;
 
         case MIDI_EVENT_META:
-            free(event->data.meta.data);
+            delete event->data.meta.data;
             break;
 
         default:
@@ -496,7 +496,7 @@ static void FreeTrack(midi_track_t *track)
         FreeEvent(&track->events[i]);
     }
 
-    free(track->events);
+    delete track->events;
 }
 
 static boolean ReadAllTracks(midi_file_t *file, FILE *stream)
@@ -505,14 +505,12 @@ static boolean ReadAllTracks(midi_file_t *file, FILE *stream)
 
     // Allocate list of tracks and read each track:
 
-    file->tracks = create_struct<midi_track_t>(file->num_tracks);
+    file->tracks = new midi_track_t[ file->num_tracks ];
 
     if (file->tracks == NULL)
     {
         return false;
     }
-
-    memset(file->tracks, 0, sizeof(midi_track_t) * file->num_tracks);
 
     // Read each track:
 
@@ -575,7 +573,7 @@ void MIDI_FreeFile(midi_file_t *file)
             FreeTrack(&file->tracks[i]);
         }
 
-        free(file->tracks);
+        delete file->tracks;
     }
 
     delete file;
