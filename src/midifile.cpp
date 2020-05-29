@@ -578,14 +578,14 @@ void MIDI_FreeFile(midi_file_t *file)
         free(file->tracks);
     }
 
-    free(file);
+    delete file;
 }
 
 midi_file_t *MIDI_LoadFile(char *filename)
 {
     FILE *stream;
 
-    auto *file = create_struct<midi_file_t>();
+    auto *file = new midi_file_t;
 
     if (file == NULL)
     {
@@ -644,7 +644,7 @@ midi_track_iter_t *MIDI_IterateTrack(midi_file_t *file, unsigned int track)
 {
     assert(track < file->num_tracks);
 
-    auto *iter = create_struct<midi_track_iter_t>();
+    auto *iter = new midi_track_iter_t;
     iter->track = &file->tracks[track];
     iter->position = 0;
 
@@ -653,7 +653,7 @@ midi_track_iter_t *MIDI_IterateTrack(midi_file_t *file, unsigned int track)
 
 void MIDI_FreeIterator(midi_track_iter_t *iter)
 {
-    free(iter);
+    delete iter;
 }
 
 // Get the time until the next MIDI event in a track.
