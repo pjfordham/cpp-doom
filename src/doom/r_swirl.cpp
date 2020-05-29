@@ -20,6 +20,7 @@
 // [crispy] adapted from smmu/r_ripple.c, by Simon Howard
 
 #include <tables.hpp>
+#include <vector>
 
 #include <i_system.hpp>
 #include <w_wad.hpp>
@@ -39,8 +40,8 @@
 #define SEQUENCE 1024
 #define FLATSIZE (64 * 64)
 
-static int *offsets;
-static int *offset;
+static std::vector<int> offsets;
+static std::vector<int>::iterator offset;
 
 #define AMP 2
 #define AMP2 2
@@ -48,20 +49,16 @@ static int *offset;
 
 void R_InitDistortedFlats()
 {
-	if (!offsets)
+   if (!offsets.empty())
 	{
-		int i;
+		offsets.resize( SEQUENCE * FLATSIZE );
+		offset = offsets.begin();
 
-		offsets = static_cast<decltype(offsets)>(I_Realloc(NULL, SEQUENCE * FLATSIZE * sizeof(*offsets)));
-		offset = offsets;
-
-		for (i = 0; i < SEQUENCE; i++)
+		for (int i = 0; i < SEQUENCE; i++)
 		{
-			int x, y;
-
-			for (x = 0; x < 64; x++)
+			for (int x = 0; x < 64; x++)
 			{
-				for (y = 0; y < 64; y++)
+				for (int y = 0; y < 64; y++)
 				{
 					int x1, y1;
 					int sinvalue, sinvalue2;
@@ -98,7 +95,7 @@ char *R_DistortedFlat(int flatnum)
 
 	if (swirltic != leveltime)
 	{
-		offset = offsets + ((leveltime & (SEQUENCE - 1)) * FLATSIZE);
+           offset = offsets.begin() + ((leveltime & (SEQUENCE - 1)) * FLATSIZE);
 
 		swirltic = leveltime;
 		swirlflat = -1;
