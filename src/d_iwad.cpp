@@ -897,8 +897,7 @@ const iwad_t **D_FindAllIWADs(int mask)
     char *filename;
     int i;
 
-    auto result = create_struct<iwad_t const *[arrlen(iwads) + 1]>();
-//    result = malloc(sizeof(iwad_t *) * (arrlen(iwads) + 1));
+    auto result = new iwad_t const *[arrlen(iwads) + 1];
     result_len = 0;
 
     // Try to find all IWADs
