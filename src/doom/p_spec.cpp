@@ -22,6 +22,7 @@
 
 
 #include <stdlib.h>
+#include <vector>
 
 #include "doomdef.hpp"
 #include "doomstat.hpp"
@@ -374,6 +375,8 @@ fixed_t	P_FindHighestFloorSurrounding(sector_t *sec)
 // 20 adjoining sectors max!
 #define MAX_ADJOINING_SECTORS     20
 
+static std::vector<fixed_t> heightlist;
+
 fixed_t
 P_FindNextHighestFloor
 ( sector_t* sec,
@@ -385,18 +388,17 @@ P_FindNextHighestFloor
     line_t*     check;
     sector_t*   other;
     fixed_t     height = currentheight;
-    static fixed_t *heightlist = NULL;
-    static int heightlist_size = 0;
+    auto heightlist_size = heightlist.size();
 
     // [crispy] remove MAX_ADJOINING_SECTORS Vanilla limit
     // from prboom-plus/src/p_spec.c:404-411
     if (sec->linecount > heightlist_size)
     {
-	do
+        do
 	{
 	    heightlist_size = heightlist_size ? 2 * heightlist_size : MAX_ADJOINING_SECTORS;
 	} while (sec->linecount > heightlist_size);
-	heightlist = static_cast<decltype(heightlist)>(I_Realloc(heightlist, heightlist_size * sizeof(*heightlist)));
+	heightlist.resize( heightlist_size );
     }
 
     for (i=0, h=0; i < sec->linecount; i++)
