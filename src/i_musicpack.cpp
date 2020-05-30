@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -90,7 +91,7 @@ typedef struct
     int start_time, end_time;
 } file_metadata_t;
 
-static subst_music_t *subst_music = NULL;
+static std::vector<subst_music_t> subst_music;
 static unsigned int subst_music_len = 0;
 
 static boolean music_initialized = false;
@@ -746,7 +747,7 @@ static void AddSubstituteMusic(const char *musicdir, const char *hash_prefix,
     }
 
     ++subst_music_len;
-    subst_music = static_cast<decltype(subst_music)>(I_Realloc(subst_music, sizeof(subst_music_t) * subst_music_len));
+    subst_music.resize( subst_music_len );
     s = &subst_music[subst_music_len - 1];
     s->hash_prefix = hash_prefix;
     s->filename = path;
