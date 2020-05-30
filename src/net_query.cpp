@@ -19,6 +19,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "i_system.hpp"
 #include "i_timer.hpp"
@@ -79,7 +80,7 @@ static boolean registered_with_master = false;
 static boolean got_master_response = false;
 
 static net_context_t *query_context;
-static query_target_t *targets;
+static std::vector<query_target_t> targets;
 static int num_targets;
 
 static boolean query_loop_running = false;
@@ -226,7 +227,7 @@ static query_target_t *GetTargetForAddr(net_addr_t *addr, boolean create)
         return NULL;
     }
 
-    targets = static_cast<query_target_t *>(I_Realloc(targets, sizeof(query_target_t) * (num_targets + 1)));
+    targets.resize( num_targets + 1);
 
     target = &targets[num_targets];
     target->type = QUERY_TARGET_SERVER;
@@ -248,8 +249,7 @@ static void FreeTargets(void)
     {
         NET_ReleaseAddress(targets[i].addr);
     }
-    free(targets);
-    targets = NULL;
+    targets.clear();
     num_targets = 0;
 }
 
@@ -588,8 +588,7 @@ void NET_Query_Init(void)
         net_sdl_module.InitClient();
     }
 
-    free(targets);
-    targets = NULL;
+    targets.clear();
     num_targets = 0;
 
     printed_header = false;
