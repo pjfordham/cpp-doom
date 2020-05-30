@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "m_random.hpp"
 #include "i_system.hpp"
@@ -1887,7 +1888,7 @@ A_CloseShotgun2
 
 
 
-mobj_t**		braintargets = NULL;
+std::vector<mobj_t*> braintargets;
 int		numbraintargets = 0; // [crispy] initialize
 int		braintargeton = 0;
 static int	maxbraintargets; // [crispy] remove braintargets limit
@@ -1917,7 +1918,7 @@ void A_BrainAwake (mobj_t* mo)
 	    if (numbraintargets == maxbraintargets)
 	    {
 		maxbraintargets = maxbraintargets ? 2 * maxbraintargets : 32;
-		braintargets = static_cast<decltype(braintargets)>(I_Realloc(braintargets, maxbraintargets * sizeof(*braintargets)));
+		braintargets.resize( maxbraintargets );
 
 		if (maxbraintargets > 32)
 		    fprintf(stderr, "R_BrainAwake: Raised braintargets limit to %d.\n", maxbraintargets);
