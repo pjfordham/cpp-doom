@@ -383,13 +383,16 @@ static void GenerateSpriteList(void)
 static void DoMerge(void)
 {
     section_t current_section;
-    lumpinfo_t **newlumps;
     int num_newlumps;
     int lumpindex;
     int i, n;
 
     // Can't ever have more lumps than we already have
-    newlumps = static_cast<lumpinfo_t**>(calloc(numlumps, sizeof(lumpinfo_t *)));
+    auto size = lumpinfo.size();
+    lumpinfo.clear();
+    lumpinfo.resize( size );
+    
+    auto &newlumps = lumpinfo;
     num_newlumps = 0;
 
     // Add IWAD lumps
@@ -544,8 +547,6 @@ static void DoMerge(void)
 
     // Switch to the new lumpinfo, and free the old one
 
-    free(lumpinfo);
-    lumpinfo = newlumps;
     numlumps = num_newlumps;
 }
 
@@ -577,10 +578,10 @@ void W_MergeFile(const char *filename)
 
     // IWAD is at the start, PWAD was appended to the end
 
-    iwad.lumps = lumpinfo;
+    iwad.lumps = lumpinfo.data();
     iwad.numlumps = old_numlumps;
 
-    pwad.lumps = lumpinfo + old_numlumps;
+    pwad.lumps = lumpinfo.data() + old_numlumps;
     pwad.numlumps = numlumps - old_numlumps;
     
     // Setup sprite/flat lists
@@ -633,10 +634,10 @@ void W_NWTMergeFile(const char *filename, int flags)
 
     // IWAD is at the start, PWAD was appended to the end
 
-    iwad.lumps = lumpinfo;
+    iwad.lumps = lumpinfo.data();
     iwad.numlumps = old_numlumps;
 
-    pwad.lumps = lumpinfo + old_numlumps;
+    pwad.lumps = lumpinfo.data() + old_numlumps;
     pwad.numlumps = numlumps - old_numlumps;
 
     // Setup sprite/flat lists
@@ -685,10 +686,10 @@ void W_NWTDashMerge(const char *filename)
 
     // IWAD is at the start, PWAD was appended to the end
 
-    iwad.lumps = lumpinfo;
+    iwad.lumps = lumpinfo.data();
     iwad.numlumps = old_numlumps;
 
-    pwad.lumps = lumpinfo + old_numlumps;
+    pwad.lumps = lumpinfo.data() + old_numlumps;
     pwad.numlumps = numlumps - old_numlumps;
 
     // Setup sprite/flat lists

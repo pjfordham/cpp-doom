@@ -21,6 +21,7 @@
 #define __W_WAD__
 
 #include <stdio.h>
+#include <vector>
 
 #include "doomtype.hpp"
 #include "w_file.hpp"
@@ -34,23 +35,22 @@
 // WADFILE I/O related stuff.
 //
 
-typedef struct lumpinfo_s lumpinfo_t;
 typedef int lumpindex_t;
 
-struct lumpinfo_s
+struct lumpinfo_t
 {
-    char	name[8];
-    wad_file_t *wad_file;
-    int		position;
-    int		size;
-    void       *cache;
+   char	name[8]{};
+   wad_file_t *wad_file{};
+   int		position{};
+   int		size{};
+   void       *cache{};
 
     // Used for hash table lookups
-    lumpindex_t next;
+   lumpindex_t next{};
 };
 
 
-extern lumpinfo_t **lumpinfo;
+extern std::vector<lumpinfo_t*> lumpinfo;
 extern unsigned int numlumps;
 
 wad_file_t *W_AddFile(const char *filename);

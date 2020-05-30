@@ -58,7 +58,7 @@ typedef PACKED_STRUCT (
 //
 
 // Location of each lump on disk.
-lumpinfo_t **lumpinfo;
+std::vector<lumpinfo_t*> lumpinfo;
 unsigned int numlumps = 0;
 
 // Hash table for fast lookups
@@ -200,7 +200,7 @@ wad_file_t *W_AddFile (const char *filename)
     }
 
     // Increase size of numlumps array to accomodate the new file.
-    filelumps = static_cast<decltype(filelumps)>(calloc(numfilelumps, sizeof(lumpinfo_t)));
+    filelumps = new lumpinfo_t[numfilelumps];
     if (filelumps == NULL)
     {
         W_CloseFile(wad_file);
@@ -209,7 +209,7 @@ wad_file_t *W_AddFile (const char *filename)
 
     startlump = numlumps;
     numlumps += numfilelumps;
-    lumpinfo = static_cast<decltype(lumpinfo)>(I_Realloc(lumpinfo, numlumps * sizeof(lumpinfo_t *)));
+    lumpinfo.resize( numlumps );
     filerover = fileinfo;
 
     for (i = startlump; i < numlumps; ++i)
@@ -622,7 +622,7 @@ void W_Reload(void)
     filename = reloadname;
 
     W_CloseFile(reloadhandle);
-    free(reloadlumps);
+    delete [] reloadlumps;
 
     reloadname = NULL;
     reloadlump = -1;
