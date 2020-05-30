@@ -45,7 +45,7 @@ planefunction_t		ceilingfunc;
 
 // Here comes the obnoxious "visplane".
 #define MAXVISPLANES	128
-visplane_t*		visplanes = NULL;
+std::vector<visplane_t>		visplanes;
 visplane_t*		lastvisplane;
 visplane_t*		floorplane;
 visplane_t*		ceilingplane;
@@ -202,7 +202,7 @@ void R_ClearPlanes (void)
 	ceilingclip[i] = -1;
     }
 
-    lastvisplane = visplanes;
+    lastvisplane = visplanes.data();
     lastopening = openings;
     
     // texture calculation
@@ -221,25 +221,24 @@ void R_ClearPlanes (void)
 // [crispy] remove MAXVISPLANES Vanilla limit
 static void R_RaiseVisplanes (visplane_t** vp)
 {
-    if (lastvisplane - visplanes == numvisplanes)
+    if (lastvisplane - visplanes.data() == numvisplanes)
     {
 	int numvisplanes_old = numvisplanes;
-	visplane_t* visplanes_old = visplanes;
+	visplane_t* visplanes_old = visplanes.data();
 
 	numvisplanes = numvisplanes ? 2 * numvisplanes : MAXVISPLANES;
-	visplanes = static_cast<decltype(visplanes)>(I_Realloc(visplanes, numvisplanes * sizeof(*visplanes)));
-	memset(visplanes + numvisplanes_old, 0, (numvisplanes - numvisplanes_old) * sizeof(*visplanes));
+	visplanes.resize( numvisplanes );
 
-	lastvisplane = visplanes + numvisplanes_old;
-	floorplane = visplanes + (floorplane - visplanes_old);
-	ceilingplane = visplanes + (ceilingplane - visplanes_old);
+	lastvisplane = visplanes.data() + numvisplanes_old;
+	floorplane = visplanes.data() + (floorplane - visplanes_old);
+	ceilingplane = visplanes.data() + (ceilingplane - visplanes_old);
 
 	if (numvisplanes_old)
 	    fprintf(stderr, "R_FindPlane: Hit MAXVISPLANES limit at %d, raised to %d.\n", numvisplanes_old, numvisplanes);
 
 	// keep the pointer passed as argument in relation to the visplanes pointer
 	if (vp)
-	    *vp = visplanes + (*vp - visplanes_old);
+           *vp = visplanes.data() + (*vp - visplanes_old);
     }
 }
 
@@ -261,7 +260,7 @@ R_FindPlane
 	lightlevel = 0;
     }
 	
-    for (check=visplanes; check<lastvisplane; check++)
+    for (check=visplanes.data(); check<lastvisplane; check++)
     {
 	if (height == check->height
 	    && picnum == check->picnum
@@ -276,7 +275,7 @@ R_FindPlane
 	return check;
 		
     R_RaiseVisplanes(&check); // [crispy] remove VISPLANES limit
-    if (lastvisplane - visplanes == MAXVISPLANES && false)
+    if (lastvisplane - visplanes.data() == MAXVISPLANES && false)
 	I_Error ("R_FindPlane: no more visplanes");
 		
     lastvisplane++;
@@ -354,7 +353,7 @@ R_CheckPlane
     lastvisplane->picnum = pl->picnum;
     lastvisplane->lightlevel = pl->lightlevel;
     
-    if (lastvisplane - visplanes == MAXVISPLANES && false) // [crispy] remove VISPLANES limit
+    if (lastvisplane - visplanes.data() == MAXVISPLANES && false) // [crispy] remove VISPLANES limit
 	I_Error ("R_CheckPlane: no more visplanes");
 
     pl = lastvisplane++;
@@ -421,16 +420,16 @@ void R_DrawPlanes (void)
 	I_Error ("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
 		 ds_p - drawsegs);
     
-    if (lastvisplane - visplanes > numvisplanes)
+    if (lastvisplane - visplanes.data() > numvisplanes)
 	I_Error ("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",
-		 lastvisplane - visplanes);
+		 lastvisplane - visplanes.data());
     
     if (lastopening - openings > MAXOPENINGS)
 	I_Error ("R_DrawPlanes: opening overflow (%" PRIiPTR ")",
 		 lastopening - openings);
 #endif
 
-    for (pl = visplanes ; pl < lastvisplane ; pl++)
+    for (pl = visplanes.data() ; pl < lastvisplane ; pl++)
     {
 	const boolean swirling = (flattranslation[pl->picnum] == -1);
 
