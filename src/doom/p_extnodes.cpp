@@ -24,6 +24,8 @@
 #include "i_system.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
+#include <iterator>
+#include <algorithm>
 
 // [crispy] support maps with compressed ZDBSP nodes
 #include "config.h"
@@ -62,19 +64,19 @@ mapformat_t P_CheckMapFormat (int lumpnum)
         W_LumpLength(b) > 0))
 	fprintf(stderr, "no nodes");
     else
-    if (!memcmp(nodes, "xNd4\0\0\0\0", 8))
+    if (std::equal(nodes, nodes + 8, "xNd4\0\0\0\0") )
     {
 	fprintf(stderr, "DeePBSP");
 	format = static_cast<mapformat_t>(format | MFMT_DEEPBSP);
     }
     else
-    if (!memcmp(nodes, "XNOD", 4))
+    if (std::equal(nodes, nodes + 4, "XNOD") )
     {
 	fprintf(stderr, "ZDBSP");
 	format = static_cast<mapformat_t>(format | MFMT_ZDBSPX);
     }
     else
-    if (!memcmp(nodes, "ZNOD", 4))
+    if (std::equal(nodes, nodes + 4, "ZNOD"))
     {
 	fprintf(stderr, "compressed ZDBSP");
 	format = static_cast<mapformat_t>(format | MFMT_ZDBSPZ);

@@ -6,11 +6,11 @@ zmalloc all gone src/doom grep zmalloc *
 Z_Malloc all gone
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 
-calloc => ZI
+calloc => ZI, only zone_calloc remains
 realloc => std::vector, all gone from top level
 
  and all variants of free
-memcmp also suspicous
+memcmp also suspicous =>std::equal
 memcpy
 memset ( move to zone_calloc where possible, also add a create_struct version )
 mommove gone from src/doom
