@@ -10,7 +10,7 @@ calloc => ZI, only zone_calloc remains
 realloc => std::vector, all gone from top level
 
  and all variants of free
-memcmp also suspicous =>std::equal
+memcmp also suspicous =>std::equal, all gone from src/doom
 memcpy
 memset ( move to zone_calloc where possible, also add a create_struct version )
 mommove gone from src/doom
