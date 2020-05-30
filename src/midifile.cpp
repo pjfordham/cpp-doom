@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <vector>
 
 #include "../utils/memory.hpp"
 #include "doomtype.hpp"
@@ -62,7 +63,7 @@ struct midi_track_t
 
     // Events in this track:
 
-   midi_event_t *events{};
+   std::vector<midi_event_t> events;
    int num_events{};
 };
 
@@ -436,12 +437,11 @@ static boolean ReadTrackHeader(midi_track_t *track, FILE *stream)
 
 static boolean ReadTrack(midi_track_t *track, FILE *stream)
 {
-    midi_event_t *new_events;
     midi_event_t *event;
     unsigned int last_event_type;
 
     track->num_events = 0;
-    track->events = NULL;
+    track->events.clear();
 
     // Read the header:
 
@@ -459,9 +459,7 @@ static boolean ReadTrack(midi_track_t *track, FILE *stream)
         // Resize the track slightly larger to hold another event:
 
         // todo make into a vector or something
-        new_events = static_cast<midi_event_t*>(I_Realloc(track->events,
-                             sizeof(midi_event_t) * (track->num_events + 1)));
-        track->events = new_events;
+        track->events.resize( track->num_events + 1);
 
         // Read the next event:
 
@@ -496,7 +494,7 @@ static void FreeTrack(midi_track_t *track)
         FreeEvent(&track->events[i]);
     }
 
-    delete track->events;
+    track->events.clear();
 }
 
 static boolean ReadAllTracks(midi_file_t *file, FILE *stream)
@@ -573,7 +571,7 @@ void MIDI_FreeFile(midi_file_t *file)
             FreeTrack(&file->tracks[i]);
         }
 
-        delete file->tracks;
+        delete [] file->tracks;
     }
 
     delete file;
