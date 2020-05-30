@@ -26,6 +26,7 @@
 #include "SDL.h"
 #include "SDL_mixer.h"
 #include <vector>
+#include <algorithm>
 
 #ifdef HAVE_LIBSAMPLERATE
 #include <samplerate.h>
@@ -752,7 +753,7 @@ static boolean CacheSFX(sfxinfo_t *sfxinfo)
     lumplen = W_LumpLength(lumpnum);
 
     // [crispy] Check if this is a valid RIFF wav file
-    if (lumplen > 44 && memcmp(data, "RIFF", 4) == 0 && memcmp(data + 8, "WAVEfmt ", 8) == 0)
+    if (lumplen > 44 && std::equal( data, data + 4, "RIFF") && std::equal(data + 8, data + 16, "WAVEfmt" ))
     {
         // Valid RIFF wav file
         int check;
