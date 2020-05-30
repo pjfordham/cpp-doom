@@ -8,6 +8,63 @@
 
 #include "../src/z_zone.hpp"
 
+#include <array>
+#include <cstddef>
+
+template<typename T, std::size_t size>
+class circular_buffer {
+   typename std::array<T, size> data;
+   std::size_t start;
+   class iterator : public std::iterator<std::forward_iterator_tag, int, std::size_t> {
+      circular_buffer &cbuf;
+      std::size_t index;
+   public:
+   typedef T value_type;
+      explicit iterator( circular_buffer &_cbuf, std::size_t i ) : cbuf(_cbuf), index{i} {}
+      iterator operator++() {
+         index++;
+         if ( index == size )
+            index = 0;
+         return *this;
+      }
+      iterator operator+(std::size_t val) {
+         index = ( index + val ) % size;
+         return *this;
+      }
+      bool operator==( iterator a ) {
+         return a.index == index;
+      }
+      bool operator!=( iterator a ) {
+         return a.index != index;
+      }
+      T & operator*() { return cbuf.data[ index ]; }
+   };
+   
+public:
+   typedef T value_type;
+   circular_buffer() :  start( 0 ) {
+   }
+   
+   iterator begin() {
+      return iterator{*this,start};
+   }
+   iterator end() {
+      return iterator{*this,size};
+   }
+   
+   void push_back( const T& item ) {
+      data[ start ] = item;
+      start++;
+      if ( start == size ) {
+         start = 0;
+      }
+   }
+
+   T& operator[]( std::size_t i ) {
+      return data[ (start + i ) % size ];
+   }
+};
+
 // todo fix me
 template<typename DataType>
 auto create_struct()

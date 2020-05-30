@@ -23,6 +23,7 @@
 #include <string.h>
 #include <vector>
 #include <algorithm>
+#include "../utils/memory.hpp"
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -533,7 +534,7 @@ static void ParseOggIdHeader(file_metadata_t *metadata, FILE *fs)
 
 static void ParseOggFile(file_metadata_t *metadata, FILE *fs)
 {
-    byte buf[7] = { 0 };
+    circular_buffer<byte, 7> buf;
     unsigned int offset;
 
     // Scan through the start of the file looking for headers. They
@@ -541,17 +542,14 @@ static void ParseOggFile(file_metadata_t *metadata, FILE *fs)
 
     for (offset = 0; offset < 100 * 1024; ++offset)
     {
-	// buf[] is used as a sliding window. Each iteration, we
-	// move the buffer one byte to the left and read an extra
-	// byte onto the end.
-        memmove(buf, buf + 1, sizeof(buf) - 1);
-
-        if (fread(&buf[6], 1, 1, fs) < 1)
+        char in;
+        if (fread(&in, 1, 1, fs) < 1)
         {
             return;
         }
+        buf.push_back( in );
 
-        if (std::equal(buf + 1, buf + 7, "vorbis"))
+        if (std::equal(buf.begin() + 1, buf.begin() + 7, "vorbis"))
         {
             switch (buf[0])
             {

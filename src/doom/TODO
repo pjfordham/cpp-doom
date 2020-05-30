@@ -13,7 +13,7 @@ realloc => std::vector, all gone from top level
 memcmp also suspicous =>std::equal, all gone from src/doom
 memcpy
 memset ( move to zone_calloc where possible, also add a create_struct version )
-mommove gone from src/doom
+mommove gone from src/doom, just circular buffer cases left...
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt 
 
 remove dynamic_Cast from p_extsaveg.cpp

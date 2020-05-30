@@ -2458,15 +2458,17 @@ static void LoadDefaultCollection(default_collection_t *collection)
             strparm[strlen(strparm)-1] = '\0';
         }
 
+        char *clean_strparm = strparm;
+
         // Surrounded by quotes? If so, remove them.
         if (strlen(strparm) >= 2
          && strparm[0] == '"' && strparm[strlen(strparm) - 1] == '"')
         {
             strparm[strlen(strparm) - 1] = '\0';
-            memmove(strparm, strparm + 1, sizeof(strparm) - 1);
+            clean_strparm = strparm + 1;
         }
 
-        SetVariable(def, strparm);
+        SetVariable(def, clean_strparm);
     }
 
     fclose (f);
