@@ -85,10 +85,6 @@ typedef PACKED_STRUCT (
 
 #define MAXANIMS                32
 
-// [crispy] remove MAXANIMS limit
-extern anim_t*	anims;
-extern anim_t*	lastanim;
-
 //
 // P_InitPicAnims
 //
@@ -137,7 +133,8 @@ animdef_t		animdefs_vanilla[] =
 };
 
 // [crispy] remove MAXANIMS limit
-anim_t*		anims;
+std::vector<anim_t> anims;
+
 anim_t*		lastanim;
 static size_t	maxanims;
 
@@ -171,17 +168,17 @@ void P_InitPicAnims (void)
     }
     
     //	Init animation
-    lastanim = anims;
+    lastanim = anims.data();
     for (i=0 ; animdefs[i].istexture != -1 ; i++)
     {
         const char *startname, *endname;
 
 	// [crispy] remove MAXANIMS limit
-	if (lastanim >= anims + maxanims)
+	if (lastanim >= anims.data() + maxanims)
 	{
 	    size_t newmax = maxanims ? 2 * maxanims : MAXANIMS;
-	    anims = static_cast<decltype(anims)>(I_Realloc(anims, newmax * sizeof(*anims)));
-	    lastanim = anims + maxanims;
+	    anims.resize( newmax );
+	    lastanim = anims.data() + maxanims;
 	    maxanims = newmax;
 	}
 
@@ -1239,7 +1236,7 @@ void P_UpdateSpecials (void)
     }
     
     //	ANIMATE FLATS AND TEXTURES GLOBALLY
-    for (anim = anims ; anim < lastanim ; anim++)
+    for (anim = anims.data() ; anim < lastanim ; anim++)
     {
 	for (i=anim->basepic ; i<anim->basepic+anim->numpics ; i++)
 	{
