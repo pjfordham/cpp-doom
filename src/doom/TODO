@@ -1,5 +1,7 @@
 Every use of:
 
+create_struct is only used in textscreen, in theory everything could be moved to new/delete in there
+
 zmalloc all gone src/doom grep zmalloc *
 Z_Malloc all gone
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
