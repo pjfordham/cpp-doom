@@ -103,7 +103,7 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
         addrpair_t **new_addr_table;
         int new_addr_table_size;
 
-        // after reallocing, we will add this in as the first entry
+        // after re-allocing, we will add this in as the first entry
         // in the new block of memory
 
         empty_entry = addr_table_size;

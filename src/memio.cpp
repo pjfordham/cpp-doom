@@ -111,7 +111,7 @@ size_t mem_fwrite(const void *ptr, size_t size, size_t nmemb, MEMFILE *stream)
 	}
 	
 	// More bytes than can fit in the buffer?
-	// If so, reallocate bigger.
+	// If so, allocate bigger.
 
 	bytes = size * nmemb;
 	
