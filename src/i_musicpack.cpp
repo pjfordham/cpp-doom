@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -550,7 +551,7 @@ static void ParseOggFile(file_metadata_t *metadata, FILE *fs)
             return;
         }
 
-        if (!memcmp(buf + 1, "vorbis", 6))
+        if (std::equal(buf + 1, buf + 7, "vorbis"))
         {
             switch (buf[0])
             {
@@ -593,11 +594,11 @@ static void ReadLoopPoints(const char *filename, file_metadata_t *metadata)
         return;
     }
 
-    if (memcmp(header, FLAC_HEADER, 4) == 0)
+    if (std::equal(header, header + 4, FLAC_HEADER))
     {
         ParseFlacFile(metadata, fs);
     }
-    else if (memcmp(header, OGG_HEADER, 4) == 0)
+    else if (std::equal(header, header + 4, OGG_HEADER))
     {
         ParseOggFile(metadata, fs);
     }
@@ -992,8 +993,8 @@ static boolean IsMusicLump(int lumpnum)
 
     data = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU_STATIC));
 
-    result = memcmp(data, MUS_HEADER_MAGIC, 4) == 0
-          || memcmp(data, MID_HEADER_MAGIC, 4) == 0;
+    result = std::equal( data, data + 4, MUS_HEADER_MAGIC )
+       || std::equal( data, data + 4, MID_HEADER_MAGIC);
 
     W_ReleaseLumpNum(lumpnum);
 
