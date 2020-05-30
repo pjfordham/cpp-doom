@@ -1037,7 +1037,7 @@ static void R_InitTranMap()
 	    // [crispy] same filter percents
 	    cache.pct == tran_filter_pct &&
 	    // [crispy] same base palettes
-	    memcmp(cache.playpal, playpal, sizeof(cache.playpal)) == 0 &&
+	    *cache.playpal == *playpal &&
 	    // [crispy] could read entire translucency map
 	    fread(tranmap, 256, 256, cachefp) == 256 )
 	{
