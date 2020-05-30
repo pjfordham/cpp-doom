@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <algorithm>
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -370,7 +371,7 @@ static void I_SDL_UnRegisterSong(void *handle)
 /*
 static boolean IsMid(byte *mem, int len)
 {
-    return len > 4 && !memcmp(mem, "MThd", 4);
+    return len > 4 && std::equal(mem, mem + 4, "MThd");
 }
 */
 
@@ -404,7 +405,8 @@ static void *I_SDL_RegisterSong(void *data, int len)
 {
     char *filename;
     Mix_Music *music;
-
+    byte *bdata = static_cast<byte*>( data );
+    
     if (!music_initialized)
     {
         return NULL;
@@ -421,7 +423,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
 /*
     if (IsMid(data, len) && len < MAXMIDLENGTH)
 */
-    if (len < 4 || memcmp(data, "MUS\x1a", 4)) // [crispy] MUS_HEADER_MAGIC
+    if (len < 4 || !std::equal(bdata, bdata + 4, "MUS\x1a")) // [crispy] MUS_HEADER_MAGIC
     {
         M_WriteFile(filename, data, len);
     }
@@ -429,7 +431,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
     {
 	// Assume a MUS file and try to convert
 
-        ConvertMus(static_cast<byte *>(data), len, filename);
+        ConvertMus(bdata, len, filename);
     }
 
     // Load the MIDI. In an ideal world we'd be using Mix_LoadMUS_RW()

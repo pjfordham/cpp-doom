@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include "memio.hpp"
 #include "mus2mid.hpp"
@@ -1608,7 +1609,7 @@ static void I_OPL_UnRegisterSong(void *handle)
 
 static boolean IsMid(byte *mem, int len)
 {
-    return len > 4 && !memcmp(mem, "MThd", 4);
+    return len > 4 && std::equal(mem, mem + 4, "MThd");
 }
 
 static boolean ConvertMus(byte *musdata, int len, char *filename)
