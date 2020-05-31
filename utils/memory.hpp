@@ -70,6 +70,7 @@ template<typename DataType>
 auto create_struct()
 {
     auto *mem = malloc(sizeof(DataType));
+   // The default {} here may be unnecessary we need to review all call-sites
     return new (mem) DataType{};
 }
 
@@ -82,6 +83,7 @@ template<typename DataType>
 auto zone_malloc(int tag)
 {
    auto *mem = Z_Malloc(sizeof(DataType), tag, nullptr);
+   // The default {} here may be unnecessary we need to review all call-sites
    return new (mem) DataType{};
 }
 
@@ -105,7 +107,6 @@ template<typename DataType>
 auto zone_calloc(int tag)
 {
    auto *mem = Z_Malloc(sizeof(DataType), tag, nullptr);
-   std::memset( mem, 0, sizeof(DataType));
    return new (mem) DataType{};
 }
 
@@ -113,8 +114,7 @@ template<typename DataType>
 auto zone_calloc(int tag, const std::size_t size)
 {
    auto *mem = Z_Malloc(sizeof(DataType) * size, tag, nullptr);
-   std::memset( mem, 0, sizeof(DataType) * size);
-   return new (mem) DataType[size];
+   return new (mem) DataType[size]{};
 }
 
 // PTR is typically the pointer to the pointer that stores the Z_Malloc'd value
@@ -123,8 +123,7 @@ template<typename DataType, typename PtrType>
 auto zone_calloc(int tag, const std::size_t size, PtrType ptr)
 {
    auto *mem = Z_Malloc(sizeof(DataType) * size, tag, static_cast<void*>(ptr));
-   std::memset( mem, 0, sizeof(DataType) * size);
-   return new (mem) DataType[size];
+   return new (mem) DataType[size]{};
 }
 
 #endif // CRISPY_DOOM_MEMORY_HPP
