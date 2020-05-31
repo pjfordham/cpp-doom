@@ -120,20 +120,18 @@ static void P_ReadTotalLevelTimes (const char *key)
 
 static void P_WriteFireFlicker (const char *key)
 {
-	thinker_t* th;
-
-	for (th = thinkercap.next; th != &thinkercap; th = th->next)
-	{
-        	if (fireflicker_t *flick = dynamic_cast<fireflicker_t*>( th )) {
-              		M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
-                                   key,
-                                   (int)(flick->sector - sectors),
-                                   (int)flick->count,
-                                   (int)flick->maxlight,
-                                   (int)flick->minlight);
-                        fputs(line, save_stream);
-                }
-	}
+   P_VisitThinkers( [key]( thinker_t *th ) {
+         if (fireflicker_t *flick = dynamic_cast<fireflicker_t*>( th )) {
+            M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
+                       key,
+                       (int)(flick->sector - sectors),
+                       (int)flick->count,
+                       (int)flick->maxlight,
+                       (int)flick->minlight);
+            fputs(line, save_stream);
+         }
+         return false;
+      } );
 }
 
 static void P_ReadFireFlicker (const char *key)
@@ -274,27 +272,20 @@ extern int numbraintargets, braintargeton;
 
 static void P_WriteBrainTarget (const char *key)
 {
-	thinker_t *th;
+   P_VisitMobjThinkers([key](mobj_t *mo) {
+         if (mo->state == &states[S_BRAINEYE1])
+         {
+            M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
+                       key,
+                       numbraintargets,
+                       braintargeton);
+            fputs(line, save_stream);
 
-	for (th = thinkercap.next; th != &thinkercap; th = th->next)
-	{
-		if (th->function == P_MobjThinker)
-		{
-			mobj_t *mo = (mobj_t *)th;
-
-			if (mo->state == &states[S_BRAINEYE1])
-			{
-				M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
-				           key,
-				           numbraintargets,
-				           braintargeton);
-				fputs(line, save_stream);
-
-				// [crispy] return after the first brain spitter is found
-				return;
-			}
-		}
-	}
+            // [crispy] return after the first brain spitter is found
+            return true;
+         }
+         return false;
+      } );
 }
 
 static void P_ReadBrainTarget (const char *key)

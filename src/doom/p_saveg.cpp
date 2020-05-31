@@ -1653,22 +1653,13 @@ typedef enum
 //
 void P_ArchiveThinkers (void)
 {
-    thinker_t*		th;
-
     // save off the current thinkers
-    for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
-    {
-	if (th->function == P_MobjThinker)
-	{
-            saveg_write8(tc_mobj);
-	    saveg_write_pad();
-            saveg_write_mobj_t((mobj_t *) th);
-
-	    continue;
-	}
-		
-	// I_Error ("P_ArchiveThinkers: Unknown thinker function");
-    }
+    P_VisitMobjThinkers([](mobj_t *mo) {
+          saveg_write8(tc_mobj);
+          saveg_write_pad();
+          saveg_write_mobj_t(mo);
+          return false;
+       } );
 
     // add a terminating marker
     saveg_write8(tc_end);
@@ -1739,18 +1730,11 @@ void P_UnArchiveThinkers (void)
 // the mobj->target and mobj->tracers fields by the corresponding current pointers again
 void P_RestoreTargets (void)
 {
-    mobj_t*	mo;
-    thinker_t*	th;
-
-    for (th = thinkercap.next; th != &thinkercap; th = th->next)
-    {
-	if (th->function == P_MobjThinker)
-	{
-	    mo = (mobj_t*) th;
-	    mo->target = (mobj_t*) P_IndexToThinker((uintptr_t) mo->target);
-	    mo->tracer = (mobj_t*) P_IndexToThinker((uintptr_t) mo->tracer);
-	}
-    }
+    P_VisitMobjThinkers([](mobj_t *mo) {
+          mo->target = (mobj_t*) P_IndexToThinker((uintptr_t) mo->target);
+          mo->tracer = (mobj_t*) P_IndexToThinker((uintptr_t) mo->tracer);
+          return false;
+       } );
 
     if (restoretargets_fail)
     {
@@ -1790,17 +1774,15 @@ enum
 //
 void P_ArchiveSpecials (void)
 {
-    thinker_t*		th;
-    int			i;
-	
     // save off the current thinkers
-    for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
-    {
-	if (th->function == think_t{})
+    P_VisitThinkers( []( thinker_t *th ) {
+
+        if (th->function == think_t{})
 	{
-	    for (i = 0; i < MAXCEILINGS;i++)
+            int i;
+            for (i = 0; i < MAXCEILINGS;i++)
 		if (activeceilings[i] == (ceiling_t *)th)
-		    break;
+                   return true;
 	    
 	    if (i<MAXCEILINGS)
 	    {
@@ -1811,7 +1793,7 @@ void P_ArchiveSpecials (void)
 	    // [crispy] save plats in statis
 	    for (i = 0; i < MAXPLATS; i++)
 		if (activeplats[i] == (plat_t *)th)
-		    break;
+                   return true;
 
 	    if (i < MAXPLATS)
 	    {
@@ -1819,7 +1801,7 @@ void P_ArchiveSpecials (void)
 		saveg_write_pad();
 		saveg_write_plat_t((plat_t *)th);
 	    }
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_MoveCeiling)
@@ -1827,7 +1809,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_ceiling);
 	    saveg_write_pad();
             saveg_write_ceiling_t((ceiling_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_VerticalDoor)
@@ -1835,7 +1817,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_door);
 	    saveg_write_pad();
             saveg_write_vldoor_t((vldoor_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_MoveFloor)
@@ -1843,7 +1825,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_floor);
 	    saveg_write_pad();
             saveg_write_floormove_t((floormove_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_PlatRaise)
@@ -1851,7 +1833,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_plat);
 	    saveg_write_pad();
             saveg_write_plat_t((plat_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_LightFlash)
@@ -1859,7 +1841,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_flash);
 	    saveg_write_pad();
             saveg_write_lightflash_t((lightflash_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_StrobeFlash)
@@ -1867,7 +1849,7 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_strobe);
 	    saveg_write_pad();
             saveg_write_strobe_t((strobe_t *) th);
-	    continue;
+	    return false;
 	}
 			
 	if (th->function == T_Glow)
@@ -1875,9 +1857,10 @@ void P_ArchiveSpecials (void)
             saveg_write8(tc_glow);
 	    saveg_write_pad();
             saveg_write_glow_t((glow_t *) th);
-	    continue;
+	    return false;
 	}
-    }
+        return false;
+       } );
 	
     // add a terminating marker
     saveg_write8(tc_endspecials);

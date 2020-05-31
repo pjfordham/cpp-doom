@@ -1359,7 +1359,6 @@ void R_PrecacheLevel (void)
     int			lump;
     
     texture_t*		texture;
-    thinker_t*		th;
     spriteframe_t*	sf;
 
     if (demoplayback)
@@ -1430,12 +1429,11 @@ void R_PrecacheLevel (void)
     // Precache sprites.
     spritepresent = zone_calloc<char>(PU_STATIC, numsprites);
 
-    for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
-    {
-	if (th->function == P_MobjThinker)
-	    spritepresent[((mobj_t *)th)->sprite] = 1;
-    }
-	
+    P_VisitMobjThinkers([&spritepresent](mobj_t *m) {
+          spritepresent[m->sprite] = 1;
+          return false;
+       });
+
     spritememory = 0;
     for (i=0 ; i<numsprites ; i++)
     {

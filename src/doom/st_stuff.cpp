@@ -505,31 +505,25 @@ void ST_refreshBackground(boolean force)
 static int ST_cheat_massacre()
 {
     int killcount = 0;
-    thinker_t *th;
     extern int numbraintargets;
     extern void A_PainDie(mobj_t *);
 
-    for (th = thinkercap.next; th != &thinkercap; th = th->next)
-    {
-	if (th->function == P_MobjThinker)
-	{
-	    mobj_t *mo = (mobj_t *)th;
-
-	    if (mo->flags & MF_COUNTKILL || mo->type == MT_SKULL)
-	    {
-		if (mo->health > 0)
-		{
-		    P_DamageMobj(mo, NULL, NULL, 10000);
-		    killcount++;
-		}
-		if (mo->type == MT_PAIN)
-		{
-		    A_PainDie(mo);
-		    P_SetMobjState(mo, S_PAIN_DIE6);
-		}
-	    }
-	}
-    }
+    P_VisitMobjThinkers([&killcount](mobj_t *mo) {
+          if (mo->flags & MF_COUNTKILL || mo->type == MT_SKULL)
+          {
+             if (mo->health > 0)
+             {
+                P_DamageMobj(mo, NULL, NULL, 10000);
+                killcount++;
+             }
+             if (mo->type == MT_PAIN)
+             {
+                A_PainDie(mo);
+                P_SetMobjState(mo, S_PAIN_DIE6);
+             }
+          }
+          return false;
+       } );
 
     // [crispy] disable brain spitters
     numbraintargets = -1;
@@ -953,26 +947,19 @@ ST_Responder (event_t* ev)
 	if (plyr->cheats & CF_NOTARGET)
 	{
 		int i;
-		thinker_t *th;
 
-		// [crispy] let mobjs forget their target and tracer
-		for (th = thinkercap.next; th != &thinkercap; th = th->next)
-		{
-			if (th->function == P_MobjThinker)
-			{
-				mobj_t *const mo = (mobj_t *)th;
-
-				if (mo->target && mo->target->player)
-				{
-					mo->target = NULL;
-				}
-
-				if (mo->tracer && mo->tracer->player)
-				{
-					mo->tracer = NULL;
-				}
-			}
-		}
+                // [crispy] let mobjs forget their target and tracer
+                P_VisitMobjThinkers([](mobj_t *mo) {
+                      if (mo->target && mo->target->player)
+                      {
+                         mo->target = NULL;
+                      }
+                      if (mo->tracer && mo->tracer->player)
+                      {
+                         mo->tracer = NULL;
+                      }
+                      return false;
+                   } );
 		// [crispy] let sectors forget their soundtarget
 		for (i = 0; i < numsectors; i++)
 		{
