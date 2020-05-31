@@ -38,7 +38,7 @@
 //
 // TELEPORTATION
 //
-int
+void
 EV_Teleport
 ( line_t*	line,
   int		side,
@@ -57,12 +57,12 @@ EV_Teleport
 
     // don't teleport missiles
     if (thing->flags & MF_MISSILE)
-	return 0;		
+        return;
 
     // Don't teleport if hit back of line,
     //  so you can get out of teleporter.
     if (side == 1)		
-	return 0;	
+	return;	
 
     
     tag = line->tag;
@@ -95,7 +95,7 @@ EV_Teleport
 		oldz = thing->z;
 				
 		if (!P_TeleportMove (thing, m->x, m->y))
-		    return 0;
+		    return;
 
                 // The first Final Doom executable does not set thing->z
                 // when teleporting. This quirk is unique to this
@@ -128,10 +128,10 @@ EV_Teleport
 
 		thing->angle = m->angle;
 		thing->momx = thing->momy = thing->momz = 0;
-		return 1;
+		return;
 	    }	
 	}
     }
-    return 0;
+    return;
 }
 

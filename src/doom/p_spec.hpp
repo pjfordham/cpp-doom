@@ -614,7 +614,7 @@ void T_MoveFloor( thinker_t* thinker);
 //
 // P_TELEPT
 //
-int
+void
 EV_Teleport
 ( line_t*	line,
   int		side,
