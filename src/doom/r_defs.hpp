@@ -347,28 +347,28 @@ typedef pixel_t		lighttable_t;
 //
 typedef struct drawseg_s
 {
-    seg_t*		curline;
-    int			x1;
-    int			x2;
+   seg_t*		curline{};
+   int			x1{};
+   int			x2{};
 
-    fixed_t		scale1;
-    fixed_t		scale2;
-    fixed_t		scalestep;
+   fixed_t		scale1{};
+   fixed_t		scale2{};
+   fixed_t		scalestep{};
 
     // 0=none, 1=bottom, 2=top, 3=both
-    int			silhouette;
+   int			silhouette{};
 
     // do not clip sprites above this
-    fixed_t		bsilheight;
+   fixed_t		bsilheight{};
 
     // do not clip sprites below this
-    fixed_t		tsilheight;
+   fixed_t		tsilheight{};
     
     // Pointers to lists for sprite clipping,
     //  all three adjusted so [x1] is first value.
-    int*		sprtopclip; // [crispy] 32-bit integer math
-    int*		sprbottomclip; // [crispy] 32-bit integer math
-    int*		maskedtexturecol; // [crispy] 32-bit integer math
+   int*		sprtopclip{}; // [crispy] 32-bit integer math
+   int*		sprbottomclip{}; // [crispy] 32-bit integer math
+   int*		maskedtexturecol{}; // [crispy] 32-bit integer math
     
 } drawseg_t;
 

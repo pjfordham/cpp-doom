@@ -543,10 +543,9 @@ R_StoreWallRange
 	int numdrawsegs_old = numdrawsegs;
 
 	numdrawsegs = numdrawsegs ? 2 * numdrawsegs : MAXDRAWSEGS;
-	drawsegs = static_cast<decltype(drawsegs)>(I_Realloc(drawsegs, numdrawsegs * sizeof(*drawsegs)));
-	memset(drawsegs + numdrawsegs_old, 0, (numdrawsegs - numdrawsegs_old) * sizeof(*drawsegs));
+	drawsegs.resize( numdrawsegs );
 
-	ds_p = drawsegs + numdrawsegs_old;
+	ds_p = drawsegs.data() + numdrawsegs_old;
 
 	if (numdrawsegs_old)
 	    fprintf(stderr, "R_StoreWallRange: Hit MAXDRAWSEGS limit at %d, raised to %d.\n", numdrawsegs_old, numdrawsegs);

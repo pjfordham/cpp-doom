@@ -416,9 +416,9 @@ void R_DrawPlanes (void)
     int                 lumpnum;
 				
 #ifdef RANGECHECK
-    if (ds_p - drawsegs > numdrawsegs)
+    if (ds_p - drawsegs.data() > numdrawsegs)
 	I_Error ("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
-		 ds_p - drawsegs);
+		 ds_p - drawsegs.data());
     
     if (lastvisplane - visplanes.data() > numvisplanes)
 	I_Error ("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",

@@ -19,6 +19,8 @@
 
 
 
+#include <vector>
+
 #include "doomdef.hpp"
 
 #include "m_bbox.hpp"
@@ -43,7 +45,7 @@ line_t*		linedef;
 sector_t*	frontsector;
 sector_t*	backsector;
 
-drawseg_t*	drawsegs = NULL;
+std::vector<drawseg_t>	drawsegs;
 drawseg_t*	ds_p;
 int		numdrawsegs = 0;
 
@@ -61,7 +63,7 @@ R_StoreWallRange
 //
 void R_ClearDrawSegs (void)
 {
-    ds_p = drawsegs;
+   ds_p = drawsegs.data();
 }
 
 

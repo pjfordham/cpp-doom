@@ -20,7 +20,7 @@
 #ifndef __R_BSP__
 #define __R_BSP__
 
-
+#include <vector>
 
 extern seg_t*		curline;
 extern side_t*		sidedef;
@@ -39,7 +39,7 @@ extern boolean		markceiling;
 
 extern boolean		skymap;
 
-extern drawseg_t*	drawsegs;
+extern std::vector<drawseg_t>	drawsegs;
 extern drawseg_t*	ds_p;
 extern int		numdrawsegs;
 
