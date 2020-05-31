@@ -23,6 +23,7 @@
 #ifndef __P_SPEC__
 #define __P_SPEC__
 
+#include <vector>
 
 //
 // End-level timer (-TIMER option)
@@ -211,11 +212,11 @@ typedef enum
 
 typedef struct
 {
-    line_t*	line;
-    bwhere_e	where;
-    int		btexture;
-    int		btimer;
-    degenmobj_t *soundorg;
+   line_t*	line{};
+   bwhere_e	where{};
+   int		btexture{};
+   int		btimer{};
+   degenmobj_t *soundorg{};
 
 } button_t;
 
@@ -231,7 +232,7 @@ typedef struct
  // 1 second, in ticks. 
 #define BUTTONTIME      35             
 
-extern button_t	*buttonlist;
+extern std::vector<button_t>	buttonlist;
 extern int maxbuttons;
 
 void

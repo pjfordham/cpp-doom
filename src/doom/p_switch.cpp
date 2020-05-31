@@ -101,7 +101,7 @@ std::vector<int> switchlist;
 
 int		numswitches;
 static size_t	maxswitches;
-button_t        *buttonlist; // [crispy] remove MAXBUTTONS limit
+std::vector<button_t> buttonlist; // [crispy] remove MAXBUTTONS limit
 int		maxbuttons; // [crispy] remove MAXBUTTONS limit
 
 //
@@ -192,8 +192,7 @@ void P_InitSwitchList(void)
     }
 
     // [crispy] pre-allocate some memory for the buttonlist[] array
-    buttonlist = static_cast<decltype(buttonlist)>(I_Realloc(NULL, sizeof(*buttonlist) * (maxbuttons = MAXBUTTONS)));
-    memset(buttonlist, 0, sizeof(*buttonlist) * maxbuttons);
+    buttonlist.resize( maxbuttons = MAXBUTTONS );
 }
 
 
@@ -242,8 +241,7 @@ P_StartButton
     // [crispy] remove MAXBUTTONS limit
     {
 	maxbuttons = 2 * maxbuttons;
-	buttonlist = static_cast<decltype(buttonlist)>(I_Realloc(buttonlist, sizeof(*buttonlist) * maxbuttons));
-	memset(buttonlist + maxbuttons/2, 0, sizeof(*buttonlist) * maxbuttons/2);
+	buttonlist.resize( maxbuttons );
 	return P_StartButton(line, w, texture, time);
     }
 
@@ -331,7 +329,7 @@ P_ChangeSwitchTexture
     // [crispy] corrected sound source
     if (playsound)
     {
-	S_StartSound(crispy->soundfix ? &line->soundorg : buttonlist->soundorg,sound);
+       S_StartSound(crispy->soundfix ? &line->soundorg : buttonlist.data()->soundorg,sound);
     }
 }
 
