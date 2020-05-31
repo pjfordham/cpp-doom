@@ -353,7 +353,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     player_t *const player = &players[consoleplayer];
     static char playermessage[48];
 
-    memset(cmd, 0, sizeof(ticcmd_t));
+    *cmd = ticcmd_t{};
 
     cmd->consistancy = 
 	consistancy[consoleplayer][maketic%BACKUPTICS]; 
@@ -1350,7 +1350,7 @@ void G_PlayerReborn (int player)
     secretcount = players[player].secretcount; 
 	 
     p = &players[player]; 
-    memset (p, 0, sizeof(*p)); 
+    *p = player_t{};
  
     *players[player].frags = *frags;
     players[player].killcount = killcount; 

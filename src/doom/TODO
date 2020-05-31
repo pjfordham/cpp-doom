@@ -12,7 +12,7 @@ realloc => std::vector, all gone!
  and all variants of free
 memcmp also suspicous =>std::equal, all gone from src/doom
 memcpy
-memset ( move to zone_calloc where possible, also add a create_struct version )
+memset ( move to zone_calloc where possible, also add a create_struct version, or default init or std::fill )
 mommove gone from src/doom, just networking ones left.
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt 
