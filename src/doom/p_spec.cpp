@@ -1319,7 +1319,7 @@ void P_UpdateSpecials (void)
 		{
 		S_StartSoundOnce(&buttonlist[i].soundorg,sfx_swtchn);
 		}
-		memset(&buttonlist[i],0,sizeof(button_t));
+		buttonlist[i] = button_t{};
 	    }
 	}
 
@@ -1699,7 +1699,7 @@ void P_SpawnSpecials (void)
 	activeplats[i] = NULL;
     
     for (i = 0;i < maxbuttons;i++)
-	memset(&buttonlist[i],0,sizeof(button_t));
+        buttonlist[i] = button_t{};
 
     // UNUSED: no horizonal sliders.
     //	P_InitSlidingDoorFrames();

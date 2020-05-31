@@ -7,7 +7,7 @@ Z_Malloc all gone
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 
 calloc => ZI, only zone_calloc remains
-realloc => std::vector, all gone from top level
+realloc => std::vector, all gone!
 
  and all variants of free
 memcmp also suspicous =>std::equal, all gone from src/doom

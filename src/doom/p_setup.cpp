@@ -20,6 +20,8 @@
 
 
 #include <math.h>
+#include <algorithm>
+#include <iterator>
 
 #include "z_zone.hpp"
 
@@ -177,11 +179,10 @@ void P_LoadVertexes (int lump)
 sector_t* GetSectorAtNullAddress(void)
 {
     static boolean null_sector_is_initialized = false;
-    static sector_t null_sector;
+    static sector_t null_sector{};
 
     if (!null_sector_is_initialized)
     {
-        memset(&null_sector, 0, sizeof(null_sector));
         I_GetMemoryValue(0, &null_sector.floorheight, 4);
         I_GetMemoryValue(4, &null_sector.ceilingheight, 4);
         null_sector_is_initialized = true;
@@ -1229,7 +1230,7 @@ P_SetupLevel
     // [crispy] fix long wall wobble
     P_SegLengths(false);
     // [crispy] blinking key or skull in the status bar
-    memset(st_keyorskull, 0, sizeof(st_keyorskull));
+    std::fill( std::begin(st_keyorskull), std::end(st_keyorskull), 0 );
 
     bodyqueslot = 0;
     deathmatch_p = deathmatchstarts;

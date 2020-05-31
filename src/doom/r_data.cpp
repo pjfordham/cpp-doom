@@ -238,7 +238,7 @@ R_DrawColumnInCache
 	    // so that column can later be converted into a series of posts, to
 	    // fix the Medusa bug.
 
-	    memset (marks + position, 0xff, count);
+            std::fill( marks + position, marks + position + count, 0xff );
 	}
 		
 	patch = (column_t *)(  (byte *)patch + patch->length + 4); 

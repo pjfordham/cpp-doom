@@ -448,7 +448,7 @@ void S_Start(void)
     }
 
     // [crispy] reset musinfo data at the start of a new map
-    memset(&musinfo, 0, sizeof(musinfo));
+    musinfo = musinfo_t{};
 
     S_ChangeMusic(mnum, true);
 }
