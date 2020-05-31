@@ -1200,8 +1200,7 @@ void R_InitColormaps (void)
 	boolean keepgray = false;
 	extern byte V_Colorize (byte *playpal, int cr, byte source, boolean keepgray109);
 
-	if (!crstr)
-	    crstr = static_cast<decltype(crstr)>(I_Realloc(NULL, CRMAX * sizeof(*crstr)));
+        crstr.resize( CRMAX );
 
 	// [crispy] check for status bar graphics replacements
 	i = W_CheckNumForName(DEH_String("sttnum0")); // [crispy] Status Bar '0'
