@@ -59,7 +59,7 @@
 // follow a player exlusively for 3 seconds
 #define	BASETHRESHOLD	 	100
 
-
+#include <functional>
 
 //
 // P_TICK
@@ -72,7 +72,8 @@ extern	thinker_t	thinkercap;
 void P_InitThinkers (void);
 void P_AddThinker (thinker_t* thinker);
 void P_RemoveThinker (thinker_t* thinker);
-
+bool P_VisitThinkers( std::function<bool( thinker_t* )> visitor );
+bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor);
 
 //
 // P_PSPR

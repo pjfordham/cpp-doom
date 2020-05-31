@@ -576,27 +576,19 @@ P_LookForPlayers
 //
 void A_KeenDie (mobj_t* mo)
 {
-    thinker_t*	th;
-    mobj_t*	mo2;
     line_t	junk;
 
     A_Fall (mo);
-    
+
     // scan the remaining thinkers
     // to see if all Keens are dead
-    for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
-    {
-	if (th->function != P_MobjThinker)
-	    continue;
-
-	mo2 = (mobj_t *)th;
-	if (mo2 != mo
-	    && mo2->type == mo->type
-	    && mo2->health > 0)
-	{
-	    // other Keen not dead
-	    return;		
-	}
+    if ( P_VisitMobjThinkers([&mo](mobj_t *mo2) {
+          // other Keen not dead
+          return (mo2 != mo
+                  && mo2->type == mo->type
+                  && mo2->health > 0);
+          }  ) ) {
+       return;
     }
 
     junk.tag = 666;
@@ -1519,19 +1511,16 @@ A_PainShootSkull
     angle_t	an;
     int		prestep;
     int		count;
-    thinker_t*	currentthinker;
 
     // count total number of skull currently on the level
     count = 0;
 
-    currentthinker = thinkercap.next;
-    while (currentthinker != &thinkercap)
-    {
-	if (   (currentthinker->function == P_MobjThinker)
-	    && ((mobj_t *)currentthinker)->type == MT_SKULL)
-	    count++;
-	currentthinker = currentthinker->next;
-    }
+    P_VisitMobjThinkers([&count](mobj_t *mobj) {
+          if (mobj->type == MT_SKULL) {
+             count++;
+          }
+          return false;
+       } );
 
     // if there are allready 20 skulls on the level,
     // don't spit another one
@@ -1728,8 +1717,6 @@ static boolean CheckBossEnd(mobjtype_t motype)
 //
 void A_BossDeath (mobj_t* mo)
 {
-    thinker_t*	th;
-    mobj_t*	mo2;
     line_t	junk;
     int		i;
 		
@@ -1762,21 +1749,14 @@ void A_BossDeath (mobj_t* mo)
     
     // scan the remaining thinkers to see
     // if all bosses are dead
-    for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
-    {
-	if (th->function != P_MobjThinker)
-	    continue;
-	
-	mo2 = (mobj_t *)th;
-	if (mo2 != mo
-	    && mo2->type == mo->type
-	    && mo2->health > 0)
-	{
-	    // other boss not dead
-	    return;
-	}
+    if (P_VisitMobjThinkers([mo](mobj_t *mo2) {
+          return (mo2 != mo
+                  && mo2->type == mo->type
+                  && mo2->health > 0);
+          } ) ) {
+       return;
     }
-	
+
     // victory!
     if ( gamemode == commercial)
     {
@@ -1895,40 +1875,29 @@ static int	maxbraintargets; // [crispy] remove braintargets limit
 
 void A_BrainAwake (mobj_t* mo)
 {
-    thinker_t*	thinker;
-    mobj_t*	m;
-	
     // find all the target spots
     numbraintargets = 0;
     braintargeton = 0;
 	
-    thinker = thinkercap.next;
-    for (thinker = thinkercap.next ;
-	 thinker != &thinkercap ;
-	 thinker = thinker->next)
-    {
-	if (thinker->function != P_MobjThinker)
-	    continue;	// not a mobj
-
-	m = (mobj_t *)thinker;
-
-	if (m->type == MT_BOSSTARGET )
-	{
-	    // [crispy] remove braintargets limit
-	    if (numbraintargets == maxbraintargets)
-	    {
+    P_VisitMobjThinkers([](mobj_t *m) {
+          if (m->type == MT_BOSSTARGET )
+          {
+             // [crispy] remove braintargets limit
+             if (numbraintargets == maxbraintargets)
+             {
 		maxbraintargets = maxbraintargets ? 2 * maxbraintargets : 32;
 		braintargets.resize( maxbraintargets );
 
 		if (maxbraintargets > 32)
-		    fprintf(stderr, "R_BrainAwake: Raised braintargets limit to %d.\n", maxbraintargets);
-	    }
+                   fprintf(stderr, "R_BrainAwake: Raised braintargets limit to %d.\n", maxbraintargets);
+             }
 
-	    braintargets[numbraintargets] = m;
-	    numbraintargets++;
-	}
-    }
-	
+             braintargets[numbraintargets] = m;
+             numbraintargets++;
+          }
+          return false;
+       } );
+
     S_StartSound (NULL,sfx_bossit);
 
     // [crispy] prevent braintarget overflow

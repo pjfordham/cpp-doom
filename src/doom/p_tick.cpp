@@ -23,6 +23,7 @@
 #include "s_musinfo.hpp" // [crispy] T_MAPMusic()
 
 #include "doomstat.hpp"
+#include <functional>
 
 
 int	leveltime;
@@ -88,12 +89,11 @@ void P_AllocateThinker (thinker_t*	thinker)
 }
 
 
+//
+// P_VisitThinkers( function )
+//
 
-//
-// P_RunThinkers
-//
-void P_RunThinkers (void)
-{
+bool P_VisitThinkers( std::function<bool( thinker_t* )> visitor ) {
     thinker_t *currentthinker, *nextthinker;
 
     currentthinker = thinkercap.next;
@@ -109,11 +109,31 @@ void P_RunThinkers (void)
 	}
 	else
 	{
-            currentthinker->action();
-            nextthinker = currentthinker->next;
+           // Break out early if return true;
+           if ( visitor( currentthinker ) )
+              return true;
+           nextthinker = currentthinker->next;
 	}
 	currentthinker = nextthinker;
     }
+    return false;
+}
+
+bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
+    return P_VisitThinkers( [&visitor]( thinker_t *thinker ) {
+        if (thinker->function == P_MobjThinker)
+        {
+           return visitor( static_cast<mobj_t*>(thinker) );
+        }
+        return false;} );
+}
+
+//
+// P_RunThinkers
+//
+void P_RunThinkers (void)
+{
+    P_VisitThinkers( []( thinker_t *thinker ) { thinker->action(); return false; } );
 
     // [crispy] support MUSINFO lump (dynamic music changing)
     T_MusInfo();

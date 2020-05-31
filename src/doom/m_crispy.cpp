@@ -179,8 +179,6 @@ void M_CrispyToggleCenterweapon(int choice)
 
 void M_CrispyToggleColoredblood(int choice)
 {
-    thinker_t *th;
-
     if (gameversion == exe_chex)
     {
 	return;
@@ -189,26 +187,21 @@ void M_CrispyToggleColoredblood(int choice)
     choice = 0;
     crispy->coloredblood = !crispy->coloredblood;
 
-    // [crispy] switch NOBLOOD flag for Lost Souls
-    for (th = thinkercap.next; th && th != &thinkercap; th = th->next)
-    {
-       if (th->function == P_MobjThinker)
-	{
-		mobj_t *mobj = (mobj_t *)th;
-
-		if (mobj->type == MT_SKULL)
-		{
-			if (crispy->coloredblood)
-			{
-				mobj->flags |= MF_NOBLOOD;
-			}
-			else
-			{
-				mobj->flags &= ~MF_NOBLOOD;
-			}
-		}
-	}
-    }
+    P_VisitMobjThinkers([](mobj_t *mobj) {
+          // [crispy] switch NOBLOOD flag for Lost Souls
+          if (mobj->type == MT_SKULL)
+          {
+             if (crispy->coloredblood)
+             {
+                mobj->flags |= MF_NOBLOOD;
+             }
+             else
+             {
+                mobj->flags &= ~MF_NOBLOOD;
+             }
+          }
+          return false;
+       } );
 }
 
 void M_CrispyToggleColoredhud(int choice)
