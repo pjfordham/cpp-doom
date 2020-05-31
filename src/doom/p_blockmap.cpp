@@ -23,6 +23,7 @@
 #include "p_local.hpp"
 #include "z_zone.hpp"
 #include <stdlib.h>
+#include <vector>
 
 // [crispy] taken from mbfsrc/P_SETUP.C:547-707, slightly adapted
 
@@ -80,8 +81,8 @@ void P_CreateBlockMap(void)
     struct bmap_t {
        int n;
        int nalloc;
-       int *list;
-       bmap_t() : n{ 0 }, nalloc{ 0 }, list{ nullptr } {}
+       std::vector<int> list;
+       bmap_t() : n{ 0 }, nalloc{ 0 } {}
     };
 
     unsigned tot = bmapwidth * bmapheight;            // size of blockmap
@@ -126,10 +127,7 @@ void P_CreateBlockMap(void)
 	  {
 	    // Increase size of allocated list if necessary
 	    if (bmap[b].n >= bmap[b].nalloc)
-	      bmap[b].list = static_cast<int *>(I_Realloc(
-                  bmap[b].list,
-                  (bmap[b].nalloc = bmap[b].nalloc ? bmap[b].nalloc * 2 : 8) *
-                      sizeof *bmap->list));
+               bmap[b].list.resize( bmap[b].nalloc = bmap[b].nalloc ? bmap[b].nalloc * 2 : 8);
 
 	    // Add linedef to end of list
 	    bmap[b].list[bmap[b].n++] = i;
@@ -180,7 +178,6 @@ void P_CreateBlockMap(void)
 	      blockmaplump[ndx++] = bp->list[--bp->n];  // Copy linedef list
 	    while (bp->n);
 	    blockmaplump[ndx++] = -1;                   // Store trailer
-	    free(bp->list);                             // Free linedef list
 	  }
 	else            // Empty blocklist: point to reserved empty blocklist
 	  blockmaplump[i] = tot;
