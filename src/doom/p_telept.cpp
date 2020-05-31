@@ -44,58 +44,37 @@ EV_Teleport
   int		side,
   mobj_t*	thing )
 {
-    int		i;
-    int		tag;
-    mobj_t*	m;
-    mobj_t*	fog;
-    unsigned	an;
-    thinker_t*	thinker;
-    sector_t*	sector;
-    fixed_t	oldx;
-    fixed_t	oldy;
-    fixed_t	oldz;
-
     // don't teleport missiles
     if (thing->flags & MF_MISSILE)
         return;
 
     // Don't teleport if hit back of line,
     //  so you can get out of teleporter.
-    if (side == 1)		
-	return;	
+    if (side == 1)
+	return;
 
-    
-    tag = line->tag;
-    for (i = 0; i < numsectors; i++)
+    int tag = line->tag;
+    for (int i = 0; i < numsectors; i++)
     {
 	if (sectors[ i ].tag == tag )
 	{
-	    thinker = thinkercap.next;
-	    for (thinker = thinkercap.next;
-		 thinker != &thinkercap;
-		 thinker = thinker->next)
-	    {
-		// not a mobj
-		if (thinker->function != P_MobjThinker)
-		    continue;	
+           P_VisitMobjThinkers([i,&thing](mobj_t *m) {
 
-		m = (mobj_t *)thinker;
-		
 		// not a teleportman
 		if (m->type != MT_TELEPORTMAN )
-		    continue;		
+                   return false;
 
-		sector = m->subsector->sector;
+		sector_t *sector = m->subsector->sector;
 		// wrong sector
 		if (sector-sectors != i )
-		    continue;	
+                   return false;
 
-		oldx = thing->x;
-		oldy = thing->y;
-		oldz = thing->z;
-				
+		  fixed_t oldx = thing->x;
+		  fixed_t oldy = thing->y;
+                  fixed_t oldz = thing->z;
+
 		if (!P_TeleportMove (thing, m->x, m->y))
-		    return;
+		    return true;
 
                 // The first Final Doom executable does not set thing->z
                 // when teleporting. This quirk is unique to this
@@ -113,23 +92,25 @@ EV_Teleport
 		}
 
 		// spawn teleport fog at source and destination
+                mobj_t*	fog;
 		fog = P_SpawnMobj (oldx, oldy, oldz, MT_TFOG);
 		S_StartSound (fog, sfx_telept);
+                unsigned	an;
 		an = m->angle >> ANGLETOFINESHIFT;
 		fog = P_SpawnMobj (m->x+20*finecosine[an], m->y+20*finesine[an]
 				   , thing->z, MT_TFOG);
 
 		// emit sound, where?
 		S_StartSound (fog, sfx_telept);
-		
+
 		// don't move for a bit
 		if (thing->player)
-		    thing->reactiontime = 18;	
+		    thing->reactiontime = 18;
 
 		thing->angle = m->angle;
 		thing->momx = thing->momy = thing->momz = 0;
-		return;
-	    }	
+		return true;
+              } );
 	}
     }
     return;
