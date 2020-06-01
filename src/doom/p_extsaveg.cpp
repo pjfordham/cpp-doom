@@ -400,7 +400,7 @@ static void P_ReadMusInfo (const char *key)
 
 		if ((i = W_CheckNumForName(lump)) > 0)
 		{
-			memset(&musinfo, 0, sizeof(musinfo));
+                        musinfo = musinfo_t{};
 			musinfo.current_item = i;
 			musinfo.from_savegame = true;
 			S_ChangeMusInfoMusic(i, true);

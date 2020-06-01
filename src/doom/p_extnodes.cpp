@@ -253,7 +253,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 #ifdef HAVE_LIBZ
 	const int len =  W_LumpLength(lump);
 	int outlen, err;
-	z_stream zstream;
+	z_stream zstream{};
 
 	// first estimate for compression rate:
 	// output buffer size == 2.5 * input size
@@ -261,7 +261,6 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	output.resize( outlen );
 
 	// initialize stream state for decompression
-	memset(&zstream, 0, sizeof(*zstream));
 	zstream.next_in = data + 4;
 	zstream.avail_in = len - 4;
 	zstream.next_out = output.data();
@@ -321,7 +320,9 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	for(int i =0; i<orgVerts; ++i) {
            newvertarray[i] = vertexes[i];
         }
-	memset(newvertarray + orgVerts, 0, newVerts * sizeof(vertex_t));
+	for(int i = orgVerts; i<newVerts; ++i) {
+           newvertarray[i] = vertex_t{};
+        }
     }
 
     for (i = 0; i < newVerts; i++)

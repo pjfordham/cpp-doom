@@ -880,7 +880,7 @@ ST_Responder (event_t* ev)
       // [crispy] idbehold0
       if (cht_CheckCheatSP(&cheat_powerup[7], ev->data2))
       {
-	memset(plyr->powers, 0, sizeof(plyr->powers));
+        std::fill( std::begin( plyr->powers ), std::end( plyr->powers ), 0 );
 	plyr->mo->flags &= ~MF_SHADOW; // [crispy] cancel invisibility
 	plyr->message = DEH_String(STSTR_BEHOLDX);
       }

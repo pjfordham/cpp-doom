@@ -2,25 +2,36 @@ Every use of:
 
 create_struct is only used in textscreen, in theory everything could be moved to new/delete in there
 
-zmalloc all gone src/doom grep zmalloc *
+Zone Allocator: properly implement this for deletes
+
+zone_malloc
+zone_calloc
+and Z_Free
+
+
+zmalloc all gone
 Z_Malloc all gone
+calloc => all_gone
+realloc => all gone!
+
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
+and all variants of free
 
-calloc => ZI, only zone_calloc remains
-realloc => std::vector, all gone!
+memcmp => std::equal, all gone from src/doom
+memcpy => std::copy
 
- and all variants of free
-memcmp also suspicous =>std::equal, all gone from src/doom
-memcpy
-memset ( move to zone_calloc where possible, also add a create_struct version, or default init or std::fill )
+memset => std::fill or default init {}
+
 mommove gone from src/doom, just networking ones left.
 
-any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt 
+think_t and thinker_t are now a bit weird.
+
+any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
 
 remove dynamic_Cast from p_extsaveg.cpp
 
-export CC=/usr/bin/clang-10 
+export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
 
-( cd ~/github/cpp-doom/build/ ; make c++-doom -j 4 ) 
+( cd ~/github/cpp-doom/build/ ; make c++-doom -j 4 )
 ( cd ~/github/cpp-doom/build/ ; ~/github/cpp-doom/build/src/c++-doom )
