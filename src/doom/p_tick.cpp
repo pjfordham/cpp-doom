@@ -21,6 +21,8 @@
 #include "z_zone.hpp"
 #include "p_local.hpp"
 #include "s_musinfo.hpp" // [crispy] T_MAPMusic()
+#include <list>
+#include <iostream>
 
 #include "doomstat.hpp"
 #include <functional>
@@ -41,13 +43,15 @@ int	leveltime;
 // Both the head and tail of the thinker list.
 thinker_t	thinkercap;
 
+std::list<thinker_t *> thinkers;
+
 
 //
 // P_InitThinkers
 //
 void P_InitThinkers (void)
 {
-    thinkercap.prev = thinkercap.next  = &thinkercap;
+    thinkers.clear();
 }
 
 
@@ -59,10 +63,7 @@ void P_InitThinkers (void)
 //
 void P_AddThinker (thinker_t* thinker)
 {
-    thinkercap.prev->next = thinker;
-    thinker->next = &thinkercap;
-    thinker->prev = thinkercap.prev;
-    thinkercap.prev = thinker;
+    thinkers.push_back( thinker );
 }
 
 
@@ -94,29 +95,15 @@ void P_AllocateThinker (thinker_t*	thinker)
 //
 
 bool P_VisitThinkers( std::function<bool( thinker_t* )> visitor ) {
-    thinker_t *currentthinker, *nextthinker;
 
-    currentthinker = thinkercap.next;
-    while (currentthinker != &thinkercap)
-    {
-	if ( currentthinker->function == think_t{-1} )
-	{
-	    // time to remove it
-            nextthinker = currentthinker->next;
-	    currentthinker->next->prev = currentthinker->prev;
-	    currentthinker->prev->next = currentthinker->next;
-	    Z_Free(currentthinker);
-	}
-	else
-	{
-           // Break out early if return true;
-           if ( visitor( currentthinker ) )
-              return true;
-           nextthinker = currentthinker->next;
-	}
-	currentthinker = nextthinker;
-    }
-    return false;
+   for( auto i = thinkers.begin(); i != thinkers.end(); i++ ) {
+      // Break out early if return true;
+      if ( visitor( *i ) ) {
+         return true;
+      }
+   }
+
+   return false;
 }
 
 bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
@@ -133,10 +120,26 @@ bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
 //
 void P_RunThinkers (void)
 {
-    P_VisitThinkers( []( thinker_t *thinker ) { thinker->action(); return false; } );
+   auto i = thinkers.begin();
+   do {
+      while ( i != thinkers.end() && (*i)->function == think_t{-1} )
+      {
+         Z_Free(*i);
+         i = thinkers.erase( i );
+      }
 
-    // [crispy] support MUSINFO lump (dynamic music changing)
-    T_MusInfo();
+      if ( i != thinkers.end() ) {
+         (*i)->action();
+         i++;
+      }
+      else
+      {
+         break;
+      }
+   } while ( true );
+
+   // [crispy] support MUSINFO lump (dynamic music changing)
+   T_MusInfo();
 }
 
 

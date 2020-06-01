@@ -264,24 +264,12 @@ static void saveg_write_think_t(think_t *str)
 
 static void saveg_read_thinker_t(thinker_t *str)
 {
-    // struct thinker_s* prev;
-    str->prev = static_cast<thinker_t *>(saveg_readp());
-
-    // struct thinker_s* next;
-    str->next = static_cast<thinker_t *>(saveg_readp());
-
     // think_t function;
     saveg_read_think_t(&str->function);
 }
 
 static void saveg_write_thinker_t(thinker_t *str)
 {
-    // struct thinker_s* prev;
-    saveg_writep(str->prev);
-
-    // struct thinker_s* next;
-    saveg_writep(str->next);
-
     // think_t function;
     saveg_write_think_t(&str->function);
 }
