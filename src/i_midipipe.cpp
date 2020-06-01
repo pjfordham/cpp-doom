@@ -410,14 +410,14 @@ void I_MidiPipe_ShutdownServer()
 //
 boolean I_MidiPipe_InitServer()
 {
-    TCHAR dirname[MAX_PATH + 1];
+    TCHAR dirname[MAX_PATH + 1]{};
     DWORD dirname_len;
     char *module = NULL;
     char *cmdline = NULL;
     char params_buf[128];
-    SECURITY_ATTRIBUTES sec_attrs;
-    PROCESS_INFORMATION proc_info;
-    STARTUPINFO startup_info;
+    SECURITY_ATTRIBUTES sec_attrs{};
+    PROCESS_INFORMATION proc_info{};
+    STARTUPINFO startup_info{};
     BOOL ok;
 
     if (!UsingNativeMidi() || strlen(snd_musiccmd) > 0)
@@ -428,7 +428,6 @@ boolean I_MidiPipe_InitServer()
     }
 
     // Get directory name
-    memset(dirname, 0, sizeof(dirname));
     dirname_len = GetModuleFileName(NULL, dirname, MAX_PATH);
     if (dirname_len == 0)
     {
@@ -440,7 +439,6 @@ boolean I_MidiPipe_InitServer()
     module = PROGRAM_PREFIX "midiproc.exe";
 
     // Set up pipes
-    memset(&sec_attrs, 0, sizeof(SECURITY_ATTRIBUTES));
     sec_attrs.nLength = sizeof(SECURITY_ATTRIBUTES);
     sec_attrs.bInheritHandle = TRUE;
     sec_attrs.lpSecurityDescriptor = NULL;
@@ -476,8 +474,6 @@ boolean I_MidiPipe_InitServer()
     cmdline = M_StringJoin(module, " \"" PACKAGE_STRING "\"", " ", params_buf, NULL);
 
     // Launch the subprocess
-    memset(&proc_info, 0, sizeof(proc_info));
-    memset(&startup_info, 0, sizeof(startup_info));
     startup_info.cb = sizeof(startup_info);
 
     ok = CreateProcess(TEXT(module), TEXT(cmdline), NULL, NULL, TRUE,

@@ -272,7 +272,7 @@ void SHA1_Final(sha1_digest_t digest, sha1_context_t *hd)
 	while (hd->count < 64)
 	    hd->buf[hd->count++] = 0;
 	SHA1_Update(hd, NULL, 0);  /* flush */;
-	memset(hd->buf, 0, 56 ); /* fill next block with zeroes */
+        std::fill( hd->buf, hd->buf + 56, 0 ); /* fill next block with zeroes */
     }
     /* append the 64 bit count */
     hd->buf[56] = msb >> 24;

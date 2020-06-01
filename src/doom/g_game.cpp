@@ -848,7 +848,8 @@ void G_DoLoadLevel (void)
 	turbodetected[i] = false;
 	if (playeringame[i] && players[i].playerstate == PST_DEAD) 
 	    players[i].playerstate = PST_REBORN; 
-	memset (players[i].frags,0,sizeof(players[i].frags)); 
+        std::fill( std::begin( players[i].frags ),
+                   std::end( players[i].frags ), 0 );
     } 
 		 
     // [crispy] update the "singleplayer" variable
@@ -860,12 +861,12 @@ void G_DoLoadLevel (void)
     
     // clear cmd building stuff
 
-    memset (gamekeydown, 0, sizeof(gamekeydown));
+    std::fill ( std::begin( gamekeydown ), std::end( gamekeydown ), 0 );
     joyxmove = joyymove = joystrafemove = joylook = 0;
     mousex = mousex2 = mousey = 0;
     sendpause = sendsave = paused = false;
-    memset(mousearray, 0, sizeof(mousearray));
-    memset(joyarray, 0, sizeof(joyarray));
+    std::fill ( std::begin( mousearray ), std::end( mousearray ), 0 );
+    std::fill ( std::begin( joyarray ), std::end( joyarray ), 0 );
 
     if (testcontrols)
     {
@@ -1313,9 +1314,11 @@ void G_PlayerFinishLevel (int player)
 	 
     p = &players[player]; 
 	 
-    memset (p->powers, 0, sizeof (p->powers)); 
-    memset (p->cards, 0, sizeof (p->cards)); 
-    memset (p->tryopen, 0, sizeof (p->tryopen)); // [crispy] blinking key or skull in the status bar
+    std::fill ( std::begin( p->powers ), std::end( p->powers ), 0 );
+    std::fill ( std::begin( p->cards ), std::end( p->cards ), 0 );
+    // [crispy] blinking key or skull in the status bar
+    std::fill ( std::begin( p->tryopen ), std::end( p->tryopen ), 0 );
+
     p->mo->flags &= ~MF_SHADOW;		// cancel invisibility 
     p->extralight = 0;			// cancel gun flashes 
     p->fixedcolormap = 0;		// cancel ir gogles 

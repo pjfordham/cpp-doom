@@ -22,6 +22,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
+#include <iterator>
 
 #include "z_zone.hpp"
 #include "i_system.hpp"
@@ -126,7 +128,9 @@ static void Z_RemoveBlock(memblock_t *block)
 //
 void Z_Init (void)
 {
-    memset(allocated_blocks, 0, sizeof(allocated_blocks));
+   std::fill( std::begin(allocated_blocks),
+              std::end(allocated_blocks),
+              memblock_t{} );
     printf("zone memory: Using native C allocator.\n");
 }
 

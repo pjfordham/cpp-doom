@@ -325,7 +325,7 @@ void M_ExtractFileBase(const char *path, char *dest)
     // filename limit, instead we simply truncate the name.
 
     length = 0;
-    memset(dest, 0, 8);
+    std::fill(dest, dest + 8, 0);
 
     while (*src != '\0' && *src != '.')
     {
