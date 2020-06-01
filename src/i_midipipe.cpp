@@ -184,7 +184,7 @@ static boolean ExpectPipe(net_packet_t *packet)
         }
 
         // Compare our data buffer to the packet.
-        if (memcmp(packet->data, pipe_buffer, packet->len) != 0)
+        if (!std::equal(packet->data, packet->data + packet->len, pipe_buffer))
         {
             break;
         }

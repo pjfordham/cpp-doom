@@ -268,12 +268,10 @@ static void CheckSHA1Sums(void)
         return;
     }
 
-    correct_wad = memcmp(net_local_wad_sha1sum,
-                         net_client_wait_data.wad_sha1sum, 
-                         sizeof(sha1_digest_t)) == 0;
-    correct_deh = memcmp(net_local_deh_sha1sum,
-                         net_client_wait_data.deh_sha1sum, 
-                         sizeof(sha1_digest_t)) == 0;
+    correct_wad = std::equal( std::begin( net_local_wad_sha1sum ), std::end( net_local_wad_sha1sum ),
+                              net_client_wait_data.wad_sha1sum );
+    correct_deh = std::equal( std::begin( net_local_deh_sha1sum ), std::end( net_local_deh_sha1sum ),
+                              net_client_wait_data.deh_sha1sum );
     same_freedoom = net_client_wait_data.is_freedoom == net_local_is_freedoom;
 
     if (correct_wad && correct_deh && same_freedoom)

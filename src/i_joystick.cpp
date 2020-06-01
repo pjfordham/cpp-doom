@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iterator>
 
 #include "doomtype.hpp"
 #include "d_event.hpp"
@@ -123,7 +124,7 @@ static int DeviceIndex(void)
     if (joystick_index >= 0 && joystick_index < SDL_NumJoysticks())
     {
         dev_guid = SDL_JoystickGetDeviceGUID(joystick_index);
-        if (!memcmp(&guid, &dev_guid, sizeof(SDL_JoystickGUID)))
+        if (std::equal( std::begin(guid.data), std::end(guid.data), std::begin(dev_guid.data) ))
         {
             return joystick_index;
         }
@@ -133,7 +134,7 @@ static int DeviceIndex(void)
     for (i = 0; i < SDL_NumJoysticks(); ++i)
     {
         dev_guid = SDL_JoystickGetDeviceGUID(i);
-        if (!memcmp(&guid, &dev_guid, sizeof(SDL_JoystickGUID)))
+        if (std::equal( std::begin(guid.data), std::end(guid.data), std::begin(dev_guid.data) ))
         {
             printf("I_InitJoystick: Joystick moved to index %d.\n", i);
             return i;

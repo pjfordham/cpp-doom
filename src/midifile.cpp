@@ -91,20 +91,17 @@ struct midi_file_s
 static boolean CheckChunkHeader(chunk_header_t *chunk,
                                 const char *expected_id)
 {
-    boolean result;
-    
-    result = (memcmp((char *) chunk->chunk_id, expected_id, 4) == 0);
-
-    if (!result)
+    if (!std::equal( std::begin( chunk->chunk_id ), std::end(chunk->chunk_id), expected_id ))
     {
         fprintf(stderr, "CheckChunkHeader: Expected '%s' chunk header, "
                         "got '%c%c%c%c'\n",
                         expected_id,
                         chunk->chunk_id[0], chunk->chunk_id[1],
                         chunk->chunk_id[2], chunk->chunk_id[3]);
+        return false;
     }
 
-    return result;
+    return true;
 }
 
 // Read a single byte.  Returns false on error.
