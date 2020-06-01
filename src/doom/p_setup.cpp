@@ -985,7 +985,8 @@ static void PadRejectArray(byte *array, unsigned int len)
             padvalue = 0xf00;
         }
 
-        memset(array + sizeof(rejectpad), padvalue, len - sizeof(rejectpad));
+        std::fill(array + sizeof(rejectpad),
+                  array + len, padvalue );
     }
 }
 

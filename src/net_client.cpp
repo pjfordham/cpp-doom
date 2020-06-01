@@ -312,8 +312,8 @@ void NET_CL_StartGame(net_gamesettings_t *settings)
 
     // Start from a ticcmd of all zeros
 
-    memset(&last_ticcmd, 0, sizeof(ticcmd_t));
-    
+    last_ticcmd = {};
+
     // Send packet
 
     packet = NET_Conn_NewReliable(&client_connection, 
