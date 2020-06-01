@@ -206,7 +206,7 @@ void R_ClearPlanes (void)
     lastopening = openings;
     
     // texture calculation
-    memset (cachedheight, 0, sizeof(cachedheight));
+    std::fill(std::begin(cachedheight) , std::end(cachedheight), 0 );
 
     // left to right mapping
     angle = (viewangle-ANG90)>>ANGLETOFINESHIFT;
@@ -286,7 +286,7 @@ R_FindPlane
     check->minx = SCREENWIDTH;
     check->maxx = -1;
     
-    memset (check->top,0xff,sizeof(check->top));
+    std::fill( std::begin(check->top), std::end(check->top), 0xffffffff );
 		
     return check;
 }
@@ -360,8 +360,8 @@ R_CheckPlane
     pl->minx = start;
     pl->maxx = stop;
 
-    memset (pl->top,0xff,sizeof(pl->top));
-		
+    std::fill( std::begin(pl->top), std::end(pl->top), 0xffffffff );
+
     return pl;
 }
 
