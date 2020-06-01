@@ -414,20 +414,18 @@ static void saveg_read_mobj_t(mobj_t *str)
 // [crispy] enumerate all thinker pointers
 uint32_t P_ThinkerToIndex (thinker_t* thinker)
 {
-    thinker_t*	th;
-    uint32_t	i;
+    uint32_t	i = 0;
 
     if (!thinker)
 	return 0;
 
-    for (th = thinkercap.next, i = 0; th != &thinkercap; th = th->next)
-    {
-	if (th->function == P_MobjThinker)
-	{
-	    i++;
-	    if (th == thinker)
-		return i;
-	}
+    if ( P_VisitMobjThinkers([&i,thinker](mobj_t *m) {
+             i++;
+             if (thinker == m)
+                return true;
+             return false;
+          } ) ) {
+       return i;
     }
 
     return 0;
@@ -442,14 +440,15 @@ thinker_t* P_IndexToThinker (uint32_t index)
     if (!index)
 	return NULL;
 
-    for (th = thinkercap.next, i = 0; th != &thinkercap; th = th->next)
-    {
-	if (th->function == P_MobjThinker)
-	{
-	    i++;
-	    if (i == index)
-		return th;
-	}
+    if ( P_VisitMobjThinkers([&th, &i,index](mobj_t *m) {
+             i++;
+             if (i == index) {
+		th = m;
+                return true;
+             }
+             return false;
+          } ) ) {
+       return th;
     }
 
     restoretargets_fail++;
@@ -1672,38 +1671,27 @@ void P_ArchiveThinkers (void)
 //
 void P_UnArchiveThinkers (void)
 {
-    byte		tclass;
-    thinker_t*		currentthinker;
-    thinker_t*		next;
-    mobj_t*		mobj;
-    
-    // remove all the current thinkers
-    currentthinker = thinkercap.next;
-    while (currentthinker != &thinkercap)
-    {
-	next = currentthinker->next;
-	
-	if (currentthinker->function == P_MobjThinker)
-	    P_RemoveMobj ((mobj_t *)currentthinker);
-	else
-	    Z_Free (currentthinker);
-
-	currentthinker = next;
-    }
+    P_VisitThinkers([](thinker_t *currentthinker) {
+          if (currentthinker->function == P_MobjThinker)
+             P_RemoveMobj ((mobj_t *)currentthinker);
+          else
+             Z_Free (currentthinker);
+          return false;
+       } );
     P_InitThinkers ();
-    
+
     // read in saved thinkers
     while (1)
     {
-	tclass = saveg_read8();
+	byte tclass = saveg_read8();
 	switch (tclass)
 	{
 	  case tc_end:
 	    return; 	// end of list
-			
+
 	  case tc_mobj:
-	    saveg_read_pad();
-	    mobj = zone_malloc<mobj_t>( PU_LEVEL);
+          {saveg_read_pad();
+	    auto mobj = zone_malloc<mobj_t>( PU_LEVEL);
             saveg_read_mobj_t(mobj);
 
 	    // [crispy] restore mobj->target and mobj->tracer fields
@@ -1716,7 +1704,7 @@ void P_UnArchiveThinkers (void)
 //	    mobj->ceilingz = mobj->subsector->sector->ceilingheight;
 	    mobj->function = P_MobjThinker;
 	    P_AddThinker (mobj);
-	    break;
+          } break;
 
 	  default:
 	    I_Error ("Unknown tclass %i in savegame",tclass);
