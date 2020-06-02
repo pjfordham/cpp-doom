@@ -2790,14 +2790,14 @@ void M_SetMusicPackDir(void)
     music_pack_path = std::string( prefdir ) + "music-packs";
 
     M_MakeDirectory(prefdir);
-    M_MakeDirectory(music_pack_path.c_str());
+    M_MakeDirectory(music_pack_path);
     M_SetVariable("music_pack_path", music_pack_path.c_str());
 
     // We write a README file with some basic instructions on how to use
     // the directory.
     readme_path = music_pack_path + DIR_SEPARATOR_S + "README.txt";
  
-    M_WriteFile(readme_path.c_str(), MUSIC_PACK_README, strlen(MUSIC_PACK_README));
+    M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
     SDL_free(prefdir);
 }
@@ -2823,9 +2823,9 @@ const char *M_GetSaveGameDir(const char *iwadname)
     if (p)
     {
         savegamedir = std::string( myargv[p + 1] );
-        if (!M_FileExists(savegamedir.c_str()))
+        if (!M_FileExists(savegamedir))
         {
-           M_MakeDirectory(savegamedir.c_str());
+           M_MakeDirectory(savegamedir);
         }
 
         // add separator at end just in case
@@ -2853,14 +2853,14 @@ const char *M_GetSaveGameDir(const char *iwadname)
         // ~/.local/share/chocolate-doom/savegames
 
         auto topdir = std::string(configdir) + "savegames";
-        M_MakeDirectory(topdir.c_str());
+        M_MakeDirectory(topdir);
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/
 
         savegamedir = topdir +  DIR_SEPARATOR_S + iwadname +
                                          DIR_SEPARATOR_S;
 
-        M_MakeDirectory(savegamedir.c_str());
+        M_MakeDirectory(savegamedir);
     }
 
     return M_StringDuplicate( savegamedir.c_str() );

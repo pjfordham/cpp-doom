@@ -55,22 +55,22 @@
 // Create a directory
 //
 
-void M_MakeDirectory(const char *path)
+void M_MakeDirectory(const std::string &path)
 {
 #ifdef _WIN32
-    mkdir(path);
+    mkdir(path.c_str());
 #else
-    mkdir(path, 0755);
+    mkdir(path.c_str(), 0755);
 #endif
 }
 
 // Check if a file exists
 
-boolean M_FileExists(const char *filename)
+boolean M_FileExists(const std::string &filename)
 {
     FILE *fstream;
 
-    fstream = fopen(filename, "r");
+    fstream = fopen(filename.c_str(), "r");
 
     if (fstream != NULL)
     {
@@ -89,16 +89,16 @@ boolean M_FileExists(const char *filename)
 // Check if a file exists by probing for common case variation of its filename.
 // Returns a newly allocated string that the caller is responsible for freeing.
 
-std::string M_FileCaseExists(const char *path)
+std::string M_FileCaseExists(const std::string &path)
 {
-    std::string path_dup = std::string( path );
-
     // 0: actual path
-    if (M_FileExists(path_dup.c_str()))
+    if (M_FileExists(path))
     {
-       return path_dup;
+       return path;
     }
 
+    // Make a modifiable string
+    std::string path_dup = path;
     std::size_t pos = path_dup.rfind( DIR_SEPARATOR );
 
     auto filename_begin = pos == std::string::npos ? path_dup.begin() : path_dup.begin() + pos + 1;
@@ -107,7 +107,7 @@ std::string M_FileCaseExists(const char *path)
     // 1: lowercase filename, e.g. doom2.wad
     std::transform(filename_begin, filename_end, filename_begin, ::tolower);
 
-    if (M_FileExists( path_dup.c_str() ) )
+    if (M_FileExists( path_dup ) )
     {
           return path_dup;
     }
@@ -115,7 +115,7 @@ std::string M_FileCaseExists(const char *path)
     // 2: uppercase filename, e.g. DOOM2.WAD
     std::transform(filename_begin, filename_end, filename_begin, ::toupper);
 
-    if (M_FileExists(path_dup.c_str()))
+    if (M_FileExists(path_dup))
     {
         return path_dup;
     }
@@ -125,7 +125,7 @@ std::string M_FileCaseExists(const char *path)
     if ( pos != std::string::npos ) {
        std::transform(path_dup.begin() + pos, path_dup.end(), path_dup.begin() + pos, ::tolower);
 
-       if (M_FileExists(path_dup.c_str()))
+       if (M_FileExists(path_dup))
        {
           return path_dup;
        }
@@ -136,7 +136,7 @@ std::string M_FileCaseExists(const char *path)
     {
        std::transform(filename_begin + 1, filename_end, filename_begin, ::tolower);
 
-       if (M_FileExists(path_dup.c_str()))
+       if (M_FileExists(path_dup))
        {
           return path_dup;
        }
@@ -172,12 +172,12 @@ long M_FileLength(FILE *handle)
 // M_WriteFile
 //
 
-boolean M_WriteFile(const char *name, const void *source, int length)
+boolean M_WriteFile(const std::string &name, const void *source, int length)
 {
     FILE *handle;
     int	count;
 	
-    handle = fopen(name, "wb");
+    handle = fopen(name.c_str(), "wb");
 
     if (handle == NULL)
 	return false;
@@ -196,15 +196,15 @@ boolean M_WriteFile(const char *name, const void *source, int length)
 // M_ReadFile
 //
 
-int M_ReadFile(const char *name, byte **buffer)
+int M_ReadFile(const std::string &name, byte **buffer)
 {
     FILE *handle;
     int	count, length;
     byte *buf;
 	
-    handle = fopen(name, "rb");
+    handle = fopen(name.c_str(), "rb");
     if (handle == NULL)
-	I_Error ("Couldn't read file %s", name);
+        I_Error ("Couldn't read file %s", name.c_str());
 
     // find the size of the file by seeking to the end and
     // reading the current position
@@ -216,7 +216,7 @@ int M_ReadFile(const char *name, byte **buffer)
     fclose (handle);
 	
     if (count < length)
-	I_Error ("Couldn't read file %s", name);
+        I_Error ("Couldn't read file %s", name.c_str());
 		
     buf[length] = '\0';
     *buffer = buf;
@@ -228,35 +228,31 @@ int M_ReadFile(const char *name, byte **buffer)
 //
 // The returned value must be freed with Z_Free after use.
 
-std::string M_TempFile(const char *s)
+std::string M_TempFile(const std::string &s)
 {
-    const char *tempdir;
-
 #ifdef _WIN32
-
     // Check the TEMP environment variable to find the location.
-
-    tempdir = getenv("TEMP");
-
+    const char *tempdir = getenv("TEMP");
     if (tempdir == NULL)
     {
         tempdir = ".";
     }
+    return tempdir;
 #else
     // In Unix, just use /tmp.
 
-    tempdir = "/tmp";
+    return std::string( "/tmp" ) + DIR_SEPARATOR_S + s;
 #endif
 
-    return std::string( tempdir ) + DIR_SEPARATOR_S + s;
 }
 
-boolean M_StrToInt(const char *str, int *result)
+boolean M_StrToInt(const std::string &str, int *result)
 {
-    return sscanf(str, " 0x%x", result) == 1
-        || sscanf(str, " 0X%x", result) == 1
-        || sscanf(str, " 0%o", result) == 1
-        || sscanf(str, " %d", result) == 1;
+   auto c_str = str.c_str();
+   return sscanf(c_str, " 0x%x", result) == 1
+        || sscanf(c_str, " 0X%x", result) == 1
+        || sscanf(c_str, " 0%o", result) == 1
+        || sscanf(c_str, " %d", result) == 1;
 }
 
 // Returns the directory portion of the given path, without the trailing

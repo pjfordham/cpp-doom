@@ -417,7 +417,7 @@ static void CheckSteamGUSPatches(void)
     auto test_patch_path = patch_path + "\\ACBASS.PAT";
 
     // Does acbass.pat exist? If so, then set gus_patch_path.
-    if (M_FileExists(test_patch_path.c_str()))
+    if (M_FileExists(test_patch_path))
     {
         M_SetVariable("gus_patch_path", patch_path.c_str());
     }
@@ -457,7 +457,7 @@ static void CheckDOSDefaults(void)
 static boolean DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != NULL
-        && !strcasecmp(M_BaseName(path), filename);
+       && !strcasecmp(std::string(M_BaseName(path)).c_str(), filename);
 }
 
 // Check if the specified directory contains the specified IWAD
@@ -489,7 +489,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
        filename = filename + DIR_SEPARATOR_S +  iwadname;
     }
 
-    probe = M_FileCaseExists(filename.c_str());
+    probe = M_FileCaseExists(filename);
     if (!probe.empty())
     {
        return M_StringDuplicate( probe.c_str() );
@@ -534,7 +534,6 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
     size_t i;
     GameMission_t mission;
 
-    name = M_BaseName(name);
     mission = none;
 
     for (i=0; i<arrlen(iwads); ++i)
@@ -548,7 +547,7 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 
         // Check if it ends in this IWAD name.
 
-        if (!strcasecmp(name, iwads[i].name))
+        if (!strcasecmp(std::string(M_BaseName(name)).c_str(), iwads[i].name))
         {
             mission = iwads[i].mission;
             break;
@@ -777,10 +776,10 @@ char *D_FindWADByName(const char *name)
 
         auto path = std::string( iwad_dirs[i] ) + DIR_SEPARATOR_S + name;
 
-        probe = M_FileCaseExists(path.c_str());
+        probe = M_FileCaseExists(path);
         if (!probe.empty())
         {
-           return M_StringDuplicate( probe.c_str() );
+           return M_StringDuplicate(probe.c_str() );
         }
     }
 

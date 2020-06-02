@@ -1655,7 +1655,7 @@ static void *I_OPL_RegisterSong(void *data, int len)
     // [crispy] remove MID file size limit
     if (IsMid(static_cast<byte *>(data), len) /* && len < MAXMIDLENGTH */)
     {
-       M_WriteFile(filename.c_str(), data, len);
+       M_WriteFile(filename, data, len);
     }
     else
     {

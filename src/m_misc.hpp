@@ -26,14 +26,14 @@
 
 #include "doomtype.hpp"
 
-boolean M_WriteFile(const char *name, const void *source, int length);
-int M_ReadFile(const char *name, byte **buffer);
-void M_MakeDirectory(const char *dir);
-std::string M_TempFile(const char *s);
-boolean M_FileExists(const char *file);
-std::string M_FileCaseExists(const char *file);
+boolean M_WriteFile(const std::string &name, const void *source, int length);
+int M_ReadFile(const std::string &name, byte **buffer);
+void M_MakeDirectory(const std::string &dir);
+std::string M_TempFile(const std::string &s);
+boolean M_FileExists(const std::string &file);
+std::string M_FileCaseExists(const std::string &file);
 long M_FileLength(FILE *handle);
-boolean M_StrToInt(const char *str, int *result);
+boolean M_StrToInt(const std::string &str, int *result);
 std::unique_ptr<char[]> M_DirName(const char *path);
 const char *M_BaseName(const char *path);
 void M_ExtractFileBase(const char *path, char *dest);

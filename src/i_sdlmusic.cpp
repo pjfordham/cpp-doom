@@ -418,7 +418,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
 */
     if (len < 4 || !std::equal(bdata, bdata + 4, "MUS\x1a")) // [crispy] MUS_HEADER_MAGIC
     {
-        M_WriteFile(filename.c_str(), data, len);
+        M_WriteFile(filename, data, len);
     }
     else
     {
