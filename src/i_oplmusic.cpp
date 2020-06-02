@@ -1612,7 +1612,7 @@ static boolean IsMid(byte *mem, int len)
     return len > 4 && std::equal(mem, mem + 4, "MThd");
 }
 
-static boolean ConvertMus(byte *musdata, int len, char *filename)
+static boolean ConvertMus(byte *musdata, int len, const char *filename)
 {
     MEMFILE *instream;
     MEMFILE *outstream;
@@ -1641,7 +1641,6 @@ static boolean ConvertMus(byte *musdata, int len, char *filename)
 static void *I_OPL_RegisterSong(void *data, int len)
 {
     midi_file_t *result;
-    char *filename;
 
     if (!music_initialized)
     {
@@ -1651,21 +1650,21 @@ static void *I_OPL_RegisterSong(void *data, int len)
     // MUS files begin with "MUS"
     // Reject anything which doesnt have this signature
 
-    filename = M_TempFile("doom.mid");
+    auto filename = M_TempFile("doom.mid");
 
     // [crispy] remove MID file size limit
     if (IsMid(static_cast<byte *>(data), len) /* && len < MAXMIDLENGTH */)
     {
-        M_WriteFile(filename, data, len);
+       M_WriteFile(filename.c_str(), data, len);
     }
     else
     {
         // Assume a MUS file and try to convert
 
-        ConvertMus(static_cast<byte*>(data), len, filename);
+        ConvertMus(static_cast<byte*>(data), len, filename.c_str());
     }
 
-    result = MIDI_LoadFile(filename);
+    result = MIDI_LoadFile(filename.c_str());
 
     if (result == NULL)
     {
@@ -1674,8 +1673,7 @@ static void *I_OPL_RegisterSong(void *data, int len)
 
     // remove file now
 
-    remove(filename);
-    free(filename);
+    remove(filename.c_str());
 
     return result;
 }

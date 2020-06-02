@@ -59,14 +59,14 @@ static int current_music_volume;
 
 const char *timidity_cfg_path = "";
 
-static char *temp_timidity_cfg = NULL;
+static std::string temp_timidity_cfg;
 
 // If the temp_timidity_cfg config variable is set, generate a "wrapper"
 // config file for Timidity to point to the actual config file. This
 // is needed to inject a "dir" command so that the patches are read
 // relative to the actual config file.
 
-static boolean WriteWrapperTimidityConfig(char *write_path)
+static boolean WriteWrapperTimidityConfig(const char *write_path)
 {
     FILE *fstream;
 
@@ -99,11 +99,11 @@ void I_InitTimidityConfig(void)
 
     if (snd_musicdevice == SNDDEVICE_GUS)
     {
-        success = GUS_WriteConfig(temp_timidity_cfg);
+        success = GUS_WriteConfig(temp_timidity_cfg.c_str());
     }
     else
     {
-        success = WriteWrapperTimidityConfig(temp_timidity_cfg);
+        success = WriteWrapperTimidityConfig(temp_timidity_cfg.c_str());
     }
 
     // Set the TIMIDITY_CFG environment variable to point to the temporary
@@ -111,12 +111,11 @@ void I_InitTimidityConfig(void)
 
     if (success)
     {
-        setenv("TIMIDITY_CFG", temp_timidity_cfg, 1);
+        setenv("TIMIDITY_CFG", temp_timidity_cfg.c_str(), 1);
     }
     else
     {
-        free(temp_timidity_cfg);
-        temp_timidity_cfg = NULL;
+        temp_timidity_cfg.empty();
     }
 }
 
@@ -124,10 +123,9 @@ void I_InitTimidityConfig(void)
 
 static void RemoveTimidityConfig(void)
 {
-    if (temp_timidity_cfg != NULL)
+    if (temp_timidity_cfg.size())
     {
-        remove(temp_timidity_cfg);
-        free(temp_timidity_cfg);
+        remove(temp_timidity_cfg.c_str());
     }
 }
 
@@ -399,7 +397,6 @@ static boolean ConvertMus(byte *musdata, int len, const char *filename)
 
 static void *I_SDL_RegisterSong(void *data, int len)
 {
-    char *filename;
     Mix_Music *music;
     byte *bdata = static_cast<byte*>( data );
     
@@ -411,7 +408,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
     // MUS files begin with "MUS"
     // Reject anything which doesnt have this signature
 
-    filename = M_TempFile("doom"); // [crispy] generic filename
+    auto filename = M_TempFile("doom"); // [crispy] generic filename
 
     // [crispy] Reverse Choco's logic from "if (MIDI)" to "if (not MUS)"
     // MUS is the only format that requires conversion,
@@ -421,13 +418,13 @@ static void *I_SDL_RegisterSong(void *data, int len)
 */
     if (len < 4 || !std::equal(bdata, bdata + 4, "MUS\x1a")) // [crispy] MUS_HEADER_MAGIC
     {
-        M_WriteFile(filename, data, len);
+        M_WriteFile(filename.c_str(), data, len);
     }
     else
     {
 	// Assume a MUS file and try to convert
 
-        ConvertMus(bdata, len, filename);
+        ConvertMus(bdata, len, filename.c_str());
     }
 
     // Load the MIDI. In an ideal world we'd be using Mix_LoadMUS_RW()
@@ -449,7 +446,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
     else
 #endif
     {
-        music = Mix_LoadMUS(filename);
+        music = Mix_LoadMUS(filename.c_str());
         if (music == NULL)
         {
             // Failed to load
@@ -463,11 +460,9 @@ static void *I_SDL_RegisterSong(void *data, int len)
 
         if (strlen(snd_musiccmd) == 0)
         {
-            remove(filename);
+            remove(filename.c_str());
         }
     }
-
-    free(filename);
 
     return music;
 }

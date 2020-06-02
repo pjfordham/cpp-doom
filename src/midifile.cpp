@@ -574,7 +574,7 @@ void MIDI_FreeFile(midi_file_t *file)
     delete file;
 }
 
-midi_file_t *MIDI_LoadFile(char *filename)
+midi_file_t *MIDI_LoadFile(const char *filename)
 {
     FILE *stream;
 

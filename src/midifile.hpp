@@ -131,7 +131,7 @@ typedef struct
 
 // Load a MIDI file.
 
-midi_file_t *MIDI_LoadFile(char *filename);
+midi_file_t *MIDI_LoadFile(const char *filename);
 
 // Free a MIDI file.
 

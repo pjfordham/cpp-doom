@@ -2084,9 +2084,8 @@ void G_DoSaveGame (void)
 { 
     char *savegame_file;
     char *temp_savegame_file;
-    char *recovery_savegame_file;
+    std::string recovery_savegame_file;
 
-    recovery_savegame_file = NULL;
     temp_savegame_file = P_TempSaveGameFile();
     savegame_file = P_SaveGameFile(savegameslot);
 
@@ -2101,11 +2100,11 @@ void G_DoSaveGame (void)
         // Failed to save the game, so we're going to have to abort. But
         // to be nice, save to somewhere else before we call I_Error().
         recovery_savegame_file = M_TempFile("recovery.dsg");
-        save_stream = fopen(recovery_savegame_file, "wb");
+        save_stream = fopen(recovery_savegame_file.c_str(), "wb");
         if (save_stream == NULL)
         {
             I_Error("Failed to open either '%s' or '%s' to write savegame.",
-                    temp_savegame_file, recovery_savegame_file);
+                    temp_savegame_file, recovery_savegame_file.c_str());
         }
     }
 
@@ -2152,14 +2151,14 @@ void G_DoSaveGame (void)
 
     fclose(save_stream);
 
-    if (recovery_savegame_file != NULL)
+    if (recovery_savegame_file.size())
     {
         // We failed to save to the normal location, but we wrote a
         // recovery file to the temp directory. Now we can bomb out
         // with an error.
         I_Error("Failed to open savegame file '%s' for writing.\n"
                 "But your game has been saved to '%s' for recovery.",
-                temp_savegame_file, recovery_savegame_file);
+                temp_savegame_file, recovery_savegame_file.c_str());
     }
 
     // Now rename the temporary savegame file to the actual savegame

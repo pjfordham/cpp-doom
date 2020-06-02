@@ -235,7 +235,7 @@ int M_ReadFile(const char *name, byte **buffer)
 //
 // The returned value must be freed with Z_Free after use.
 
-char *M_TempFile(const char *s)
+std::string M_TempFile(const char *s)
 {
     const char *tempdir;
 
@@ -255,7 +255,7 @@ char *M_TempFile(const char *s)
     tempdir = "/tmp";
 #endif
 
-    return M_StringJoin(tempdir, DIR_SEPARATOR_S, s, NULL);
+    return std::string( tempdir ) + DIR_SEPARATOR_S + s;
 }
 
 boolean M_StrToInt(const char *str, int *result)
