@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <string>
 
 #include "../utils/memory.hpp"
 #include "d_iwad.hpp"
@@ -358,9 +359,9 @@ static void CheckInstallRootPaths(void)
 
         for (j=0; j<arrlen(root_path_subdirs); ++j)
         {
-            subpath = M_StringJoin(install_path, DIR_SEPARATOR_S,
-                                   root_path_subdirs[j], NULL);
-            AddIWADDir(subpath);
+           auto subpath = std::string(install_path) + DIR_SEPARATOR_S +
+              root_path_subdirs[j];
+           AddIWADDir( M_StringDuplicate(subpath.c_str()) );
         }
 
         free(install_path);
@@ -373,7 +374,6 @@ static void CheckInstallRootPaths(void)
 static void CheckSteamEdition(void)
 {
     char *install_path;
-    char *subpath;
     size_t i;
 
     install_path = GetRegistryString(&steam_install_location);
@@ -385,10 +385,10 @@ static void CheckSteamEdition(void)
 
     for (i=0; i<arrlen(steam_install_subdirs); ++i)
     {
-        subpath = M_StringJoin(install_path, DIR_SEPARATOR_S,
-                               steam_install_subdirs[i], NULL);
+       auto subpath = std::string( install_path ) + DIR_SEPARATOR_S +
+          steam_install_subdirs[i];
 
-        AddIWADDir(subpath);
+       AddIWADDir( M_StringDuplicate(subpath.c_str()) );
     }
 
     free(install_path);
@@ -399,36 +399,29 @@ static void CheckSteamEdition(void)
 
 static void CheckSteamGUSPatches(void)
 {
-    const char *current_path;
-    char *install_path;
-    char *test_patch_path, *patch_path;
-
     // Already configured? Don't stomp on the user's choices.
-    current_path = M_GetStringVariable("gus_patch_path");
+    auto current_path = M_GetStringVariable("gus_patch_path");
     if (current_path != NULL && strlen(current_path) > 0)
     {
         return;
     }
 
-    install_path = GetRegistryString(&steam_install_location);
+    auto install_path = GetRegistryString(&steam_install_location);
 
     if (install_path == NULL)
     {
         return;
     }
 
-    patch_path = M_StringJoin(install_path, "\\", STEAM_BFG_GUS_PATCHES,
-                              NULL);
-    test_patch_path = M_StringJoin(patch_path, "\\ACBASS.PAT", NULL);
+    auto patch_path = std::string(install_path) + "\\" + STEAM_BFG_GUS_PATCHES;
+    auto test_patch_path = patch_path + "\\ACBASS.PAT";
 
     // Does acbass.pat exist? If so, then set gus_patch_path.
-    if (M_FileExists(test_patch_path))
+    if (M_FileExists(test_patch_path.c_str()))
     {
-        M_SetVariable("gus_patch_path", patch_path);
+        M_SetVariable("gus_patch_path", patch_path.c_str());
     }
 
-    free(test_patch_path);
-    free(patch_path);
     free(install_path);
 }
 
@@ -473,7 +466,7 @@ static boolean DirIsFile(const char *path, const char *filename)
 
 static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 {
-    char *filename; 
+    std::string filename;
     char *probe;
 
     // As a special case, the "directory" may refer directly to an
@@ -490,16 +483,15 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 
     if (!strcmp(dir, "."))
     {
-        filename = M_StringDuplicate(iwadname);
+       filename = std::string(iwadname);
     }
     else
     {
-        filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, NULL);
+       filename = filename + DIR_SEPARATOR_S +  iwadname;
     }
 
     free(probe);
-    probe = M_FileCaseExists(filename);
-    free(filename);
+    probe = M_FileCaseExists(filename.c_str());
     if (probe != NULL)
     {
         return probe;
@@ -612,7 +604,7 @@ static void AddIWADPath(const char *path, const char *suffix)
 static void AddXdgDirs(void)
 {
    const char *env;
-   char *tmp_env;
+   std::string tmp_env;
 
     // Quote:
     // > $XDG_DATA_HOME defines the base directory relative to which
@@ -620,7 +612,6 @@ static void AddXdgDirs(void)
     // > is either not set or empty, a default equal to
     // > $HOME/.local/share should be used.
     env = getenv("XDG_DATA_HOME");
-    tmp_env = NULL;
 
     if (env == NULL)
     {
@@ -630,16 +621,15 @@ static void AddXdgDirs(void)
             homedir = "/";
         }
 
-        tmp_env = M_StringJoin(homedir, "/.local/share", NULL);
-        env = tmp_env;
+        tmp_env = std::string(homedir) + "/.local/share";
+        env = tmp_env.c_str();
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
     AddIWADDir(M_StringJoin(env, "/games/doom", NULL));
-    free(tmp_env);
-
+    
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
     // > directories to search for data files in addition to the
@@ -674,26 +664,22 @@ static void AddXdgDirs(void)
 // about everyone.
 static void AddSteamDirs(void)
 {
-   const char *homedir;
-   char *steampath;
-
-    homedir = getenv("HOME");
+    const char *homedir = getenv("HOME");
     if (homedir == NULL)
     {
         homedir = "/";
     }
-    steampath = M_StringJoin(homedir, "/.steam/root/steamapps/common", NULL);
+    std::string steampath = std::string(homedir) + "/.steam/root/steamapps/common";
 
-    AddIWADPath(steampath, "/Doom 2/base");
-    AddIWADPath(steampath, "/Master Levels of Doom/doom2");
-    AddIWADPath(steampath, "/Ultimate Doom/base");
-    AddIWADPath(steampath, "/Final Doom/base");
-    AddIWADPath(steampath, "/DOOM 3 BFG Edition/base/wads");
-    AddIWADPath(steampath, "/Heretic Shadow of the Serpent Riders/base");
-    AddIWADPath(steampath, "/Hexen/base");
-    AddIWADPath(steampath, "/Hexen Deathkings of the Dark Citadel/base");
-    AddIWADPath(steampath, "/Strife");
-    free(steampath);
+    AddIWADPath(steampath.c_str(), "/Doom 2/base");
+    AddIWADPath(steampath.c_str(), "/Master Levels of Doom/doom2");
+    AddIWADPath(steampath.c_str(), "/Ultimate Doom/base");
+    AddIWADPath(steampath.c_str(), "/Final Doom/base");
+    AddIWADPath(steampath.c_str(), "/DOOM 3 BFG Edition/base/wads");
+    AddIWADPath(steampath.c_str(), "/Heretic Shadow of the Serpent Riders/base");
+    AddIWADPath(steampath.c_str(), "/Hexen/base");
+    AddIWADPath(steampath.c_str(), "/Hexen Deathkings of the Dark Citadel/base");
+    AddIWADPath(steampath.c_str(), "/Strife");
 }
 #endif // __MACOSX__
 #endif // !_WIN32
@@ -763,7 +749,6 @@ static void BuildIWADDirList(void)
 
 char *D_FindWADByName(const char *name)
 {
-    char *path;
     char *probe;
     int i;
     
@@ -794,15 +779,13 @@ char *D_FindWADByName(const char *name)
 
         // Construct a string for the full path
 
-        path = M_StringJoin(iwad_dirs[i], DIR_SEPARATOR_S, name, NULL);
+        auto path = std::string( iwad_dirs[i] ) + DIR_SEPARATOR_S + name;
 
-        probe = M_FileCaseExists(path);
+        probe = M_FileCaseExists(path.c_str());
         if (probe != NULL)
         {
             return probe;
         }
-
-        free(path);
     }
 
     // File not found
