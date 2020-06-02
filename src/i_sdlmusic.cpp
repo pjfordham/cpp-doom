@@ -82,8 +82,7 @@ static boolean WriteWrapperTimidityConfig(const char *write_path)
         return false;
     }
 
-    auto path = M_DirName(timidity_cfg_path);
-    fprintf(fstream, "dir %s\n", path.get());
+    fprintf(fstream, "dir %s\n", M_DirName(timidity_cfg_path).c_str() );
 
     fprintf(fstream, "source %s\n", timidity_cfg_path);
     fclose(fstream);

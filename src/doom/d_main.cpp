@@ -1298,11 +1298,8 @@ static void LoadIwadDeh(void)
     // and installed next to the IWAD.
     if (gameversion == exe_chex)
     {
-        char *chex_deh = NULL;
-
         // Look for chex.deh in the same directory as the IWAD file.
-        auto dirname = M_DirName(iwadfile);
-        chex_deh = M_StringJoin(dirname.get(), DIR_SEPARATOR_S, "chex.deh", NULL);
+       char *chex_deh = M_StringDuplicate( M_DirName(iwadfile) + DIR_SEPARATOR_S + "chex.deh" );
 
         // If the dehacked patch isn't found, try searching the WAD
         // search path instead.  We might find it...
@@ -1393,12 +1390,12 @@ static void LoadSigilWad(void)
         char *sigil_wad = NULL, *sigil_shreds = NULL;
 
         auto dirname = M_DirName(iwadfile);
-        sigil_shreds = M_StringJoin(dirname.get(), DIR_SEPARATOR_S, "SIGIL_SHREDS.wad", NULL);
+        sigil_shreds = M_StringDuplicate(dirname + DIR_SEPARATOR_S + "SIGIL_SHREDS.wad");
 
         // [crispy] load SIGIL.WAD
         for (i = 0; i < arrlen(sigil_wads); i++)
         {
-           sigil_wad = M_StringJoin(dirname.get(), DIR_SEPARATOR_S, sigil_wads[i], NULL);
+           sigil_wad = M_StringDuplicate(dirname + DIR_SEPARATOR_S + sigil_wads[i] );
 
             if (M_FileExists(sigil_wad))
             {
@@ -1506,7 +1503,7 @@ static void LoadNerveWad(void)
         if (strrchr(iwadfile, DIR_SEPARATOR) != NULL)
         {
             auto dir = M_DirName(iwadfile);
-            nervewadfile = M_StringJoin(dir.get(), DIR_SEPARATOR_S, "nerve.wad", NULL);
+            nervewadfile = M_StringDuplicate( dir + DIR_SEPARATOR_S + "nerve.wad");
         }
         else
         {

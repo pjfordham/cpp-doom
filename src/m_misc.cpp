@@ -259,23 +259,16 @@ boolean M_StrToInt(const std::string &str, int *result)
 // slash separator character. If no directory is described in the path,
 // the string "." is returned. In either case, the result is newly allocated
 // and must be freed by the caller after use.
-std::unique_ptr<char[]> M_DirName(const char *path)
+std::string M_DirName(const std::string_view &path)
 {
-    const auto *p = strrchr(path, DIR_SEPARATOR);
-    if (p == nullptr)
+    std::size_t p = path.rfind( DIR_SEPARATOR );
+    if (p == std::string::npos)
     {
-       auto result = std::make_unique<char[]>(2);
-       result[0] = '.';
-       result[1] = '\0';
-       return result;
+       return std::string(".");
     }
     else
     {
-       auto len = strlen( path ) + 1;
-       auto result = std::make_unique<char[]>(len);
-       std::copy( path, path + len, result.get() );
-       result[p - path] = '\0';
-       return result;
+       return std::string( path.substr( p + 1 ) );
     }
 }
 
@@ -428,62 +421,21 @@ char *M_StringDuplicate(const std::string_view &orig)
 // String replace function.
 //
 
-std::unique_ptr<char[]> M_StringReplace(const char *haystack, const char *needle,
-                                        const char *replacement)
+std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
+                            const std::string_view &replacement)
 {
-    char *dst;
-    const char *p;
-    size_t needle_len = strlen(needle);
-    size_t result_len, dst_len;
+    std::string result;
+    auto remainder = haystack;
 
-    // Iterate through occurrences of 'needle' and calculate the size of
-    // the new string.
-    result_len = strlen(haystack) + 1;
-    p = haystack;
-
-    for (;;)
-    {
-        p = strstr(p, needle);
-        if (p == NULL)
-        {
-            break;
-        }
-
-        p += needle_len;
-        result_len += strlen(replacement) - needle_len;
+    auto pos = remainder.find( needle );
+    while ( pos != std::string::npos ) {
+       result += remainder.substr( 0, pos );
+       result += replacement;
+       remainder = remainder.substr( pos + needle.length() );
+       pos = remainder.find( needle );
     }
 
-    // Construct new string.
-
-    auto result = std::make_unique<char[]>(result_len);
-    if (result == NULL)
-    {
-        I_Error("M_StringReplace: Failed to allocate new string");
-        return NULL;
-    }
-
-    dst = result.get(); dst_len = result_len;
-    p = haystack;
-
-    while (*p != '\0')
-    {
-        if (!strncmp(p, needle, needle_len))
-        {
-            M_StringCopy(dst, replacement, dst_len);
-            p += needle_len;
-            dst += strlen(replacement);
-            dst_len -= strlen(replacement);
-        }
-        else
-        {
-            *dst = *p;
-            ++dst; --dst_len;
-            ++p;
-        }
-    }
-
-    *dst = '\0';
-
+    result += remainder;
     return result;
 }
 

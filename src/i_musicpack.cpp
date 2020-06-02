@@ -695,7 +695,7 @@ static char *GetFullPath(const char *musicdir, const char *path)
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    result = M_StringJoin(musicdir, systemized_path.get(), NULL);
+    result = M_StringJoin(musicdir, systemized_path.c_str(), NULL);
 
     return result;
 }
@@ -718,7 +718,7 @@ static char *ExpandFileExtension(const char *musicdir, const char *filename)
     for (i = 0; i < arrlen(extns); ++i)
     {
         auto replaced = M_StringReplace(filename, ".{ext}", extns[i]);
-        result = GetFullPath(musicdir, replaced.get());
+        result = GetFullPath(musicdir, replaced.c_str());
         if (M_FileExists(result))
         {
             return result;

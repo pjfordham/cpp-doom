@@ -423,8 +423,7 @@ static void CrispyReplaceColor (const char *str, const int cr, const char *col)
 
     M_snprintf(col_replace, sizeof(col_replace),
                "%s%s%s", crstr[cr], col, crstr[CR_NONE]);
-    auto str_replace = M_StringReplace(str, col, col_replace);
-    DEH_AddStringReplacement(str, str_replace.get());
+    DEH_AddStringReplacement(str, M_StringReplace(str, col, col_replace).c_str());
 }
 
 static const char *cr_stat, *cr_stat2, *kills;
@@ -741,8 +740,7 @@ void HU_Start(void)
     
     // [crispy] print the map title in white from the first colon onward
     M_snprintf(buf, sizeof(buf), "%s%s", ":", crstr[CR_GRAY]);
-    auto ptr = M_StringReplace(s, ":", buf);
-    s = ptr.get();
+    s = M_StringReplace(s, ":", buf).c_str();
 
     while (*s)
 	HUlib_addCharToTextLine(&w_title, *(s++));
