@@ -716,7 +716,7 @@ static void BuildIWADDirList(void)
 
     // Next check the directory where the executable is located. This might
     // be different from the current directory.
-    AddIWADDir(M_DirName(myargv[0]));
+    AddIWADDir( M_StringDuplicate( M_DirName(myargv[0]).get() ));
 
     // Add DOOMWADDIR if it is in the environment
     env = getenv("DOOMWADDIR");

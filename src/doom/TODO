@@ -17,6 +17,8 @@ realloc => all gone!
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 and all variants of free
 
+M_StringJoin to std::string +
+
 memcmp => std::equal, all gone
 memcpy => std::copy
 
