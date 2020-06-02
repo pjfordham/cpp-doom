@@ -2776,7 +2776,9 @@ void M_SetConfigDir(const char *dir)
 void M_SetMusicPackDir(void)
 {
     const char *current_path;
-    char *prefdir, *music_pack_path, *readme_path;
+    char *prefdir;
+    std::string music_pack_path;
+    std::string readme_path;
 
     current_path = M_GetStringVariable("music_pack_path");
 
@@ -2786,20 +2788,18 @@ void M_SetMusicPackDir(void)
     }
 
     prefdir = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    music_pack_path = M_StringJoin(prefdir, "music-packs", NULL);
+    music_pack_path = std::string( prefdir ) + "music-packs";
 
     M_MakeDirectory(prefdir);
-    M_MakeDirectory(music_pack_path);
-    M_SetVariable("music_pack_path", music_pack_path);
+    M_MakeDirectory(music_pack_path.c_str());
+    M_SetVariable("music_pack_path", music_pack_path.c_str());
 
     // We write a README file with some basic instructions on how to use
     // the directory.
-    readme_path = M_StringJoin(music_pack_path, DIR_SEPARATOR_S,
-                               "README.txt", NULL);
-    M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
+    readme_path = music_pack_path + DIR_SEPARATOR_S + "README.txt";
+ 
+    M_WriteFile(readme_path.c_str(), MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
-    free(readme_path);
-    free(music_pack_path);
     SDL_free(prefdir);
 }
 
@@ -2811,7 +2811,6 @@ void M_SetMusicPackDir(void)
 const char *M_GetSaveGameDir(const char *iwadname)
 {
     const char *savegamedir;
-    char *topdir;
     int p;
 
     //!
@@ -2854,17 +2853,15 @@ const char *M_GetSaveGameDir(const char *iwadname)
     {
         // ~/.local/share/chocolate-doom/savegames
 
-        topdir = M_StringJoin(configdir, "savegames", NULL);
-        M_MakeDirectory(topdir);
+        auto topdir = std::string(configdir) + "savegames";
+        M_MakeDirectory(topdir.c_str());
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/
 
-        savegamedir = M_StringJoin(topdir, DIR_SEPARATOR_S, iwadname,
+        savegamedir = M_StringJoin(topdir.c_str(), DIR_SEPARATOR_S, iwadname,
                                    DIR_SEPARATOR_S, NULL);
 
         M_MakeDirectory(savegamedir);
-
-        free(topdir);
     }
 
     return savegamedir;

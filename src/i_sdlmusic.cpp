@@ -93,7 +93,6 @@ static boolean WriteWrapperTimidityConfig(char *write_path)
 
 void I_InitTimidityConfig(void)
 {
-    char *env_string;
     boolean success;
 
     temp_timidity_cfg = M_TempFile("timidity.cfg");
@@ -112,8 +111,7 @@ void I_InitTimidityConfig(void)
 
     if (success)
     {
-        env_string = M_StringJoin("TIMIDITY_CFG=", temp_timidity_cfg, NULL);
-        putenv(env_string);
+        setenv("TIMIDITY_CFG", temp_timidity_cfg, 1);
     }
     else
     {

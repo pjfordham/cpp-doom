@@ -787,7 +787,7 @@ static const char *ReadHashPrefix(char *line)
 // Parse a line from substitute music configuration file; returns error
 // message or NULL for no error.
 
-static const char *ParseSubstituteLine(char *musicdir, char *line)
+static const char *ParseSubstituteLine(const char *musicdir, char *line)
 {
     const char *hash_prefix;
     char *filename;
@@ -856,7 +856,7 @@ static const char *ParseSubstituteLine(char *musicdir, char *line)
 
 // Read a substitute music configuration file.
 
-static boolean ReadSubstituteConfig(char *musicdir, const char *filename)
+static boolean ReadSubstituteConfig(const char *musicdir, const char *filename)
 {
     char *buffer;
     char *line;
@@ -912,7 +912,7 @@ static boolean ReadSubstituteConfig(char *musicdir, const char *filename)
 static void LoadSubstituteConfigs(void)
 {
     glob_t *glob;
-    char *musicdir;
+    std::string musicdir;
     const char *path;
     unsigned int old_music_len;
     unsigned int i;
@@ -922,19 +922,19 @@ static void LoadSubstituteConfigs(void)
     // $configdir/music to look for .cfg files.
     if (strcmp(music_pack_path, "") != 0)
     {
-        musicdir = M_StringJoin(music_pack_path, DIR_SEPARATOR_S, NULL);
+        musicdir = std::string( music_pack_path ) + DIR_SEPARATOR_S;
     }
     else if (!strcmp(configdir, ""))
     {
-        musicdir = M_StringDuplicate("");
+       // Empty string already
     }
     else
     {
-        musicdir = M_StringJoin(configdir, "music", DIR_SEPARATOR_S, NULL);
+       musicdir = std::string(configdir) + "music" + DIR_SEPARATOR_S;
     }
 
     // Load all music packs, by searching for .cfg files.
-    glob = I_StartGlob(musicdir, "*.cfg", GLOB_FLAG_SORTED|GLOB_FLAG_NOCASE);
+    glob = I_StartGlob(musicdir.c_str(), "*.cfg", GLOB_FLAG_SORTED|GLOB_FLAG_NOCASE);
     for (;;)
     {
         path = I_NextGlob(glob);
@@ -942,7 +942,7 @@ static void LoadSubstituteConfigs(void)
         {
             break;
         }
-        ReadSubstituteConfig(musicdir, path);
+        ReadSubstituteConfig(musicdir.c_str(), path);
     }
     I_EndGlob(glob);
 
@@ -958,7 +958,7 @@ static void LoadSubstituteConfigs(void)
     // configuration files, so that the entries here can be overridden.
     for (i = 0; i < arrlen(known_filenames); ++i)
     {
-        AddSubstituteMusic(musicdir, known_filenames[i].hash_prefix,
+       AddSubstituteMusic(musicdir.c_str(), known_filenames[i].hash_prefix,
                            known_filenames[i].filename);
     }
 
@@ -967,8 +967,6 @@ static void LoadSubstituteConfigs(void)
         printf("Configured %u music substitutions based on filename.\n",
                subst_music_len - old_music_len);
     }
-
-    free(musicdir);
 }
 
 // Returns true if the given lump number is a music lump that should

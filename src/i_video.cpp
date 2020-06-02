@@ -30,6 +30,7 @@
 #include "icon.cpp"
 
 #include "crispy.hpp"
+#include <string>
 
 #include "../utils/lump.hpp"
 #include "config.h"
@@ -49,6 +50,7 @@
 #include "v_video.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
+#include <cstdlib>
 
 int SCREENWIDTH, SCREENHEIGHT, SCREENHEIGHT_4_3;
 int HIRESWIDTH; // [crispy] non-widescreen SCREENWIDTH
@@ -1030,11 +1032,8 @@ void I_SetWindowTitle(const char *title)
 
 void I_InitWindowTitle(void)
 {
-    char *buf;
-
-    buf = M_StringJoin(window_title, " - ", PACKAGE_STRING, NULL);
-    SDL_SetWindowTitle(screen, buf);
-    free(buf);
+    auto buf = std::string( window_title ) + " - " + PACKAGE_STRING;
+    SDL_SetWindowTitle(screen, buf.c_str());
 }
 
 // Set the application icon
@@ -1224,11 +1223,7 @@ static void SetSDLVideoDriver(void)
 
     if (strcmp(video_driver, "") != 0)
     {
-        char *env_string;
-
-        env_string = M_StringJoin("SDL_VIDEODRIVER=", video_driver, NULL);
-        putenv(env_string);
-        free(env_string);
+       setenv("SDL_VIDEODRIVER", video_driver, 1);
     }
 }
 
