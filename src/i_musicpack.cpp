@@ -672,7 +672,6 @@ static const char *GetSubstituteMusicFile(void *data, size_t data_len)
 static char *GetFullPath(const char *musicdir, const char *path)
 {
     char *result;
-    char *systemized_path;
 
     // Starting with directory separator means we have an absolute path,
     // so just return it.
@@ -692,12 +691,11 @@ static char *GetFullPath(const char *musicdir, const char *path)
     // Paths in the substitute filenames can contain Unix-style /
     // path separators, but we should convert this to the separator
     // for the native platform.
-    systemized_path = M_StringReplace(path, "/", DIR_SEPARATOR_S);
+    auto systemized_path = M_StringReplace(path, "/", DIR_SEPARATOR_S);
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    result = M_StringJoin(musicdir, systemized_path, NULL);
-    free(systemized_path);
+    result = M_StringJoin(musicdir, systemized_path.get(), NULL);
 
     return result;
 }
@@ -709,7 +707,7 @@ static char *GetFullPath(const char *musicdir, const char *path)
 static char *ExpandFileExtension(const char *musicdir, const char *filename)
 {
     static const char *extns[] = {".flac", ".ogg", ".mp3"};
-    char *replaced, *result;
+    char *result;
     int i;
 
     if (!M_StringEndsWith(filename, ".{ext}"))
@@ -719,9 +717,8 @@ static char *ExpandFileExtension(const char *musicdir, const char *filename)
 
     for (i = 0; i < arrlen(extns); ++i)
     {
-        replaced = M_StringReplace(filename, ".{ext}", extns[i]);
-        result = GetFullPath(musicdir, replaced);
-        free(replaced);
+        auto replaced = M_StringReplace(filename, ".{ext}", extns[i]);
+        result = GetFullPath(musicdir, replaced.get());
         if (M_FileExists(result))
         {
             return result;

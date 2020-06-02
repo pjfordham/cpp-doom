@@ -17,7 +17,7 @@ realloc => all gone!
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 and all variants of free
 
-memcmp => std::equal, all gone from src/doom
+memcmp => std::equal, all gone
 memcpy => std::copy
 
 memset => std::fill or default init {}
@@ -27,6 +27,7 @@ mommove gone from src/doom, just networking ones left.
 think_t and thinker_t are now a bit weird.
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
+any void*
 
 remove dynamic_Cast from p_extsaveg.cpp
 

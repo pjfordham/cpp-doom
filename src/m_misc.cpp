@@ -434,10 +434,10 @@ char *M_StringDuplicate(const char *orig)
 // String replace function.
 //
 
-char *M_StringReplace(const char *haystack, const char *needle,
-                      const char *replacement)
+std::unique_ptr<char[]> M_StringReplace(const char *haystack, const char *needle,
+                                        const char *replacement)
 {
-    char *result, *dst;
+    char *dst;
     const char *p;
     size_t needle_len = strlen(needle);
     size_t result_len, dst_len;
@@ -461,14 +461,14 @@ char *M_StringReplace(const char *haystack, const char *needle,
 
     // Construct new string.
 
-    result = static_cast<char *>(malloc(result_len));
+    auto result = std::make_unique<char[]>(result_len);
     if (result == NULL)
     {
         I_Error("M_StringReplace: Failed to allocate new string");
         return NULL;
     }
 
-    dst = result; dst_len = result_len;
+    dst = result.get(); dst_len = result_len;
     p = haystack;
 
     while (*p != '\0')

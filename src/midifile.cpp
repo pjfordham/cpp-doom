@@ -168,8 +168,8 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
     unsigned int i;
     byte *result;
 
-    // Allocate a buffer. Allocate one extra byte, as malloc(0) is
-    // non-portable.z
+    // Allocate a buffer. Allocate one extra byte, as new of 0
+    // is dodgy.
 
     result = new byte[ num_bytes + 1 ];
 
