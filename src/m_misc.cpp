@@ -23,6 +23,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <string>
+#include <algorithm>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -87,70 +89,61 @@ boolean M_FileExists(const char *filename)
 // Check if a file exists by probing for common case variation of its filename.
 // Returns a newly allocated string that the caller is responsible for freeing.
 
-char *M_FileCaseExists(const char *path)
+std::string M_FileCaseExists(const char *path)
 {
-    char *path_dup, *filename, *ext;
-
-    path_dup = M_StringDuplicate(path);
+    std::string path_dup = std::string( path );
 
     // 0: actual path
-    if (M_FileExists(path_dup))
+    if (M_FileExists(path_dup.c_str()))
     {
-        return path_dup;
+       return path_dup;
     }
 
-    filename = strrchr(path_dup, DIR_SEPARATOR);
-    if (filename != NULL)
-    {
-        filename++;
-    }
-    else
-    {
-        filename = path_dup;
-    }
+    std::size_t pos = path_dup.rfind( DIR_SEPARATOR );
+
+    auto filename_begin = pos == std::string::npos ? path_dup.begin() : path_dup.begin() + pos + 1;
+    auto filename_end = path_dup.end();
 
     // 1: lowercase filename, e.g. doom2.wad
-    M_ForceLowercase(filename);
+    std::transform(filename_begin, filename_end, filename_begin, ::tolower);
 
-    if (M_FileExists(path_dup))
+    if (M_FileExists( path_dup.c_str() ) )
     {
-        return path_dup;
+          return path_dup;
     }
 
     // 2: uppercase filename, e.g. DOOM2.WAD
-    M_ForceUppercase(filename);
+    std::transform(filename_begin, filename_end, filename_begin, ::toupper);
 
-    if (M_FileExists(path_dup))
+    if (M_FileExists(path_dup.c_str()))
     {
         return path_dup;
     }
 
     // 3. uppercase basename with lowercase extension, e.g. DOOM2.wad
-    ext = strrchr(path_dup, '.');
-    if (ext != NULL && ext > filename)
-    {
-        M_ForceLowercase(ext + 1);
+    pos = path_dup.rfind( "." );
+    if ( pos != std::string::npos ) {
+       std::transform(path_dup.begin() + pos, path_dup.end(), path_dup.begin() + pos, ::tolower);
 
-        if (M_FileExists(path_dup))
-        {
-            return path_dup;
-        }
+       if (M_FileExists(path_dup.c_str()))
+       {
+          return path_dup;
+       }
     }
 
     // 4. lowercase filename with uppercase first letter, e.g. Doom2.wad
-    if (strlen(filename) > 1)
+    if (path_dup.size() > 1)
     {
-        M_ForceLowercase(filename + 1);
+       std::transform(filename_begin + 1, filename_end, filename_begin, ::tolower);
 
-        if (M_FileExists(path_dup))
-        {
-            return path_dup;
-        }
+       if (M_FileExists(path_dup.c_str()))
+       {
+          return path_dup;
+       }
     }
 
     // 5. no luck
-    free(path_dup);
-    return NULL;
+    return {};
 }
 
 //

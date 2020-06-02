@@ -2547,8 +2547,7 @@ void M_LoadDefaults (void)
     }
     else
     {
-        doom_defaults.filename
-            = M_StringJoin(configdir, default_main_config, NULL);
+       doom_defaults.filename = M_StringDuplicate( (std::string(configdir) + default_main_config).c_str() );
     }
 
     printf("saving config in %s\n", doom_defaults.filename);
@@ -2571,7 +2570,7 @@ void M_LoadDefaults (void)
     else
     {
         extra_defaults.filename
-            = M_StringJoin(configdir, default_extra_config, NULL);
+           = M_StringDuplicate( (std::string(configdir) +  default_extra_config).c_str() );
     }
 
     LoadDefaultCollection(&doom_defaults);
@@ -2810,7 +2809,7 @@ void M_SetMusicPackDir(void)
 
 const char *M_GetSaveGameDir(const char *iwadname)
 {
-    const char *savegamedir;
+    std::string savegamedir;
     int p;
 
     //!
@@ -2823,16 +2822,16 @@ const char *M_GetSaveGameDir(const char *iwadname)
     p = M_CheckParmWithArgs("-savedir", 1);
     if (p)
     {
-        savegamedir = myargv[p + 1];
-        if (!M_FileExists(savegamedir))
+        savegamedir = std::string( myargv[p + 1] );
+        if (!M_FileExists(savegamedir.c_str()))
         {
-            M_MakeDirectory(savegamedir);
+           M_MakeDirectory(savegamedir.c_str());
         }
 
         // add separator at end just in case
-        savegamedir = M_StringJoin(savegamedir, DIR_SEPARATOR_S, NULL);
+        savegamedir = savegamedir + DIR_SEPARATOR_S;
 
-        printf("Save directory changed to %s.\n", savegamedir);
+        printf("Save directory changed to %s.\n", savegamedir.c_str());
     }
 #ifdef _WIN32
     // In -cdrom mode, we write savegames to a specific directory
@@ -2840,14 +2839,14 @@ const char *M_GetSaveGameDir(const char *iwadname)
 
     else if (M_ParmExists("-cdrom"))
     {
-        savegamedir = M_StringDuplicate(configdir);
+        savegamedir = std::string(configdir);
     }
 #endif
     // If not "doing" a configuration directory (Windows), don't "do"
     // a savegame directory, either.
     else if (!strcmp(configdir, ""))
     {
-	savegamedir = M_StringDuplicate("");
+       // Already empty
     }
     else
     {
@@ -2858,13 +2857,13 @@ const char *M_GetSaveGameDir(const char *iwadname)
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/
 
-        savegamedir = M_StringJoin(topdir.c_str(), DIR_SEPARATOR_S, iwadname,
-                                   DIR_SEPARATOR_S, NULL);
+        savegamedir = topdir +  DIR_SEPARATOR_S + iwadname +
+                                         DIR_SEPARATOR_S;
 
-        M_MakeDirectory(savegamedir);
+        M_MakeDirectory(savegamedir.c_str());
     }
 
-    return savegamedir;
+    return M_StringDuplicate( savegamedir.c_str() );
 }
 
 //

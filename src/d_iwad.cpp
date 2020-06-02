@@ -467,15 +467,14 @@ static boolean DirIsFile(const char *path, const char *filename)
 static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 {
     std::string filename;
-    char *probe;
 
     // As a special case, the "directory" may refer directly to an
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
-    probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir, iwadname) && probe != NULL)
+    std::string probe = M_FileCaseExists(dir);
+    if (DirIsFile(dir, iwadname) && probe.size() )
     {
-        return probe;
+       return M_StringDuplicate( probe.c_str() );
     }
 
     // Construct the full path to the IWAD if it is located in
@@ -490,11 +489,10 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
        filename = filename + DIR_SEPARATOR_S +  iwadname;
     }
 
-    free(probe);
     probe = M_FileCaseExists(filename.c_str());
-    if (probe != NULL)
+    if (!probe.empty())
     {
-        return probe;
+       return M_StringDuplicate( probe.c_str() );
     }
 
     return NULL;
@@ -749,15 +747,14 @@ static void BuildIWADDirList(void)
 
 char *D_FindWADByName(const char *name)
 {
-    char *probe;
     int i;
     
     // Absolute path?
 
-    probe = M_FileCaseExists(name);
-    if (probe != NULL)
+    auto probe = M_FileCaseExists(name);
+    if (!probe.empty())
     {
-        return probe;
+       return M_StringDuplicate( probe.c_str() );
     }
 
     BuildIWADDirList();
@@ -771,20 +768,19 @@ char *D_FindWADByName(const char *name)
         // file.
 
         probe = M_FileCaseExists(iwad_dirs[i]);
-        if (DirIsFile(iwad_dirs[i], name) && probe != NULL)
+        if (DirIsFile(iwad_dirs[i], name) && !probe.empty())
         {
-            return probe;
+           return M_StringDuplicate( probe.c_str() );
         }
-        free(probe);
 
         // Construct a string for the full path
 
         auto path = std::string( iwad_dirs[i] ) + DIR_SEPARATOR_S + name;
 
         probe = M_FileCaseExists(path.c_str());
-        if (probe != NULL)
+        if (!probe.empty())
         {
-            return probe;
+           return M_StringDuplicate( probe.c_str() );
         }
     }
 

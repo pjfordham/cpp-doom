@@ -36,5 +36,5 @@ remove dynamic_Cast from p_extsaveg.cpp
 export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
 
-( cd ~/github/cpp-doom/build/ ; make c++-doom -j 4 )
-( cd ~/github/cpp-doom/build/ ; ~/github/cpp-doom/build/src/c++-doom )
+( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
+( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
