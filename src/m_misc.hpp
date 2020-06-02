@@ -46,8 +46,8 @@ boolean M_StringConcat(char *dest, const char *src, size_t dest_size);
 std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
                             const std::string_view &replacement);
 char *M_StringJoin(const char *s, ...);
-boolean M_StringStartsWith(const char *s, const char *prefix);
-boolean M_StringEndsWith(const char *s, const char *suffix);
+boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix);
+boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix);
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);
 int M_snprintf(char *buf, size_t buf_len, const char *s, ...) PRINTF_ATTR(3, 4);
 char *M_OEMToUTF8(const char *ansi);

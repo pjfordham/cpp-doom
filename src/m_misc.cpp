@@ -478,18 +478,18 @@ boolean M_StringConcat(char *dest, const char *src, size_t dest_size)
 
 // Returns true if 's' begins with the specified prefix.
 
-boolean M_StringStartsWith(const char *s, const char *prefix)
+boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix)
 {
-    return strlen(s) >= strlen(prefix)
-        && strncmp(s, prefix, strlen(prefix)) == 0;
+   return s.rfind( prefix, 0 ) == 0;
 }
 
 // Returns true if 's' ends with the specified suffix.
 
-boolean M_StringEndsWith(const char *s, const char *suffix)
+boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix)
 {
-    return strlen(s) >= strlen(suffix)
-        && strcmp(s + strlen(s) - strlen(suffix), suffix) == 0;
+    if (suffix.size() > s.size()) return false;
+    return std::equal(suffix.rbegin(), suffix.rend(), s.rbegin());
+
 }
 
 // Return a newly-malloced string with all the strings given as arguments
