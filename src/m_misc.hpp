@@ -40,7 +40,7 @@ void M_ExtractFileBase(const char *path, char *dest);
 void M_ForceUppercase(char *text);
 void M_ForceLowercase(char *text);
 const char *M_StrCaseStr(const char *haystack, const char *needle);
-char *M_StringDuplicate(const char *orig);
+char *M_StringDuplicate(const std::string_view &orig);
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
 boolean M_StringConcat(char *dest, const char *src, size_t dest_size);
 std::unique_ptr<char[]> M_StringReplace(const char *haystack, const char *needle,

@@ -2547,7 +2547,7 @@ void M_LoadDefaults (void)
     }
     else
     {
-       doom_defaults.filename = M_StringDuplicate( (std::string(configdir) + default_main_config).c_str() );
+       doom_defaults.filename = M_StringDuplicate( std::string(configdir) + default_main_config );
     }
 
     printf("saving config in %s\n", doom_defaults.filename);
@@ -2570,7 +2570,7 @@ void M_LoadDefaults (void)
     else
     {
         extra_defaults.filename
-           = M_StringDuplicate( (std::string(configdir) +  default_extra_config).c_str() );
+           = M_StringDuplicate( std::string(configdir) +  default_extra_config );
     }
 
     LoadDefaultCollection(&doom_defaults);
@@ -2863,7 +2863,7 @@ const char *M_GetSaveGameDir(const char *iwadname)
         M_MakeDirectory(savegamedir);
     }
 
-    return M_StringDuplicate( savegamedir.c_str() );
+    return M_StringDuplicate( savegamedir );
 }
 
 //

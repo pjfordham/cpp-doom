@@ -17,7 +17,9 @@ realloc => all gone!
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 and all variants of free
 
-M_StringJoin to std::string +
+M_StringJoin and friends to std::string 
+
+M_StringDuplicate is suspicious, needs to be freed
 
 memcmp => std::equal, all gone
 memcpy => std::copy
@@ -38,3 +40,4 @@ export CXX=/usr/bin/clang++-10
 
 ( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
+( cd ~/github/cpp-doom/debug/ ; gdb ~/github/cpp-doom/debug/src/c++-doom )

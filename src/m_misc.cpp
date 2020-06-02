@@ -409,16 +409,16 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 // allocated.
 //
 
-char *M_StringDuplicate(const char *orig)
+char *M_StringDuplicate(const std::string_view &orig)
 {
     char *result;
 
-    result = strdup(orig);
+    result = strndup(orig.data(), orig.size() );
 
     if (result == NULL)
     {
         I_Error("Failed to duplicate string (length %" PRIuPTR ")\n",
-                strlen(orig));
+                orig.size());
     }
 
     return result;

@@ -361,7 +361,7 @@ static void CheckInstallRootPaths(void)
         {
            auto subpath = std::string(install_path) + DIR_SEPARATOR_S +
               root_path_subdirs[j];
-           AddIWADDir( M_StringDuplicate(subpath.c_str()) );
+           AddIWADDir( M_StringDuplicate(subpath) );
         }
 
         free(install_path);
@@ -388,7 +388,7 @@ static void CheckSteamEdition(void)
        auto subpath = std::string( install_path ) + DIR_SEPARATOR_S +
           steam_install_subdirs[i];
 
-       AddIWADDir( M_StringDuplicate(subpath.c_str()) );
+       AddIWADDir( M_StringDuplicate(subpath) );
     }
 
     free(install_path);
@@ -474,7 +474,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     std::string probe = M_FileCaseExists(dir);
     if (DirIsFile(dir, iwadname) && probe.size() )
     {
-       return M_StringDuplicate( probe.c_str() );
+       return M_StringDuplicate( probe );
     }
 
     // Construct the full path to the IWAD if it is located in
@@ -492,7 +492,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     probe = M_FileCaseExists(filename);
     if (!probe.empty())
     {
-       return M_StringDuplicate( probe.c_str() );
+       return M_StringDuplicate( probe );
     }
 
     return NULL;
@@ -753,7 +753,7 @@ char *D_FindWADByName(const char *name)
     auto probe = M_FileCaseExists(name);
     if (!probe.empty())
     {
-       return M_StringDuplicate( probe.c_str() );
+       return M_StringDuplicate( probe );
     }
 
     BuildIWADDirList();
@@ -769,7 +769,7 @@ char *D_FindWADByName(const char *name)
         probe = M_FileCaseExists(iwad_dirs[i]);
         if (DirIsFile(iwad_dirs[i], name) && !probe.empty())
         {
-           return M_StringDuplicate( probe.c_str() );
+           return M_StringDuplicate( probe );
         }
 
         // Construct a string for the full path
@@ -779,7 +779,7 @@ char *D_FindWADByName(const char *name)
         probe = M_FileCaseExists(path);
         if (!probe.empty())
         {
-           return M_StringDuplicate(probe.c_str() );
+           return M_StringDuplicate( probe );
         }
     }
 
