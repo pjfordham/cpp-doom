@@ -526,7 +526,6 @@ int DEH_LoadLumpByName(const char *name, boolean allow_long, boolean allow_error
 // Check the command line for -deh argument, and others.
 void DEH_ParseCommandLine(void)
 {
-    char *filename;
     int p;
 
     //!
@@ -544,9 +543,8 @@ void DEH_ParseCommandLine(void)
 
         while (p < myargc && myargv[p][0] != '-')
         {
-            filename = D_TryFindWADByName(myargv[p]);
-            DEH_LoadFile(filename);
-            free(filename);
+            auto filename = D_TryFindWADByName(myargv[p]);
+            DEH_LoadFile(filename.c_str());
             ++p;
         }
     }

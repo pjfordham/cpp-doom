@@ -74,10 +74,10 @@ boolean D_IsIWADName(const char *name)
 #define MAX_IWAD_DIRS 128
 
 static boolean iwad_dirs_built = false;
-static const char *iwad_dirs[MAX_IWAD_DIRS];
+static std::string iwad_dirs[MAX_IWAD_DIRS];
 static int num_iwad_dirs = 0;
 
-static void AddIWADDir(const char *dir)
+static void AddIWADDir(const std::string dir)
 {
     if (num_iwad_dirs < MAX_IWAD_DIRS)
     {
@@ -361,7 +361,7 @@ static void CheckInstallRootPaths(void)
         {
            auto subpath = std::string(install_path) + DIR_SEPARATOR_S +
               root_path_subdirs[j];
-           AddIWADDir( M_StringDuplicate(subpath) );
+           AddIWADDir( subpath );
         }
 
         free(install_path);
@@ -388,7 +388,7 @@ static void CheckSteamEdition(void)
        auto subpath = std::string( install_path ) + DIR_SEPARATOR_S +
           steam_install_subdirs[i];
 
-       AddIWADDir( M_StringDuplicate(subpath) );
+       AddIWADDir( subpath );
     }
 
     free(install_path);
@@ -464,7 +464,7 @@ static boolean DirIsFile(const char *path, const char *filename)
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
+static char *CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
 {
     std::string filename;
 
@@ -472,7 +472,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
     std::string probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir, iwadname) && probe.size() )
+    if (DirIsFile(dir.c_str(), iwadname) && probe.size() )
     {
        return M_StringDuplicate( probe );
     }
@@ -480,7 +480,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     // Construct the full path to the IWAD if it is located in
     // this directory, and check if it exists.
 
-    if (!strcmp(dir, "."))
+    if ( dir == "." )
     {
        filename = std::string(iwadname);
     }
@@ -501,7 +501,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mission)
+static char *SearchDirectoryForIWAD(const std::string &dir, int mask, GameMission_t *mission)
 {
     char *filename;
     size_t i;
@@ -578,7 +578,7 @@ static void AddIWADPath(const char *path, const char *suffix)
             // as another iwad dir
             *p = '\0';
 
-            AddIWADDir(M_StringDuplicate( std::string(left) + suffix));
+            AddIWADDir( std::string(left) + suffix);
             left = p + 1;
         }
         else
@@ -587,7 +587,7 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    AddIWADDir(M_StringDuplicate( std::string(left) + suffix));
+    AddIWADDir( std::string(left) + suffix);
 
     free(dup_path);
 }
@@ -625,7 +625,7 @@ static void AddXdgDirs(void)
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    AddIWADDir(M_StringDuplicate(std::string(env) + "/games/doom"));
+    AddIWADDir(std::string(env) + "/games/doom");
 
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
@@ -699,7 +699,7 @@ static void BuildIWADDirList(void)
 
     // Next check the directory where the executable is located. This might
     // be different from the current directory.
-    AddIWADDir( M_StringDuplicate( M_DirName(myargv[0]) ));
+    AddIWADDir( M_DirName(myargv[0]) );
 
     // Add DOOMWADDIR if it is in the environment
     env = getenv("DOOMWADDIR");
@@ -744,16 +744,16 @@ static void BuildIWADDirList(void)
 // Searches WAD search paths for an WAD with a specific filename.
 // 
 
-char *D_FindWADByName(const char *name)
+std::string D_FindWADByName(const std::string &name)
 {
     int i;
     
     // Absolute path?
 
-    auto probe = M_FileCaseExists(name);
+    auto probe = M_FileCaseExists( name );
     if (!probe.empty())
     {
-       return M_StringDuplicate( probe );
+       return probe;
     }
 
     BuildIWADDirList();
@@ -767,19 +767,19 @@ char *D_FindWADByName(const char *name)
         // file.
 
         probe = M_FileCaseExists(iwad_dirs[i]);
-        if (DirIsFile(iwad_dirs[i], name) && !probe.empty())
+        if (DirIsFile(iwad_dirs[i].c_str(), name.c_str()) && !probe.empty())
         {
            return M_StringDuplicate( probe );
         }
 
         // Construct a string for the full path
 
-        auto path = std::string( iwad_dirs[i] ) + DIR_SEPARATOR_S + name;
+        auto path = iwad_dirs[i] + DIR_SEPARATOR_S + name;
 
         probe = M_FileCaseExists(path);
         if (!probe.empty())
         {
-           return M_StringDuplicate( probe );
+           return probe;
         }
     }
 
@@ -795,19 +795,17 @@ char *D_FindWADByName(const char *name)
 // if not found.
 //
 
-char *D_TryFindWADByName(const char *filename)
+std::string D_TryFindWADByName(const std::string &filename)
 {
-    char *result;
+    auto result = D_FindWADByName(filename);
 
-    result = D_FindWADByName(filename);
-
-    if (result != NULL)
+    if (!result.empty())
     {
         return result;
     }
     else
     {
-        return M_StringDuplicate(filename);
+       return std::string(filename);
     }
 }
 
@@ -841,7 +839,7 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         iwadfile = myargv[iwadparm + 1];
 
-        result = D_FindWADByName(iwadfile);
+        result = M_StringDuplicate( D_FindWADByName(iwadfile) );
 
         if (result == NULL)
         {
@@ -887,7 +885,7 @@ const iwad_t **D_FindAllIWADs(int mask)
             continue;
         }
 
-        filename = D_FindWADByName(iwads[i].name);
+        filename = M_StringDuplicate( D_FindWADByName(iwads[i].name) );
 
         if (filename != NULL)
         {

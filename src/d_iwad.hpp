@@ -20,6 +20,7 @@
 #define __D_IWAD__
 
 #include "d_mode.hpp"
+#include <string>
 
 #define IWAD_MASK_DOOM    ((1 << doom)           \
                          | (1 << doom2)          \
@@ -40,8 +41,8 @@ typedef struct
 } iwad_t;
 
 boolean D_IsIWADName(const char *name);
-char *D_FindWADByName(const char *filename);
-char *D_TryFindWADByName(const char *filename);
+std::string D_FindWADByName(const std::string &filename);
+std::string D_TryFindWADByName(const std::string &filename);
 char *D_FindIWAD(int mask, GameMission_t *mission);
 const iwad_t **D_FindAllIWADs(int mask);
 const char *D_SaveGameIWADName(GameMission_t gamemission);
