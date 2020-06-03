@@ -275,18 +275,16 @@ std::string M_DirName(const std::string_view &path)
 // Returns the base filename described by the given path (without the
 // directory name). The result points inside path and nothing new is
 // allocated.
-const char *M_BaseName(const char *path)
+const std::string_view M_BaseName(const std::string_view &path)
 {
-    const char *p;
-
-    p = strrchr(path, DIR_SEPARATOR);
-    if (p == NULL)
+    auto p = path.rfind( DIR_SEPARATOR );
+    if (p == std::string::npos)
     {
         return path;
     }
     else
     {
-        return p + 1;
+       return std::string_view(path.data() + p + 1, path.length() - p - 1 );
     }
 }
 
@@ -324,42 +322,6 @@ void M_ExtractFileBase(const char *path, char *dest)
         }
 
 	dest[length++] = toupper((int)*src++);
-    }
-}
-
-//---------------------------------------------------------------------------
-//
-// PROC M_ForceUppercase
-//
-// Change string to uppercase.
-//
-//---------------------------------------------------------------------------
-
-void M_ForceUppercase(char *text)
-{
-    char *p;
-
-    for (p = text; *p != '\0'; ++p)
-    {
-        *p = toupper(*p);
-    }
-}
-
-//---------------------------------------------------------------------------
-//
-// PROC M_ForceLowercase
-//
-// Change string to lowercase.
-//
-//---------------------------------------------------------------------------
-
-void M_ForceLowercase(char *text)
-{
-    char *p;
-
-    for (p = text; *p != '\0'; ++p)
-    {
-        *p = tolower(*p);
     }
 }
 

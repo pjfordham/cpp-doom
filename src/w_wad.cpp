@@ -637,7 +637,7 @@ void W_Reload(void)
 
 const char *W_WadNameForLump(const lumpinfo_t *lump)
 {
-	return M_BaseName(lump->wad_file->path);
+   return M_BaseName(lump->wad_file->path).data();
 }
 
 boolean W_IsIWADLump(const lumpinfo_t *lump)
@@ -657,7 +657,8 @@ int W_LumpDump (const char *lumpname)
 
     // [crispy] open file for writing
     std::string filename = std::string(lumpname) + ".lmp";
-    M_ForceLowercase(filename.data());
+    std::transform(filename.begin(), filename.end(),
+                   filename.begin(), ::tolower);
     FILE *fp = fopen(filename.c_str(), "wb");
     if (!fp)
     {

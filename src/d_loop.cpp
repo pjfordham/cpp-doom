@@ -852,15 +852,10 @@ boolean D_NonVanillaRecord(boolean conditional, const char *feature)
 // file, as opposed to a WAD.
 static boolean IsDemoFile(int lumpnum)
 {
-    char *lower;
-    boolean result;
-
-    lower = M_StringDuplicate(lumpinfo[lumpnum]->wad_file->path);
-    M_ForceLowercase(lower);
-    result = M_StringEndsWith(lower, ".lmp");
-    free(lower);
-
-    return result;
+    auto lower = std::string(lumpinfo[lumpnum]->wad_file->path);
+    std::transform(lower.begin(), lower.end(),
+                   lower.begin(), ::tolower);
+    return M_StringEndsWith(lower, ".lmp");
 }
 
 // If the provided conditional value is true, we're trying to play back

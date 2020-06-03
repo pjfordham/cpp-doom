@@ -276,17 +276,15 @@ enum
 static int GuessFileType(const char *name)
 {
     int ret = FILETYPE_UNKNOWN;
-    const char *base;
-    char *lower;
     static boolean iwad_found = false;
 
-    base = M_BaseName(name);
-    lower = M_StringDuplicate(base);
-    M_ForceLowercase(lower);
+    auto lower = std::string( M_BaseName(name) );
+    std::transform(lower.begin(), lower.end(),
+                   lower.begin(), ::tolower);
 
     // only ever add one argument to the -iwad parameter
 
-    if (iwad_found == false && D_IsIWADName(lower))
+    if (iwad_found == false && D_IsIWADName(lower.c_str()))
     {
         ret = FILETYPE_IWAD;
         iwad_found = true;
@@ -303,8 +301,6 @@ static int GuessFileType(const char *name)
     {
         ret = FILETYPE_DEH;
     }
-
-    free(lower);
 
     return ret;
 }
@@ -414,6 +410,6 @@ void M_AddLooseFiles(void)
 
 const char *M_GetExecutableName(void)
 {
-    return M_BaseName(myargv[0]);
+   return M_BaseName(myargv[0]).data();
 }
 

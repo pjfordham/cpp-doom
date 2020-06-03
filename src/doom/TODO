@@ -17,9 +17,9 @@ realloc => all gone!
 malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
 and all variants of free
 
-M_StringJoin and friends to std::string 
+All string manipulation to std::string and stringview with M_StringDuplicate for compat
 
-M_StringDuplicate is suspicious, needs to be freed
+Remove M_StringDuplicate/free and replace with string or unique_ptr<char[]>
 
 memcmp => std::equal, all gone
 memcpy => std::copy

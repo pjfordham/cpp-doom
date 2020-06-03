@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <memory>
-
+#include <algorithm>
 #include "doomtype.hpp"
 
 boolean M_WriteFile(const std::string &name, const void *source, int length);
@@ -35,10 +35,9 @@ std::string M_FileCaseExists(const std::string &file);
 long M_FileLength(FILE *handle);
 boolean M_StrToInt(const std::string &str, int *result);
 std::string M_DirName(const std::string_view &path);
-const char *M_BaseName(const char *path);
+const std::string_view M_BaseName(const std::string_view &path);
+
 void M_ExtractFileBase(const char *path, char *dest);
-void M_ForceUppercase(char *text);
-void M_ForceLowercase(char *text);
 char *M_StringDuplicate(const std::string_view &orig);
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
 std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,

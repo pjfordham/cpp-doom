@@ -2010,9 +2010,10 @@ void D_DoomMain (void)
 
     if (p)
     {
-        char *uc_filename = strdup(myargv[p + 1]);
-        M_ForceUppercase(uc_filename);
-
+        std::string uc_filename(myargv[p + 1]);
+        std::transform(uc_filename.begin(), uc_filename.end(),
+                       uc_filename.begin(), ::toupper);
+        
         // With Vanilla you have to specify the file without extension,
         // but make that optional.
         if (M_StringEndsWith(uc_filename, ".LMP"))
@@ -2023,8 +2024,6 @@ void D_DoomMain (void)
         {
             DEH_snprintf(file, sizeof(file), "%s.lmp", myargv[p+1]);
         }
-
-        free(uc_filename);
 
         if (D_AddFile(file))
         {

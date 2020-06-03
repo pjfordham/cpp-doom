@@ -990,23 +990,27 @@ static void SetDefaultSaveName(int slot)
                    wadname);
         free(wadname);
     }
-    M_ForceUppercase(savegamestrings[itemOn]);
+    auto len = strlen( savegamestrings[itemOn] );
+    std::transform(savegamestrings[itemOn], savegamestrings[itemOn] + len,
+                   savegamestrings[itemOn], ::toupper);
     joypadSave = false;
 }
 
 // [crispy] override savegame name if it already starts with a map identifier
 static boolean StartsWithMapIdentifier (char *str)
 {
-    M_ForceUppercase(str);
+    auto len = strlen( str );
+    std::transform(str, str + len,
+                   str, ::toupper);
 
-    if (strlen(str) >= 4 &&
+    if (len >= 4 &&
         str[0] == 'E' && isdigit(str[1]) &&
         str[2] == 'M' && isdigit(str[3]))
     {
         return true;
     }
 
-    if (strlen(str) >= 5 &&
+    if (len >= 5 &&
         str[0] == 'M' && str[1] == 'A' && str[2] == 'P' &&
         isdigit(str[3]) && isdigit(str[4]))
     {
