@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
+#include <sstream>
 
 #include "memio.hpp"
 #include "mus2mid.hpp"
@@ -1837,7 +1838,6 @@ static int ChannelInUse(opl_channel_data_t *channel)
 
 void I_OPL_DevMessages(char *result, size_t result_len)
 {
-    char tmp[80];
     int instr_num;
     int lines;
     int i;
@@ -1848,7 +1848,8 @@ void I_OPL_DevMessages(char *result, size_t result_len)
         return;
     }
 
-    M_snprintf(result, result_len, "Tracks:\n");
+    std::stringstream ss;
+    ss << "Tracks:\n";
     lines = 1;
 
     for (i = 0; i < NumActiveChannels(); ++i)
@@ -1860,19 +1861,13 @@ void I_OPL_DevMessages(char *result, size_t result_len)
 
         instr_num = channels[i].instrument - main_instrs;
 
-        M_snprintf(tmp, sizeof(tmp),
-                   "chan %i: %c i#%i (%s)\n",
-                   i,
-                   ChannelInUse(&channels[i]) ? '\'' : ' ',
-                   instr_num + 1,
-                   main_instr_names[instr_num]);
-        M_StringConcat(result, tmp, result_len);
+        ss << "chan " << i << ": " << (ChannelInUse(&channels[i]) ? '\'' : ' ') <<
+           " i#" << instr_num + 1 << " (" <<  main_instr_names[instr_num] << ")\n";
 
         ++lines;
     }
 
-    M_snprintf(tmp, sizeof(tmp), "\nLast percussion:\n");
-    M_StringConcat(result, tmp, result_len);
+    ss << "\nLast percussion:\n";;
     lines += 2;
 
     i = (last_perc_count + PERCUSSION_LOG_LEN - 1) % PERCUSSION_LOG_LEN;
@@ -1883,15 +1878,13 @@ void I_OPL_DevMessages(char *result, size_t result_len)
             break;
         }
 
-        M_snprintf(tmp, sizeof(tmp),
-                   "%cp#%i (%s)\n",
-                   i == 0 ? '\'' : ' ',
-                   last_perc[i],
-                   percussion_names[last_perc[i] - 35]);
-        M_StringConcat(result, tmp, result_len);
+        ss << ( i == 0 ? '\'' : ' ') << "p#" << last_perc[i] << " (" << percussion_names[last_perc[i] - 35] << ")\n";
         ++lines;
 
         i = (i + PERCUSSION_LOG_LEN - 1) % PERCUSSION_LOG_LEN;
     } while (lines < 25 && i != last_perc_count);
+
+    strncpy( result, ss.str().c_str(), result_len );
+    result[result_len - 1] = '\0';
 }
 

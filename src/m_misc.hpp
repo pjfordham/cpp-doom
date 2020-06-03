@@ -50,7 +50,6 @@ boolean M_StringStartsWith(const std::string_view &s, const std::string_view &pr
 boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix);
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);
 int M_snprintf(char *buf, size_t buf_len, const char *s, ...) PRINTF_ATTR(3, 4);
-char *M_OEMToUTF8(const char *ansi);
 
 #endif
 
