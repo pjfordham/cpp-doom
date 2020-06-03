@@ -2083,7 +2083,7 @@ G_SaveGame
 void G_DoSaveGame (void) 
 { 
     char *savegame_file;
-    char *temp_savegame_file;
+    std::string temp_savegame_file;
     std::string recovery_savegame_file;
 
     temp_savegame_file = P_TempSaveGameFile();
@@ -2093,7 +2093,7 @@ void G_DoSaveGame (void)
     // and then rename it at the end if it was successfully written.
     // This prevents an existing savegame from being overwritten by
     // a corrupted one, or if a savegame buffer overrun occurs.
-    save_stream = fopen(temp_savegame_file, "wb");
+    save_stream = fopen(temp_savegame_file.c_str(), "wb");
 
     if (save_stream == NULL)
     {
@@ -2104,7 +2104,7 @@ void G_DoSaveGame (void)
         if (save_stream == NULL)
         {
             I_Error("Failed to open either '%s' or '%s' to write savegame.",
-                    temp_savegame_file, recovery_savegame_file.c_str());
+                    temp_savegame_file.c_str(), recovery_savegame_file.c_str());
         }
     }
 
@@ -2158,14 +2158,14 @@ void G_DoSaveGame (void)
         // with an error.
         I_Error("Failed to open savegame file '%s' for writing.\n"
                 "But your game has been saved to '%s' for recovery.",
-                temp_savegame_file, recovery_savegame_file.c_str());
+                temp_savegame_file.c_str(), recovery_savegame_file.c_str());
     }
 
     // Now rename the temporary savegame file to the actual savegame
     // file, overwriting the old savegame if there was one there.
 
     remove(savegame_file);
-    rename(temp_savegame_file, savegame_file);
+    rename(temp_savegame_file.c_str(), savegame_file);
 
     gameaction = ga_nothing;
     M_StringCopy(savedescription, "", sizeof(savedescription));

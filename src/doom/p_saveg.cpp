@@ -43,13 +43,13 @@ static int restoretargets_fail;
 // the file has been successfully saved, it will be renamed to the 
 // real file.
 
-char *P_TempSaveGameFile(void)
+std::string P_TempSaveGameFile(void)
 {
-    static char *filename = NULL;
+    static std::string filename;
 
-    if (filename == NULL)
+    if (filename.empty())
     {
-       filename = M_StringDuplicate( std::string( savegamedir) + "temp.dsg");
+       filename = std::string( savegamedir) + "temp.dsg";
     }
 
     return filename;
