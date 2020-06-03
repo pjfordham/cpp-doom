@@ -288,36 +288,25 @@ const std::string_view M_BaseName(const std::string_view &path)
     }
 }
 
-void M_ExtractFileBase(const char *path, char *dest)
+void M_ExtractFileBase(const std::string_view &path, char *dest)
 {
-    const char *src;
-    const char *filename;
-    int length;
-
-    src = path + strlen(path) - 1;
-
-    // back up until a \ or the start
-    while (src != path && *(src - 1) != DIR_SEPARATOR)
-    {
-	src--;
-    }
-
-    filename = src;
+    auto filename = M_BaseName( path );
 
     // Copy up to eight characters
     // Note: Vanilla Doom exits with an error if a filename is specified
     // with a base of more than eight characters.  To remove the 8.3
     // filename limit, instead we simply truncate the name.
 
-    length = 0;
     std::fill(dest, dest + 8, 0);
 
-    while (*src != '\0' && *src != '.')
+    auto src = filename.begin();
+    auto length = 0;
+    while (src != filename.end() && *src != '.')
     {
         if (length >= 8)
         {
-            printf("Warning: Truncated '%s' lump name to '%.8s'.\n",
-                   filename, dest);
+            printf("Warning: Truncated '%*s' lump name to '%.8s'.\n",
+                   (int)filename.length(), filename.data(), dest);
             break;
         }
 

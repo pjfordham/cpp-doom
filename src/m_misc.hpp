@@ -36,14 +36,16 @@ long M_FileLength(FILE *handle);
 boolean M_StrToInt(const std::string &str, int *result);
 std::string M_DirName(const std::string_view &path);
 const std::string_view M_BaseName(const std::string_view &path);
-
-void M_ExtractFileBase(const char *path, char *dest);
-char *M_StringDuplicate(const std::string_view &orig);
-boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
 std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
                             const std::string_view &replacement);
 boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix);
 boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix);
+void M_ExtractFileBase(const std::string_view &path, char *dest);
+
+boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
+
+char *M_StringDuplicate(const std::string_view &orig);
+
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);
 int M_snprintf(char *buf, size_t buf_len, const char *s, ...) PRINTF_ATTR(3, 4);
 
