@@ -1009,7 +1009,7 @@ void D_SetGameDescription(void)
 //      print title for every printed line
 char            title[128];
 
-static boolean D_AddFile(char *filename)
+static boolean D_AddFile(const char *filename)
 {
     wad_file_t *handle;
 
@@ -1299,18 +1299,17 @@ static void LoadIwadDeh(void)
     if (gameversion == exe_chex)
     {
         // Look for chex.deh in the same directory as the IWAD file.
-       char *chex_deh = M_StringDuplicate( M_DirName(iwadfile) + DIR_SEPARATOR_S + "chex.deh" );
+        std::string chex_deh = M_DirName(iwadfile) + DIR_SEPARATOR_S + "chex.deh";
 
         // If the dehacked patch isn't found, try searching the WAD
         // search path instead.  We might find it...
         if (!M_FileExists(chex_deh))
         {
-            free(chex_deh);
             chex_deh = D_FindWADByName("chex.deh");
         }
 
         // Still not found?
-        if (chex_deh == NULL)
+        if (chex_deh.empty())
         {
             I_Error("Unable to find Chex Quest dehacked file (chex.deh).\n"
                     "The dehacked file is required in order to emulate\n"
@@ -1319,7 +1318,7 @@ static void LoadIwadDeh(void)
                     "   utils/exe_edit/patches/chexdeh.zip");
         }
 
-        if (!DEH_LoadFile(chex_deh))
+        if (!DEH_LoadFile(chex_deh.c_str()))
         {
             I_Error("Failed to load chex.deh needed for emulating chex.exe.");
         }
@@ -1387,52 +1386,47 @@ static void LoadSigilWad(void)
             "SIGIL_v1_2.wad",
             "SIGIL.wad"
         };
-        char *sigil_wad = NULL, *sigil_shreds = NULL;
+        std::string sigil_wad;
 
         auto dirname = M_DirName(iwadfile);
-        sigil_shreds = M_StringDuplicate(dirname + DIR_SEPARATOR_S + "SIGIL_SHREDS.wad");
+        auto sigil_shreds = dirname + DIR_SEPARATOR_S + "SIGIL_SHREDS.wad";
 
         // [crispy] load SIGIL.WAD
         for (i = 0; i < arrlen(sigil_wads); i++)
         {
-           sigil_wad = M_StringDuplicate(dirname + DIR_SEPARATOR_S + sigil_wads[i] );
+            sigil_wad = dirname + DIR_SEPARATOR_S + sigil_wads[i];
 
             if (M_FileExists(sigil_wad))
             {
                 break;
             }
 
-            free(sigil_wad);
             sigil_wad = D_FindWADByName(sigil_wads[i]);
 
-            if (sigil_wad)
+            if (!sigil_wad.empty())
             {
                 break;
             }
         }
 
-        if (sigil_wad == NULL)
+        if (sigil_wad.empty())
         {
-            free(sigil_shreds);
             return;
         }
 
         printf(" [expansion]");
-        D_AddFile(sigil_wad);
-        free(sigil_wad);
+        D_AddFile(sigil_wad.c_str());
 
         // [crispy] load SIGIL_SHREDS.WAD
         if (!M_FileExists(sigil_shreds))
         {
-            free(sigil_shreds);
             sigil_shreds = D_FindWADByName("SIGIL_SHREDS.wad");
         }
 
-        if (sigil_shreds != NULL)
+        if (!sigil_shreds.empty())
         {
             printf(" [expansion]");
-            D_AddFile(sigil_shreds);
-            free(sigil_shreds);
+            D_AddFile(sigil_shreds.c_str());
         }
 
         // [crispy] rename intrusive SIGIL_SHREDS.wad music lumps out of the way
@@ -1500,28 +1494,28 @@ static void LoadNerveWad(void)
          !W_IsIWADLump(lumpinfo[j]) &&
          !W_IsIWADLump(lumpinfo[k]))))
     {
+        std::string nwad;
         if (strrchr(iwadfile, DIR_SEPARATOR) != NULL)
         {
-            auto dir = M_DirName(iwadfile);
-            nervewadfile = M_StringDuplicate( dir + DIR_SEPARATOR_S + "nerve.wad");
+            nwad = M_DirName(iwadfile) + DIR_SEPARATOR_S + "nerve.wad";
         }
         else
         {
-            nervewadfile = M_StringDuplicate("nerve.wad");
+            nwad = "nerve.wad";
         }
 
-        if (!M_FileExists(nervewadfile))
+        if (!M_FileExists(nwad))
         {
-            free(nervewadfile);
-            nervewadfile = D_FindWADByName("nerve.wad");
+            nwad = D_FindWADByName("nerve.wad");
         }
 
-        if (nervewadfile == NULL)
+        if (nwad.empty())
         {
             return;
         }
 
         printf(" [expansion]");
+        nervewadfile = M_StringDuplicate( nwad.c_str() );
         D_AddFile(nervewadfile);
 
         // [crispy] rename level name patch lumps out of the way
