@@ -39,13 +39,10 @@ const char *M_BaseName(const char *path);
 void M_ExtractFileBase(const char *path, char *dest);
 void M_ForceUppercase(char *text);
 void M_ForceLowercase(char *text);
-const char *M_StrCaseStr(const char *haystack, const char *needle);
 char *M_StringDuplicate(const std::string_view &orig);
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
-boolean M_StringConcat(char *dest, const char *src, size_t dest_size);
 std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
                             const std::string_view &replacement);
-char *M_StringJoin(const char *s, ...);
 boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix);
 boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix);
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);

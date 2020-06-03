@@ -578,7 +578,7 @@ static void AddIWADPath(const char *path, const char *suffix)
             // as another iwad dir
             *p = '\0';
 
-            AddIWADDir(M_StringJoin(left, suffix, NULL));
+            AddIWADDir(M_StringDuplicate( std::string(left) + suffix));
             left = p + 1;
         }
         else
@@ -587,7 +587,7 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    AddIWADDir(M_StringJoin(left, suffix, NULL));
+    AddIWADDir(M_StringDuplicate( std::string(left) + suffix));
 
     free(dup_path);
 }
@@ -625,8 +625,8 @@ static void AddXdgDirs(void)
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    AddIWADDir(M_StringJoin(env, "/games/doom", NULL));
-    
+    AddIWADDir(M_StringDuplicate(std::string(env) + "/games/doom"));
+
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
     // > directories to search for data files in addition to the

@@ -695,7 +695,7 @@ static char *GetFullPath(const char *musicdir, const char *path)
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    result = M_StringJoin(musicdir, systemized_path.c_str(), NULL);
+    result = M_StringDuplicate( std::string( musicdir ) + systemized_path);
 
     return result;
 }

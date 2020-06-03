@@ -3221,21 +3221,22 @@ static void M_ForceLoadGameResponse(int key)
 
 void M_ForceLoadGame()
 {
-	savegwarning =
-	savemaplumpinfo ?
-	M_StringJoin("This savegame requires the file\n",
-	             crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
-	             "to restore ", crstr[CR_GOLD], savemaplumpinfo->name, crstr[CR_NONE], " .\n\n",
-	             "Continue to restore from\n",
-	             crstr[CR_GOLD], W_WadNameForLump(savemaplumpinfo), crstr[CR_NONE], " ?\n\n",
-	             PRESSYN, NULL) :
-	M_StringJoin("This savegame requires the file\n",
-	             crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
-	             "to restore a map that is\n",
-	             "currently not available!\n\n",
-	             PRESSKEY, NULL) ;
+	auto message = savemaplumpinfo ?
+           std::string( "This savegame requires the file\n" ) +
+	             crstr[CR_GOLD] + savewadfilename + crstr[CR_NONE] + "\n" +
+	             "to restore " + crstr[CR_GOLD] + savemaplumpinfo->name + crstr[CR_NONE] + " .\n\n" +
+	             "Continue to restore from\n" +
+	             crstr[CR_GOLD] + W_WadNameForLump(savemaplumpinfo) + crstr[CR_NONE] + " ?\n\n" +
+	             PRESSYN :
+           std::string( "This savegame requires the file\n") +
+                     crstr[CR_GOLD] + savewadfilename + crstr[CR_NONE] + "\n" +
+                     "to restore a map that is\n" +
+                     "currently not available!\n\n" +
+                     PRESSKEY;
 
-	M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
+	savegwarning = M_StringDuplicate( message.c_str() );
+
+        M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
 	messageToPrint = 2;
 	S_StartSound(NULL,sfx_swtchn);
 }
@@ -3257,10 +3258,9 @@ static void M_ConfirmDeleteGameResponse (int key)
 
 void M_ConfirmDeleteGame ()
 {
-	savegwarning =
-	M_StringJoin("delete savegame\n\n",
-	             crstr[CR_GOLD], savegamestrings[itemOn], crstr[CR_NONE], " ?\n\n",
-	             PRESSYN, NULL);
+        savegwarning = M_StringDuplicate( std::string( "delete savegame\n\n" ) +
+                                          crstr[CR_GOLD] + savegamestrings[itemOn] +
+                                          crstr[CR_NONE] + " ?\n\n" + PRESSYN );
 
 	M_StartMessage(savegwarning, M_ConfirmDeleteGameResponse, true);
 	messageToPrint = 2;

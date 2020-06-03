@@ -364,40 +364,6 @@ void M_ForceLowercase(char *text)
 }
 
 //
-// M_StrCaseStr
-//
-// Case-insensitive version of strstr()
-//
-
-const char *M_StrCaseStr(const char *haystack, const char *needle)
-{
-    unsigned int haystack_len;
-    unsigned int needle_len;
-    unsigned int len;
-    unsigned int i;
-
-    haystack_len = strlen(haystack);
-    needle_len = strlen(needle);
-
-    if (haystack_len < needle_len)
-    {
-        return NULL;
-    }
-
-    len = haystack_len - needle_len;
-
-    for (i = 0; i <= len; ++i)
-    {
-        if (!strncasecmp(haystack + i, needle, needle_len))
-        {
-            return haystack + i;
-        }
-    }
-
-    return NULL;
-}
-
-//
 // Safe version of strdup() that checks the string was successfully
 // allocated.
 //
@@ -460,22 +426,6 @@ boolean M_StringCopy(char *dest, const char *src, size_t dest_size)
     return src[len] == '\0';
 }
 
-// Safe string concat function that works like OpenBSD's strlcat().
-// Returns true if string not truncated.
-
-boolean M_StringConcat(char *dest, const char *src, size_t dest_size)
-{
-    size_t offset;
-
-    offset = strlen(dest);
-    if (offset > dest_size)
-    {
-        offset = dest_size;
-    }
-
-    return M_StringCopy(dest + offset, src, dest_size - offset);
-}
-
 // Returns true if 's' begins with the specified prefix.
 
 boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix)
@@ -490,57 +440,6 @@ boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suff
     if (suffix.size() > s.size()) return false;
     return std::equal(suffix.rbegin(), suffix.rend(), s.rbegin());
 
-}
-
-// Return a newly-malloced string with all the strings given as arguments
-// concatenated together.
-
-char *M_StringJoin(const char *s, ...)
-{
-    char *result;
-    const char *v;
-    va_list args;
-    size_t result_len;
-
-    result_len = strlen(s) + 1;
-
-    va_start(args, s);
-    for (;;)
-    {
-        v = va_arg(args, const char *);
-        if (v == NULL)
-        {
-            break;
-        }
-
-        result_len += strlen(v);
-    }
-    va_end(args);
-
-    result = static_cast<char *>(malloc(result_len));
-
-    if (result == NULL)
-    {
-        I_Error("M_StringJoin: Failed to allocate new string.");
-        return NULL;
-    }
-
-    M_StringCopy(result, s, result_len);
-
-    va_start(args, s);
-    for (;;)
-    {
-        v = va_arg(args, const char *);
-        if (v == NULL)
-        {
-            break;
-        }
-
-        M_StringConcat(result, v, result_len);
-    }
-    va_end(args);
-
-    return result;
 }
 
 // On Windows, vsnprintf() is _vsnprintf().

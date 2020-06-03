@@ -2878,13 +2878,13 @@ char *M_GetAutoloadDir(const char *iwadname)
     {
         char *prefdir;
         prefdir = SDL_GetPrefPath("", PACKAGE_TARNAME);
-        autoload_path = M_StringJoin(prefdir, "autoload", NULL);
+        autoload_path = M_StringDuplicate( std::string(prefdir) + "autoload");
         SDL_free(prefdir);
     }
 
     M_MakeDirectory(autoload_path);
 
-    result = M_StringJoin(autoload_path, DIR_SEPARATOR_S, iwadname, NULL);
+    result = M_StringDuplicate( std::string(autoload_path) + DIR_SEPARATOR_S + iwadname);
     M_MakeDirectory(result);
 
     // TODO: Add README file

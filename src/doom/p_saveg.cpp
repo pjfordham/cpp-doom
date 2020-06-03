@@ -49,7 +49,7 @@ char *P_TempSaveGameFile(void)
 
     if (filename == NULL)
     {
-        filename = M_StringJoin(savegamedir, "temp.dsg", NULL);
+       filename = M_StringDuplicate( std::string( savegamedir) + "temp.dsg");
     }
 
     return filename;
