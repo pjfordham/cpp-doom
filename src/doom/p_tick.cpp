@@ -18,96 +18,31 @@
 //
 
 
-#include "z_zone.hpp"
 #include "p_local.hpp"
-#include "s_musinfo.hpp" // [crispy] T_MAPMusic()
-#include <list>
-#include <iostream>
 
 #include "doomstat.hpp"
-#include <functional>
-
 
 int	leveltime;
 
-//
-// THINKERS
-// All thinkers should be allocated by zone_malloc
-// so they can be operated on uniformly.
-// The actual structures will vary in size,
-// but the first element must be thinker_t.
-//
+#include <tuple>
+#include <list>
 
-std::list<thinker_t *> thinkers;
-
+std::tuple<std::list<fireflicker_t *>, std::list<lightflash_t *>,
+           std::list<strobe_t *>, std::list<glow_t *>, std::list<plat_t *>,
+           std::list<vldoor_t *>, std::list<ceiling_t *>,
+           std::list<floormove_t *>, std::list<mobj_t *>>
+    static_thinkers;
 
 //
 // P_InitThinkers
 //
 void P_InitThinkers (void)
 {
-    thinkers.clear();
-}
-
-
-
-
-//
-// P_AddThinker
-// Adds a new thinker at the end of the list.
-//
-void P_AddThinker (thinker_t* thinker)
-{
-    thinkers.push_back( thinker );
-}
-
-
-
-//
-// P_RemoveThinker
-// Deallocation is lazy -- it will not actually be freed
-// until its thinking turn comes up.
-//
-void P_RemoveThinker (thinker_t* thinker)
-{
-  // FIXME: NOP.
-  thinker->function = think_t{-1};
-}
-
-
-
-//
-// P_AllocateThinker
-// Allocates memory and adds a new thinker at the end of the list.
-//
-void P_AllocateThinker (thinker_t*	thinker)
-{
-}
-
-
-//
-// P_VisitThinkers( function )
-//
-
-bool P_VisitThinkers( std::function<bool( thinker_t* )> visitor ) {
-
-   for( auto i = thinkers.begin(); i != thinkers.end(); i++ ) {
-      // Break out early if return true;
-      if ( visitor( *i ) ) {
-         return true;
-      }
-   }
-
-   return false;
+    std::apply([](auto&&... args) {((args.clear()), ...);}, static_thinkers);
 }
 
 bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
-    return P_VisitThinkers( [&visitor]( thinker_t *thinker ) {
-        if (thinker->function == P_MobjThinker)
-        {
-           return visitor( static_cast<mobj_t*>(thinker) );
-        }
-        return false;} );
+   return P_VisitThinkers<mobj_t>(visitor);
 }
 
 //
@@ -115,29 +50,11 @@ bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
 //
 void P_RunThinkers (void)
 {
-   auto i = thinkers.begin();
-   do {
-      while ( i != thinkers.end() && (*i)->function == think_t{-1} )
-      {
-         Z_Free(*i);
-         i = thinkers.erase( i );
-      }
-
-      if ( i != thinkers.end() ) {
-         (*i)->action();
-         i++;
-      }
-      else
-      {
-         break;
-      }
-   } while ( true );
+   std::apply([](auto&&... args) {((P_RunThinkers(args)), ...);}, static_thinkers);
 
    // [crispy] support MUSINFO lump (dynamic music changing)
    T_MusInfo();
 }
-
-
 
 //
 // P_Ticker

@@ -121,16 +121,14 @@ static void P_ReadTotalLevelTimes (const char *key)
 
 static void P_WriteFireFlicker (const char *key)
 {
-   P_VisitThinkers( [key]( thinker_t *th ) {
-         if (fireflicker_t *flick = dynamic_cast<fireflicker_t*>( th )) {
-            M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
-                       key,
-                       (int)(flick->sector - sectors),
-                       (int)flick->count,
-                       (int)flick->maxlight,
-                       (int)flick->minlight);
-            fputs(line, save_stream);
-         }
+   P_VisitThinkers<fireflicker_t>( [key]( fireflicker_t *flick ) {
+         M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
+                    key,
+                    (int)(flick->sector - sectors),
+                    (int)flick->count,
+                    (int)flick->maxlight,
+                    (int)flick->minlight);
+         fputs(line, save_stream);
          return false;
       } );
 }

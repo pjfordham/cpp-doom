@@ -60,16 +60,101 @@
 #define	BASETHRESHOLD	 	100
 
 #include <functional>
+#include <tuple>
+#include <list>
+#include "s_musinfo.hpp" // [crispy] T_MAPMusic()
+#include "p_spec.hpp"
+#include "z_zone.hpp"
 
 //
 // P_TICK
 //
 
+//
+// THINKERS
+// All thinkers should be allocated by zone_malloc
+// so they can be operated on uniformly.
+// The actual structures will vary in size,
+// but the first element must be thinker_t.
+//
+
+extern std::tuple< std::list<fireflicker_t *>,
+            std::list<lightflash_t *>,
+            std::list<strobe_t *>,
+            std::list<glow_t *>,
+            std::list<plat_t *>,
+            std::list<vldoor_t *>,
+            std::list<ceiling_t *>,
+            std::list<floormove_t *>,
+            std::list<mobj_t *> > static_thinkers;
+
 void P_InitThinkers (void);
-void P_AddThinker (thinker_t* thinker);
-void P_RemoveThinker (thinker_t* thinker);
-bool P_VisitThinkers( std::function<bool( thinker_t* )> visitor );
+void P_RunThinkers (void);
+
+// FIXME: Just for backward compatability
 bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor);
+
+//
+// P_AddThinker
+// Adds a new thinker at the end of the list.
+//
+template <typename Thinker>
+void P_AddThinker( Thinker *thinker )
+{
+   std::get<std::list<Thinker*>>(static_thinkers).push_back( thinker );
+}
+
+//
+// P_RemoveThinker
+// Deallocation is lazy -- it will not actually be freed
+// until its thinking turn comes up.
+//
+template <typename Thinker>
+void P_RemoveThinker (Thinker* thinker)
+{
+   thinker->function = think_t{-1};
+}
+
+//
+// P_VisitThinkers( function )
+//
+template <typename Thinker>
+bool P_VisitThinkers(std::function<bool(Thinker *)> visitor)
+{
+   auto thinkers = std::get<std::list<Thinker*>>(static_thinkers);
+
+   for( auto i = thinkers.begin(); i != thinkers.end(); i++ ) {
+      // Break out early if return true;
+      if ( visitor( *i ) ) {
+         return true;
+      }
+   }
+   return false;
+}
+
+template <typename Thinker>
+void P_RunThinkers (std::list<Thinker *> &thinkers)
+{
+   auto i = thinkers.begin();
+   do {
+      while ( i != thinkers.end() && (*i)->function == think_t{-1} )
+      {
+         Z_Free(*i);
+         i = thinkers.erase( i );
+      }
+
+      if ( i != thinkers.end() ) {
+         (*i)->action();
+         i++;
+      }
+      else
+      {
+         break;
+      }
+   } while ( true );
+   return;
+}
+
 
 //
 // P_PSPR

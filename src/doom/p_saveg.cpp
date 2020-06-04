@@ -1659,13 +1659,13 @@ void P_ArchiveThinkers (void)
 //
 void P_UnArchiveThinkers (void)
 {
-    P_VisitThinkers([](thinker_t *currentthinker) {
+/*    P_VisitThinkers([](thinker_t *currentthinker) {
           if (currentthinker->function == P_MobjThinker)
              P_RemoveMobj ((mobj_t *)currentthinker);
           else
              Z_Free (currentthinker);
           return false;
-       } );
+          } );*/
     P_InitThinkers ();
 
     // read in saved thinkers
@@ -1750,7 +1750,7 @@ enum
 //
 void P_ArchiveSpecials (void)
 {
-    // save off the current thinkers
+/*    // save off the current thinkers
     P_VisitThinkers( []( thinker_t *th ) {
 
         if (th->function == think_t{})
@@ -1840,7 +1840,7 @@ void P_ArchiveSpecials (void)
 	
     // add a terminating marker
     saveg_write8(tc_endspecials);
-
+*/
 }
 
 
