@@ -74,9 +74,6 @@
 // THINKERS
 // All thinkers should be allocated by zone_malloc
 // so they can be operated on uniformly.
-// The actual structures will vary in size,
-// but the first element must be thinker_t.
-//
 
 extern std::tuple< std::list<fireflicker_t *>,
             std::list<lightflash_t *>,
@@ -112,7 +109,7 @@ void P_AddThinker( Thinker *thinker )
 template <typename Thinker>
 void P_RemoveThinker (Thinker* thinker)
 {
-   thinker->function = think_t{-1};
+   thinker->function = think_t<Thinker>{-1};
 }
 
 //
@@ -137,7 +134,7 @@ void P_RunThinkers (std::list<Thinker *> &thinkers)
 {
    auto i = thinkers.begin();
    do {
-      while ( i != thinkers.end() && (*i)->function == think_t{-1} )
+      while ( i != thinkers.end() && (*i)->function == think_t<Thinker>{-1} )
       {
          Z_Free(*i);
          i = thinkers.erase( i );
@@ -199,7 +196,7 @@ P_SpawnMobj
 void 	P_RemoveMobj (mobj_t* th);
 mobj_t* P_SubstNullMobj (mobj_t* th);
 boolean	P_SetMobjState (mobj_t* mobj, statenum_t state);
-void 	P_MobjThinker (thinker_t* mobj);
+void 	P_MobjThinker (mobj_t* mobj);
 mobj_t *Crispy_PlayerSO (int p); // [crispy] weapon sound sources
 
 void	P_SpawnPuff (fixed_t x, fixed_t y, fixed_t z);

@@ -24,7 +24,7 @@
 #include "tables.hpp"
 #include "m_fixed.hpp"
 
-// We need the thinker_t stuff.
+// We need the think stuff.
 #include "d_think.hpp"
 
 // We need the WAD data structure for Map things,
@@ -204,7 +204,7 @@ typedef enum
 
 
 // Map Object definition.
-struct mobj_t : public thinker_t
+struct mobj_t
 {
     // Info for drawing: position.
     fixed_t		x;
@@ -289,6 +289,8 @@ struct mobj_t : public thinker_t
     fixed_t		oldy;
     fixed_t		oldz;
     angle_t		oldangle;
+    think_t<mobj_t> function;
+    void action() { function.call_if( this ); };
 
 };
 

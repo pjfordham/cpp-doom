@@ -117,15 +117,13 @@ private:
 };
 
 
-struct thinker_t;
-
-typedef void (*thinkerf)(thinker_t *mo);
-
 // Historically, "think_t" is yet another
 //  function pointer to a routine to handle
 //  an actor.
+template <typename Thinker>
 class think_t {
 public:
+  typedef void (*thinkerf)(Thinker *mo);
   constexpr think_t() = default;
 
   explicit constexpr think_t(thinkerf p)
@@ -158,7 +156,7 @@ public:
   }
 
   // Called only from p_tick.cpp P_RunThinkers
-  bool call_if( thinker_t *thinker) {
+  bool call_if( Thinker *thinker) {
      const auto func = std::get<thinkerf>(data);
      if (func) {
       func(thinker);
@@ -169,7 +167,7 @@ public:
   }
 
   constexpr explicit operator bool() const {
-    return *this != think_t{};
+     return *this != think_t{};
   }
 
   constexpr bool operator==(const think_t &) const = default;
@@ -178,16 +176,5 @@ private:
    std::tuple<int, const void *, thinkerf> data{};
 
 };
-
-
-
-// Doubly linked list of actors.
-struct thinker_t
-{
-    think_t		function;
-    virtual void action() { function.call_if( this ); };
-};
-
-
 
 #endif

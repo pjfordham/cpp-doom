@@ -130,7 +130,7 @@ typedef	struct
     mobj_t*	thinglist;
 
     // thinker_t for reversable actions
-    thinker_t*	specialdata;
+    void *	specialdata;
 
     int			linecount;
     struct line_s**	lines;	// [linecount] size

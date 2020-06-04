@@ -170,7 +170,7 @@ static void P_WriteSoundTarget (const char *key)
 			M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
 			           key,
 			           i,
-			           P_ThinkerToIndex((thinker_t *) sector->soundtarget));
+			           P_MobjThinkerToIndex(sector->soundtarget));
 			fputs(line, save_stream);
 		}
 	}
@@ -186,7 +186,7 @@ static void P_ReadSoundTarget (const char *key)
 	           &target) == 3 &&
 	    !strncmp(string, key, MAX_STRING_LEN))
 	{
-		sectors[sector].soundtarget = (mobj_t *) P_IndexToThinker(target);
+           sectors[sector].soundtarget = P_IndexToMobjThinker(target);
 	}
 }
 

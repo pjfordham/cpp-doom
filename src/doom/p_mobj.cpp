@@ -529,10 +529,9 @@ static inline void MusInfoThinker (mobj_t *thing)
 //
 // P_MobjThinker
 //
-void P_MobjThinker (thinker_t *thinker)
+void P_MobjThinker (mobj_t *mobj)
 {
-   auto mobj = static_cast<mobj_t*>(thinker);
-// [crispy] support MUSINFO lump (dynamic music changing)
+    // [crispy] support MUSINFO lump (dynamic music changing)
     if (mobj->type == MT_MUSICSOURCE)
     {
 	return MusInfoThinker(mobj);
@@ -564,7 +563,7 @@ void P_MobjThinker (thinker_t *thinker)
     {
 	P_XYMovement (mobj);
 
-	if (mobj->function == think_t{-1})
+	if (mobj->function == think_t<mobj_t>{-1})
 	    return;		// mobj was removed
     }
     if ( (mobj->z != mobj->floorz)
@@ -572,7 +571,7 @@ void P_MobjThinker (thinker_t *thinker)
     {
 	P_ZMovement (mobj);
 	
-	if (mobj->function == think_t{-1})
+	if (mobj->function == think_t<mobj_t>{-1})
 	    return;		// mobj was removed
     }
 
@@ -740,7 +739,7 @@ void P_RemoveMobj (mobj_t* mobj)
     }
     
     // free block
-    P_RemoveThinker ((thinker_t*)mobj);
+    P_RemoveThinker (mobj);
 }
 
 

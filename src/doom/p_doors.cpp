@@ -41,9 +41,8 @@
 //
 // T_VerticalDoor
 //
-void T_VerticalDoor (thinker_t *thinker)
+void T_VerticalDoor (vldoor_t *door)
 {
-   auto door = static_cast<vldoor_t*>(thinker);
    result_e	res;
 	
     switch(door->direction)
@@ -446,20 +445,6 @@ EV_VerticalDoor
                     if (crispy->soundfix)
                     S_StartSound(&door->sector->soundorg, line->special == 117 ? sfx_bdcls : sfx_dorcls);
                 }
-                else if (door->function == T_PlatRaise)
-                {
-                    // Erm, this is a plat, not a door.
-                    // This notably causes a problem in ep1-0500.lmp where
-                    // a plat and a door are cross-referenced; the door
-                    // doesn't open on 64-bit.
-                    // The direction field in vldoor_t corresponds to the wait
-                    // field in plat_t.  Let's set that to -1 instead.
-
-                    plat_t *plat;
-
-                    plat = (plat_t *) door;
-                    plat->wait = -1;
-                }
                 else
                 {
                     // This isn't a door OR a plat.  Now we're in trouble.
@@ -471,7 +456,7 @@ EV_VerticalDoor
                     // machines.
 
                     door->direction = -1;
-                }
+                    }
 	    }
 	    return;
 	}

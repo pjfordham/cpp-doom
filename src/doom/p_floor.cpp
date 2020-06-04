@@ -207,9 +207,8 @@ T_MovePlane
 //
 // MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //
-void T_MoveFloor(thinker_t* thinker)
+void T_MoveFloor(floormove_t* floor)
 {
-   auto floor = static_cast<floormove_t*>(thinker);
    result_e	res;
 	
     res = T_MovePlane(floor->sector,
@@ -254,9 +253,8 @@ void T_MoveFloor(thinker_t* thinker)
 }
 
 // [crispy] easter egg: homage to an old friend (thinker)
-void T_MoveGoobers (thinker_t *thinker)
+void T_MoveGoobers (floormove_t *floor)
 {
-   auto floor = static_cast<floormove_t*>(thinker);
    result_e res1, res2;
 
     // [crispy] one thinker for the floors ...

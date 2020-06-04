@@ -37,15 +37,15 @@
 //
 // T_FireFlicker
 //
-void fireflicker_t::action() {
-   auto flick = this;
-   int	amount;
-	
+void T_FireFlicker(fireflicker_t *flick)
+{
+    int	amount;
+
     if (--flick->count)
 	return;
-	
+
     amount = (P_Random()&3)*16;
-    
+
     if (flick->sector->lightlevel - amount < flick->minlight)
 	flick->sector->lightlevel = flick->minlight;
     else
@@ -71,6 +71,7 @@ void P_SpawnFireFlicker (sector_t*	sector)
 
     P_AddThinker (flick);
 
+    flick->function = T_FireFlicker;
     flick->sector = sector;
     flick->maxlight = sector->lightlevel;
     flick->minlight = P_FindMinSurroundingLight(sector,sector->lightlevel)+16;
@@ -88,9 +89,8 @@ void P_SpawnFireFlicker (sector_t*	sector)
 // T_LightFlash
 // Do flashing lights.
 //
-void T_LightFlash (thinker_t *thinker)
+void T_LightFlash (lightflash_t *flash)
 {
-   auto flash = static_cast<lightflash_t*>(thinker);
    if (--flash->count)
 	return;
 	
@@ -146,9 +146,8 @@ void P_SpawnLightFlash (sector_t*	sector)
 //
 // T_StrobeFlash
 //
-void T_StrobeFlash (thinker_t* thinker)
+void T_StrobeFlash (strobe_t *flash)
 {
-   auto flash = static_cast<strobe_t*>(thinker);
    if (--flash->count)
 	return;
 	
@@ -306,9 +305,8 @@ EV_LightTurnOn
 // Spawn glowing light
 //
 
-void T_Glow(thinker_t *thinker)
+void T_Glow(glow_t *g)
 {
-   auto g = static_cast<glow_t*>(thinker);
    switch(g->direction)
     {
       case -1:

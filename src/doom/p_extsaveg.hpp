@@ -29,8 +29,8 @@ extern void P_WriteExtendedSaveGameData (void);
 extern void P_ReadExtendedSaveGameData (int pass);
 
 /* p_saveg.c */
-extern uint32_t P_ThinkerToIndex (thinker_t* thinker);
-extern thinker_t* P_IndexToThinker (uint32_t index);
+extern uint32_t P_MobjThinkerToIndex (mobj_t* thinker);
+extern mobj_t* P_IndexToMobjThinker (uint32_t index);
 
 /* m_menu.c */
 extern void M_ForceLoadGame (void);

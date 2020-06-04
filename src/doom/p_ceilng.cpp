@@ -43,9 +43,8 @@ ceiling_t*	activeceilings[MAXCEILINGS];
 // T_MoveCeiling
 //
 
-void T_MoveCeiling (thinker_t *thinker)
+void T_MoveCeiling (ceiling_t *ceiling)
 {
-   auto ceiling = static_cast<ceiling_t*>(thinker);
    result_e	res;
 	
     switch(ceiling->direction)
@@ -314,7 +313,7 @@ int	EV_CeilingCrushStop(line_t	*line)
 	    && (activeceilings[i]->direction != 0))
 	{
 	    activeceilings[i]->olddirection = activeceilings[i]->direction;
-	    activeceilings[i]->function = think_t{};
+	    activeceilings[i]->function = think_t<ceiling_t>{};
 	    activeceilings[i]->direction = 0;		// in-stasis
 	    rtn = 1;
 	}

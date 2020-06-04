@@ -42,9 +42,8 @@ plat_t*		activeplats[MAXPLATS];
 //
 // Move a plat up and down
 //
-void T_PlatRaise(thinker_t *thinker)
+void T_PlatRaise(plat_t *plat)
 {
-   auto plat = static_cast<plat_t*>(thinker);
    result_e	res;
 	
     switch(plat->status)
@@ -271,7 +270,7 @@ void EV_StopPlat(line_t* line)
 	{
 	    (activeplats[j])->oldstatus = (activeplats[j])->status;
 	    (activeplats[j])->status = in_stasis;
-	    (activeplats[j])->function = think_t{};
+	    (activeplats[j])->function = think_t<plat_t>{};
 	}
 }
 

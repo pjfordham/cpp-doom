@@ -126,16 +126,17 @@ int EV_DoDonut(line_t* line);
 //
 // P_LIGHTS
 //
-struct fireflicker_t : public thinker_t
+struct fireflicker_t
 {
     sector_t*	sector;
     int		minlight;
     int		maxlight;
-    void action() override;
     int	 count;
+    think_t<fireflicker_t> function;
+    void action() { function.call_if( this ); };
 };
 
-struct lightflash_t : public thinker_t
+struct lightflash_t
 {
     sector_t*	sector;
     int		minlight;
@@ -143,9 +144,11 @@ struct lightflash_t : public thinker_t
     int		count;
     int		maxtime;
     int		mintime;
+    think_t<lightflash_t> function;
+    void action() { function.call_if( this ); };
 };
 
-struct strobe_t : public thinker_t
+struct strobe_t
 {
     sector_t*	sector;
     int		minlight;
@@ -153,14 +156,18 @@ struct strobe_t : public thinker_t
     int		count;
     int		darktime;
     int		brighttime;
+    think_t<strobe_t> function;
+    void action() { function.call_if( this ); };
 };
 
-struct glow_t : public thinker_t
+struct glow_t
 {
     sector_t*	sector;
     int		minlight;
     int		maxlight;
     int		direction;
+    think_t<glow_t> function;
+    void action() { function.call_if( this ); };
 };
 
 
@@ -170,9 +177,9 @@ struct glow_t : public thinker_t
 #define SLOWDARK			35
 
 void    P_SpawnFireFlicker (sector_t* sector);
-void    T_LightFlash (thinker_t* thinker);
+void    T_LightFlash (lightflash_t* flash);
 void    P_SpawnLightFlash (sector_t* sector);
-void    T_StrobeFlash (thinker_t* thinker);
+void    T_StrobeFlash (strobe_t* flash);
 
 void
 P_SpawnStrobeFlash
@@ -188,7 +195,7 @@ EV_LightTurnOn
 ( line_t*	line,
   int		bright );
 
-void    T_Glow(thinker_t* thinker);
+void    T_Glow(glow_t* g);
 void    P_SpawnGlowingLight(sector_t* sector);
 
 
@@ -275,7 +282,7 @@ enum plattype_e
 
 
 
-struct plat_t : public thinker_t
+struct plat_t
 {
     sector_t*	sector;
     fixed_t	speed;
@@ -288,6 +295,8 @@ struct plat_t : public thinker_t
     boolean	crush;
     int		tag;
     plattype_e	type;
+    think_t<plat_t> function;
+    void action() { function.call_if( this ); };
     
 };
 
@@ -300,7 +309,7 @@ struct plat_t : public thinker_t
 
 extern plat_t*	activeplats[MAXPLATS];
 
-void    T_PlatRaise(thinker_t* thinker);
+void    T_PlatRaise(plat_t* plat);
 
 int
 EV_DoPlat
@@ -332,7 +341,7 @@ enum vldoor_e
 
 
 
-struct vldoor_t : public thinker_t
+struct vldoor_t
 {
     vldoor_e	type;
     sector_t*	sector;
@@ -347,6 +356,8 @@ struct vldoor_t : public thinker_t
     // (keep in case a door going down is reset)
     // when it reaches 0, start going down
     int             topcountdown;
+    think_t<vldoor_t> function;
+    void action() { function.call_if( this ); };
     
 };
 
@@ -371,7 +382,7 @@ EV_DoLockedDoor
   vldoor_e	type,
   mobj_t*	thing );
 
-void    T_VerticalDoor (thinker_t* thinker);
+void    T_VerticalDoor (vldoor_t* vldoor);
 void    P_SpawnDoorCloseIn30 (sector_t* sec);
 
 void
@@ -397,7 +408,7 @@ typedef enum
 
 
 
-struct ceiling_t : public thinker_t
+struct ceiling_t
 {
     ceiling_e	type;
     sector_t*	sector;
@@ -412,6 +423,8 @@ struct ceiling_t : public thinker_t
     // ID
     int		tag;                   
     int		olddirection;
+    think_t<ceiling_t> function;
+    void action() { function.call_if( this ); };
     
 };
 
@@ -430,7 +443,7 @@ EV_DoCeiling
 ( line_t*	line,
   ceiling_e	type );
 
-void    T_MoveCeiling (thinker_t* ceiling);
+void    T_MoveCeiling (ceiling_t* ceiling);
 void    P_AddActiveCeiling(ceiling_t* c);
 void    P_RemoveActiveCeiling(ceiling_t* c);
 int	EV_CeilingCrushStop(line_t* line);
@@ -487,7 +500,7 @@ enum stair_e
 
 
 
-struct floormove_t : public thinker_t
+struct floormove_t
 {
     floor_e	type;
     boolean	crush;
@@ -497,6 +510,8 @@ struct floormove_t : public thinker_t
     short	texture;
     fixed_t	floordestheight;
     fixed_t	speed;
+    think_t<floormove_t> function;
+    void action() { function.call_if( this ); };
 
 };
 
@@ -531,7 +546,7 @@ EV_DoFloor
 ( line_t*	line,
   floor_e	floortype );
 
-void T_MoveFloor( thinker_t* thinker);
+void T_MoveFloor( floormove_t* floor);
 
 //
 // P_TELEPT

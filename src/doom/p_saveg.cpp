@@ -245,34 +245,22 @@ static void saveg_write_mapthing_t(mapthing_t *str)
 //
 // think_t
 //
-static void saveg_read_think_t(think_t *str)
+template <typename Thinker>
+static void saveg_read_think_t(think_t<Thinker> *str)
 {
-    // actionf_p1 acp1;
-    *str = saveg_readp();
+   // actionf_p1 acp1;
+   *str = saveg_readp();
 }
 
-static void saveg_write_think_t(think_t *str)
+template <typename Thinker>
+static void saveg_write_think_t(think_t<Thinker> *str)
 {
-    // actionf_p1 acp1;
-  saveg_writep(static_cast<const void *>(*str));
+   // actionf_p1 acp1;
+   // FIXME: We should write a void* of 1 if the function is set or a zero
+   // is it's null
+   saveg_writep( str );
 }
 
-
-//
-// thinker_t
-//
-
-static void saveg_read_thinker_t(thinker_t *str)
-{
-    // think_t function;
-    saveg_read_think_t(&str->function);
-}
-
-static void saveg_write_thinker_t(thinker_t *str)
-{
-    // think_t function;
-    saveg_write_think_t(&str->function);
-}
 
 //
 // mobj_t
@@ -282,8 +270,8 @@ static void saveg_read_mobj_t(mobj_t *str)
 {
     int pl;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<mobj_t>(&str->function);
 
     // fixed_t x;
     str->x = saveg_read32();
@@ -400,16 +388,16 @@ static void saveg_read_mobj_t(mobj_t *str)
 }
 
 // [crispy] enumerate all thinker pointers
-uint32_t P_ThinkerToIndex (thinker_t* thinker)
+uint32_t P_MobjThinkerToIndex (mobj_t* mobj)
 {
     uint32_t	i = 0;
 
-    if (!thinker)
+    if (!mobj)
 	return 0;
 
-    if ( P_VisitMobjThinkers([&i,thinker](mobj_t *m) {
+    if ( P_VisitMobjThinkers([&i,mobj](mobj_t *m) {
              i++;
-             if (thinker == m)
+             if (mobj == m)
                 return true;
              return false;
           } ) ) {
@@ -420,24 +408,24 @@ uint32_t P_ThinkerToIndex (thinker_t* thinker)
 }
 
 // [crispy] replace indizes with corresponding pointers
-thinker_t* P_IndexToThinker (uint32_t index)
+mobj_t* P_IndexToMobjThinker (uint32_t index)
 {
-    thinker_t*	th;
+    mobj_t*	mobj;
     uint32_t	i = 0;
 
     if (!index)
 	return NULL;
 
-    if ( P_VisitMobjThinkers([&th, &i,index](mobj_t *m) {
-             i++;
+     if ( P_VisitMobjThinkers([&mobj, &i,index](mobj_t *m) {
+            i++;
              if (i == index) {
-		th = m;
+		mobj = m;
                 return true;
              }
              return false;
           } ) ) {
-       return th;
-    }
+       return mobj;
+     }
 
     restoretargets_fail++;
 
@@ -446,8 +434,8 @@ thinker_t* P_IndexToThinker (uint32_t index)
 
 static void saveg_write_mobj_t(mobj_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<mobj_t>(&str->function);
 
     // fixed_t x;
     saveg_write32(str->x);
@@ -533,7 +521,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* target;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->target field
-    saveg_writep((void *)(uintptr_t) P_ThinkerToIndex((thinker_t *) str->target));
+    saveg_writep((void *)(uintptr_t) P_MobjThinkerToIndex(str->target));
 
     // int reactiontime;
     saveg_write32(str->reactiontime);
@@ -560,7 +548,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* tracer;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->tracers field
-    saveg_writep((void *)(uintptr_t) P_ThinkerToIndex((thinker_t *) str->tracer));
+    saveg_writep((void *)(uintptr_t) P_MobjThinkerToIndex(str->tracer));
 }
 
 
@@ -948,8 +936,8 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<ceiling_t>(&str->function);
 
     // ceiling_e type;
     str->type = static_cast<ceiling_e>(saveg_read_enum());
@@ -982,8 +970,8 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 
 static void saveg_write_ceiling_t(ceiling_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<ceiling_t>(&str->function);
 
     // ceiling_e type;
     saveg_write_enum(str->type);
@@ -1021,8 +1009,8 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<vldoor_t>(&str->function);
 
     // vldoor_e type;
     str->type = static_cast<vldoor_e>(saveg_read_enum());
@@ -1049,8 +1037,8 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 
 static void saveg_write_vldoor_t(vldoor_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<vldoor_t>(&str->function);
 
     // vldoor_e type;
     saveg_write_enum(str->type);
@@ -1082,8 +1070,8 @@ static void saveg_read_floormove_t(floormove_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<floormove_t>(&str->function);
 
     // floor_e type;
     str->type = static_cast<floor_e>(saveg_read_enum());
@@ -1113,8 +1101,8 @@ static void saveg_read_floormove_t(floormove_t *str)
 
 static void saveg_write_floormove_t(floormove_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<floormove_t>(&str->function);
 
     // floor_e type;
     saveg_write_enum(str->type);
@@ -1149,8 +1137,8 @@ static void saveg_read_plat_t(plat_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<plat_t>(&str->function);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1189,8 +1177,8 @@ static void saveg_read_plat_t(plat_t *str)
 
 static void saveg_write_plat_t(plat_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<plat_t>(&str->function);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1234,8 +1222,8 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<lightflash_t>(&str->function);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1259,8 +1247,8 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 
 static void saveg_write_lightflash_t(lightflash_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<lightflash_t>(&str->function);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1289,8 +1277,8 @@ static void saveg_read_strobe_t(strobe_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<strobe_t>(&str->function);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1314,8 +1302,8 @@ static void saveg_read_strobe_t(strobe_t *str)
 
 static void saveg_write_strobe_t(strobe_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<strobe_t>(&str->function);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1344,8 +1332,8 @@ static void saveg_read_glow_t(glow_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
-    saveg_read_thinker_t(str);
+    // think_t function;
+    saveg_read_think_t<glow_t>(&str->function);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1363,8 +1351,8 @@ static void saveg_read_glow_t(glow_t *str)
 
 static void saveg_write_glow_t(glow_t *str)
 {
-    // thinker_t thinker;
-    saveg_write_thinker_t(str);
+    // think_t function;
+    saveg_write_think_t<glow_t>(&str->function);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1659,13 +1647,47 @@ void P_ArchiveThinkers (void)
 //
 void P_UnArchiveThinkers (void)
 {
-/*    P_VisitThinkers([](thinker_t *currentthinker) {
-          if (currentthinker->function == P_MobjThinker)
-             P_RemoveMobj ((mobj_t *)currentthinker);
-          else
-             Z_Free (currentthinker);
-          return false;
-          } );*/
+   // save off the current thinkers
+   P_VisitThinkers<ceiling_t>( []( ceiling_t *ceiling ) {
+         Z_Free(ceiling);
+         return false;
+      } );
+
+   P_VisitThinkers<plat_t>( []( plat_t *plat ) {
+         Z_Free(plat);
+         return false;
+      } );
+
+   P_VisitThinkers<vldoor_t>( []( vldoor_t *vldoor ) {
+         Z_Free(vldoor);
+         return false;
+      } );
+
+   P_VisitThinkers<floormove_t>( []( floormove_t *floor ) {
+         Z_Free(floor);
+        return false;
+      } );
+
+   P_VisitThinkers<lightflash_t>( []( lightflash_t *flash ) {
+         Z_Free(flash);
+         return false;
+      } );
+
+   P_VisitThinkers<strobe_t>( []( strobe_t *strobe ) {
+         Z_Free(strobe);
+         return false;
+      } );
+
+   P_VisitThinkers<glow_t>( []( glow_t *glow ) {
+         Z_Free(glow);
+         return false;
+      } );
+
+   P_VisitThinkers<mobj_t>( []( mobj_t *mobj ) {
+         P_RemoveMobj(mobj);
+         return false;
+      } );
+
     P_InitThinkers ();
 
     // read in saved thinkers
@@ -1707,8 +1729,8 @@ void P_UnArchiveThinkers (void)
 void P_RestoreTargets (void)
 {
     P_VisitMobjThinkers([](mobj_t *mo) {
-          mo->target = (mobj_t*) P_IndexToThinker((uintptr_t) mo->target);
-          mo->tracer = (mobj_t*) P_IndexToThinker((uintptr_t) mo->tracer);
+          mo->target = P_IndexToMobjThinker((uintptr_t) mo->target);
+          mo->tracer = P_IndexToMobjThinker((uintptr_t) mo->tracer);
           return false;
        } );
 
@@ -1750,97 +1772,112 @@ enum
 //
 void P_ArchiveSpecials (void)
 {
-/*    // save off the current thinkers
-    P_VisitThinkers( []( thinker_t *th ) {
+    // save off the current thinkers
+   P_VisitThinkers<ceiling_t>( []( ceiling_t *ceiling ) {
 
-        if (th->function == think_t{})
-	{
+         if (ceiling->function == think_t<ceiling_t>{})
+         {
             int i;
             for (i = 0; i < MAXCEILINGS;i++)
-		if (activeceilings[i] == (ceiling_t *)th)
-                   return true;
-	    
+               if (activeceilings[i] == ceiling)
+                  return true;
+
 	    if (i<MAXCEILINGS)
 	    {
-                saveg_write8(tc_ceiling);
-		saveg_write_pad();
-                saveg_write_ceiling_t((ceiling_t *) th);
+               saveg_write8(tc_ceiling);
+               saveg_write_pad();
+               saveg_write_ceiling_t(ceiling);
 	    }
-	    // [crispy] save plats in statis
+         }
+         else if (ceiling->function == T_MoveCeiling)
+         {
+            saveg_write8(tc_ceiling);
+	    saveg_write_pad();
+            saveg_write_ceiling_t(ceiling);
+         }
+         return false;
+      } );
+
+   P_VisitThinkers<plat_t>( []( plat_t *plat ) {
+
+         if (plat->function == think_t<plat_t>{})
+         {
+            int i;
+            // [crispy] save plats in statis
 	    for (i = 0; i < MAXPLATS; i++)
-		if (activeplats[i] == (plat_t *)th)
-                   return true;
+               if (activeplats[i] == plat)
+                  return true;
 
 	    if (i < MAXPLATS)
 	    {
-		saveg_write8(tc_plat);
-		saveg_write_pad();
-		saveg_write_plat_t((plat_t *)th);
+               saveg_write8(tc_plat);
+               saveg_write_pad();
+               saveg_write_plat_t(plat);
 	    }
-	    return false;
-	}
-			
-	if (th->function == T_MoveCeiling)
-	{
-            saveg_write8(tc_ceiling);
+         }
+         else if (plat->function == T_PlatRaise)
+         {
+            saveg_write8(tc_plat);
 	    saveg_write_pad();
-            saveg_write_ceiling_t((ceiling_t *) th);
-	    return false;
-	}
-			
-	if (th->function == T_VerticalDoor)
-	{
+            saveg_write_plat_t(plat);
+         }
+         return false;
+      } );
+
+
+   P_VisitThinkers<vldoor_t>( []( vldoor_t *vldoor ) {
+         if (vldoor->function == T_VerticalDoor)
+         {
             saveg_write8(tc_door);
 	    saveg_write_pad();
-            saveg_write_vldoor_t((vldoor_t *) th);
-	    return false;
-	}
-			
-	if (th->function == T_MoveFloor)
+            saveg_write_vldoor_t(vldoor);
+         }
+         return false;
+      } );
+
+   P_VisitThinkers<floormove_t>( []( floormove_t *floor ) {
+	if (floor->function == T_MoveFloor)
 	{
             saveg_write8(tc_floor);
 	    saveg_write_pad();
-            saveg_write_floormove_t((floormove_t *) th);
-	    return false;
+            saveg_write_floormove_t(floor);
 	}
-			
-	if (th->function == T_PlatRaise)
-	{
-            saveg_write8(tc_plat);
-	    saveg_write_pad();
-            saveg_write_plat_t((plat_t *) th);
-	    return false;
-	}
-			
-	if (th->function == T_LightFlash)
+        return false;
+      } );
+
+   P_VisitThinkers<lightflash_t>( []( lightflash_t *flash ) {
+	if (flash->function == T_LightFlash)
 	{
             saveg_write8(tc_flash);
 	    saveg_write_pad();
-            saveg_write_lightflash_t((lightflash_t *) th);
-	    return false;
+            saveg_write_lightflash_t(flash);
 	}
-			
-	if (th->function == T_StrobeFlash)
+        return false;
+      } );
+
+   P_VisitThinkers<strobe_t>( []( strobe_t *strobe ) {
+	if (strobe->function == T_StrobeFlash)
 	{
             saveg_write8(tc_strobe);
 	    saveg_write_pad();
-            saveg_write_strobe_t((strobe_t *) th);
-	    return false;
+            saveg_write_strobe_t(strobe);
 	}
-			
-	if (th->function == T_Glow)
+        return false;
+      } );
+
+   P_VisitThinkers<glow_t>( []( glow_t *glow ) {
+	if (glow->function == T_Glow)
 	{
             saveg_write8(tc_glow);
 	    saveg_write_pad();
-            saveg_write_glow_t((glow_t *) th);
-	    return false;
+            saveg_write_glow_t(glow);
 	}
         return false;
-       } );
-	
+      } );
+
     // add a terminating marker
     saveg_write8(tc_endspecials);
-*/
+
 }
 
 
