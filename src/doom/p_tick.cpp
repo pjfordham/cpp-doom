@@ -38,11 +38,6 @@ int	leveltime;
 // but the first element must be thinker_t.
 //
 
-
-
-// Both the head and tail of the thinker list.
-thinker_t	thinkercap;
-
 std::list<thinker_t *> thinkers;
 
 
