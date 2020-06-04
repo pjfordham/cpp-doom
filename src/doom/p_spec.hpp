@@ -126,34 +126,40 @@ int EV_DoDonut(line_t* line);
 //
 // P_LIGHTS
 //
-struct light_t : public thinker_t {
+struct fireflicker_t : public thinker_t
+{
     sector_t*	sector;
     int		minlight;
     int		maxlight;
-};
-
-struct fireflicker_t : public light_t
-{
     void action() override;
     int	 count;
 };
 
-struct lightflash_t : public light_t
+struct lightflash_t : public thinker_t
 {
+    sector_t*	sector;
+    int		minlight;
+    int		maxlight;
     int		count;
     int		maxtime;
     int		mintime;
 };
 
-struct strobe_t : public light_t
+struct strobe_t : public thinker_t
 {
+    sector_t*	sector;
+    int		minlight;
+    int		maxlight;
     int		count;
     int		darktime;
     int		brighttime;
 };
 
-struct glow_t : public light_t
+struct glow_t : public thinker_t
 {
+    sector_t*	sector;
+    int		minlight;
+    int		maxlight;
     int		direction;
 };
 
