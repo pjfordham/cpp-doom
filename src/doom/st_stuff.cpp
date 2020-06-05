@@ -924,8 +924,8 @@ ST_Responder (event_t* ev)
 	const char *const killed = (gameversion == exe_chex) ? "returned" : "killed";
 
 	M_snprintf(msg, sizeof(msg), "%s%d %s%s%s %s",
-	           crstr[CR_GOLD],
-	           killcount, crstr[CR_NONE], monster, (killcount == 1) ? "" : "s", killed);
+	           crstr[CR_GOLD].c_str(),
+	           killcount, crstr[CR_NONE].c_str(), monster, (killcount == 1) ? "" : "s", killed);
 	plyr->message = msg;
       }
       // [crispy] implement Crispy Doom's "spechits" cheat
@@ -934,8 +934,8 @@ ST_Responder (event_t* ev)
 	int triggeredlines = ST_cheat_spechits();
 
 	M_snprintf(msg, sizeof(msg), "%s%d %sSpecial Line%s Triggered",
-	           crstr[CR_GOLD],
-	           triggeredlines, crstr[CR_NONE], (triggeredlines == 1) ? "" : "s");
+	           crstr[CR_GOLD].c_str(),
+	           triggeredlines, crstr[CR_NONE].c_str(), (triggeredlines == 1) ? "" : "s");
 	plyr->message = msg;
       }
       // [crispy] implement PrBoom+'s "notarget" cheat
@@ -970,7 +970,7 @@ ST_Responder (event_t* ev)
 	}
 
 	M_snprintf(msg, sizeof(msg), "Notarget Mode %s%s",
-	           crstr[CR_GREEN],
+	           crstr[CR_GREEN].c_str(),
 	           (plyr->cheats & CF_NOTARGET) ? "ON" : "OFF");
 	plyr->message = msg;
       }
@@ -980,7 +980,7 @@ ST_Responder (event_t* ev)
 	plyr->cheats ^= CF_NOMOMENTUM;
 
 	M_snprintf(msg, sizeof(msg), "Nomomentum Mode %s%s",
-	           crstr[CR_GREEN],
+	           crstr[CR_GREEN].c_str(),
 	           (plyr->cheats & CF_NOMOMENTUM) ? "ON" : "OFF");
 	plyr->message = msg;
       }
@@ -1086,7 +1086,7 @@ ST_Responder (event_t* ev)
 	if (!plyr->message)
 	{
 	    M_snprintf(msg, sizeof(msg), "Weapon %s%d%s %s",
-	               crstr[CR_GOLD], w + 1, crstr[CR_NONE],
+	               crstr[CR_GOLD].c_str(), w + 1, crstr[CR_NONE].c_str(),
 	               plyr->weaponowned[w] ? "added" : "removed");
 	    plyr->message = msg;
 	}
@@ -1107,7 +1107,7 @@ ST_Responder (event_t* ev)
 	crispy->flashinghom = !crispy->flashinghom;
 
 	M_snprintf(msg, sizeof(msg), "HOM Detection %s%s",
-	           crstr[CR_GREEN],
+	           crstr[CR_GREEN].c_str(),
 	           (crispy->flashinghom) ? "ON" : "OFF");
 	plyr->message = msg;
     }
@@ -2354,12 +2354,12 @@ void ST_Init (void)
 	char str_behold[80];
 	M_snprintf(str_behold, sizeof(str_behold),
 	           "in%sV%suln, %sS%str, %sI%snviso, %sR%sad, %sA%sllmap, or %sL%site-amp",
-	           crstr[CR_GOLD], crstr[CR_NONE],
-	           crstr[CR_GOLD], crstr[CR_NONE],
-	           crstr[CR_GOLD], crstr[CR_NONE],
-	           crstr[CR_GOLD], crstr[CR_NONE],
-	           crstr[CR_GOLD], crstr[CR_NONE],
-	           crstr[CR_GOLD], crstr[CR_NONE]);
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
+	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str());
 	DEH_AddStringReplacement(STSTR_BEHOLD, str_behold);
     }
 

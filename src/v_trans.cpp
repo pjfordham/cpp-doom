@@ -84,7 +84,7 @@ byte *cr[] =
     (byte *) &cr_red2green
 };
 
-std::vector<char *> crstr;
+std::vector<std::string> crstr;
 
 /*
 Date: Sun, 26 Oct 2014 10:36:12 -0700

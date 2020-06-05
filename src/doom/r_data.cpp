@@ -1215,7 +1215,7 @@ void R_InitColormaps (void)
 	    }
 
 	    M_snprintf(c, sizeof(c), "%c%c", cr_esc, '0' + i);
-	    crstr[i] = M_StringDuplicate(c);
+	    crstr[i] = c;
 	}
 
 	W_ReleaseLumpName("PLAYPAL");

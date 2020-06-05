@@ -1107,10 +1107,7 @@ void M_QuickSave(void)
 	return;
     }
     // [crispy] print savegame name in golden letters
-    auto savegamestring =
-       std::string( crstr[CR_GOLD] ) +
-       savegamestrings[quickSaveSlot] +
-       crstr[CR_NONE];
+    auto savegamestring = crstr[CR_GOLD] + savegamestrings[quickSaveSlot] + crstr[CR_NONE];
 
     DEH_snprintf(tempstring, sizeof(tempstring),
                  QSPROMPT, savegamestring.c_str());
@@ -1151,10 +1148,7 @@ void M_QuickLoad(void)
 	return;
     }
     // [crispy] print savegame name in golden letters
-    auto savegamestring =
-       std::string( crstr[CR_GOLD] ) +
-       savegamestrings[quickSaveSlot] +
-       crstr[CR_NONE];
+    auto savegamestring = crstr[CR_GOLD] + savegamestrings[quickSaveSlot] + crstr[CR_NONE];
 
     DEH_snprintf(tempstring, sizeof(tempstring),
                  QLPROMPT, savegamestring.c_str());
@@ -1418,8 +1412,8 @@ static void M_DrawMouse(void)
 		 21, mouseSensitivity_y);
 
     M_snprintf(mouse_menu_text, sizeof(mouse_menu_text),
-               "%sInvert Vertical Axis: %s%s", crstr[CR_NONE],
-               mouse_y_invert ? crstr[CR_GREEN] : crstr[CR_DARK],
+               "%sInvert Vertical Axis: %s%s", crstr[CR_NONE].c_str(),
+               mouse_y_invert ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str(),
                mouse_y_invert ? "On" : "Off");
     M_WriteText(MouseDef.x, MouseDef.y + LINEHEIGHT * mouse_invert + 6,
                 mouse_menu_text);
@@ -1458,22 +1452,22 @@ static char crispy_menu_text[48];
 static void M_DrawCrispnessHeader(const char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD], item);
+               "%s%s", crstr[CR_GOLD].c_str(), item);
     M_WriteText(ORIGWIDTH/2 - M_StringWidth(item) / 2, 12, crispy_menu_text);
 }
 
 static void M_DrawCrispnessSeparator(int y, const char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD], item);
+               "%s%s", crstr[CR_GOLD].c_str(), item);
     M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
 static void M_DrawCrispnessItem(int y, const char *item, int feat, boolean cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
-               cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
+               "%s%s: %s%s", cond ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str(), item,
+               cond ? (feat ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str()) : crstr[CR_DARK].c_str(),
                cond && feat ? "On" : "Off");
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
@@ -1481,8 +1475,8 @@ static void M_DrawCrispnessItem(int y, const char *item, int feat, boolean cond)
 static void M_DrawCrispnessMultiItem(int y, const char *item, multiitem_t *multiitem, int feat, boolean cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
-               cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
+               "%s%s: %s%s", cond ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str(), item,
+               cond ? (feat ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str()) : crstr[CR_DARK].c_str(),
                cond && feat ? multiitem[feat].name : multiitem[0].name);
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
@@ -1490,7 +1484,7 @@ static void M_DrawCrispnessMultiItem(int y, const char *item, multiitem_t *multi
 static void M_DrawCrispnessGoto(int y, const char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD], item);
+               "%s%s", crstr[CR_GOLD].c_str(), item);
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
@@ -3016,7 +3010,7 @@ void M_Drawer (void)
     if (currentMenu == CrispnessMenus[crispness_cur])
     {
 	char item[4];
-	M_snprintf(item, sizeof(item), "%s>", whichSkull ? crstr[CR_NONE] : crstr[CR_DARK]);
+	M_snprintf(item, sizeof(item), "%s>", whichSkull ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str());
 	M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * itemOn, item);
 	dp_translation = NULL;
     }

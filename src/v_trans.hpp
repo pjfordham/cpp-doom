@@ -35,6 +35,7 @@
 
 #include "doomtype.hpp"
 #include <vector>
+#include <string>
 
 enum
 {
@@ -53,7 +54,7 @@ enum
 #define CR_GREY CR_GRAY
 
 extern byte *cr[CRMAX];
-extern std::vector<char*> crstr;
+extern std::vector<std::string> crstr;
 
 #define cr_esc '~'
 
