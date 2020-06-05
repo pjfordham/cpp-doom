@@ -529,7 +529,7 @@ static char *SearchDirectoryForIWAD(const std::string &dir, int mask, GameMissio
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
 
-static GameMission_t IdentifyIWADByName(const char *name, int mask)
+static GameMission_t IdentifyIWADByName(const std::string &name, int mask)
 {
     size_t i;
     GameMission_t mission;
@@ -560,14 +560,15 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 // Add IWAD directories parsed from splitting a path string containing
 // paths separated by PATH_SEPARATOR. 'suffix' is a string to concatenate
 // to the end of the paths before adding them.
-static void AddIWADPath(const char *path, const char *suffix)
+static void AddIWADPath(const std::string &path, const char *suffix)
 {
-    char *left, *p, *dup_path;
+    char *p;
 
-    dup_path = M_StringDuplicate(path);
+    auto deleter = [](char *ptr) { free ( ptr ); };
+    auto dup_path = std::unique_ptr<char, decltype(deleter) >( M_StringDuplicate(path.c_str()), deleter );
 
     // Split into individual dirs within the list.
-    left = dup_path;
+    char *left = dup_path.get();
 
     for (;;)
     {
@@ -588,8 +589,6 @@ static void AddIWADPath(const char *path, const char *suffix)
     }
 
     AddIWADDir( std::string(left) + suffix);
-
-    free(dup_path);
 }
 
 #ifndef _WIN32
@@ -816,9 +815,9 @@ std::string D_TryFindWADByName(const std::string &filename)
 // should be executed (notably loading PWADs).
 //
 
-char *D_FindIWAD(int mask, GameMission_t *mission)
+std::string D_FindIWAD(int mask, GameMission_t *mission)
 {
-    char *result;
+    std::string result;
     const char *iwadfile;
     int iwadparm;
     int i;
@@ -839,24 +838,24 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         iwadfile = myargv[iwadparm + 1];
 
-        result = M_StringDuplicate( D_FindWADByName(iwadfile) );
+        result = D_FindWADByName(iwadfile);
 
-        if (result == NULL)
+        if (result.empty())
         {
             I_Error("IWAD file '%s' not found!", iwadfile);
         }
-        
+
         *mission = IdentifyIWADByName(result, mask);
     }
     else
     {
         // Search through the list and look for an IWAD
 
-        result = NULL;
+        result.clear();
 
         BuildIWADDirList();
-    
-        for (i=0; result == NULL && i<num_iwad_dirs; ++i)
+
+        for (i=0; result.empty() && i<num_iwad_dirs; ++i)
         {
             result = SearchDirectoryForIWAD(iwad_dirs[i], mask, mission);
         }

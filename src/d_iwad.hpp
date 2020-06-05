@@ -43,7 +43,7 @@ typedef struct
 boolean D_IsIWADName(const char *name);
 std::string D_FindWADByName(const std::string &filename);
 std::string D_TryFindWADByName(const std::string &filename);
-char *D_FindIWAD(int mask, GameMission_t *mission);
+std::string D_FindIWAD(int mask, GameMission_t *mission);
 const iwad_t **D_FindAllIWADs(int mask);
 const char *D_SaveGameIWADName(GameMission_t gamemission);
 const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode);

@@ -96,7 +96,7 @@ const char *          savegamedir;
 
 // location of IWAD and WAD files
 
-char *          iwadfile;
+std::string     iwadfile;
 
 
 boolean		devparm;	// started game with -devparm
@@ -1496,7 +1496,7 @@ static void LoadNerveWad(void)
          !W_IsIWADLump(lumpinfo[k]))))
     {
         std::string nervewadfile;
-        if (strrchr(iwadfile, DIR_SEPARATOR) != NULL)
+        if (iwadfile.rfind( DIR_SEPARATOR ) != std::string::npos )
         {
             nervewadfile = M_DirName(iwadfile) + DIR_SEPARATOR_S + "nerve.wad";
         }
@@ -1775,7 +1775,7 @@ void D_DoomMain (void)
 
     // None found?
 
-    if (iwadfile == NULL)
+    if (iwadfile.empty())
     {
         I_Error("Game mode indeterminate.  No IWAD file was found.  Try\n"
                 "specifying one with the '-iwad' command line parameter.\n");
@@ -1784,7 +1784,7 @@ void D_DoomMain (void)
     modifiedgame = false;
 
     DEH_printf("W_Init: Init WADfiles.\n");
-    D_AddFile(iwadfile);
+    D_AddFile(iwadfile.c_str());
     numiwadlumps = numlumps;
 
     W_CheckCorrectIWAD(doom);
