@@ -104,7 +104,7 @@ static textscreen_t textscreens[] =
 
 const char *finaletext;
 const char *finaleflat;
-static char *finaletext_rw;
+std::string finaletext_rw;
 
 void	F_StartCast (void);
 void	F_CastTicker (void);
@@ -175,12 +175,7 @@ void F_StartFinale (void)
     finaletext = DEH_String(finaletext);
     finaleflat = DEH_String(finaleflat);
     // [crispy] do the "char* vs. const char*" dance
-    if (finaletext_rw)
-    {
-	free(finaletext_rw);
-	finaletext_rw = NULL;
-    }
-    finaletext_rw = M_StringDuplicate(finaletext);
+    finaletext_rw = std::string(finaletext);
     
     finalestage = F_STAGE_TEXT;
     finalecount = 0;
@@ -263,9 +258,9 @@ void F_Ticker (void)
 extern	patch_t *hu_font[HU_FONTSIZE];
 
 // [crispy] add line breaks for lines exceeding screenwidth
-static inline boolean F_AddLineBreak (char *c)
+static inline boolean F_AddLineBreak (std::string &text, std::string::iterator c)
 {
-    while (c-- > finaletext_rw)
+    while (c-- > text.begin())
     {
 	if (*c == '\n')
 	{
@@ -284,21 +279,14 @@ static inline boolean F_AddLineBreak (char *c)
 
 void F_TextWrite (void)
 {
-    int		x,y,w;
-    signed int	count;
-    char *ch; // [crispy] un-const
-    int		c;
-    int		cx;
-    int		cy;
-    
     // erase the entire screen to a tiled background
     auto *src = cache_lump_name<byte *>( finaleflat , PU_CACHE);
     auto *dest = I_VideoBuffer;
-	
-    for (y=0 ; y<SCREENHEIGHT ; y++)
+
+    for (int y=0 ; y<SCREENHEIGHT ; y++)
     {
 #ifndef CRISPY_TRUECOLOR
-	for (x=0 ; x<SCREENWIDTH/64 ; x++)
+	for (int x=0 ; x<SCREENWIDTH/64 ; x++)
 	{
             std::copy(src+((y&63)<<6), src+((y&63)<<6) + 64, dest);
             dest += 64;
@@ -310,7 +298,7 @@ void F_TextWrite (void)
 	    dest += (SCREENWIDTH&63);
 	}
 #else
-	for (x=0 ; x<SCREENWIDTH ; x++)
+	for (int x=0 ; x<SCREENWIDTH ; x++)
 	{
 		*dest++ = colormaps[src[((y&63)<<6) + (x&63)]];
 	}
@@ -318,18 +306,18 @@ void F_TextWrite (void)
     }
 
     V_MarkRect (0, 0, SCREENWIDTH, SCREENHEIGHT);
-    
+
     // draw some of the text onto the screen
-    cx = 10;
-    cy = 10;
-    ch = finaletext_rw;
-	
-    count = ((signed int) finalecount - 10) / TEXTSPEED;
+    int cx = 10;
+    int cy = 10;
+    auto ch = finaletext_rw.begin();
+    int count = ((signed int) finalecount - 10) / TEXTSPEED;
+
     if (count < 0)
 	count = 0;
     for ( ; count ; count-- )
     {
-	c = *ch++;
+	int c = *ch++;
 	if (!c)
 	    break;
 	if (c == '\n')
@@ -338,24 +326,24 @@ void F_TextWrite (void)
 	    cy += 11;
 	    continue;
 	}
-		
+
 	c = toupper(c) - HU_FONTSTART;
 	if (c < 0 || c> HU_FONTSIZE)
 	{
 	    cx += 4;
 	    continue;
 	}
-		
-	w = SHORT (hu_font[c]->width);
+
+	int w = SHORT (hu_font[c]->width);
 	if (cx+w > ORIGWIDTH)
 	{
 	    // [crispy] add line breaks for lines exceeding screenwidth
-	    if (F_AddLineBreak(ch))
+            if (F_AddLineBreak(finaletext_rw, ch))
 	    {
 		continue;
 	    }
 	    else
-	    break;
+               break;
 	}
 	// [cispy] prevent text from being drawn off-screen vertically
 	if (cy + SHORT(hu_font[c]->height) > ORIGHEIGHT)
@@ -365,7 +353,7 @@ void F_TextWrite (void)
 	V_DrawPatch(cx, cy, hu_font[c]);
 	cx+=w;
     }
-	
+
 }
 
 //
