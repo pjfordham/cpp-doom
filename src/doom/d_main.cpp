@@ -77,6 +77,7 @@
 #include "../../utils/lump.hpp"
 #include "../../utils/memory.hpp"
 #include "d_main.hpp"
+#include <string>
 
 //
 // D-DoomLoop()
@@ -129,7 +130,7 @@ char		mapdir[1024];           // directory of development maps
 int             show_endoom = 0; // [crispy] disable
 int             show_diskicon = 1;
 
-char            *nervewadfile = NULL;
+std::string     nervewadfile;
 
 void D_ConnectNetGame(void);
 void D_CheckNetGame(void);
@@ -1494,29 +1495,28 @@ static void LoadNerveWad(void)
          !W_IsIWADLump(lumpinfo[j]) &&
          !W_IsIWADLump(lumpinfo[k]))))
     {
-        std::string nwad;
+        std::string nervewadfile;
         if (strrchr(iwadfile, DIR_SEPARATOR) != NULL)
         {
-            nwad = M_DirName(iwadfile) + DIR_SEPARATOR_S + "nerve.wad";
+            nervewadfile = M_DirName(iwadfile) + DIR_SEPARATOR_S + "nerve.wad";
         }
         else
         {
-            nwad = "nerve.wad";
+            nervewadfile = "nerve.wad";
         }
 
-        if (!M_FileExists(nwad))
+        if (!M_FileExists(nervewadfile))
         {
-            nwad = D_FindWADByName("nerve.wad");
+            nervewadfile = D_FindWADByName("nerve.wad");
         }
 
-        if (nwad.empty())
+        if (nervewadfile.empty())
         {
             return;
         }
 
         printf(" [expansion]");
-        nervewadfile = M_StringDuplicate( nwad.c_str() );
-        D_AddFile(nervewadfile);
+        D_AddFile(nervewadfile.c_str());
 
         // [crispy] rename level name patch lumps out of the way
         for (i = 0; i < 9; i++)

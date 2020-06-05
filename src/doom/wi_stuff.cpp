@@ -1711,7 +1711,7 @@ static void WI_loadUnloadData(load_callback_t callback)
     char name[9];
     anim_t *a;
 
-    if (nervewadfile && gamemission == pack_nerve)
+    if (!nervewadfile.empty() && gamemission == pack_nerve)
     {
 	for (i=0 ; i<9 ; i++)
 	{

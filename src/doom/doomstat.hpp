@@ -59,7 +59,7 @@ extern GameMission_t	gamemission;
 extern GameVersion_t    gameversion;
 extern GameVariant_t    gamevariant;
 extern const char       *gamedescription;
-extern char            *nervewadfile;
+extern std::string      nervewadfile;
 
 // Convenience macro.
 // 'gamemission' can be equal to pack_chex or pack_hacx, but these are

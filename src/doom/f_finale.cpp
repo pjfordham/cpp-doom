@@ -37,7 +37,6 @@
 #include "doomstat.hpp"
 #include "r_state.hpp"
 #include "m_controls.hpp" // [crispy] key_*
-#include "m_misc.hpp" // [crispy] M_StringDuplicate()
 #include "m_random.hpp" // [crispy] Crispy_Random()
 #include "event_function_decls.hpp"
 

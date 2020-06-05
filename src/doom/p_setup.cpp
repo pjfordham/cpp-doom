@@ -1057,7 +1057,7 @@ int P_GetNumForMap (int episode, int map, boolean critical)
 
     lumpnum = critical ? W_GetNumForName (lumpname) : W_CheckNumForName (lumpname);
 
-    if (nervewadfile && episode != 2 && map <= 9)
+    if (!nervewadfile.empty() && episode != 2 && map <= 9)
     {
         lumpnum = W_CheckNumForNameFromTo (lumpname, lumpnum - 1, 0);
     }
@@ -1095,7 +1095,7 @@ P_SetupLevel
     }
 
     // [crispy] No Rest for the Living ...
-    if (nervewadfile)
+    if (!nervewadfile.empty())
     {
         if (episode == 2)
         {

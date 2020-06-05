@@ -1291,7 +1291,7 @@ void M_NewGame(int choice)
 	
     // Chex Quest disabled the episode select screen, as did Doom II.
 
-    if (nervewadfile)
+    if (!nervewadfile.empty())
 	M_SetupNextMenu(&ExpDef);
     else
     if (gamemode == commercial || gameversion == exe_chex)
@@ -3108,7 +3108,7 @@ void M_Init (void)
         MainMenu[readthis] = MainMenu[quitdoom];
         MainDef.numitems--;
         MainDef.y += 8;
-        NewDef.prevMenu = nervewadfile ? &ExpDef : &MainDef;
+        NewDef.prevMenu = !nervewadfile.empty() ? &ExpDef : &MainDef;
         ReadDef1.routine = M_DrawReadThisCommercial;
         ReadDef1.x = 330;
         ReadDef1.y = 165;
