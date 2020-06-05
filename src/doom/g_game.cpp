@@ -1991,25 +1991,19 @@ void G_DoLoadGame (void)
         P_ReadExtendedSaveGameData(0);
     }
     // [crispy] check if WAD file is valid to restore saved map
-    if (savewadfilename)
+    if (!savewadfilename.empty())
     {
         // [crispy] strings are not equal
         if (!savemaplumpinfo ||
             // [crispy] case-insensitive, so "doom.wad" matches "DOOM.WAD"
-            strcasecmp(savewadfilename, W_WadNameForLump(savemaplumpinfo)))
+            strcasecmp(savewadfilename.c_str(), W_WadNameForLump(savemaplumpinfo)))
         {
             M_ForceLoadGame();
             fclose(save_stream);
             return;
         }
-        else
-        // [crispy] strings are equal, but not identical
-        if (savewadfilename != W_WadNameForLump(savemaplumpinfo))
-        {
-            free(savewadfilename);
-        }
     }
-    savewadfilename = NULL;
+    savewadfilename.empty();
 
     savegame_error = false;
 

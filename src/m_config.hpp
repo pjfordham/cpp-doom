@@ -21,6 +21,7 @@
 #define __M_CONFIG__
 
 #include "doomtype.hpp"
+#include <string>
 
 void M_LoadDefaults(void);
 void M_SaveDefaults(void);
@@ -36,7 +37,7 @@ const char *M_GetStringVariable(const char *name);
 float M_GetFloatVariable(const char *name);
 void M_SetConfigFilenames(const char *main_config, const char *extra_config);
 const char *M_GetSaveGameDir(const char *iwadname);
-char *M_GetAutoloadDir(const char *iwadname);
+std::string M_GetAutoloadDir(const char *iwadname);
 
 extern const char *configdir;
 

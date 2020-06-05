@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
 #include "../../utils/memory.hpp"
 #include "config.h"
@@ -46,7 +47,7 @@ static void P_WritePackageTarname (const char *key)
 
 // maplumpinfo->wad_file->basename
 
-char *savewadfilename = NULL;
+std::string savewadfilename;
 
 static void P_WriteWadFileName (const char *key)
 {
@@ -56,7 +57,7 @@ static void P_WriteWadFileName (const char *key)
 
 static void P_ReadWadFileName (const char *key)
 {
-	if (!savewadfilename &&
+        if (savewadfilename.empty() &&
 	    // [crispy] only check if loaded from the menu,
 	    // we have no chance to show a dialog otherwise
 	    startloadgame == -1)
@@ -66,7 +67,7 @@ static void P_ReadWadFileName (const char *key)
 		{
 			if (sscanf(line, "%*s %s", string) == 1)
 			{
-				savewadfilename = strdup(string);
+                               savewadfilename = std::string(string);
 			}
 		}
 	}

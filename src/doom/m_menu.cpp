@@ -977,18 +977,17 @@ static void SetDefaultSaveName(int slot)
     }
     else
     {
-        char *wadname = M_StringDuplicate(W_WadNameForLump(maplumpinfo));
-        char *ext = strrchr(wadname, '.');
+        auto wadname = std::string( W_WadNameForLump(maplumpinfo) );
+        auto pos = wadname.rfind( '.' );
 
-        if (ext != NULL)
+        if (pos != std::string::npos)
         {
-            *ext = '\0';
+           wadname.resize( pos - 1 );
         }
 
         M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
                    "%s (%s)", maplumpinfo->name,
-                   wadname);
-        free(wadname);
+                   wadname.c_str());
     }
     auto len = strlen( savegamestrings[itemOn] );
     std::transform(savegamestrings[itemOn], savegamestrings[itemOn] + len,
@@ -3201,17 +3200,14 @@ void M_Init (void)
 }
 
 // [crispy] extended savegames
-static char *savegwarning;
+std::string savegwarning;
 static void M_ForceLoadGameResponse(int key)
 {
-	free(savegwarning);
-	free(savewadfilename);
-
 	if (key != key_menu_confirm || !savemaplumpinfo)
 	{
 		// [crispy] no need to end game anymore when denied to load savegame
 		//M_EndGameResponse(key_menu_confirm);
-		savewadfilename = NULL;
+                savewadfilename.clear();
 
 		// [crispy] reload Load Game menu
 		M_StartControlPanel();
@@ -3219,13 +3215,13 @@ static void M_ForceLoadGameResponse(int key)
 		return;
 	}
 
-	savewadfilename = (char *)W_WadNameForLump(savemaplumpinfo);
+	savewadfilename = std::string( W_WadNameForLump(savemaplumpinfo) );
 	gameaction = ga_loadgame;
 }
 
 void M_ForceLoadGame()
 {
-	auto message = savemaplumpinfo ?
+	savegwarning = savemaplumpinfo ?
            std::string( "This savegame requires the file\n" ) +
 	             crstr[CR_GOLD] + savewadfilename + crstr[CR_NONE] + "\n" +
 	             "to restore " + crstr[CR_GOLD] + savemaplumpinfo->name + crstr[CR_NONE] + " .\n\n" +
@@ -3238,17 +3234,13 @@ void M_ForceLoadGame()
                      "currently not available!\n\n" +
                      PRESSKEY;
 
-	savegwarning = M_StringDuplicate( message.c_str() );
-
-        M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
+        M_StartMessage(savegwarning.c_str(), M_ForceLoadGameResponse, savemaplumpinfo != NULL);
 	messageToPrint = 2;
 	S_StartSound(NULL,sfx_swtchn);
 }
 
 static void M_ConfirmDeleteGameResponse (int key)
 {
-	free(savegwarning);
-
 	if (key == key_menu_confirm)
 	{
 		char name[256];
@@ -3262,13 +3254,13 @@ static void M_ConfirmDeleteGameResponse (int key)
 
 void M_ConfirmDeleteGame ()
 {
-        savegwarning = M_StringDuplicate( std::string( "delete savegame\n\n" ) +
-                                          crstr[CR_GOLD] + savegamestrings[itemOn] +
-                                          crstr[CR_NONE] + " ?\n\n" + PRESSYN );
+   savegwarning = std::string( "delete savegame\n\n" ) +
+      crstr[CR_GOLD] + savegamestrings[itemOn] +
+      crstr[CR_NONE] + " ?\n\n" + PRESSYN;
 
-	M_StartMessage(savegwarning, M_ConfirmDeleteGameResponse, true);
-	messageToPrint = 2;
-	S_StartSound(NULL,sfx_swtchn);
+   M_StartMessage(savegwarning.c_str(), M_ConfirmDeleteGameResponse, true);
+   messageToPrint = 2;
+   S_StartSound(NULL,sfx_swtchn);
 }
 
 // [crispy] indicate game version mismatch

@@ -28,7 +28,17 @@ memset => std::fill or default init {}
 
 mommove gone from src/doom, just networking ones left.
 
-think_t and thinker_t are now a bit weird.
+examine sector_t::specialdata void*, std::variant is awkward
+
+fix savegame restoration of thinker pointers, save gets 1 or 0 if the pointer is set or not. -1 is delete, 0 is NOOP, 1 is set to the function. Do this better.
+
+maintain list of thinkers in order added to lists to keep demo's working.
+
+do savegame fixes to virtualized thnkers.
+
+now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
+
+Also consider emplace allocation for thinkers.
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
 any void*

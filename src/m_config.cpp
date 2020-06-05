@@ -2870,10 +2870,8 @@ const char *M_GetSaveGameDir(const char *iwadname)
 // Calculate the path to the directory for autoloaded WADs/DEHs.
 // Creates the directory as necessary.
 //
-char *M_GetAutoloadDir(const char *iwadname)
+std::string M_GetAutoloadDir(const char *iwadname)
 {
-    char *result;
-
     if (autoload_path == NULL || strlen(autoload_path) == 0)
     {
         char *prefdir;
@@ -2884,8 +2882,8 @@ char *M_GetAutoloadDir(const char *iwadname)
 
     M_MakeDirectory(autoload_path);
 
-    result = M_StringDuplicate( std::string(autoload_path) + DIR_SEPARATOR_S + iwadname);
-    M_MakeDirectory(result);
+    auto result = std::string(autoload_path) + DIR_SEPARATOR_S + iwadname;
+    M_MakeDirectory(result.c_str());
 
     // TODO: Add README file
 

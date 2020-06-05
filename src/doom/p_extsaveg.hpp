@@ -20,8 +20,10 @@
 #ifndef __P_EXTSAVEG__
 #define __P_EXTSAVEG__
 
+#include <string>
+
 /* p_extsaveg.c */
-extern char *savewadfilename;
+extern std::string savewadfilename;
 
 extern void P_WriteExtendedSaveGameData (void);
 extern void P_ReadExtendedSaveGameData (int pass);
