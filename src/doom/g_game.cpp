@@ -2444,13 +2444,11 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
     if (gamekeydown[key_demo_quit] && singledemo && !netgame)
     {
 	byte *actualbuffer = demobuffer;
-	char *actualname = M_StringDuplicate(defdemoname);
 
 	gamekeydown[key_demo_quit] = false;
 
 	// [crispy] find a new name for the continued demo
-	G_RecordDemo(actualname);
-	free(actualname);
+	G_RecordDemo(defdemoname);
 
 	// [crispy] discard the newly allocated demo buffer
 	Z_Free(demobuffer);
