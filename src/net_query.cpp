@@ -87,7 +87,7 @@ static boolean query_loop_running = false;
 static boolean printed_header = false;
 static int last_query_time = 0;
 
-static char *securedemo_start_message = NULL;
+static std::string securedemo_start_message;
 
 // Resolve the master server address.
 
@@ -953,7 +953,7 @@ boolean NET_StartSecureDemo(prng_seed_t seed)
 
             if (signature != NULL)
             {
-                securedemo_start_message = M_StringDuplicate(signature);
+                securedemo_start_message = signature;
                 result = true;
             }
         }
@@ -979,7 +979,7 @@ char *NET_EndSecureDemo(sha1_digest_t demo_hash)
     request = NET_NewPacket(10);
     NET_WriteInt16(request, NET_MASTER_PACKET_TYPE_SIGN_END);
     NET_WriteSHA1Sum(request, demo_hash);
-    NET_WriteString(request, securedemo_start_message);
+    NET_WriteString(request, securedemo_start_message.c_str());
     NET_SendPacket(master_addr, request);
     NET_FreePacket(request);
 

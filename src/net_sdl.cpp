@@ -329,16 +329,17 @@ void NET_SDL_AddrToString(net_addr_t *addr, char *buffer, int buffer_len)
 net_addr_t *NET_SDL_ResolveAddress(const char *address)
 {
     IPaddress ip;
-    char *addr_hostname;
     int addr_port;
     int result;
 
     const auto *colon = std::strchr(address, ':');
 
-    addr_hostname = M_StringDuplicate(address);
+    auto deleter = [](char *ptr) { free ( ptr ); };
+    auto addr_hostname = std::unique_ptr<char, decltype(deleter) >( M_StringDuplicate(address), deleter );
+
     if (colon != NULL)
     {
-	addr_hostname[colon - address] = '\0';
+        addr_hostname.get()[colon - address] = '\0';
 	addr_port = atoi(colon + 1);
     }
     else
@@ -346,9 +347,7 @@ net_addr_t *NET_SDL_ResolveAddress(const char *address)
 	addr_port = port;
     }
     
-    result = SDLNet_ResolveHost(&ip, addr_hostname, addr_port);
-
-    free(addr_hostname);
+    result = SDLNet_ResolveHost(&ip, addr_hostname.get(), addr_port);
 
     if (result)
     {
