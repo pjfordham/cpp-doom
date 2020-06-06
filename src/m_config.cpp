@@ -98,7 +98,7 @@ typedef struct
 {
     default_t *defaults;
     int numdefaults;
-    const char *filename;
+    std::string filename;
 } default_collection_t;
 
 #define CONFIG_VARIABLE_GENERIC(name, type) \
@@ -737,7 +737,7 @@ static default_collection_t doom_defaults =
 {
     doom_defaults_list,
     arrlen(doom_defaults_list),
-    NULL,
+    {},
 };
 
 //! @begin_config_file extended
@@ -2200,7 +2200,7 @@ static default_collection_t extra_defaults =
 {
     extra_defaults_list,
     arrlen(extra_defaults_list),
-    NULL,
+    {},
 };
 
 // Search a collection for a variable
@@ -2257,7 +2257,7 @@ static void SaveDefaultCollection(default_collection_t *collection)
     int i, v;
     FILE *f;
 	
-    f = fopen (collection->filename, "w");
+    f = fopen (collection->filename.c_str(), "w");
     if (!f)
 	return; // can't write the file, but don't complain
 
@@ -2419,7 +2419,7 @@ static void LoadDefaultCollection(default_collection_t *collection)
     char strparm[100];
 
     // read the file in, overriding any set defaults
-    f = fopen(collection->filename, "r");
+    f = fopen(collection->filename.c_str(), "r");
 
     if (f == NULL)
     {
@@ -2498,13 +2498,10 @@ void M_SaveDefaults (void)
 
 void M_SaveDefaultsAlternate(const char *main, const char *extra)
 {
-    const char *orig_main;
-    const char *orig_extra;
-
     // Temporarily change the filenames
 
-    orig_main = doom_defaults.filename;
-    orig_extra = extra_defaults.filename;
+    auto orig_main = doom_defaults.filename;
+    auto orig_extra = extra_defaults.filename;
 
     doom_defaults.filename = main;
     extra_defaults.filename = extra;
@@ -2543,14 +2540,14 @@ void M_LoadDefaults (void)
     if (i)
     {
 	doom_defaults.filename = myargv[i+1];
-	printf ("	default file: %s\n",doom_defaults.filename);
+	printf ("	default file: %s\n",doom_defaults.filename.c_str());
     }
     else
     {
-       doom_defaults.filename = M_StringDuplicate( std::string(configdir) + default_main_config );
+       doom_defaults.filename = std::string(configdir) + default_main_config;
     }
 
-    printf("saving config in %s\n", doom_defaults.filename);
+    printf("saving config in %s\n", doom_defaults.filename.c_str());
 
     //!
     // @arg <file>
@@ -2565,12 +2562,11 @@ void M_LoadDefaults (void)
     {
         extra_defaults.filename = myargv[i+1];
         printf("        extra configuration file: %s\n", 
-               extra_defaults.filename);
+               extra_defaults.filename.c_str());
     }
     else
     {
-        extra_defaults.filename
-           = M_StringDuplicate( std::string(configdir) +  default_extra_config );
+        extra_defaults.filename = std::string(configdir) +  default_extra_config;
     }
 
     LoadDefaultCollection(&doom_defaults);
