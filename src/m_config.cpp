@@ -2865,10 +2865,10 @@ std::string M_GetAutoloadDir(const char *iwadname)
 {
     if (autoload_path == NULL || strlen(autoload_path) == 0)
     {
-        char *prefdir;
-        prefdir = SDL_GetPrefPath("", PACKAGE_TARNAME);
-        autoload_path = M_StringDuplicate( std::string(prefdir) + "autoload");
-        SDL_free(prefdir);
+        auto deleter = [](char *ptr) { SDL_free ( ptr ); };
+        auto prefdir = std::unique_ptr<char, decltype(deleter) >(
+           SDL_GetPrefPath("", PACKAGE_TARNAME), deleter );
+        autoload_path = M_StringDuplicate( std::string(prefdir.get()) + "autoload");
     }
 
     M_MakeDirectory(autoload_path);
