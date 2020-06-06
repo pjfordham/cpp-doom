@@ -48,7 +48,7 @@
 // in POSIX.1.  Other than Linux, the d_type field is available mainly
 // only on BSD systems.  The remaining fields are available on many, but
 // not all systems.
-static boolean IsDirectory(char *dir, struct dirent *de)
+static boolean IsDirectory(const char *dir, struct dirent *de)
 {
 #if defined(_DIRENT_HAVE_D_TYPE)
     if (de->d_type != DT_UNKNOWN && de->d_type != DT_LNK)
@@ -75,27 +75,17 @@ static boolean IsDirectory(char *dir, struct dirent *de)
 
 struct glob_t
 {
-    std::vector<char*> globs;
+    std::vector<std::string> globs;
     int num_globs;
     int flags;
     DIR *dir;
-    char *directory;
-    char *last_filename;
+    std::string directory;
+    std::string last_filename;
     // These fields are only used when the GLOB_FLAG_SORTED flag is set:
-    std::vector<char *> filenames;
+    std::vector<std::string> filenames;
     int filenames_len;
     int next_index;
 };
-
-static void FreeStringList(std::vector<char*> &globs, int num_globs)
-{
-    int i;
-    for (i = 0; i < num_globs; ++i)
-    {
-        free(globs[i]);
-    }
-    globs.clear();
-}
 
 glob_t *I_StartMultiGlob(const char *directory, int flags,
                          const char *glob, ...)
@@ -111,7 +101,7 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
 
     auto &globs = result->globs;
     globs.resize( 1 );
-    globs[0] = M_StringDuplicate(glob);
+    globs[0] = glob;
     num_globs = 1;
 
     va_start(args, glob);
@@ -125,7 +115,7 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
         }
 
         globs.resize( num_globs + 1);
-        globs[num_globs] = M_StringDuplicate(arg);
+        globs[num_globs] = arg;
         ++num_globs;
     }
     va_end(args);
@@ -133,16 +123,16 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
     result->dir = opendir(directory);
     if (result->dir == NULL)
     {
-        FreeStringList(globs, num_globs);
+        globs.clear();
         free(result);
         return NULL;
     }
 
-    result->directory = M_StringDuplicate(directory);
+    result->directory = directory;
     result->globs = globs;
     result->num_globs = num_globs;
     result->flags = flags;
-    result->last_filename = NULL;
+    result->last_filename.clear();
     result->filenames_len = 0;
     result->next_index = -1;
     return result;
@@ -160,11 +150,9 @@ void I_EndGlob(glob_t *glob)
         return;
     }
 
-    FreeStringList(glob->globs, glob->num_globs);
-    FreeStringList(glob->filenames, glob->filenames_len);
+    glob->globs.clear();
+    glob->filenames.clear();
 
-    free(glob->directory);
-    free(glob->last_filename);
     (void) closedir(glob->dir);
     delete glob;
 }
@@ -220,7 +208,7 @@ static boolean MatchesAnyGlob(const char *name, glob_t *glob)
 
     for (i = 0; i < glob->num_globs; ++i)
     {
-        if (MatchesGlob(name, glob->globs[i], glob->flags))
+       if (MatchesGlob(name, glob->globs[i].c_str(), glob->flags))
         {
             return true;
         }
@@ -228,7 +216,7 @@ static boolean MatchesAnyGlob(const char *name, glob_t *glob)
     return false;
 }
 
-static char *NextGlob(glob_t *glob)
+static std::string NextGlob(glob_t *glob)
 {
     struct dirent *de;
 
@@ -237,27 +225,25 @@ static char *NextGlob(glob_t *glob)
         de = readdir(glob->dir);
         if (de == NULL)
         {
-            return NULL;
+           return std::string();
         }
-    } while (IsDirectory(glob->directory, de)
+    } while (IsDirectory(glob->directory.c_str(), de)
           || !MatchesAnyGlob(de->d_name, glob));
 
     // Return the fully-qualified path, not just the bare filename.
-    return M_StringDuplicate( std::string( glob->directory ) + DIR_SEPARATOR_S + de->d_name);
+    return glob->directory + DIR_SEPARATOR_S + de->d_name;
 }
 
 static void ReadAllFilenames(glob_t *glob)
 {
-    char *name;
-
     glob->filenames.clear();
     glob->filenames_len = 0;
     glob->next_index = 0;
 
     for (;;)
     {
-        name = NextGlob(glob);
-        if (name == NULL)
+        auto name = NextGlob(glob);
+        if (name.empty())
         {
             break;
         }
@@ -280,9 +266,8 @@ const char *I_NextGlob(glob_t *glob)
     // them back from the system API.
     if ((glob->flags & GLOB_FLAG_SORTED) == 0)
     {
-        free(glob->last_filename);
         glob->last_filename = NextGlob(glob);
-        return glob->last_filename;
+        return glob->last_filename.c_str();
     }
 
     // In sorted mode we read the whole list of filenames into memory,
@@ -296,7 +281,7 @@ const char *I_NextGlob(glob_t *glob)
     {
         return NULL;
     }
-    result = glob->filenames[glob->next_index];
+    result = glob->filenames[glob->next_index].c_str();
     ++glob->next_index;
     return result;
 }
