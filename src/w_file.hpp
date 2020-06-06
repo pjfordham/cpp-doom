@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include "doomtype.hpp"
+#include <string>
 
 typedef struct _wad_file_s wad_file_t;
 
@@ -52,7 +53,7 @@ struct _wad_file_s
     unsigned int length;
 
     // File's location on disk.
-    char *path; // [crispy] un-const
+    std::string path; // [crispy] un-const
 };
 
 // Open the specified file. Returns a pointer to a new wad_file_t 

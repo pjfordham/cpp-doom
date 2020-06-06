@@ -91,7 +91,7 @@ static wad_file_t *W_POSIX_OpenFile(const char *path)
     result = zone_malloc<posix_wad_file_t>(PU_STATIC);;
     result->wad.file_class = &posix_wad_file;
     result->wad.length = GetFileLength(handle);
-    result->wad.path = M_StringDuplicate(path);
+    result->wad.path = path;
     result->handle = handle;
 
     // Try to map the file into memory with mmap:
