@@ -925,7 +925,7 @@ void WritePCXfile(char *filename, pixel_t *data,
     pcx_t*	pcx;
     byte*	pack;
 	
-    pcx = (pcx_t*) malloc(width*height*2+1000);
+    pcx = new pcx_t[width*height*2+1000];
 
     pcx->manufacturer = 0x0a;		// PCX id
     pcx->version = 5;			// 256 color
@@ -967,7 +967,7 @@ void WritePCXfile(char *filename, pixel_t *data,
     length = pack - (byte *)pcx;
     M_WriteFile (filename, pcx, length);
 
-    free (pcx);
+    delete [] pcx;
 }
 
 #ifdef HAVE_LIBPNG
@@ -1055,7 +1055,7 @@ void WritePNGfile(char *filename, pixel_t *data,
                  8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
-    pcolor = malloc(sizeof(*pcolor) * 256);
+    pcolor = new png_colorp[256];
     if (!pcolor)
     {
         fclose(handle);
@@ -1071,13 +1071,13 @@ void WritePNGfile(char *filename, pixel_t *data,
     }
 
     png_set_PLTE(ppng, pinfo, pcolor, 256);
-    free(pcolor);
+    delete [] pcolor;
 */
 
     png_write_info(ppng, pinfo);
 
     /*
-        rowbuf = malloc(width);
+        rowbuf = new byte[width];
 
         if (rowbuf)
         {
@@ -1099,7 +1099,7 @@ void WritePNGfile(char *filename, pixel_t *data,
             }
         }
 
-        free(rowbuf);
+        delete [] rowbuf;
     }
 */
 
@@ -1108,7 +1108,6 @@ void WritePNGfile(char *filename, pixel_t *data,
         png_write_row(ppng, rowbuf);
         rowbuf += j;
     }
-    free(palette);
 
     png_write_end(ppng, pinfo);
     png_destroy_write_struct(&ppng, &pinfo);
@@ -1164,12 +1163,13 @@ void V_ScreenShot(const char *format)
         }
     }
 
+    auto palette = cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE);
 #ifdef HAVE_LIBPNG
     if (png_screenshots)
     {
     WritePNGfile(lbmname, I_VideoBuffer,
                  SCREENWIDTH, SCREENHEIGHT,
-                 cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+                 palette);
     }
     else
 #endif
@@ -1177,8 +1177,9 @@ void V_ScreenShot(const char *format)
     // save the pcx file
     WritePCXfile(lbmname, I_VideoBuffer,
                  SCREENWIDTH, SCREENHEIGHT,
-                 cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+                 palette);
     }
+    W_ReleaseLumpName(DEH_String("PLAYPAL"));
 }
 
 #define MOUSE_SPEED_BOX_WIDTH  120

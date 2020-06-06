@@ -52,7 +52,7 @@ typedef struct memblock_s
 
 typedef struct
 {
-    // total bytes malloced, including header
+    // total bytes allocated, including header
     int		size;
 
     // start / end cap for linked list
