@@ -257,12 +257,12 @@ static char *steam_install_subdirs[] =
 #define STEAM_BFG_GUS_PATCHES \
     "steamapps\\common\\DOOM 3 BFG Edition\\base\\classicmusic\\instruments"
 
-static char *GetRegistryString(registry_value_t *reg_val)
+static std::string GetRegistryString(registry_value_t *reg_val)
 {
     HKEY key;
     DWORD len;
     DWORD valtype;
-    char *result;
+    std::string result;
 
     // Open the key (directory where the value is stored)
 
@@ -272,8 +272,6 @@ static char *GetRegistryString(registry_value_t *reg_val)
         return NULL;
     }
 
-    result = NULL;
-
     // Find the type and length of the string, and only accept strings.
 
     if (RegQueryValueEx(key, reg_val->value,
@@ -281,27 +279,20 @@ static char *GetRegistryString(registry_value_t *reg_val)
      && valtype == REG_SZ)
     {
         // Allocate a buffer for the value and read the value
-
-        result = malloc(len + 1);
+        auto sresult = std::unique_ptr<char[]>( len + 1 );
 
         if (RegQueryValueEx(key, reg_val->value, NULL, &valtype,
-                            (unsigned char *) result, &len) != ERROR_SUCCESS)
-        {
-            free(result);
-            result = NULL;
-        }
-        else
+                            (unsigned char *) sresult.get(), &len) != ERROR_SUCCESS)
         {
             // Ensure the value is null-terminated
-            result[len] = '\0';
+            sresult.get()[len] = '\0';
         }
+        result = std::string( sresult.get() );
     }
 
     // Close the key
-
     RegCloseKey(key);
-
-    return result;
+    return result.
 }
 
 // Check for the uninstall strings from the CD versions
@@ -312,13 +303,13 @@ static void CheckUninstallStrings(void)
 
     for (i=0; i<arrlen(uninstall_values); ++i)
     {
-        char *val;
+        std::string val;
         char *path;
         char *unstr;
 
         val = GetRegistryString(&uninstall_values[i]);
 
-        if (val == NULL)
+        if (val.empty())
         {
             continue;
         }
@@ -346,25 +337,22 @@ static void CheckInstallRootPaths(void)
 
     for (i=0; i<arrlen(root_path_keys); ++i)
     {
-        char *install_path;
         char *subpath;
         unsigned int j;
 
-        install_path = GetRegistryString(&root_path_keys[i]);
+        auto install_path = GetRegistryString(&root_path_keys[i]);
 
-        if (install_path == NULL)
+        if (install_path.empty())
         {
             continue;
         }
 
         for (j=0; j<arrlen(root_path_subdirs); ++j)
         {
-           auto subpath = std::string(install_path) + DIR_SEPARATOR_S +
+           auto subpath = install_path + DIR_SEPARATOR_S +
               root_path_subdirs[j];
            AddIWADDir( subpath );
         }
-
-        free(install_path);
     }
 }
 
@@ -373,25 +361,22 @@ static void CheckInstallRootPaths(void)
 
 static void CheckSteamEdition(void)
 {
-    char *install_path;
     size_t i;
 
-    install_path = GetRegistryString(&steam_install_location);
+    auto install_path = GetRegistryString(&steam_install_location);
 
-    if (install_path == NULL)
+    if (install_path.empty())
     {
         return;
     }
 
     for (i=0; i<arrlen(steam_install_subdirs); ++i)
     {
-       auto subpath = std::string( install_path ) + DIR_SEPARATOR_S +
+       auto subpath = install_path + DIR_SEPARATOR_S +
           steam_install_subdirs[i];
 
        AddIWADDir( subpath );
     }
-
-    free(install_path);
 }
 
 // The BFG edition ships with a full set of GUS patches. If we find them,
@@ -413,7 +398,7 @@ static void CheckSteamGUSPatches(void)
         return;
     }
 
-    auto patch_path = std::string(install_path) + "\\" + STEAM_BFG_GUS_PATCHES;
+    auto patch_path = install_path + "\\" + STEAM_BFG_GUS_PATCHES;
     auto test_patch_path = patch_path + "\\ACBASS.PAT";
 
     // Does acbass.pat exist? If so, then set gus_patch_path.
@@ -421,8 +406,6 @@ static void CheckSteamGUSPatches(void)
     {
         M_SetVariable("gus_patch_path", patch_path.c_str());
     }
-
-    free(install_path);
 }
 
 // Default install directories for DOS Doom

@@ -46,6 +46,7 @@ any void*
 remove dynamic_Cast from p_extsaveg.cpp
 
 review all uses of c_str
+review all use of taking std::string as a parameter with a view to using std::string_view
 
 export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
