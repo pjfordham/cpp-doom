@@ -69,7 +69,7 @@ typedef struct
     net_addr_t *addr;
     net_connection_t connection;
     int last_send_time;
-    char *name;
+    std::string name;
 
     // If true, the client has sent the NET_PACKET_TYPE_GAMESTART
     // message indicating that it is ready for the game to start.
@@ -421,7 +421,7 @@ static void NET_SV_SendWaitingData(net_client_t *client)
     for (i = 0; i < wait_data.num_players; ++i)
     {
         M_StringCopy(wait_data.player_names[i],
-                     sv_players[i]->name,
+                     sv_players[i]->name.c_str(),
                      MAXPLAYERNAME);
         M_StringCopy(wait_data.player_addrs[i],
                      NET_AddrToString(sv_players[i]->addr),
@@ -773,7 +773,7 @@ static void NET_SV_ParseSYN(net_packet_t *packet, net_client_t *client,
     memcpy(client->deh_sha1sum, data.deh_sha1sum, sizeof(sha1_digest_t));
     client->is_freedoom = data.is_freedoom;
     client->max_players = data.max_players;
-    client->name = M_StringDuplicate(player_name);
+    client->name = player_name;
     client->recording_lowres = data.lowres_turn;
     client->drone = data.drone;
     client->player_class = data.player_class;
@@ -1776,7 +1776,7 @@ static void NET_SV_RunClient(net_client_t *client)
         NET_Log("server: client at %s timed out",
                 NET_AddrToString(client->addr));
         NET_SV_BroadcastMessage("Client '%s' timed out and disconnected",
-                                client->name);
+                                client->name.c_str());
     }
 
     // Is this client disconnected?
@@ -1792,11 +1792,10 @@ static void NET_SV_RunClient(net_client_t *client)
         {
             NET_SV_BroadcastMessage("Game startup aborted because "
                                     "player '%s' disconnected.",
-                                    client->name);
+                                    client->name.c_str());
             NET_SV_GameEnded();
         }
 
-        free(client->name);
         NET_ReleaseAddress(client->addr);
 
         // Are there any clients left connected?  If not, return the
