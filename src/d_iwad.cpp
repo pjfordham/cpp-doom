@@ -464,7 +464,7 @@ static boolean DirIsFile(const char *path, const char *filename)
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-static char *CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
+static std::string CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
 {
     std::string filename;
 
@@ -474,7 +474,7 @@ static char *CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
     std::string probe = M_FileCaseExists(dir);
     if (DirIsFile(dir.c_str(), iwadname) && probe.size() )
     {
-       return M_StringDuplicate( probe );
+       return probe;
     }
 
     // Construct the full path to the IWAD if it is located in
@@ -489,21 +489,14 @@ static char *CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
        filename = filename + DIR_SEPARATOR_S +  iwadname;
     }
 
-    probe = M_FileCaseExists(filename);
-    if (!probe.empty())
-    {
-       return M_StringDuplicate( probe );
-    }
-
-    return NULL;
+    return M_FileCaseExists(filename);
 }
 
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-static char *SearchDirectoryForIWAD(const std::string &dir, int mask, GameMission_t *mission)
+std::string SearchDirectoryForIWAD(const std::string &dir, int mask, GameMission_t *mission)
 {
-    char *filename;
     size_t i;
 
     for (i=0; i<arrlen(iwads); ++i) 
@@ -513,9 +506,9 @@ static char *SearchDirectoryForIWAD(const std::string &dir, int mask, GameMissio
             continue;
         }
 
-        filename = CheckDirectoryHasIWAD(dir, DEH_String(iwads[i].name));
+        auto filename = CheckDirectoryHasIWAD(dir, DEH_String(iwads[i].name));
 
-        if (filename != NULL)
+        if (!filename.empty())
         {
             *mission = iwads[i].mission;
 
@@ -768,7 +761,7 @@ std::string D_FindWADByName(const std::string &name)
         probe = M_FileCaseExists(iwad_dirs[i]);
         if (DirIsFile(iwad_dirs[i].c_str(), name.c_str()) && !probe.empty())
         {
-           return M_StringDuplicate( probe );
+           return probe;
         }
 
         // Construct a string for the full path
@@ -869,7 +862,6 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
 const iwad_t **D_FindAllIWADs(int mask)
 {
     int result_len;
-    char *filename;
     int i;
 
     auto result = new iwad_t const *[arrlen(iwads) + 1];
@@ -884,9 +876,9 @@ const iwad_t **D_FindAllIWADs(int mask)
             continue;
         }
 
-        filename = M_StringDuplicate( D_FindWADByName(iwads[i].name) );
+        auto filename = D_FindWADByName(iwads[i].name);
 
-        if (filename != NULL)
+        if (!filename.empty())
         {
             result[result_len] = &iwads[i];
             ++result_len;
