@@ -81,8 +81,8 @@
 
 typedef struct
 {
-    const char *hash_prefix;
-    const char *filename;
+    std::string hash_prefix;
+    std::string filename;
 } subst_music_t;
 
 // Structure containing parsed metadata read from a digital music track:
@@ -617,11 +617,10 @@ static void ReadLoopPoints(const char *filename, file_metadata_t *metadata)
 // Given a MUS lump, look up a substitute MUS file to play instead
 // (or NULL to just use normal MIDI playback).
 
-static const char *GetSubstituteMusicFile(void *data, size_t data_len)
+static std::string GetSubstituteMusicFile(void *data, size_t data_len)
 {
     sha1_context_t context;
     sha1_digest_t hash;
-    const char *filename;
     char hash_str[sizeof(sha1_digest_t) * 2 + 1];
     unsigned int i;
 
@@ -647,7 +646,7 @@ static const char *GetSubstituteMusicFile(void *data, size_t data_len)
     // filename mappings for the same hash. This allows us to try
     // different files and fall back if our first choice isn't found.
 
-    filename = NULL;
+    std::string filename;
 
     for (i = 0; i < subst_music_len; ++i)
     {
@@ -669,22 +668,20 @@ static const char *GetSubstituteMusicFile(void *data, size_t data_len)
     return filename;
 }
 
-static char *GetFullPath(const char *musicdir, const char *path)
+static std::string GetFullPath(const char *musicdir, const char *path)
 {
-    char *result;
-
     // Starting with directory separator means we have an absolute path,
     // so just return it.
     if (path[0] == DIR_SEPARATOR)
     {
-        return M_StringDuplicate(path);
+        return path;
     }
 
 #ifdef _WIN32
     // d:\path\...
     if (isalpha(path[0]) && path[1] == ':' && path[2] == DIR_SEPARATOR)
     {
-        return M_StringDuplicate(path);
+        return path;
     }
 #endif
 
@@ -695,19 +692,16 @@ static char *GetFullPath(const char *musicdir, const char *path)
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    result = M_StringDuplicate( std::string( musicdir ) + systemized_path);
-
-    return result;
+    return std::string( musicdir ) + systemized_path;
 }
 
 // If filename ends with .{ext}, check if a .ogg, .flac or .mp3 exists with
 // that name, returning it if found. If none exist, NULL is returned. If the
 // filename doesn't end with .{ext} then it just acts as a wrapper around
 // GetFullPath().
-static char *ExpandFileExtension(const char *musicdir, const char *filename)
+static std::string ExpandFileExtension(const char *musicdir, const char *filename)
 {
     static const char *extns[] = {".flac", ".ogg", ".mp3"};
-    char *result;
     int i;
 
     if (!M_StringEndsWith(filename, ".{ext}"))
@@ -718,15 +712,14 @@ static char *ExpandFileExtension(const char *musicdir, const char *filename)
     for (i = 0; i < arrlen(extns); ++i)
     {
         auto replaced = M_StringReplace(filename, ".{ext}", extns[i]);
-        result = GetFullPath(musicdir, replaced.c_str());
+        auto result = GetFullPath(musicdir, replaced.c_str());
         if (M_FileExists(result))
         {
             return result;
         }
-        free(result);
     }
 
-    return NULL;
+    return {};
 }
 
 // Add a substitute music file to the lookup list.
@@ -734,10 +727,9 @@ static void AddSubstituteMusic(const char *musicdir, const char *hash_prefix,
                                const char *filename)
 {
     subst_music_t *s;
-    char *path;
 
-    path = ExpandFileExtension(musicdir, filename);
-    if (path == NULL)
+    auto path = ExpandFileExtension(musicdir, filename);
+    if (path.empty())
     {
         return;
     }
@@ -958,8 +950,9 @@ static void LoadSubstituteConfigs(void)
     // configuration files, so that the entries here can be overridden.
     for (i = 0; i < arrlen(known_filenames); ++i)
     {
-       AddSubstituteMusic(musicdir.c_str(), known_filenames[i].hash_prefix,
-                           known_filenames[i].filename);
+       AddSubstituteMusic(musicdir.c_str(),
+                          known_filenames[i].hash_prefix.c_str(),
+                          known_filenames[i].filename.c_str());
     }
 
     if (subst_music_len > old_music_len)
@@ -1248,7 +1241,6 @@ static void I_MP_UnRegisterSong(void *handle)
 
 static void *I_MP_RegisterSong(void *data, int len)
 {
-    const char *filename;
     Mix_Music *music;
 
     if (!music_initialized)
@@ -1257,25 +1249,25 @@ static void *I_MP_RegisterSong(void *data, int len)
     }
 
     // See if we're substituting this MUS for a high-quality replacement.
-    filename = GetSubstituteMusicFile(data, len);
-    if (filename == NULL)
+    auto filename = GetSubstituteMusicFile(data, len);
+    if (filename.empty())
     {
         return NULL;
     }
 
-    music = Mix_LoadMUS(filename);
+    music = Mix_LoadMUS(filename.c_str());
     if (music == NULL)
     {
         // Fall through and play MIDI normally, but print an error
         // message.
         fprintf(stderr, "Failed to load substitute music file: %s: %s\n",
-                filename, Mix_GetError());
+                filename.c_str(), Mix_GetError());
         return NULL;
     }
 
     // Read loop point metadata from the file so that we know where
     // to loop the music.
-    ReadLoopPoints(filename, &file_metadata);
+    ReadLoopPoints(filename.c_str(), &file_metadata);
     return music;
 }
 

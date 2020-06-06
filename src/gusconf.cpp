@@ -35,7 +35,7 @@
 
 typedef struct
 {
-    char *patch_names[MAX_INSTRUMENTS];
+    std::string patch_names[MAX_INSTRUMENTS];
     int used[MAX_INSTRUMENTS];
     int mapping[MAX_INSTRUMENTS];
     unsigned int count;
@@ -145,8 +145,7 @@ static void ParseLine(gus_config_t *config, char *line)
     {
         // DMX uses wrong patch name (we should use name of 'mapped_id'
         // instrument, but DMX uses name of 'instr_id' instead).
-        free(config->patch_names[i]);
-        config->patch_names[i] = M_StringDuplicate(fields[5]);
+        config->patch_names[i] = fields[5];
         config->used[i] = mapped_id;
         config->count++;
     }
@@ -189,16 +188,6 @@ static void ParseDMXConfig(char *dmxconf, gus_config_t *config)
         {
             p = newline + 1;
         }
-    }
-}
-
-static void FreeDMXConfig(gus_config_t *config)
-{
-    unsigned int i;
-
-    for (i = 0; i < MAX_INSTRUMENTS; ++i)
-    {
-        free(config->patch_names[i]);
     }
 }
 
@@ -246,10 +235,10 @@ static boolean WriteTimidityConfig(const char *path, gus_config_t *config)
     for (i = 0; i < 128; ++i)
     {
         if (config->mapping[i] >= 0 && config->mapping[i] < MAX_INSTRUMENTS
-         && config->patch_names[config->mapping[i]] != NULL)
+            && !config->patch_names[config->mapping[i]].empty())
         {
             fprintf(fstream, "%u %s\n",
-                    i, config->patch_names[config->mapping[i]]);
+                    i, config->patch_names[config->mapping[i]].c_str());
         }
     }
 
@@ -258,10 +247,10 @@ static boolean WriteTimidityConfig(const char *path, gus_config_t *config)
     for (i = 128 + 35; i <= 128 + 81; ++i)
     {
         if (config->mapping[i] >= 0 && config->mapping[i] < MAX_INSTRUMENTS
-         && config->patch_names[config->mapping[i]] != NULL)
+            && !config->patch_names[config->mapping[i]].empty())
         {
             fprintf(fstream, "%u %s\n",
-                    i - 128, config->patch_names[config->mapping[i]]);
+                    i - 128, config->patch_names[config->mapping[i]].c_str());
         }
     }
 
@@ -294,7 +283,6 @@ boolean GUS_WriteConfig(const char *path)
 
     result = WriteTimidityConfig(path, &config);
 
-    FreeDMXConfig(&config);
     Z_Free(dmxconf);
 
     return result;
