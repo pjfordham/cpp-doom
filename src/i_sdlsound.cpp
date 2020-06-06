@@ -146,7 +146,8 @@ static void FreeAllocatedSound(allocated_sound_t *snd)
 
     allocated_sounds_size -= snd->chunk.alen;
 
-    free(snd);
+    delete [] snd->chunk.abuf;
+    delete snd;
 }
 
 // Search from the tail backwards along the allocated sounds list, find
@@ -204,8 +205,6 @@ static void ReserveCacheSpace(size_t len)
 
 static allocated_sound_t *AllocateSound(sfxinfo_t *sfxinfo, size_t len)
 {
-    allocated_sound_t *snd;
-
     // Keep allocated sounds within the cache size.
 
     ReserveCacheSpace(len);
@@ -213,23 +212,28 @@ static allocated_sound_t *AllocateSound(sfxinfo_t *sfxinfo, size_t len)
     // Allocate the sound structure and data.  The data will immediately
     // follow the structure, which acts as a header.
 
+    auto snd = new allocated_sound_t;
+
+    byte *abuf;
+
     do
     {
-        snd = static_cast<allocated_sound_t *>(malloc(sizeof(allocated_sound_t) + len));
+        abuf = new byte[len];
 
         // Out of memory?  Try to free an old sound, then loop round
         // and try again.
 
-        if (snd == NULL && !FindAndFreeSound())
+        if (abuf == NULL && !FindAndFreeSound())
         {
+            delete snd;
             return NULL;
         }
 
-    } while (snd == NULL);
+    } while (abuf == NULL);
 
     // Skip past the chunk structure for the audio buffer
 
-    snd->chunk.abuf = (byte *) (snd + 1);
+    snd->chunk.abuf = abuf;
     snd->chunk.alen = len;
     snd->chunk.allocated = 1;
     snd->chunk.volume = MIX_MAX_VOLUME;
