@@ -413,7 +413,7 @@ boolean I_MidiPipe_InitServer()
     TCHAR dirname[MAX_PATH + 1]{};
     DWORD dirname_len;
     char *module = NULL;
-    char *cmdline = NULL;
+    std::string cmdline;
     char params_buf[128];
     SECURITY_ATTRIBUTES sec_attrs{};
     PROCESS_INFORMATION proc_info{};
@@ -471,18 +471,17 @@ boolean I_MidiPipe_InitServer()
     // the executable name.
     M_snprintf(params_buf, sizeof(params_buf), "%d %Iu %Iu",
         snd_samplerate, (size_t) midi_process_in_reader, (size_t) midi_process_out_writer);
-    cmdline = M_StringJoin(module, " \"" PACKAGE_STRING "\"", " ", params_buf, NULL);
+    cmdline = std::string(module) + " \"" PACKAGE_STRING "\"" + " " + params_buf;
 
     // Launch the subprocess
     startup_info.cb = sizeof(startup_info);
 
-    ok = CreateProcess(TEXT(module), TEXT(cmdline), NULL, NULL, TRUE,
+    ok = CreateProcess(TEXT(module), TEXT(cmdline.c_str()), NULL, NULL, TRUE,
                        0, NULL, dirname, &startup_info, &proc_info);
 
     if (!ok)
     {
         FreePipes();
-        free(cmdline);
 
         return false;
     }
