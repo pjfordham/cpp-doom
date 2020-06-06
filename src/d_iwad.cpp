@@ -316,11 +316,7 @@ static void CheckUninstallStrings(void)
 
         unstr = strstr(val, UNINSTALLER_STRING);
 
-        if (unstr == NULL)
-        {
-            free(val);
-        }
-        else
+        if (unstr)
         {
             path = unstr + strlen(UNINSTALLER_STRING);
 
