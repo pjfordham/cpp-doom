@@ -30,10 +30,10 @@ static boolean bex_nested = false;
 
 static void *DEH_BEXInclStart(deh_context_t *context, char *line)
 {
-    char *deh_file;
+    std::string deh_file;
     extern boolean bex_notext;
 
-    if (!DEH_FileName(context))
+    if (DEH_FileName(context).empty())
     {
 	DEH_Warning(context, "DEHACKED lumps may not include files");
 	return NULL;

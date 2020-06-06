@@ -22,6 +22,7 @@
 #define __CRISPY_H__
 
 #include "doomtype.hpp"
+#include <string>
 
 #ifndef MIN
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -96,8 +97,8 @@ typedef struct
 	boolean singleplayer;
 	boolean stretchsky;
 
-	const char *sdlversion;
-	const char *platform;
+        std::string sdlversion;
+        std::string platform;
 
 	void (*post_rendering_hook) (void);
 } crispy_t;

@@ -56,7 +56,7 @@ int main(int argc, const char **argv)
         SDL_version version;
         SDL_GetVersion(&version);
         M_snprintf(buf, sizeof(buf), "%d.%d.%d", version.major, version.minor, version.patch);
-        crispy->sdlversion = M_StringDuplicate(buf);
+        crispy->sdlversion = buf;
         crispy->platform = SDL_GetPlatform();
     }
 

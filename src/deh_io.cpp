@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <string>
 
 #include "m_misc.hpp"
 #include "w_wad.hpp"
@@ -39,7 +40,7 @@ typedef enum
 struct deh_context_s
 {
     deh_input_type_t type;
-    char *filename;
+    std::string filename;
 
     // If the input comes from a memory buffer, pointer to the memory
     // buffer.
@@ -118,9 +119,8 @@ deh_context_t *DEH_OpenLump(int lumpnum)
     context->input_buffer_len = W_LumpLength(lumpnum);
     context->input_buffer_pos = 0;
 
-    context->filename = static_cast<char*>(malloc(9));
-    M_StringCopy(context->filename, lumpinfo[lumpnum]->name, 9);
-
+    context->filename =  lumpinfo[lumpnum]->name;
+    
     return context;
 }
 
@@ -137,7 +137,6 @@ void DEH_CloseFile(deh_context_t *context)
         W_ReleaseLumpNum(context->lumpnum);
     }
 
-    free(context->filename);
     Z_Free(context->readbuffer);
     Z_Free(context);
 }
@@ -343,7 +342,8 @@ void DEH_Warning(deh_context_t *context, const char *msg, ...)
 
     va_start(args, msg);
 
-    fprintf(stderr, "%s:%i: warning: ", context->filename, context->linenum);
+    fprintf(stderr, "%s:%i: warning: ", context->filename.c_str(),
+            context->linenum);
     vfprintf(stderr, msg, args);
     fprintf(stderr, "\n");
 
@@ -356,7 +356,7 @@ void DEH_Error(deh_context_t *context, const char *msg, ...)
 
     va_start(args, msg);
 
-    fprintf(stderr, "%s:%i: ", context->filename, context->linenum);
+    fprintf(stderr, "%s:%i: ", context->filename.c_str(), context->linenum);
     vfprintf(stderr, msg, args);
     fprintf(stderr, "\n");
 
@@ -372,13 +372,13 @@ boolean DEH_HadError(deh_context_t *context)
 
 // [crispy] return the filename of the DEHACKED file
 // or NULL if it is a DEHACKED lump loaded from a PWAD
-char *DEH_FileName(deh_context_t *context)
+std::string DEH_FileName(deh_context_t *context)
 {
     if (context->type == DEH_INPUT_FILE)
     {
-        return context->filename;
+       return context->filename.c_str();;
     }
 
-    return NULL;
+    return {};
 }
 

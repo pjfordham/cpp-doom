@@ -1121,7 +1121,7 @@ ST_Responder (event_t* ev)
                  PACKAGE_STRING,
                  BUILD_DATE,
                  (long) sizeof(void *) * CHAR_BIT,
-                 crispy->sdlversion);
+                 crispy->sdlversion.c_str());
 #undef BUILD_DATE
       plyr->message = msg;
       fprintf(stderr, "%s\n", msg);
