@@ -558,7 +558,7 @@ static void AddIWADPath(const std::string &path, const char *suffix)
     char *p;
 
     auto deleter = [](char *ptr) { free ( ptr ); };
-    auto dup_path = std::unique_ptr<char, decltype(deleter) >( M_StringDuplicate(path.c_str()), deleter );
+    auto dup_path = std::unique_ptr<char, decltype(deleter) >( M_StringDuplicate(path), deleter );
 
     // Split into individual dirs within the list.
     char *left = dup_path.get();
