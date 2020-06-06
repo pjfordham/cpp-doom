@@ -651,14 +651,14 @@ static boolean ExpandSoundData_SDL(sfxinfo_t *sfxinfo,
                           mixer_format, mixer_channels, mixer_freq))
     {
         convertor.len = length;
-        convertor.buf = static_cast<Uint8 *>(malloc(convertor.len * convertor.len_mult));
+        auto buffer = std::make_unique<Uint8[]>(convertor.len * convertor.len_mult);
+        convertor.buf = buffer.get();
         assert(convertor.buf != NULL);
         memcpy(convertor.buf, data, length);
 
         SDL_ConvertAudio(&convertor);
 
         memcpy(chunk->abuf, convertor.buf, chunk->alen);
-        free(convertor.buf);
     }
     else
     {
