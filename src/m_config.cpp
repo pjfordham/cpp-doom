@@ -2766,7 +2766,6 @@ void M_SetConfigDir(const char *dir)
 void M_SetMusicPackDir(void)
 {
     const char *current_path;
-    char *prefdir;
     std::string music_pack_path;
     std::string readme_path;
 
@@ -2777,20 +2776,21 @@ void M_SetMusicPackDir(void)
         return;
     }
 
-    prefdir = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    music_pack_path = std::string( prefdir ) + "music-packs";
+    auto deleter = [](char *ptr) { SDL_free ( ptr ); };
+    auto prefdir = std::unique_ptr<char, decltype(deleter) >(
+       SDL_GetPrefPath("", PACKAGE_TARNAME), deleter );
 
-    M_MakeDirectory(prefdir);
+    music_pack_path = std::string( prefdir.get() ) + "music-packs";
+
+    M_MakeDirectory(prefdir.get());
     M_MakeDirectory(music_pack_path);
     M_SetVariable("music_pack_path", music_pack_path.c_str());
 
     // We write a README file with some basic instructions on how to use
     // the directory.
     readme_path = music_pack_path + DIR_SEPARATOR_S + "README.txt";
- 
-    M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
-    SDL_free(prefdir);
+    M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 }
 
 //
