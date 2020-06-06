@@ -111,7 +111,7 @@ static net_context_t *client_context;
 static net_gamesettings_t settings;
 
 // Why did the server reject us?
-char *net_client_reject_reason = NULL;
+std::string net_client_reject_reason;
 
 // true if the client code is in use
 
@@ -468,15 +468,7 @@ static void NET_CL_ParseSYN(net_packet_t *packet)
 
 static void SetRejectReason(const char *s)
 {
-    free(net_client_reject_reason);
-    if (s != NULL)
-    {
-        net_client_reject_reason = strdup(s);
-    }
-    else
-    {
-        net_client_reject_reason = NULL;
-    }
+   net_client_reject_reason = s ? s : "";
 }
 
 static void NET_CL_ParseReject(net_packet_t *packet)

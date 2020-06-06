@@ -69,7 +69,7 @@ static lumpindex_t *lumphash;
 // load the file again.
 static wad_file_t *reloadhandle = NULL;
 static lumpinfo_t *reloadlumps = NULL;
-static char *reloadname = NULL;
+static std::string reloadname;
 static int reloadlump = -1;
 
 // Hash function used for lump names.
@@ -118,7 +118,7 @@ wad_file_t *W_AddFile (const char *filename)
     // reload hack.
     if (filename[0] == '~')
     {
-        if (reloadname != NULL)
+        if (!reloadname.empty())
         {
             I_Error("Prefixing a WAD filename with '~' indicates that the "
                     "WAD should be reloaded\n"
@@ -128,7 +128,7 @@ wad_file_t *W_AddFile (const char *filename)
                     "file in the -file list.");
         }
 
-        reloadname = strdup(filename);
+        reloadname = filename;
         reloadlump = numlumps;
         ++filename;
     }
@@ -235,7 +235,7 @@ wad_file_t *W_AddFile (const char *filename)
 
     // If this is the reload file, we need to save some details about the
     // file so that we can close it later on when we do a reload.
-    if (reloadname)
+    if (!reloadname.empty())
     {
         reloadhandle = wad_file;
         reloadlumps = filelumps;
@@ -598,10 +598,9 @@ void W_GenerateHashTable(void)
 // But: the reload feature is a fragile hack...
 void W_Reload(void)
 {
-    char *filename;
     lumpindex_t i;
 
-    if (reloadname == NULL)
+    if (reloadname.empty())
     {
         return;
     }
@@ -619,16 +618,15 @@ void W_Reload(void)
     numlumps = reloadlump;
 
     // Now reload the WAD file.
-    filename = reloadname;
+    auto filename = reloadname;
 
     W_CloseFile(reloadhandle);
     delete [] reloadlumps;
 
-    reloadname = NULL;
+    reloadname.clear();
     reloadlump = -1;
     reloadhandle = NULL;
-    W_AddFile(filename);
-    free(filename);
+    W_AddFile(filename.c_str());
 
     // The WAD directory has changed, so we have to regenerate the
     // fast lookup hashtable:
