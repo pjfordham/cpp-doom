@@ -45,7 +45,7 @@
 // Location where all configuration data is stored - 
 // default.cfg, savegames, etc.
 
-const char *configdir;
+std::string configdir;
 
 static const char *autoload_path = "";
 
@@ -2544,7 +2544,7 @@ void M_LoadDefaults (void)
     }
     else
     {
-       doom_defaults.filename = std::string(configdir) + default_main_config;
+       doom_defaults.filename = configdir + default_main_config;
     }
 
     printf("saving config in %s\n", doom_defaults.filename.c_str());
@@ -2566,7 +2566,7 @@ void M_LoadDefaults (void)
     }
     else
     {
-        extra_defaults.filename = std::string(configdir) +  default_extra_config;
+        extra_defaults.filename = configdir +  default_extra_config;
     }
 
     LoadDefaultCollection(&doom_defaults);
@@ -2706,7 +2706,7 @@ float M_GetFloatVariable(const char *name)
 // Get the path to the default configuration dir to use, if NULL
 // is passed to M_SetConfigDir.
 
-static char *GetDefaultConfigDir(void)
+static std::string GetDefaultConfigDir(void)
 {
 #if !defined(_WIN32) || defined(_WIN32_WCE)
 
@@ -2715,18 +2715,14 @@ static char *GetDefaultConfigDir(void)
     // ~/.local/share/chocolate-doom.  On Windows, we behave like
     // Vanilla Doom and save in the current directory.
 
-    char *result;
-    char *copy;
+    auto deleter = [](char *ptr) { SDL_free ( ptr ); };
+    auto result = std::unique_ptr<char, decltype(deleter) >(
+       SDL_GetPrefPath("", PACKAGE_TARNAME), deleter );
 
-    result = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    if (result != NULL)
-    {
-        copy = M_StringDuplicate(result);
-        SDL_free(result);
-        return copy;
-    }
+    return std::string(result.get());
+#else
+return {};
 #endif /* #ifndef _WIN32 */
-    return M_StringDuplicate("");
 }
 
 // 
@@ -2749,13 +2745,12 @@ void M_SetConfigDir(const char *dir)
         configdir = GetDefaultConfigDir();
     }
 
-    if (strcmp(configdir, "") != 0)
+    if (strcmp(configdir.c_str(), "") != 0)
     {
-        printf("Using %s for configuration and saves\n", configdir);
+        printf("Using %s for configuration and saves\n", configdir.c_str());
     }
 
     // Make the directory if it doesn't already exist:
-
     M_MakeDirectory(configdir);
 }
 
@@ -2835,12 +2830,12 @@ const char *M_GetSaveGameDir(const char *iwadname)
 
     else if (M_ParmExists("-cdrom"))
     {
-        savegamedir = std::string(configdir);
+        savegamedir = configdir;
     }
 #endif
     // If not "doing" a configuration directory (Windows), don't "do"
     // a savegame directory, either.
-    else if (!strcmp(configdir, ""))
+    else if (configdir.empty())
     {
        // Already empty
     }
@@ -2848,7 +2843,7 @@ const char *M_GetSaveGameDir(const char *iwadname)
     {
         // ~/.local/share/chocolate-doom/savegames
 
-        auto topdir = std::string(configdir) + "savegames";
+        auto topdir = configdir + "savegames";
         M_MakeDirectory(topdir);
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/

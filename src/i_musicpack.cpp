@@ -916,13 +916,13 @@ static void LoadSubstituteConfigs(void)
     {
         musicdir = std::string( music_pack_path ) + DIR_SEPARATOR_S;
     }
-    else if (!strcmp(configdir, ""))
+    else if (configdir.empty())
     {
        // Empty string already
     }
     else
     {
-       musicdir = std::string(configdir) + "music" + DIR_SEPARATOR_S;
+       musicdir = configdir + "music" + DIR_SEPARATOR_S;
     }
 
     // Load all music packs, by searching for .cfg files.
