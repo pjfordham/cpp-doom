@@ -124,7 +124,7 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
     if (result->dir == NULL)
     {
         globs.clear();
-        free(result);
+        delete result;
         return NULL;
     }
 
