@@ -898,17 +898,17 @@ void I_ReadScreen (pixel_t* scr)
 // I_SetPalette
 //
 // [crispy] intermediate gamma levels
-byte **gamma2table = NULL;
+std::vector<std::vector<byte>> gamma2table;
 void I_SetGammaTable (void)
 {
 	int i;
 
-	gamma2table = static_cast<byte **>(malloc(9 * sizeof(*gamma2table)));
+	gamma2table.resize(9);
 
-	// [crispy] 5 original gamma levels
+	// [crispy] 5 original gamma levels, copy into new vector
 	for (i = 0; i < 5; i++)
 	{
-		gamma2table[2*i] = (byte *)gammatable[i];
+           gamma2table[2*i] = std::vector<byte>(gammatable[i], gammatable[i] + 256);
 	}
 
 	// [crispy] 4 intermediate gamma levels
@@ -916,7 +916,7 @@ void I_SetGammaTable (void)
 	{
 		int j;
 
-		gamma2table[2*i+1] = static_cast<byte *>(malloc(256 * sizeof(**gamma2table)));
+		gamma2table[2*i+1].resize(256);
 
 		for (j = 0; j < 256; j++)
 		{
@@ -931,7 +931,7 @@ void I_SetPalette (byte *doompalette)
     int i;
 
     // [crispy] intermediate gamma levels
-    if (!gamma2table)
+    if (gamma2table.empty())
     {
         I_SetGammaTable();
     }
