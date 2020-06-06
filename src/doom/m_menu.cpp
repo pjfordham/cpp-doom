@@ -970,7 +970,7 @@ void M_DoSave(int slot)
 static void SetDefaultSaveName(int slot)
 {
     // map from IWAD or PWAD?
-    if (W_IsIWADLump(maplumpinfo) && strcmp(savegamedir, ""))
+    if (W_IsIWADLump(maplumpinfo) && !savegamedir.empty())
     {
         M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
                    "%s", maplumpinfo->name);

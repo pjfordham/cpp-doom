@@ -29,6 +29,7 @@
 //  for defining the global state variables.
 #include "doomdata.hpp"
 #include "d_loop.hpp"
+#include <string>
 
 // We need the playr data structure as well.
 #include "d_player.hpp"
@@ -248,7 +249,7 @@ extern  wbstartstruct_t		wminfo;
 //
 
 // File handling stuff.
-extern  const char        *savegamedir;
+extern  std::string savegamedir;
 
 // if true, load all graphics at level load
 extern  boolean         precache;

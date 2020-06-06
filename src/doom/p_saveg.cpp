@@ -49,7 +49,7 @@ std::string P_TempSaveGameFile(void)
 
     if (filename.empty())
     {
-       filename = std::string( savegamedir) + "temp.dsg";
+       filename = savegamedir + "temp.dsg";
     }
 
     return filename;
@@ -65,14 +65,14 @@ char *P_SaveGameFile(int slot)
 
     if (filename == NULL)
     {
-        filename_size = strlen(savegamedir) + 32;
+        filename_size = savegamedir.length() + 32;
         // Flipping this for a unique_ptr didn't work.
-        // FIXME: This leaks memory, but so didi the original code.
+        // FIXME: This leaks memory, but so did the original code.
         filename = new char[filename_size];
     }
 
     DEH_snprintf(basename, 32, SAVEGAMENAME "%d.dsg", slot);
-    M_snprintf(filename, filename_size, "%s%s", savegamedir, basename);
+    M_snprintf(filename, filename_size, "%s%s", savegamedir.c_str(), basename);
 
     return filename;
 }

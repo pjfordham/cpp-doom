@@ -36,7 +36,7 @@ int M_GetIntVariable(const char *name);
 const char *M_GetStringVariable(const char *name);
 float M_GetFloatVariable(const char *name);
 void M_SetConfigFilenames(const char *main_config, const char *extra_config);
-const char *M_GetSaveGameDir(const char *iwadname);
+std::string M_GetSaveGameDir(const char *iwadname);
 std::string M_GetAutoloadDir(const char *iwadname);
 
 extern std::string configdir;

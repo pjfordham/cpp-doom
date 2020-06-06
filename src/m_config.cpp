@@ -2798,7 +2798,7 @@ void M_SetMusicPackDir(void)
 // Creates the directory as necessary.
 //
 
-const char *M_GetSaveGameDir(const char *iwadname)
+std::string M_GetSaveGameDir(const char *iwadname)
 {
     std::string savegamedir;
     int p;
@@ -2854,7 +2854,7 @@ const char *M_GetSaveGameDir(const char *iwadname)
         M_MakeDirectory(savegamedir);
     }
 
-    return M_StringDuplicate( savegamedir );
+    return savegamedir;
 }
 
 //
