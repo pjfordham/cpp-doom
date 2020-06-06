@@ -1040,8 +1040,7 @@ void WritePNGfile(char *filename, pixel_t *data,
 
     png_init_io(ppng, handle);
 
-    I_RenderReadPixels(&palette, &width, &height, &j);
-    rowbuf = palette; // [crispy] pointer abuse!
+    I_RenderReadPixels(&rowbuf, &width, &height, &j);
 
     png_set_IHDR(ppng, pinfo, width, height,
 #if SDL_VERSION_ATLEAST(2, 0, 5)
@@ -1111,6 +1110,7 @@ void WritePNGfile(char *filename, pixel_t *data,
 
     png_write_end(ppng, pinfo);
     png_destroy_write_struct(&ppng, &pinfo);
+    delete rowbuf; // From i_video.cpp 1866
     fclose(handle);
 }
 #endif

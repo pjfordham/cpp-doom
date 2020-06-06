@@ -1863,7 +1863,7 @@ void I_RenderReadPixels(byte **data, int *w, int *h, int *p)
 	}
 
 	// [crispy] allocate memory for screenshot image
-	pixels = static_cast<byte *>(malloc(rect.h * temp));
+	pixels = new byte[rect.h * temp]; // deleted v_video.cpp L1113
 	SDL_RenderReadPixels(renderer, &rect, format->format, pixels, temp);
 
 	*data = pixels;
