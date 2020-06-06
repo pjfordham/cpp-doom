@@ -741,9 +741,8 @@ static void AddSubstituteMusic(const char *musicdir, const char *hash_prefix,
     s->filename = path;
 }
 
-static const char *ReadHashPrefix(char *line)
+static std::string ReadHashPrefix(char *line)
 {
-    char *result;
     char *p;
     int i, len;
 
@@ -761,17 +760,11 @@ static const char *ReadHashPrefix(char *line)
         return NULL;
     }
 
-    result = static_cast<char *>(malloc(len + 1));
-    if (result == NULL)
-    {
-        return NULL;
-    }
-
+    std::string result;
     for (i = 0; i < len; ++i)
     {
-        result[i] = tolower(line[i]);
+       result.push_back( tolower(line[i]) );
     }
-    result[len] = '\0';
 
     return result;
 }
@@ -781,7 +774,6 @@ static const char *ReadHashPrefix(char *line)
 
 static const char *ParseSubstituteLine(const char *musicdir, char *line)
 {
-    const char *hash_prefix;
     char *filename;
     char *p;
 
@@ -806,13 +798,13 @@ static const char *ParseSubstituteLine(const char *musicdir, char *line)
         return NULL;
     }
 
-    hash_prefix = ReadHashPrefix(p);
-    if (hash_prefix == NULL)
+    auto hash_prefix = ReadHashPrefix(p);
+    if (hash_prefix.empty())
     {
         return "Invalid hash prefix";
     }
 
-    p += strlen(hash_prefix);
+    p += hash_prefix.length();
 
     // Skip spaces.
     for (; *p != '\0' && isspace(*p); ++p);
@@ -841,7 +833,7 @@ static const char *ParseSubstituteLine(const char *musicdir, char *line)
     }
 
     // Expand full path and add to our database of substitutes.
-    AddSubstituteMusic(musicdir, hash_prefix, filename);
+    AddSubstituteMusic(musicdir, hash_prefix.c_str(), filename);
 
     return NULL;
 }
