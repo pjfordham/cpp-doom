@@ -1085,7 +1085,7 @@ static boolean I_MP_InitMusic(void)
 
     if (i > 0)
     {
-        DumpSubstituteConfig(myargv[i + 1]);
+       DumpSubstituteConfig(myargv[i + 1].c_str());
     }
 
     // If we're in GENMIDI mode, try to load sound packs.

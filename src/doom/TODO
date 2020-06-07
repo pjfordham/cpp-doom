@@ -14,8 +14,8 @@ Z_Malloc all gone
 calloc => all_gone
 realloc => all gone!
 
-malloc  all gone from src/doom grep malloc * | grep -v zone_malloc
-and all variants of free, single free left in src/doom paired locally with strdup
+malloc  all gone from src/doom grep malloc * | grep -v zone_malloc ALL GONE!
+and all variants of free, single free left in src/doom paired locally with strdup ALL GONE!
 
 All string manipulation to std::string and stringview with M_StringDuplicate for compat
 

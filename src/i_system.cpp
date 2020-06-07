@@ -142,7 +142,7 @@ byte *I_ZoneBase (int *size)
 
     if (p > 0)
     {
-        default_ram = atoi(myargv[p+1]);
+       default_ram = atoi(myargv[p+1].c_str());
         min_ram = default_ram;
     }
     else
@@ -411,15 +411,15 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
 
         if (p > 0)
         {
-            if (!strcasecmp(myargv[p + 1], "dos622"))
+           if (!strcasecmp(myargv[p + 1].c_str(), "dos622"))
             {
                 dos_mem_dump = mem_dump_dos622;
             }
-            if (!strcasecmp(myargv[p + 1], "dos71"))
+           if (!strcasecmp(myargv[p + 1].c_str(), "dos71"))
             {
                 dos_mem_dump = mem_dump_win98;
             }
-            else if (!strcasecmp(myargv[p + 1], "dosbox"))
+           else if (!strcasecmp(myargv[p + 1].c_str(), "dosbox"))
             {
                 dos_mem_dump = mem_dump_dosbox;
             }
@@ -429,7 +429,7 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
                 {
                     ++p;
 
-                    if (p >= myargc || myargv[p][0] == '-')
+                    if (p >= myargv.size() || myargv[p][0] == '-')
                     {
                         break;
                     }

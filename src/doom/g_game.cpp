@@ -2611,7 +2611,7 @@ void G_RecordDemo (const char *name)
 
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
-	maxsize = atoi(myargv[i+1])*1024;
+       maxsize = atoi(myargv[i+1].c_str())*1024;
     demobuffer = zone_malloc<byte>(PU_STATIC, maxsize);
     demoend = demobuffer + maxsize;
 	

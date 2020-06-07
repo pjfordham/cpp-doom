@@ -808,7 +808,7 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
     {
         // Search through IWAD dirs for an IWAD with the given name.
 
-        iwadfile = myargv[iwadparm + 1];
+       iwadfile = myargv[iwadparm + 1].c_str();
 
         result = D_FindWADByName(iwadfile);
 

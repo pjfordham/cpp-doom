@@ -1407,7 +1407,7 @@ void NET_SV_SendQueryResponse(net_addr_t *addr)
 
     if (p > 0)
     {
-        querydata.description = myargv[p + 1];
+       querydata.description = myargv[p + 1].c_str();
     }
     else
     {

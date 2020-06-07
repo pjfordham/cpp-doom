@@ -50,7 +50,7 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-        for (p = p + 1; p<myargc && myargv[p][0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
@@ -74,7 +74,7 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-        for (p = p + 1; p<myargc && myargv[p][0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
@@ -97,7 +97,7 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-        for (p = p + 1; p<myargc && myargv[p][0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
@@ -118,7 +118,7 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-        for (p = p + 1; p<myargc && myargv[p][0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p][0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
@@ -138,7 +138,7 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-        for (p = p + 1; p<myargc && myargv[p][0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p][0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
@@ -160,7 +160,7 @@ boolean W_ParseCommandLine(void)
 	// the parms after p are wadfile/lump names,
 	// until end of parms or another - preceded parm
 	modifiedgame = true;            // homebrew levels
-	while (++p != myargc && myargv[p][0] != '-')
+	while (++p != myargv.size() && myargv[p][0] != '-')
         {
             auto filename = D_TryFindWADByName(myargv[p]);
             // [crispy] always merge arguments of "-file" parameter

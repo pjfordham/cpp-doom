@@ -15,6 +15,7 @@
 // DESCRIPTION:
 //
 
+#include <string>
 
 #include <ctype.h>
 #include <stdio.h>
@@ -23,17 +24,13 @@
 
 #include "SDL_stdinc.h"
 
-#include "doomtype.hpp"
 #include "d_iwad.hpp"
+#include "doomtype.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
 #include "m_argv.hpp"  // haleyjd 20110212: warning fix
 
-int		myargc;
-const char**		myargv;
-
-
-
+std::vector<std::string> myargv;
 
 //
 // M_CheckParm
@@ -47,9 +44,9 @@ int M_CheckParmWithArgs(const char *check, int num_args)
 {
     int i;
 
-    for (i = 1; i < myargc - num_args; i++)
+    for (i = 1; i < myargv.size() - num_args; i++)
     {
-	if (!strcasecmp(check, myargv[i]))
+        if (!strcasecmp(check, myargv[i].c_str()))
 	    return i;
     }
 
@@ -81,8 +78,6 @@ static void LoadResponseFile(int argv_index, const char *filename)
     int size;
     char *infile;
     char *file;
-    const char **newargv;
-    int newargc;
     int i, k;
 
     // Read the response file into memory
@@ -103,7 +98,8 @@ static void LoadResponseFile(int argv_index, const char *filename)
     // at the end of the response file, in which case a '\0' will be
     // needed.
 
-    file = static_cast<char *>(malloc(size + 1));
+    auto unique_file = std::make_unique<char[]>(size + 1);
+    file = unique_file.get();
 
     i = 0;
 
@@ -121,22 +117,10 @@ static void LoadResponseFile(int argv_index, const char *filename)
 
     fclose(handle);
 
-    // Create new arguments list array
-
-    newargv = static_cast<const char **>(malloc(sizeof(const char *) * MAXARGVS));
-    newargc = 0;
-    std::fill(newargv, newargv + MAXARGVS, nullptr );
-
-    // Copy all the arguments in the list up to the response file
-
-    for (i=0; i<argv_index; ++i)
-    {
-        newargv[i] = myargv[i];
-        ++newargc;
-    }
-
     infile = file;
     k = 0;
+
+    // myargv.erase( myargv.begin() + argv_index );
 
     while(k < size)
     {
@@ -161,7 +145,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
             // Skip the first character(")
             ++k;
 
-            newargv[newargc++] = &infile[k];
+            int start = k;
 
             // Read all characters between quotes
 
@@ -179,13 +163,14 @@ static void LoadResponseFile(int argv_index, const char *filename)
             // Cut off the string at the closing quote
 
             infile[k] = '\0';
+            myargv.emplace( myargv.begin() + argv_index, infile+start, infile+k );
             ++k;
         }
         else
         {
             // Read in the next argument until a space is reached
 
-            newargv[newargc++] = &infile[k];
+            int start = k;
 
             while(k < size && !isspace(infile[k]))
             {
@@ -195,29 +180,20 @@ static void LoadResponseFile(int argv_index, const char *filename)
             // Cut off the end of the argument at the first space
 
             infile[k] = '\0';
-
+            myargv.emplace( myargv.begin() + argv_index, infile+start, infile+k );
             ++k;
+
         }
     }
 
-    // Add arguments following the response file argument
-
-    for (i=argv_index + 1; i<myargc; ++i)
-    {
-        newargv[newargc] = myargv[i];
-        ++newargc;
-    }
-
-    myargv = newargv;
-    myargc = newargc;
 
 #if 0
     // Disabled - Vanilla Doom does not do this.
     // Display arguments
 
-    printf("%d command-line args:\n", myargc);
+    printf("%d command-line args:\n", myargv.size());
 
-    for (k=1; k<myargc; k++)
+    for (k=1; k<myargv.size(); k++)
     {
         printf("'%s'\n", myargv[k]);
     }
@@ -232,11 +208,11 @@ void M_FindResponseFile(void)
 {
     int i;
 
-    for (i = 1; i < myargc; i++)
+    for (i = 1; i < myargv.size(); i++)
     {
         if (myargv[i][0] == '@')
         {
-            LoadResponseFile(i, myargv[i] + 1);
+           LoadResponseFile(i, myargv[i].c_str() + 1);
         }
     }
 
@@ -260,7 +236,7 @@ void M_FindResponseFile(void)
         // an argument beginning with a '-' is encountered, we keep something
         // that starts with a '-'.
         myargv[i] = "-_";
-        LoadResponseFile(i + 1, myargv[i + 1]);
+        LoadResponseFile(i + 1, myargv[i + 1].c_str());
     }
 }
 
@@ -327,21 +303,23 @@ void M_AddLooseFiles(void)
     char **newargv;
     argument_t *arguments;
 
-    if (myargc < 2)
+    if (myargv.size() < 2)
     {
         return;
     }
 
     // allocate space for up to three additional regular parameters
 
-    arguments = malloc((myargc + 3) * sizeof(*arguments));
-    std::fill( arguments, arguments + (myargc + 3), argument_t{} );
+    auto unique_arguments = std::make_unique<argument_t[]>( myargv.size() + 3 );
+    arguments = unique_arguments.get();
+    
+    std::fill( arguments, arguments + (myargv.size() + 3), argument_t{} );
 
     // check the command line and make sure it does not already
     // contain any regular parameters or response files
     // but only fully-qualified LFS or UNC file paths
 
-    for (i = 1; i < myargc; i++)
+    for (i = 1; i < myargv.size(); i++)
     {
         char *arg = myargv[i];
         int type;
@@ -352,7 +330,6 @@ void M_AddLooseFiles(void)
             ((!isalpha(arg[0]) || arg[1] != ':' || arg[2] != '\\') &&
             (arg[0] != '\\' || arg[1] != '\\')))
         {
-            free(arguments);
             return;
         }
 
@@ -369,25 +346,26 @@ void M_AddLooseFiles(void)
 
     if (types & FILETYPE_IWAD)
     {
-        arguments[myargc].str = M_StringDuplicate("-iwad");
+        arguments[myargc].str = "-iwad";
         arguments[myargc].type = FILETYPE_IWAD - 1;
         myargc++;
     }
     if (types & FILETYPE_PWAD)
     {
-        arguments[myargc].str = M_StringDuplicate("-merge");
+        arguments[myargc].str = "-merge";
         arguments[myargc].type = FILETYPE_PWAD - 1;
         myargc++;
     }
     if (types & FILETYPE_DEH)
     {
-        arguments[myargc].str = M_StringDuplicate("-deh");
+        arguments[myargc].str = "-deh";
         arguments[myargc].type = FILETYPE_DEH - 1;
         myargc++;
     }
 
-    newargv = malloc(myargc * sizeof(*newargv));
-
+#error
+    // NEED TO REWRITE THIS IF I BOTHER WITH WINDOWS
+    
     // sort the argument list by file type, except for the zeroth argument
     // which is the executable invocation itself
 
@@ -399,8 +377,6 @@ void M_AddLooseFiles(void)
     {
         newargv[i] = arguments[i].str;
     }
-
-    free(arguments);
 
     myargv = newargv;
 }

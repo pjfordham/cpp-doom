@@ -40,8 +40,7 @@ int main(int argc, const char **argv)
 {
     // save arguments
 
-    myargc = argc;
-    myargv = argv;
+    myargv = std::vector<std::string>( argv, argv + argc );
 
     //!
     // Print the program version and exit.
