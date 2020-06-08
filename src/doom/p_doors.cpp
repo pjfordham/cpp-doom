@@ -253,7 +253,6 @@ EV_DoDoor
 {
     int		secnum,rtn;
     sector_t*	sec;
-    vldoor_t*	door;
 	
     secnum = -1;
     rtn = 0;
@@ -267,8 +266,7 @@ EV_DoDoor
 	
 	// new door thinker
 	rtn = 1;
-	door = zone_malloc<vldoor_t>(PU_LEVSPEC);
-	P_AddThinker (door);
+	auto *door = P_AddThinker<vldoor_t>();
 	sec->specialdata = door;
 
 	door->function = T_VerticalDoor;
@@ -482,8 +480,7 @@ EV_VerticalDoor
 	
     
     // new door thinker
-    door = zone_malloc<vldoor_t>(PU_LEVSPEC);
-    P_AddThinker (door);
+    door = P_AddThinker<vldoor_t>();
     sec->specialdata = door;
     door->function = T_VerticalDoor;
     door->sector = sec;
@@ -532,9 +529,7 @@ void P_SpawnDoorCloseIn30 (sector_t* sec)
 {
     vldoor_t*	door;
 	
-    door = zone_malloc<vldoor_t>(PU_LEVSPEC);
-
-    P_AddThinker (door);
+    door = P_AddThinker<vldoor_t>();
 
     sec->specialdata = door;
     sec->special = 0;
@@ -556,10 +551,8 @@ P_SpawnDoorRaiseIn5Mins
   int		secnum )
 {
     vldoor_t*	door;
-	
-    door = zone_malloc<vldoor_t>(PU_LEVSPEC);
-    
-    P_AddThinker (door);
+
+    door = P_AddThinker<vldoor_t>();
 
     sec->specialdata = door;
     sec->special = 0;

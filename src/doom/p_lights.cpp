@@ -67,9 +67,7 @@ void P_SpawnFireFlicker (sector_t*	sector)
     // Nothing special about it during gameplay.
     sector->special = 0; 
 	
-    flick = zone_malloc<fireflicker_t>(PU_LEVSPEC);
-
-    P_AddThinker (flick);
+    flick = P_AddThinker<fireflicker_t>();
 
     flick->function = T_FireFlicker;
     flick->sector = sector;
@@ -122,9 +120,7 @@ void P_SpawnLightFlash (sector_t*	sector)
     // nothing special about it during gameplay
     sector->special = 0;	
 	
-    flash = zone_malloc<lightflash_t>(PU_LEVSPEC);
-
-    P_AddThinker (flash);
+    flash = P_AddThinker<lightflash_t>();
 
     flash->function = T_LightFlash;
     flash->sector = sector;
@@ -179,9 +175,7 @@ P_SpawnStrobeFlash
 {
     strobe_t*	flash;
 	
-    flash = zone_malloc<strobe_t>(PU_LEVSPEC);
-
-    P_AddThinker (flash);
+    flash = P_AddThinker<strobe_t>();
 
     flash->sector = sector;
     flash->darktime = fastOrSlow;
@@ -335,10 +329,8 @@ void T_Glow(glow_t *g)
 void P_SpawnGlowingLight(sector_t*	sector)
 {
     glow_t*	g;
-	
-    g = zone_malloc<glow_t>(PU_LEVSPEC);
 
-    P_AddThinker(g);
+    g = P_AddThinker<glow_t>();
 
     g->sector = sector;
     g->minlight = P_FindMinSurroundingLight(sector,sector->lightlevel);

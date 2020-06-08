@@ -190,8 +190,7 @@ EV_DoCeiling
 	
 	// new door thinker
 	rtn = 1;
-	ceiling = zone_malloc<ceiling_t>(PU_LEVSPEC);
-	P_AddThinker (ceiling);
+	ceiling = P_AddThinker<ceiling_t>();
 	sec->specialdata = ceiling;
 	ceiling->function = T_MoveCeiling;
 	ceiling->sector = sec;

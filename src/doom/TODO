@@ -36,9 +36,13 @@ maintain list of thinkers in order added to lists to keep demo's working.
 
 do savegame fixes to virtualized thnkers.
 
-now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
 
 Also consider emplace allocation for thinkers.
+This looks pretty easy, change lists to be actual type not pointers, make P_AddThinker return a reference to the emplaced object, don't use references for first pass, just stick with pointers into the lists.
+
+tweka remove and vists as needed.
+now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
+
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
 any void*

@@ -1647,47 +1647,11 @@ void P_ArchiveThinkers (void)
 //
 void P_UnArchiveThinkers (void)
 {
-   // save off the current thinkers
-   P_VisitThinkers<ceiling_t>( []( ceiling_t *ceiling ) {
-         Z_Free(ceiling);
-         return false;
-      } );
-
-   P_VisitThinkers<plat_t>( []( plat_t *plat ) {
-         Z_Free(plat);
-         return false;
-      } );
-
-   P_VisitThinkers<vldoor_t>( []( vldoor_t *vldoor ) {
-         Z_Free(vldoor);
-         return false;
-      } );
-
-   P_VisitThinkers<floormove_t>( []( floormove_t *floor ) {
-         Z_Free(floor);
-        return false;
-      } );
-
-   P_VisitThinkers<lightflash_t>( []( lightflash_t *flash ) {
-         Z_Free(flash);
-         return false;
-      } );
-
-   P_VisitThinkers<strobe_t>( []( strobe_t *strobe ) {
-         Z_Free(strobe);
-         return false;
-      } );
-
-   P_VisitThinkers<glow_t>( []( glow_t *glow ) {
-         Z_Free(glow);
-         return false;
-      } );
-
-   P_VisitThinkers<mobj_t>( []( mobj_t *mobj ) {
-         P_RemoveMobj(mobj);
-         return false;
-      } );
-
+    // save off the current thinkers
+    P_VisitMobjThinkers([](mobj_t *mo) {
+                           P_RemoveMobj(mo);
+                           return false;
+                        } );
     P_InitThinkers ();
 
     // read in saved thinkers
@@ -1701,7 +1665,7 @@ void P_UnArchiveThinkers (void)
 
 	  case tc_mobj:
           {saveg_read_pad();
-	    auto mobj = zone_malloc<mobj_t>( PU_LEVEL);
+	    auto mobj = P_AddThinker<mobj_t>();
             saveg_read_mobj_t(mobj);
 
 	    // [crispy] restore mobj->target and mobj->tracer fields
@@ -1713,7 +1677,6 @@ void P_UnArchiveThinkers (void)
 //	    mobj->floorz = mobj->subsector->sector->floorheight;
 //	    mobj->ceilingz = mobj->subsector->sector->ceilingheight;
 	    mobj->function = P_MobjThinker;
-	    P_AddThinker (mobj);
           } break;
 
 	  default:
@@ -1908,70 +1871,63 @@ void P_UnArchiveSpecials (void)
 			
 	  case tc_ceiling:
 	    saveg_read_pad();
-	    ceiling = zone_malloc<ceiling_t>(PU_LEVEL);
+	    ceiling = P_AddThinker<ceiling_t>();
             saveg_read_ceiling_t(ceiling);
 	    ceiling->sector->specialdata = ceiling;
 
 	    if (ceiling->function)
 		ceiling->function = T_MoveCeiling;
 
-	    P_AddThinker (ceiling);
 	    P_AddActiveCeiling(ceiling);
 	    break;
 				
 	  case tc_door:
 	    saveg_read_pad();
-	    door = zone_malloc<vldoor_t>(PU_LEVEL);
+	    door = P_AddThinker<vldoor_t>();
             saveg_read_vldoor_t(door);
 	    door->sector->specialdata = door;
 	    door->function = T_VerticalDoor;
-	    P_AddThinker (door);
 	    break;
 				
 	  case tc_floor:
 	    saveg_read_pad();
-	    floor = zone_malloc<floormove_t>(PU_LEVEL);
+	    floor = P_AddThinker<floormove_t>();
             saveg_read_floormove_t(floor);
 	    floor->sector->specialdata = floor;
 	    floor->function = T_MoveFloor;
-	    P_AddThinker (floor);
 	    break;
 				
 	  case tc_plat:
 	    saveg_read_pad();
-	    plat = zone_malloc<plat_t>(PU_LEVEL);
+	    plat = P_AddThinker<plat_t>();
             saveg_read_plat_t(plat);
 	    plat->sector->specialdata = plat;
 
 	    if (plat->function)
 		plat->function = T_PlatRaise;
 
-	    P_AddThinker (plat);
 	    P_AddActivePlat(plat);
 	    break;
 				
 	  case tc_flash:
 	    saveg_read_pad();
-	    flash = zone_malloc<lightflash_t>(PU_LEVEL);
+	    flash = P_AddThinker<lightflash_t>();
             saveg_read_lightflash_t(flash);
 	    flash->function = T_LightFlash;
-	    P_AddThinker (flash);
 	    break;
 				
 	  case tc_strobe:
 	    saveg_read_pad();
-	    strobe = zone_malloc<strobe_t>(PU_LEVEL);
+	    strobe = P_AddThinker<strobe_t>();
             saveg_read_strobe_t(strobe);
 	    strobe->function = T_StrobeFlash;
-	    P_AddThinker (strobe);
 	    break;
 				
 	  case tc_glow:
 	    saveg_read_pad();
-	    glow = zone_malloc<glow_t>(PU_LEVEL);
+	    glow = P_AddThinker<glow_t>();
             saveg_read_glow_t(glow);
 	    glow->function = T_Glow;
-	    P_AddThinker (glow);
 	    break;
 				
 	  default:

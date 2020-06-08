@@ -145,14 +145,11 @@ static void P_ReadFireFlicker (const char *key)
 	           &minlight) == 5 &&
 	    !strncmp(string, key, MAX_STRING_LEN))
 	{
-		auto flick = zone_malloc<fireflicker_t>(PU_LEVEL);
-
+		auto flick = P_AddThinker<fireflicker_t>();
 		flick->sector = &sectors[sector];
 		flick->count = count;
 		flick->maxlight = maxlight;
 		flick->minlight = minlight;
-
-		P_AddThinker(flick);
 	}
 }
 

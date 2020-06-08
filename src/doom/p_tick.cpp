@@ -27,10 +27,10 @@ int	leveltime;
 #include <tuple>
 #include <list>
 
-std::tuple<std::list<fireflicker_t *>, std::list<lightflash_t *>,
-           std::list<strobe_t *>, std::list<glow_t *>, std::list<plat_t *>,
-           std::list<vldoor_t *>, std::list<ceiling_t *>,
-           std::list<floormove_t *>, std::list<mobj_t *>>
+std::tuple<std::list<fireflicker_t>, std::list<lightflash_t>,
+           std::list<strobe_t>, std::list<glow_t>, std::list<plat_t>,
+           std::list<vldoor_t>, std::list<ceiling_t>,
+           std::list<floormove_t>, std::list<mobj_t>>
     static_thinkers;
 
 //

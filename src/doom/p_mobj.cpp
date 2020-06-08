@@ -628,7 +628,8 @@ P_SpawnMobjSafe
     state_t*	st;
     mobjinfo_t*	info;
 	
-    mobj = zone_malloc<mobj_t>(PU_LEVEL);
+    mobj = P_AddThinker<mobj_t>();
+
     info = &mobjinfo[type];
 	
     mobj->type = type;
@@ -684,8 +685,6 @@ P_SpawnMobjSafe
 
     mobj->function = P_MobjThinker;
 	
-    P_AddThinker (mobj);
-
     return mobj;
 }
 

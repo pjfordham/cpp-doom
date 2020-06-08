@@ -303,8 +303,7 @@ void EV_DoGoobers (void)
 	    sec->specialdata = NULL;
 	}
 
-	floor = zone_malloc<floormove_t>( PU_LEVSPEC );
-	P_AddThinker(floor);
+	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
 	floor->function = T_MoveGoobers;
 	floor->sector = sec;
@@ -346,8 +345,7 @@ EV_DoFloor
 	
 	// new floor thinker
 	rtn = 1;
-	floor = zone_malloc<floormove_t>( PU_LEVSPEC );
-	P_AddThinker (floor);
+	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
 	floor->function = T_MoveFloor;
 	floor->type = floortype;
@@ -550,8 +548,7 @@ EV_BuildStairs
 	
 	// new floor thinker
 	rtn = 1;
-	floor = zone_malloc<floormove_t>( PU_LEVSPEC );
-	P_AddThinker (floor);
+	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
 	floor->function = T_MoveFloor;
 	floor->direction = 1;
@@ -609,9 +606,7 @@ EV_BuildStairs
 					
 		sec = tsec;
 		secnum = newsecnum;
-                floor = zone_malloc<floormove_t>( PU_LEVSPEC );
-
-		P_AddThinker (floor);
+		floor = P_AddThinker<floormove_t>();
 
 		sec->specialdata = floor;
 		floor->function = T_MoveFloor;

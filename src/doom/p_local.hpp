@@ -75,15 +75,15 @@
 // All thinkers should be allocated by zone_malloc
 // so they can be operated on uniformly.
 
-extern std::tuple< std::list<fireflicker_t *>,
-            std::list<lightflash_t *>,
-            std::list<strobe_t *>,
-            std::list<glow_t *>,
-            std::list<plat_t *>,
-            std::list<vldoor_t *>,
-            std::list<ceiling_t *>,
-            std::list<floormove_t *>,
-            std::list<mobj_t *> > static_thinkers;
+extern std::tuple< std::list<fireflicker_t>,
+            std::list<lightflash_t>,
+            std::list<strobe_t>,
+            std::list<glow_t>,
+            std::list<plat_t>,
+            std::list<vldoor_t>,
+            std::list<ceiling_t>,
+            std::list<floormove_t>,
+            std::list<mobj_t> > static_thinkers;
 
 void P_InitThinkers (void);
 void P_RunThinkers (void);
@@ -96,9 +96,10 @@ bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor);
 // Adds a new thinker at the end of the list.
 //
 template <typename Thinker>
-void P_AddThinker( Thinker *thinker )
+Thinker *P_AddThinker()
 {
-   std::get<std::list<Thinker*>>(static_thinkers).push_back( thinker );
+   std::get<std::list<Thinker>>(static_thinkers).push_back( Thinker() );
+   return &std::get<std::list<Thinker>>(static_thinkers).back();
 }
 
 //
@@ -118,11 +119,11 @@ void P_RemoveThinker (Thinker* thinker)
 template <typename Thinker>
 bool P_VisitThinkers(std::function<bool(Thinker *)> visitor)
 {
-   auto thinkers = std::get<std::list<Thinker*>>(static_thinkers);
+   auto &thinkers = std::get<std::list<Thinker>>(static_thinkers);
 
    for( auto i = thinkers.begin(); i != thinkers.end(); i++ ) {
       // Break out early if return true;
-      if ( visitor( *i ) ) {
+      if ( visitor( &*i ) ) {
          return true;
       }
    }
@@ -130,18 +131,17 @@ bool P_VisitThinkers(std::function<bool(Thinker *)> visitor)
 }
 
 template <typename Thinker>
-void P_RunThinkers (std::list<Thinker *> &thinkers)
+void P_RunThinkers (std::list<Thinker> &thinkers)
 {
    auto i = thinkers.begin();
    do {
-      while ( i != thinkers.end() && (*i)->function == think_t<Thinker>{-1} )
+      while ( i != thinkers.end() && i->function == think_t<Thinker>{-1} )
       {
-         Z_Free(*i);
          i = thinkers.erase( i );
       }
 
       if ( i != thinkers.end() ) {
-         (*i)->action();
+         i->action();
          i++;
       }
       else

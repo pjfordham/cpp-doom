@@ -160,8 +160,7 @@ EV_DoPlat
 	
 	// Find lowest & highest floors around sector
 	rtn = 1;
-	plat = zone_malloc<plat_t>(PU_LEVSPEC);
-	P_AddThinker(plat);
+	plat = P_AddThinker<plat_t>();
 		
 	plat->type = type;
 	plat->sector = sec;
