@@ -68,7 +68,7 @@ static lumpindex_t *lumphash;
 // lumps from WADs before the reload file, so we can resent numlumps and
 // load the file again.
 static wad_file_t *reloadhandle = NULL;
-static lumpinfo_t *reloadlumps = NULL;
+static std::vector<lumpinfo_t> reloadlumps;
 static std::string reloadname;
 static int reloadlump = -1;
 
@@ -102,6 +102,8 @@ unsigned int W_LumpNameHash(const char *s)
 // Other files are single lumps with the base filename
 //  for the lump name.
 
+std::vector<lumpinfo_t> filelumps;
+
 wad_file_t *W_AddFile (const char *filename)
 {
     wadinfo_t header;
@@ -111,7 +113,6 @@ wad_file_t *W_AddFile (const char *filename)
     int startlump;
     filelump_t *fileinfo;
     filelump_t *filerover;
-    lumpinfo_t *filelumps;
     int numfilelumps;
 
     // If the filename begins with a ~, it indicates that we should use the
@@ -200,13 +201,10 @@ wad_file_t *W_AddFile (const char *filename)
     }
 
     // Increase size of numlumps array to accomodate the new file.
-    filelumps = new lumpinfo_t[numfilelumps];
-    if (filelumps == NULL)
-    {
-        W_CloseFile(wad_file);
-        I_Error("Failed to allocate array for lumps from new file.");
-    }
+    filelumps.clear();
+    filelumps.resize( numfilelumps );
 
+    // FIXME review this, it seems suspicious
     startlump = numlumps;
     numlumps += numfilelumps;
     lumpinfo.resize( numlumps );
@@ -621,7 +619,6 @@ void W_Reload(void)
     auto filename = reloadname;
 
     W_CloseFile(reloadhandle);
-    delete [] reloadlumps;
 
     reloadname.clear();
     reloadlump = -1;

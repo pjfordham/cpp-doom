@@ -1167,7 +1167,7 @@ static boolean I_SDL_InitSound(boolean _use_sfx_prefix)
         channels_playing[i] = NULL;
     }
 
-    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+    if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
     {
         fprintf(stderr, "Unable to set up sound.\n");
         return false;

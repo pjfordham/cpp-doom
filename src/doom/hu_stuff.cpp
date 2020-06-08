@@ -596,8 +596,6 @@ void HU_Start(void)
 
     int		i;
     const char *s;
-    // [crispy] string buffers for map title and WAD file name
-    char	buf[8];
 
     if (headsupactive)
 	HU_Stop();
@@ -736,11 +734,11 @@ void HU_Start(void)
     // dehacked substitution to get modified level name
 
     s = DEH_String(s);
-    
-    // [crispy] print the map title in white from the first colon onward
-    M_snprintf(buf, sizeof(buf), "%s%s", ":", crstr[CR_GRAY].c_str());
-    s = M_StringReplace(s, ":", buf).c_str();
 
+    // [crispy] print the map title in white from the first colon onward
+    std::string temp = M_StringReplace(s, ":", std::string(":") + crstr[CR_GRAY]);
+    s = temp.c_str();
+    
     while (*s)
 	HUlib_addCharToTextLine(&w_title, *(s++));
 

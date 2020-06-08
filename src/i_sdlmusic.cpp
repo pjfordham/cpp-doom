@@ -169,7 +169,7 @@ static boolean I_SDL_InitMusic(void)
     }
     else
     {
-        if (SDL_Init(SDL_INIT_AUDIO) < 0)
+        if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
         {
             fprintf(stderr, "Unable to set up sound.\n");
         }

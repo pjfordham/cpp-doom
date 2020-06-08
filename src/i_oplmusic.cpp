@@ -1585,7 +1585,7 @@ static void I_OPL_StopSong(void)
         MIDI_FreeIterator(tracks[i].iter);
     }
 
-    delete tracks;
+    delete [] tracks;
 
     tracks = NULL;
     num_tracks = 0;

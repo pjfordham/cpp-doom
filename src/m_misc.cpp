@@ -348,7 +348,7 @@ std::string M_StringReplace(const std::string_view &haystack, const std::string_
     while ( pos != std::string::npos ) {
        result += remainder.substr( 0, pos );
        result += replacement;
-       remainder = remainder.substr( pos + needle.length() );
+       remainder = remainder.substr( pos + 1, pos + remainder.length() );
        pos = remainder.find( needle );
     }
 

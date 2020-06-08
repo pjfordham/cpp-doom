@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 
 #include <stdarg.h>
 
@@ -249,8 +250,8 @@ void I_Quit (void)
     atexit_listentry_t *entry;
 
     // Run through all exit functions
- 
-    entry = exit_funcs; 
+
+    entry = exit_funcs;
 
     while (entry != NULL)
     {

@@ -399,7 +399,7 @@ static void FreeEvent(midi_event_t *event)
             break;
 
         case MIDI_EVENT_META:
-            delete event->data.meta.data;
+            delete [] event->data.meta.data;
             break;
 
         default:

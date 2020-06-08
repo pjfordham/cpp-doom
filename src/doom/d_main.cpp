@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h> // [crispy] time_t, time(), struct tm, localtime()
+#include "SDL.h"
 
 #include "config.h"
 #include "deh_main.hpp"
@@ -2118,6 +2119,11 @@ void D_DoomMain (void)
     PrintDehackedBanners();
 
     DEH_printf("I_Init: Setting up machine state.\n");
+
+    if (SDL_Init(0) != 0) {
+       I_Error("Unable to initialize SDL.\n");
+    }
+
     I_CheckIsScreensaver();
     I_InitTimer();
     I_InitJoystick();

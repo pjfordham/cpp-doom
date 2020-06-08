@@ -19,6 +19,7 @@
 
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include <iostream>
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -289,14 +290,18 @@ static void SetShowCursor(bool show)
 
 void I_ShutdownGraphics(void)
 {
-    if (initialized)
-    {
+   if (initialized)
+   {
         SetShowCursor(true);
 
+        if ( renderer )
+        {
+           SDL_DestroyRenderer(renderer);
+        }
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
         initialized = false;
-    }
+   }
 }
 
 
@@ -1584,7 +1589,7 @@ void I_InitGraphics(void)
 
     SetSDLVideoDriver();
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) 
     {
         I_Error("Failed to initialize video: %s", SDL_GetError());
     }

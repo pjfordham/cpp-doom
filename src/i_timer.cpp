@@ -19,7 +19,9 @@
 #include "SDL.h"
 
 #include "i_timer.hpp"
+#include "i_system.hpp"
 #include "doomtype.hpp"
+#include <iostream>
 
 //
 // I_GetTime
@@ -71,6 +73,10 @@ void I_WaitVBL(int count)
 }
 
 
+void I_ShutdownTimer(void) {
+  SDL_QuitSubSystem(SDL_INIT_TIMER);
+}
+
 void I_InitTimer(void)
 {
     // initialize timer
@@ -78,6 +84,7 @@ void I_InitTimer(void)
 #if SDL_VERSION_ATLEAST(2, 0, 5)
     SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
 #endif
-    SDL_Init(SDL_INIT_TIMER);
+    SDL_InitSubSystem(SDL_INIT_TIMER);
+    I_AtExit(I_ShutdownTimer, true);
 }
 
