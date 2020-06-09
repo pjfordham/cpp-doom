@@ -760,7 +760,7 @@ WI_drawTime
 	// [crispy] print at most in hhhh:mm:ss format
 	if ((n = (t / div)))
 	{
-	    x = WI_drawNum(x, y, n, -1);
+           /*x =*/ WI_drawNum(x, y, n, -1);
 	}
     }
     else

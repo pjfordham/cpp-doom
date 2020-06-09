@@ -1243,7 +1243,8 @@ static void CenterWindow(int *x, int *y, int w, int h)
     {
         fprintf(stderr, "CenterWindow: Failed to read display bounds "
                         "for display #%d!\n", video_display);
-        return;
+        // [pete] can't properly recover from this.
+        I_Quit();
     }
 
     *x = bounds.x + SDL_max((bounds.w - w) / 2, 0);

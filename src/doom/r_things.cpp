@@ -871,18 +871,9 @@ static void R_DrawLSprite (void)
     fixed_t		xscale;
     fixed_t		tx, tz;
 
-    static int		lump;
-    static patch_t*	patch;
-
     if (weaponinfo[viewplayer->readyweapon].ammo == am_noammo ||
         viewplayer->playerstate != PST_LIVE)
 	return;
-
-    if (lump != laserpatch[crispy->crosshairtype].l)
-    {
-	lump = laserpatch[crispy->crosshairtype].l;
-	patch = cache_lump_num<patch_t *>(lump, PU_STATIC);
-    }
 
     P_LineLaser(viewplayer->mo, viewangle,
                 16*64*FRACUNIT, PLAYER_SLOPE(viewplayer));
@@ -910,6 +901,10 @@ static void R_DrawLSprite (void)
     if ( vis == vissprites.end() ) {
        return;
     }
+
+    static int lump = laserpatch[crispy->crosshairtype].l;
+    static patch_t* patch = cache_lump_num<patch_t *>(lump, PU_STATIC);
+
     vis->patch = lump - firstspritelump; // [crispy] not a sprite patch
     vis->colormap[0] = vis->colormap[1] = fixedcolormap ? fixedcolormap : colormaps; // [crispy] always full brightness
     vis->brightmap = dc_brightmap;

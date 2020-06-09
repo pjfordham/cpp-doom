@@ -200,7 +200,6 @@ static void rgb_to_hsv(vect *rgb, vect *hsv)
         s = (cmax - cmin)/cmax;
     else {
         s = 0.0;
-        h = 0.0;
     }
     if (s<CTOLERANCE)
         h = 0.0;

@@ -187,7 +187,7 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
         {
             fprintf(stderr, "ReadByteSequence: Error while reading byte %u\n",
                             i);
-            delete result;
+            delete [] result;
             return NULL;
         }
     }
@@ -708,7 +708,7 @@ void MIDI_RestartIterator(midi_track_iter_t *iter)
 
 #ifdef TEST
 
-static char *MIDI_EventTypeToString(midi_event_type_t event_type)
+static const char *MIDI_EventTypeToString(midi_event_type_t event_type)
 {
     switch (event_type)
     {

@@ -394,10 +394,9 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
 
     if (firsttime)
     {
-        int p, i, val;
+        int p, val;
 
         firsttime = false;
-        i = 0;
 
         //!
         // @category compat
@@ -426,7 +425,7 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
             }
             else
             {
-                for (i = 0; i < DOS_MEM_DUMP_SIZE; ++i)
+                for (int i = 0; i < DOS_MEM_DUMP_SIZE; ++i)
                 {
                     ++p;
 

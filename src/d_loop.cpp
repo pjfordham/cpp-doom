@@ -274,7 +274,13 @@ void D_ReceiveTic(ticcmd_t *ticcmds, boolean *players_mask)
 
     // Disconnected from server?
 
-    if (ticcmds == NULL && players_mask == NULL)
+    // [pete] changed && for || to fix:
+    // warning: Forming reference to null pointer
+    // [clang-analyzer-core.NonNullParamChecker]
+    // on ticcmds[i], if ticcmds is NULL but
+    // player_mask is not.
+    
+    if (ticcmds == NULL || players_mask == NULL)
     {
         D_Disconnected();
         return;

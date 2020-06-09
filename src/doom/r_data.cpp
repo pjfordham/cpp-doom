@@ -278,9 +278,6 @@ void R_GenerateComposite (int texnum)
     collump = texturecolumnlump[texnum];
     colofs = texturecolumnofs[texnum];
     
-    // Composite the columns together.
-    patch = texture->patches;
-		
     // killough 4/9/98: marks to identify transparent regions in merged textures
     auto marks = new byte[texture->width * texture->height] { 0 };
     
@@ -416,7 +413,6 @@ void R_GenerateLookup (int texnum)
     //  with only a single patch are all done.
     patchcount = zone_calloc<byte>(PU_STATIC, texture->width, &patchcount);
     postcount = zone_calloc<byte>(PU_STATIC, texture->width, &postcount);
-    patch = texture->patches;
 
     for (i=0 , patch = texture->patches;
 	 i<texture->patchcount;
