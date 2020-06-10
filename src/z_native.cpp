@@ -31,9 +31,7 @@
 
 #define ZONEID	0x1d4a11
 
-typedef struct memblock_s memblock_t;
-
-struct memblock_s
+struct memblock_t
 {
     int id; // = ZONEID
     int tag;
@@ -44,7 +42,7 @@ struct memblock_s
 };
 
 // Linked list of allocated blocks for each tag type
- 
+
 static memblock_t *allocated_blocks[PU_NUM_TAGS];
 
 #ifdef TESTING
@@ -130,7 +128,7 @@ void Z_Init (void)
 {
    std::fill( std::begin(allocated_blocks),
               std::end(allocated_blocks),
-              memblock_t{} );
+              nullptr );
     printf("zone memory: Using native C allocator.\n");
 }
 
