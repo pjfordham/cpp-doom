@@ -48,8 +48,25 @@ remove dynamic_Cast from p_extsaveg.cpp
 review all uses of c_str
 review all use of taking std::string as a parameter with a view to using std::string_view
 
+rm -rf ~/github/cpp-doom/debug
+mkdir ~/github/cpp-doom/debug
+cd ~/github/cpp-doom/debug
+cp ../build/doom1.wad .
 export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
+
+( cd ~/github/cpp-doom/src ; echo *.cpp doom/*.cpp | xargs clang-tidy-10  -p=~/github/cpp-doom/debug )
+
+
+rm -rf ~/github/cpp-doom/asan
+mkdir ~/github/cpp-doom/asan
+cd ~/github/cpp-doom/asan
+cp ../build/doom1.wad .
+export CC=/usr/bin/clang-10
+export CXX=/usr/bin/clang++-10
+cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g" -DCMAKE_C_FLAGS="-fsanitize=address  -fsanitize=leak -g" -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address  -fsanitize=leak" -DCMAKE_MODULE_LINKER_FLAGS="-fsanitize=address  -fsanitize=leak"
+
 
 ( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
