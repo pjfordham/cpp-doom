@@ -478,7 +478,7 @@ std::string SearchDirectoryForIWAD(const std::string &dir, int mask, GameMission
 {
     size_t i;
 
-    for (i=0; i<arrlen(iwads); ++i) 
+    for (i=0; i<arrlen(iwads); ++i)
     {
         if (((1 << iwads[i].mission) & mask) == 0)
         {
@@ -495,7 +495,7 @@ std::string SearchDirectoryForIWAD(const std::string &dir, int mask, GameMission
         }
     }
 
-    return NULL;
+    return {};
 }
 
 // When given an IWAD with the '-iwad' parameter,
@@ -756,7 +756,7 @@ std::string D_FindWADByName(const std::string &name)
 
     // File not found
 
-    return NULL;
+    return {};
 }
 
 //
