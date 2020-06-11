@@ -243,19 +243,17 @@ static void saveg_write_mapthing_t(mapthing_t *str)
 }
 
 //
-// think_t
+// think_t - stubbed out but we still need to read the bytes from the file
 //
-template <typename Thinker>
-static void saveg_read_think_t(think_t<Thinker> *str)
+static void saveg_read_think_t()
 {
    // Read old prev, next and think pointers
-   *str = saveg_readp();
+   saveg_readp();
    saveg_readp();
    saveg_readp();
 }
 
-template <typename Thinker>
-static void saveg_write_think_t(think_t<Thinker> *str)
+static void saveg_write_think_t()
 {
    // Write dummies for old prev, next and think pointers
    // new save games might not work.
@@ -274,8 +272,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     int pl;
 
     // think_t function;
-    think_t<mobj_t> dummy;
-    saveg_read_think_t<mobj_t>(&dummy);
+    saveg_read_think_t();
 
     // fixed_t x;
     str->x = saveg_read32();
@@ -439,8 +436,7 @@ mobj_t* P_IndexToMobjThinker (uint32_t index)
 static void saveg_write_mobj_t(mobj_t *str)
 {
     // think_t function;
-    think_t<mobj_t> dummy;
-    saveg_write_think_t<mobj_t>(&dummy);
+    saveg_write_think_t();
 
     // fixed_t x;
     saveg_write32(str->x);
@@ -942,8 +938,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     int sector;
 
     // think_t function;
-    think_t<ceiling_t> dummy;
-    saveg_read_think_t<ceiling_t>(&dummy);
+    saveg_read_think_t();
 
     // ceiling_e type;
     str->type = static_cast<ceiling_e>(saveg_read_enum());
@@ -977,8 +972,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 static void saveg_write_ceiling_t(ceiling_t *str)
 {
     // think_t function;
-    think_t<ceiling_t> dummy;
-    saveg_write_think_t<ceiling_t>(&dummy);
+    saveg_write_think_t();
 
     // ceiling_e type;
     saveg_write_enum(str->type);
@@ -1017,8 +1011,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     int sector;
 
     // think_t function;
-    think_t<vldoor_t> dummy;
-    saveg_read_think_t<vldoor_t>(&dummy);
+    saveg_read_think_t();
 
     // vldoor_e type;
     str->type = static_cast<vldoor_e>(saveg_read_enum());
@@ -1046,8 +1039,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 static void saveg_write_vldoor_t(vldoor_t *str)
 {
     // think_t function;
-    think_t<vldoor_t> dummy;
-    saveg_write_think_t<vldoor_t>(&dummy);
+    saveg_write_think_t();
 
     // vldoor_e type;
     saveg_write_enum(str->type);
@@ -1080,8 +1072,7 @@ static void saveg_read_floormove_t(floormove_t *str)
     int sector;
 
     // think_t function;
-    think_t<floormove_t> dummy;
-    saveg_read_think_t<floormove_t>(&dummy);
+    saveg_read_think_t();
 
     // floor_e type;
     str->type = static_cast<floor_e>(saveg_read_enum());
@@ -1112,8 +1103,7 @@ static void saveg_read_floormove_t(floormove_t *str)
 static void saveg_write_floormove_t(floormove_t *str)
 {
     // think_t function;
-    think_t<floormove_t> dummy;
-    saveg_write_think_t<floormove_t>(&dummy);
+    saveg_write_think_t();
 
     // floor_e type;
     saveg_write_enum(str->type);
@@ -1149,8 +1139,7 @@ static void saveg_read_plat_t(plat_t *str)
     int sector;
 
     // think_t function;
-    think_t<plat_t> dummy;
-    saveg_read_think_t<plat_t>(&dummy);
+    saveg_read_think_t();
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1190,8 +1179,7 @@ static void saveg_read_plat_t(plat_t *str)
 static void saveg_write_plat_t(plat_t *str)
 {
     // think_t function;
-    think_t<plat_t> dummy;
-    saveg_write_think_t<plat_t>(&dummy);
+    saveg_write_think_t();
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1236,8 +1224,7 @@ static void saveg_read_lightflash_t(lightflash_t *str)
     int sector;
 
     // think_t function;
-    think_t<lightflash_t> dummy;
-    saveg_read_think_t<lightflash_t>(&dummy);
+    saveg_read_think_t();
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1262,8 +1249,7 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 static void saveg_write_lightflash_t(lightflash_t *str)
 {
     // think_t function;
-    think_t<lightflash_t> dummy;
-    saveg_write_think_t<lightflash_t>(&dummy);
+    saveg_write_think_t();
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1293,8 +1279,7 @@ static void saveg_read_strobe_t(strobe_t *str)
     int sector;
 
     // think_t function;
-    think_t<strobe_t> dummy;
-    saveg_read_think_t<strobe_t>(&dummy);
+    saveg_read_think_t();
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1319,8 +1304,7 @@ static void saveg_read_strobe_t(strobe_t *str)
 static void saveg_write_strobe_t(strobe_t *str)
 {
     // think_t function;
-    think_t<strobe_t> dummy;
-    saveg_write_think_t<strobe_t>(&dummy);
+    saveg_write_think_t();
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1350,8 +1334,7 @@ static void saveg_read_glow_t(glow_t *str)
     int sector;
 
     // think_t function;
-    think_t<glow_t> dummy;
-    saveg_read_think_t<glow_t>(&dummy);
+    saveg_read_think_t();
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1370,8 +1353,7 @@ static void saveg_read_glow_t(glow_t *str)
 static void saveg_write_glow_t(glow_t *str)
 {
     // think_t function;
-    think_t<glow_t> dummy;
-    saveg_write_think_t<glow_t>(&dummy);
+    saveg_write_think_t();
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);

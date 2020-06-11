@@ -70,20 +70,6 @@
 // P_TICK
 //
 
-// SFINAE test
-template <typename T>
-class has_deleted
-{
-    typedef char one;
-    struct two { char x[2]; };
-
-    template <typename C> static one test( typeof(&C::deleted) ) ;
-    template <typename C> static two test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(char) };
-};
-
 //
 // THINKERS
 // All thinkers should be allocated by zone_malloc
@@ -112,7 +98,7 @@ bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor);
 template <typename Thinker>
 Thinker *P_AddThinker()
 {
-   std::get<std::list<Thinker>>(static_thinkers).push_back( Thinker() );
+   std::get<std::list<Thinker>>(static_thinkers).emplace_back();
    return &std::get<std::list<Thinker>>(static_thinkers).back();
 }
 
@@ -124,11 +110,7 @@ Thinker *P_AddThinker()
 template <typename Thinker>
 void P_RemoveThinker (Thinker* thinker)
 {
-   if constexpr ( has_deleted<Thinker>::value ) {
-      thinker->deleted = true;
-   } else {
-      thinker->function = think_t<Thinker>{-1};
-   }
+   thinker->deleted = true;
 }
 
 //
@@ -153,16 +135,9 @@ void P_RunThinkers (std::list<Thinker> &thinkers)
 {
    auto i = thinkers.begin();
    do {
-      if constexpr ( has_deleted<Thinker>::value ) {
-         while ( i != thinkers.end() && i->deleted )
-         {
-            i = thinkers.erase( i );
-         }
-      } else {
-         while ( i != thinkers.end() && i->function == think_t<Thinker>{-1} )
-         {
-            i = thinkers.erase( i );
-         }
+      while ( i != thinkers.end() && i->deleted )
+      {
+         i = thinkers.erase( i );
       }
       if ( i != thinkers.end() ) {
          i->action();
