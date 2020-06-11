@@ -37,8 +37,8 @@
 //
 // T_FireFlicker
 //
-void T_FireFlicker(fireflicker_t *flick)
-{
+void fireflicker_t::action(){
+    auto flick = this;
     int	amount;
 
     if (--flick->count)
@@ -69,7 +69,6 @@ void P_SpawnFireFlicker (sector_t*	sector)
 	
     flick = P_AddThinker<fireflicker_t>();
 
-    flick->function = T_FireFlicker;
     flick->sector = sector;
     flick->maxlight = sector->lightlevel;
     flick->minlight = P_FindMinSurroundingLight(sector,sector->lightlevel)+16;
@@ -87,8 +86,9 @@ void P_SpawnFireFlicker (sector_t*	sector)
 // T_LightFlash
 // Do flashing lights.
 //
-void T_LightFlash (lightflash_t *flash)
-{
+void lightflash_t::action() {
+   auto flash = this;
+
    if (--flash->count)
 	return;
 	
@@ -122,7 +122,6 @@ void P_SpawnLightFlash (sector_t*	sector)
 	
     flash = P_AddThinker<lightflash_t>();
 
-    flash->function = T_LightFlash;
     flash->sector = sector;
     flash->maxlight = sector->lightlevel;
 
@@ -142,8 +141,9 @@ void P_SpawnLightFlash (sector_t*	sector)
 //
 // T_StrobeFlash
 //
-void T_StrobeFlash (strobe_t *flash)
-{
+void strobe_t::action() {
+   auto flash = this;
+
    if (--flash->count)
 	return;
 	
@@ -180,7 +180,6 @@ P_SpawnStrobeFlash
     flash->sector = sector;
     flash->darktime = fastOrSlow;
     flash->brighttime = STROBEBRIGHT;
-    flash->function = T_StrobeFlash;
     flash->maxlight = sector->lightlevel;
     flash->minlight = P_FindMinSurroundingLight(sector, sector->lightlevel);
 		
@@ -299,9 +298,10 @@ EV_LightTurnOn
 // Spawn glowing light
 //
 
-void T_Glow(glow_t *g)
+void glow_t::action()
 {
-   switch(g->direction)
+    glow_t *g = this;
+    switch(g->direction)
     {
       case -1:
 	// DOWN
@@ -335,7 +335,6 @@ void P_SpawnGlowingLight(sector_t*	sector)
     g->sector = sector;
     g->minlight = P_FindMinSurroundingLight(sector,sector->lightlevel);
     g->maxlight = sector->lightlevel;
-    g->function = T_Glow;
     g->direction = -1;
 
     sector->special = 0;

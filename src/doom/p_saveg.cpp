@@ -1228,7 +1228,8 @@ static void saveg_read_lightflash_t(lightflash_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<lightflash_t>(&str->function);
+    think_t<lightflash_t> dummy;
+    saveg_read_think_t<lightflash_t>(&dummy);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1253,7 +1254,8 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 static void saveg_write_lightflash_t(lightflash_t *str)
 {
     // think_t function;
-    saveg_write_think_t<lightflash_t>(&str->function);
+    think_t<lightflash_t> dummy;
+    saveg_write_think_t<lightflash_t>(&dummy);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1283,7 +1285,8 @@ static void saveg_read_strobe_t(strobe_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<strobe_t>(&str->function);
+    think_t<strobe_t> dummy;
+    saveg_read_think_t<strobe_t>(&dummy);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1308,7 +1311,8 @@ static void saveg_read_strobe_t(strobe_t *str)
 static void saveg_write_strobe_t(strobe_t *str)
 {
     // think_t function;
-    saveg_write_think_t<strobe_t>(&str->function);
+    think_t<strobe_t> dummy;
+    saveg_write_think_t<strobe_t>(&dummy);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1338,7 +1342,8 @@ static void saveg_read_glow_t(glow_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<glow_t>(&str->function);
+    think_t<glow_t> dummy;
+    saveg_read_think_t<glow_t>(&dummy);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1357,7 +1362,8 @@ static void saveg_read_glow_t(glow_t *str)
 static void saveg_write_glow_t(glow_t *str)
 {
     // think_t function;
-    saveg_write_think_t<glow_t>(&str->function);
+    think_t<glow_t> dummy;
+    saveg_write_think_t<glow_t>(&dummy);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1813,33 +1819,24 @@ void P_ArchiveSpecials (void)
       } );
 
    P_VisitThinkers<lightflash_t>( []( lightflash_t *flash ) {
-	if (flash->function == T_LightFlash)
-	{
-            saveg_write8(tc_flash);
-	    saveg_write_pad();
-            saveg_write_lightflash_t(flash);
-	}
-        return false;
+         saveg_write8(tc_flash);
+         saveg_write_pad();
+         saveg_write_lightflash_t(flash);
+         return false;
       } );
 
    P_VisitThinkers<strobe_t>( []( strobe_t *strobe ) {
-	if (strobe->function == T_StrobeFlash)
-	{
-            saveg_write8(tc_strobe);
-	    saveg_write_pad();
-            saveg_write_strobe_t(strobe);
-	}
-        return false;
+         saveg_write8(tc_strobe);
+         saveg_write_pad();
+         saveg_write_strobe_t(strobe);
+         return false;
       } );
 
    P_VisitThinkers<glow_t>( []( glow_t *glow ) {
-	if (glow->function == T_Glow)
-	{
-            saveg_write8(tc_glow);
-	    saveg_write_pad();
-            saveg_write_glow_t(glow);
-	}
-        return false;
+         saveg_write8(tc_glow);
+         saveg_write_pad();
+         saveg_write_glow_t(glow);
+         return false;
       } );
 
     // add a terminating marker
@@ -1917,21 +1914,18 @@ void P_UnArchiveSpecials (void)
 	    saveg_read_pad();
 	    flash = P_AddThinker<lightflash_t>();
             saveg_read_lightflash_t(flash);
-	    flash->function = T_LightFlash;
 	    break;
 				
 	  case tc_strobe:
 	    saveg_read_pad();
 	    strobe = P_AddThinker<strobe_t>();
             saveg_read_strobe_t(strobe);
-	    strobe->function = T_StrobeFlash;
 	    break;
 				
 	  case tc_glow:
 	    saveg_read_pad();
 	    glow = P_AddThinker<glow_t>();
             saveg_read_glow_t(glow);
-	    glow->function = T_Glow;
 	    break;
 				
 	  default:

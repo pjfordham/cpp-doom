@@ -132,8 +132,8 @@ struct fireflicker_t
     int		minlight;
     int		maxlight;
     int	 count;
-    think_t<fireflicker_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
 };
 
 struct lightflash_t
@@ -144,8 +144,8 @@ struct lightflash_t
     int		count;
     int		maxtime;
     int		mintime;
-    think_t<lightflash_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
 };
 
 struct strobe_t
@@ -156,8 +156,8 @@ struct strobe_t
     int		count;
     int		darktime;
     int		brighttime;
-    think_t<strobe_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
 };
 
 struct glow_t
@@ -166,8 +166,8 @@ struct glow_t
     int		minlight;
     int		maxlight;
     int		direction;
-    think_t<glow_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
 };
 
 
