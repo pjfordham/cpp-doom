@@ -942,7 +942,8 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<ceiling_t>(&str->function);
+    think_t<ceiling_t> dummy;
+    saveg_read_think_t<ceiling_t>(&dummy);
 
     // ceiling_e type;
     str->type = static_cast<ceiling_e>(saveg_read_enum());
@@ -976,7 +977,8 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 static void saveg_write_ceiling_t(ceiling_t *str)
 {
     // think_t function;
-    saveg_write_think_t<ceiling_t>(&str->function);
+    think_t<ceiling_t> dummy;
+    saveg_write_think_t<ceiling_t>(&dummy);
 
     // ceiling_e type;
     saveg_write_enum(str->type);
@@ -1750,26 +1752,9 @@ void P_ArchiveSpecials (void)
     // save off the current thinkers
    P_VisitThinkers<ceiling_t>( []( ceiling_t *ceiling ) {
 
-         if (ceiling->function == think_t<ceiling_t>{})
-         {
-            int i;
-            for (i = 0; i < MAXCEILINGS;i++)
-               if (activeceilings[i] == ceiling)
-                  return true;
-
-	    if (i<MAXCEILINGS)
-	    {
-               saveg_write8(tc_ceiling);
-               saveg_write_pad();
-               saveg_write_ceiling_t(ceiling);
-	    }
-         }
-         else if (ceiling->function == T_MoveCeiling)
-         {
-            saveg_write8(tc_ceiling);
-	    saveg_write_pad();
-            saveg_write_ceiling_t(ceiling);
-         }
+         saveg_write8(tc_ceiling);
+         saveg_write_pad();
+         saveg_write_ceiling_t(ceiling);
          return false;
       } );
 
@@ -1874,13 +1859,8 @@ void P_UnArchiveSpecials (void)
 	    ceiling = P_AddThinker<ceiling_t>();
             saveg_read_ceiling_t(ceiling);
 	    ceiling->sector->specialdata = ceiling;
-
-	    if (ceiling->function)
-		ceiling->function = T_MoveCeiling;
-
-	    P_AddActiveCeiling(ceiling);
 	    break;
-				
+
 	  case tc_door:
 	    saveg_read_pad();
 	    door = P_AddThinker<vldoor_t>();

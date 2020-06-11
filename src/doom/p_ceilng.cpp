@@ -36,16 +36,14 @@
 //
 
 
-ceiling_t*	activeceilings[MAXCEILINGS];
-
-
 //
 // T_MoveCeiling
 //
 
-void T_MoveCeiling (ceiling_t *ceiling)
+void ceiling_t::action()
 {
-   result_e	res;
+  ceiling_t *ceiling = this;
+  result_e	res;
 	
     switch(ceiling->direction)
     {
@@ -192,7 +190,6 @@ EV_DoCeiling
 	rtn = 1;
 	ceiling = P_AddThinker<ceiling_t>();
 	sec->specialdata = ceiling;
-	ceiling->function = T_MoveCeiling;
 	ceiling->sector = sec;
 	ceiling->crush = false;
 	
@@ -228,29 +225,9 @@ EV_DoCeiling
 		
 	ceiling->tag = sec->tag;
 	ceiling->type = type;
-	P_AddActiveCeiling(ceiling);
     }
     return rtn;
 }
-
-
-//
-// Add an active ceiling
-//
-void P_AddActiveCeiling(ceiling_t* c)
-{
-    int		i;
-    
-    for (i = 0; i < MAXCEILINGS;i++)
-    {
-	if (activeceilings[i] == NULL)
-	{
-	    activeceilings[i] = c;
-	    return;
-	}
-    }
-}
-
 
 
 //
@@ -258,18 +235,15 @@ void P_AddActiveCeiling(ceiling_t* c)
 //
 void P_RemoveActiveCeiling(ceiling_t* c)
 {
-    int		i;
-	
-    for (i = 0;i < MAXCEILINGS;i++)
-    {
-	if (activeceilings[i] == c)
-	{
-	    activeceilings[i]->sector->specialdata = NULL;
-	    P_RemoveThinker (activeceilings[i]);
-	    activeceilings[i] = NULL;
-	    break;
-	}
-    }
+    P_VisitThinkers<ceiling_t>([c](ceiling_t *ceiling) {
+          if (ceiling == c)
+          {
+             c->sector->specialdata = NULL;
+             P_RemoveThinker(c);
+             return true;
+          }
+          return false;
+       } );
 }
 
 
@@ -279,18 +253,13 @@ void P_RemoveActiveCeiling(ceiling_t* c)
 //
 void P_ActivateInStasisCeiling(line_t* line)
 {
-    int		i;
-	
-    for (i = 0;i < MAXCEILINGS;i++)
-    {
-	if (activeceilings[i]
-	    && (activeceilings[i]->tag == line->tag)
-	    && (activeceilings[i]->direction == 0))
-	{
-	    activeceilings[i]->direction = activeceilings[i]->olddirection;
-	    activeceilings[i]->function = T_MoveCeiling;
-	}
-    }
+    P_VisitThinkers<ceiling_t>([line](ceiling_t *ceiling) {
+          if (ceiling->tag == line->tag && ceiling->direction == 0)
+          {
+             ceiling->direction = ceiling->olddirection;
+          }
+          return false;
+       } );
 }
 
 
@@ -301,23 +270,17 @@ void P_ActivateInStasisCeiling(line_t* line)
 //
 int	EV_CeilingCrushStop(line_t	*line)
 {
-    int		i;
-    int		rtn;
-	
-    rtn = 0;
-    for (i = 0;i < MAXCEILINGS;i++)
-    {
-	if (activeceilings[i]
-	    && (activeceilings[i]->tag == line->tag)
-	    && (activeceilings[i]->direction != 0))
-	{
-	    activeceilings[i]->olddirection = activeceilings[i]->direction;
-	    activeceilings[i]->function = think_t<ceiling_t>{};
-	    activeceilings[i]->direction = 0;		// in-stasis
-	    rtn = 1;
-	}
-    }
-    
+    int		rtn = 0;
+
+    P_VisitThinkers<ceiling_t>([line,&rtn](ceiling_t *ceiling) {
+          if (ceiling->tag == line->tag && ceiling->direction != 0)
+          {
+             ceiling->olddirection = ceiling->direction;
+             ceiling->direction = 0;
+             rtn = 1;
+          }
+          return false;
+       } );
 
     return rtn;
 }

@@ -422,9 +422,8 @@ struct ceiling_t
     // ID
     int		tag;                   
     int		olddirection;
-    think_t<ceiling_t> function;
-    void action() { function.call_if( this ); };
-    
+   void action();
+    bool deleted;
 };
 
 
@@ -434,8 +433,6 @@ struct ceiling_t
 #define CEILSPEED		FRACUNIT
 #define CEILWAIT		150
 #define MAXCEILINGS		30
-
-extern ceiling_t*	activeceilings[MAXCEILINGS];
 
 int
 EV_DoCeiling
