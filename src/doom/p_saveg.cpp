@@ -248,17 +248,20 @@ static void saveg_write_mapthing_t(mapthing_t *str)
 template <typename Thinker>
 static void saveg_read_think_t(think_t<Thinker> *str)
 {
-   // actionf_p1 acp1;
+   // Read old prev, next and think pointers
    *str = saveg_readp();
+   saveg_readp();
+   saveg_readp();
 }
 
 template <typename Thinker>
 static void saveg_write_think_t(think_t<Thinker> *str)
 {
-   // actionf_p1 acp1;
-   // FIXME: We should write a void* of 1 if the function is set or a zero
-   // is it's null
-   saveg_writep( str );
+   // Write dummies for old prev, next and think pointers
+   // new save games might not work.
+   saveg_writep( (void*)0x1 );
+   saveg_writep( (void*)0x1 );
+   saveg_writep( (void*)0x1 );
 }
 
 
@@ -271,7 +274,8 @@ static void saveg_read_mobj_t(mobj_t *str)
     int pl;
 
     // think_t function;
-    saveg_read_think_t<mobj_t>(&str->function);
+    think_t<mobj_t> dummy;
+    saveg_read_think_t<mobj_t>(&dummy);
 
     // fixed_t x;
     str->x = saveg_read32();
@@ -435,7 +439,8 @@ mobj_t* P_IndexToMobjThinker (uint32_t index)
 static void saveg_write_mobj_t(mobj_t *str)
 {
     // think_t function;
-    saveg_write_think_t<mobj_t>(&str->function);
+    think_t<mobj_t> dummy;
+    saveg_write_think_t<mobj_t>(&dummy);
 
     // fixed_t x;
     saveg_write32(str->x);
@@ -1676,7 +1681,6 @@ void P_UnArchiveThinkers (void)
 	    // [crispy] killough 2/28/98: Fix for falling down into a wall after savegame loaded
 //	    mobj->floorz = mobj->subsector->sector->floorheight;
 //	    mobj->ceilingz = mobj->subsector->sector->ceilingheight;
-	    mobj->function = P_MobjThinker;
           } break;
 
 	  default:

@@ -289,9 +289,9 @@ struct mobj_t
     fixed_t		oldy;
     fixed_t		oldz;
     angle_t		oldangle;
-    think_t<mobj_t> function;
-    void action() { function.call_if( this ); };
-
+   void action();
+   bool deleted;
+   
 };
 
 

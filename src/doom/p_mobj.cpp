@@ -529,8 +529,9 @@ static inline void MusInfoThinker (mobj_t *thing)
 //
 // P_MobjThinker
 //
-void P_MobjThinker (mobj_t *mobj)
+void mobj_t::action()
 {
+    auto mobj = this;
     // [crispy] support MUSINFO lump (dynamic music changing)
     if (mobj->type == MT_MUSICSOURCE)
     {
@@ -563,15 +564,15 @@ void P_MobjThinker (mobj_t *mobj)
     {
 	P_XYMovement (mobj);
 
-	if (mobj->function == think_t<mobj_t>{-1})
+	if (mobj->deleted)
 	    return;		// mobj was removed
     }
     if ( (mobj->z != mobj->floorz)
 	 || mobj->momz )
     {
 	P_ZMovement (mobj);
-	
-	if (mobj->function == think_t<mobj_t>{-1})
+
+	if (mobj->deleted)
 	    return;		// mobj was removed
     }
 
@@ -611,6 +612,7 @@ void P_MobjThinker (mobj_t *mobj)
     }
 
 }
+
 
 
 //
@@ -683,8 +685,6 @@ P_SpawnMobjSafe
     mobj->oldz = mobj->z;
     mobj->oldangle = mobj->angle;
 
-    mobj->function = P_MobjThinker;
-	
     return mobj;
 }
 

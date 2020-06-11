@@ -113,6 +113,12 @@ void P_RemoveThinker (Thinker* thinker)
    thinker->function = think_t<Thinker>{-1};
 }
 
+template <>
+inline void P_RemoveThinker(mobj_t* thinker)
+{
+   thinker->deleted = true;
+}
+
 //
 // P_VisitThinkers( function )
 //
@@ -136,6 +142,28 @@ void P_RunThinkers (std::list<Thinker> &thinkers)
    auto i = thinkers.begin();
    do {
       while ( i != thinkers.end() && i->function == think_t<Thinker>{-1} )
+      {
+         i = thinkers.erase( i );
+      }
+
+      if ( i != thinkers.end() ) {
+         i->action();
+         i++;
+      }
+      else
+      {
+         break;
+      }
+   } while ( true );
+   return;
+}
+
+template <>
+inline void P_RunThinkers (std::list<mobj_t> &thinkers)
+{
+   auto i = thinkers.begin();
+   do {
+      while ( i != thinkers.end() && i->deleted )
       {
          i = thinkers.erase( i );
       }
