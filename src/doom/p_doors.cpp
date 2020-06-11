@@ -41,8 +41,9 @@
 //
 // T_VerticalDoor
 //
-void T_VerticalDoor (vldoor_t *door)
+void vldoor_t::action()
 {
+   auto door = this;
    result_e	res;
 	
     switch(door->direction)
@@ -269,7 +270,6 @@ EV_DoDoor
 	auto *door = P_AddThinker<vldoor_t>();
 	sec->specialdata = door;
 
-	door->function = T_VerticalDoor;
 	door->sector = sec;
 	door->type = type;
 	door->topwait = VDOORWAIT;
@@ -424,7 +424,7 @@ EV_VerticalDoor
 	    {
 		door->direction = 1;	// go back up
 		// [crispy] play sound effect when the door is opened again while going down
-		if (crispy->soundfix && door->function == T_VerticalDoor)
+		if (crispy->soundfix)
 		S_StartSound(&door->sector->soundorg, line->special == 117 ? sfx_bdopn : sfx_doropn);
 	    }
 	    else
@@ -436,25 +436,10 @@ EV_VerticalDoor
                 // In Vanilla, door->direction is set, even though
                 // "specialdata" might not actually point at a door.
 
-                if (door->function == T_VerticalDoor)
-                {
-                    door->direction = -1;	// start going down immediately
-                    // [crispy] play sound effect when the door is closed manually
-                    if (crispy->soundfix)
-                    S_StartSound(&door->sector->soundorg, line->special == 117 ? sfx_bdcls : sfx_dorcls);
-                }
-                else
-                {
-                    // This isn't a door OR a plat.  Now we're in trouble.
-
-                    fprintf(stderr, "EV_VerticalDoor: Tried to close "
-                                    "something that wasn't a door.\n");
-
-                    // Try closing it anyway. At least it will work on 32-bit
-                    // machines.
-
-                    door->direction = -1;
-                    }
+                door->direction = -1;	// start going down immediately
+                // [crispy] play sound effect when the door is closed manually
+                if (crispy->soundfix)
+                   S_StartSound(&door->sector->soundorg, line->special == 117 ? sfx_bdcls : sfx_dorcls);
 	    }
 	    return;
 	}
@@ -482,7 +467,6 @@ EV_VerticalDoor
     // new door thinker
     door = P_AddThinker<vldoor_t>();
     sec->specialdata = door;
-    door->function = T_VerticalDoor;
     door->sector = sec;
     door->direction = 1;
     door->speed = VDOORSPEED;
@@ -534,7 +518,6 @@ void P_SpawnDoorCloseIn30 (sector_t* sec)
     sec->specialdata = door;
     sec->special = 0;
 
-    door->function = T_VerticalDoor;
     door->sector = sec;
     door->direction = 0;
     door->type = vld_normal;
@@ -557,7 +540,6 @@ P_SpawnDoorRaiseIn5Mins
     sec->specialdata = door;
     sec->special = 0;
 
-    door->function = T_VerticalDoor;
     door->sector = sec;
     door->direction = 2;
     door->type = vld_raiseIn5Mins;

@@ -356,9 +356,8 @@ struct vldoor_t
     // (keep in case a door going down is reset)
     // when it reaches 0, start going down
     int             topcountdown;
-    think_t<vldoor_t> function;
-    void action() { function.call_if( this ); };
-    
+    void action();
+    bool deleted;
 };
 
 

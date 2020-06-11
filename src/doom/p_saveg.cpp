@@ -1015,7 +1015,8 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<vldoor_t>(&str->function);
+    think_t<vldoor_t> dummy;
+    saveg_read_think_t<vldoor_t>(&dummy);
 
     // vldoor_e type;
     str->type = static_cast<vldoor_e>(saveg_read_enum());
@@ -1043,7 +1044,8 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 static void saveg_write_vldoor_t(vldoor_t *str)
 {
     // think_t function;
-    saveg_write_think_t<vldoor_t>(&str->function);
+    think_t<vldoor_t> dummy;
+    saveg_write_think_t<vldoor_t>(&dummy);
 
     // vldoor_e type;
     saveg_write_enum(str->type);
@@ -1799,12 +1801,9 @@ void P_ArchiveSpecials (void)
 
 
    P_VisitThinkers<vldoor_t>( []( vldoor_t *vldoor ) {
-         if (vldoor->function == T_VerticalDoor)
-         {
-            saveg_write8(tc_door);
-	    saveg_write_pad();
-            saveg_write_vldoor_t(vldoor);
-         }
+         saveg_write8(tc_door);
+         saveg_write_pad();
+         saveg_write_vldoor_t(vldoor);
          return false;
       } );
 
@@ -1887,7 +1886,6 @@ void P_UnArchiveSpecials (void)
 	    door = P_AddThinker<vldoor_t>();
             saveg_read_vldoor_t(door);
 	    door->sector->specialdata = door;
-	    door->function = T_VerticalDoor;
 	    break;
 				
 	  case tc_floor:
