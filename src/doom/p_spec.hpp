@@ -478,8 +478,10 @@ typedef enum
      // raise to next highest floor, turbo-speed
     raiseFloorTurbo,       
     donutRaise,
-    raiseFloor512
-    
+    raiseFloor512,
+
+    // goobers
+    goobers,
 } floor_e;
 
 

@@ -204,13 +204,17 @@ T_MovePlane
 }
 
 
+void T_MoveGoobers (floormove_t *floor);
 //
 // MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //
 void T_MoveFloor(floormove_t* floor)
 {
    result_e	res;
-	
+   if (floor->type == goobers) {
+      return T_MoveGoobers(floor);
+   }
+   
     res = T_MovePlane(floor->sector,
 		      floor->speed,
 		      floor->floordestheight,
@@ -305,9 +309,10 @@ void EV_DoGoobers (void)
 
 	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
-	floor->function = T_MoveGoobers;
+	floor->function = T_MoveFloor;
 	floor->sector = sec;
-	// [crispy] actually destination ceilingheight here (destination floorheight is always 0),
+        floor->type = goobers;
+        // [crispy] actually destination ceilingheight here (destination floorheight is always 0),
 	// leave destination ceilingheight for untagged closed sectors (i.e. DR-type doors) at 0,
 	// for all others set to 128
 	floor->floordestheight = (!sec->tag &&
@@ -353,7 +358,7 @@ EV_DoFloor
 
 	switch(floortype)
 	{
-	  case lowerFloor:
+          case lowerFloor:
 	    floor->direction = -1;
 	    floor->sector = sec;
 	    floor->speed = FLOORSPEED;
