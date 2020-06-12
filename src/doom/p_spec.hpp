@@ -295,8 +295,8 @@ struct plat_t
     boolean	crush;
     int		tag;
     plattype_e	type;
-    think_t<plat_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
     
 };
 
@@ -306,8 +306,6 @@ struct plat_t
 #define PLATSPEED		FRACUNIT
 #define MAXPLATS		30*256
 
-
-extern plat_t*	activeplats[MAXPLATS];
 
 void    T_PlatRaise(plat_t* plat);
 

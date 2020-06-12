@@ -1147,7 +1147,8 @@ static void saveg_read_plat_t(plat_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<plat_t>(&str->function);
+    think_t<plat_t> dummy;
+    saveg_read_think_t<plat_t>(&dummy);
 
     // sector_t* sector;
     sector = saveg_read32();
@@ -1187,7 +1188,8 @@ static void saveg_read_plat_t(plat_t *str)
 static void saveg_write_plat_t(plat_t *str)
 {
     // think_t function;
-    saveg_write_think_t<plat_t>(&str->function);
+    think_t<plat_t> dummy;
+    saveg_write_think_t<plat_t>(&dummy);
 
     // sector_t* sector;
     saveg_write32(str->sector - sectors);
@@ -1759,28 +1761,9 @@ void P_ArchiveSpecials (void)
       } );
 
    P_VisitThinkers<plat_t>( []( plat_t *plat ) {
-
-         if (plat->function == think_t<plat_t>{})
-         {
-            int i;
-            // [crispy] save plats in statis
-	    for (i = 0; i < MAXPLATS; i++)
-               if (activeplats[i] == plat)
-                  return true;
-
-	    if (i < MAXPLATS)
-	    {
-               saveg_write8(tc_plat);
-               saveg_write_pad();
-               saveg_write_plat_t(plat);
-	    }
-         }
-         else if (plat->function == T_PlatRaise)
-         {
-            saveg_write8(tc_plat);
-	    saveg_write_pad();
-            saveg_write_plat_t(plat);
-         }
+         saveg_write8(tc_plat);
+         saveg_write_pad();
+         saveg_write_plat_t(plat);
          return false;
       } );
 
@@ -1881,11 +1864,6 @@ void P_UnArchiveSpecials (void)
 	    plat = P_AddThinker<plat_t>();
             saveg_read_plat_t(plat);
 	    plat->sector->specialdata = plat;
-
-	    if (plat->function)
-		plat->function = T_PlatRaise;
-
-	    P_AddActivePlat(plat);
 	    break;
 				
 	  case tc_flash:

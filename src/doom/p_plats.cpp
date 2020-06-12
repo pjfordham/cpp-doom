@@ -35,17 +35,16 @@
 #include "../../utils/memory.hpp"
 #include "sounds.hpp"
 
-plat_t*		activeplats[MAXPLATS];
-
-
 
 //
 // Move a plat up and down
 //
-void T_PlatRaise(plat_t *plat)
+void plat_t::action()
+   
 {
+   plat_t *plat = this;
    result_e	res;
-	
+
     switch(plat->status)
     {
       case up:
@@ -139,7 +138,6 @@ EV_DoPlat
     secnum = -1;
     rtn = 0;
 
-    
     //	Activate all <type> plats that are in_stasis
     switch(type)
     {
@@ -161,11 +159,9 @@ EV_DoPlat
 	// Find lowest & highest floors around sector
 	rtn = 1;
 	plat = P_AddThinker<plat_t>();
-		
 	plat->type = type;
 	plat->sector = sec;
 	plat->sector->specialdata = plat;
-	plat->function = T_PlatRaise;
 	plat->crush = false;
 	plat->tag = line->tag;
 	
@@ -237,7 +233,6 @@ EV_DoPlat
 	    S_StartSound(&sec->soundorg,sfx_pstart);
 	    break;
 	}
-	P_AddActivePlat(plat);
     }
     return rtn;
 }
@@ -246,57 +241,36 @@ EV_DoPlat
 
 void P_ActivateInStasis(int tag)
 {
-    int		i;
-	
-    for (i = 0;i < MAXPLATS;i++)
-	if (activeplats[i]
-	    && (activeplats[i])->tag == tag
-	    && (activeplats[i])->status == in_stasis)
-	{
-	    (activeplats[i])->status = (activeplats[i])->oldstatus;
-	    (activeplats[i])->function = T_PlatRaise;
-	}
+   P_VisitThinkers<plat_t>([tag](plat_t *plat) {
+         if (plat->tag == tag && plat->status == in_stasis) {
+            plat->status = plat->oldstatus;
+         }
+         return false;
+      } );
 }
 
 void EV_StopPlat(line_t* line)
 {
-    int		j;
-	
-    for (j = 0;j < MAXPLATS;j++)
-	if (activeplats[j]
-	    && ((activeplats[j])->status != in_stasis)
-	    && ((activeplats[j])->tag == line->tag))
-	{
-	    (activeplats[j])->oldstatus = (activeplats[j])->status;
-	    (activeplats[j])->status = in_stasis;
-	    (activeplats[j])->function = think_t<plat_t>{};
-	}
+   P_VisitThinkers<plat_t>([line](plat_t *plat) {
+         if (plat->status != in_stasis && plat->tag == line->tag) {
+	    plat->oldstatus = plat->status;
+	    plat->status = in_stasis;
+         }
+         return false;
+      } );
 }
 
-void P_AddActivePlat(plat_t* plat)
+void P_RemoveActivePlat(plat_t* rplat)
 {
-    int		i;
-    
-    for (i = 0;i < MAXPLATS;i++)
-	if (activeplats[i] == NULL)
-	{
-	    activeplats[i] = plat;
-	    return;
-	}
-    I_Error ("P_AddActivePlat: no more plats!");
-}
-
-void P_RemoveActivePlat(plat_t* plat)
-{
-    int		i;
-    for (i = 0;i < MAXPLATS;i++)
-	if (plat == activeplats[i])
-	{
-	    (activeplats[i])->sector->specialdata = NULL;
-	    P_RemoveThinker(activeplats[i]);
-	    activeplats[i] = NULL;
-	    
-	    return;
-	}
-    I_Error ("P_RemoveActivePlat: can't find plat!");
+   bool found = P_VisitThinkers<plat_t>([rplat](plat_t *plat) {
+         if (plat == rplat) {
+            rplat->sector->specialdata = nullptr;
+            P_RemoveThinker(rplat);
+            return true;
+         }
+         return false;
+      } );
+   if (!found) {
+      I_Error ("P_RemoveActivePlat: can't find plat!");
+   }
 }

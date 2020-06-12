@@ -1690,9 +1690,6 @@ void P_SpawnSpecials (void)
 
     
     //	Init other misc stuff
-    for (i = 0;i < MAXPLATS;i++)
-	activeplats[i] = NULL;
-    
     for (i = 0;i < maxbuttons;i++)
         buttonlist[i] = button_t{};
 
