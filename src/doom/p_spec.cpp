@@ -1514,7 +1514,6 @@ int EV_DoDonut(line_t*	line)
 	    //	Spawn rising slime
 	    floor = P_AddThinker<floormove_t>();
 	    s2->specialdata = floor;
-	    floor->function = T_MoveFloor;
 	    floor->type = donutRaise;
 	    floor->crush = false;
 	    floor->direction = 1;
@@ -1527,7 +1526,6 @@ int EV_DoDonut(line_t*	line)
 	    //	Spawn lowering donut-hole
 	    floor = P_AddThinker<floormove_t>();
 	    s1->specialdata = floor;
-	    floor->function = T_MoveFloor;
 	    floor->type = lowerFloor;
 	    floor->crush = false;
 	    floor->direction = -1;

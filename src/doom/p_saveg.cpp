@@ -1080,7 +1080,8 @@ static void saveg_read_floormove_t(floormove_t *str)
     int sector;
 
     // think_t function;
-    saveg_read_think_t<floormove_t>(&str->function);
+    think_t<floormove_t> dummy;
+    saveg_read_think_t<floormove_t>(&dummy);
 
     // floor_e type;
     str->type = static_cast<floor_e>(saveg_read_enum());
@@ -1111,7 +1112,8 @@ static void saveg_read_floormove_t(floormove_t *str)
 static void saveg_write_floormove_t(floormove_t *str)
 {
     // think_t function;
-    saveg_write_think_t<floormove_t>(&str->function);
+    think_t<floormove_t> dummy;
+    saveg_write_think_t<floormove_t>(&dummy);
 
     // floor_e type;
     saveg_write_enum(str->type);
@@ -1776,13 +1778,10 @@ void P_ArchiveSpecials (void)
       } );
 
    P_VisitThinkers<floormove_t>( []( floormove_t *floor ) {
-	if (floor->function == T_MoveFloor)
-	{
-            saveg_write8(tc_floor);
-	    saveg_write_pad();
-            saveg_write_floormove_t(floor);
-	}
-        return false;
+         saveg_write8(tc_floor);
+         saveg_write_pad();
+         saveg_write_floormove_t(floor);
+         return false;
       } );
 
    P_VisitThinkers<lightflash_t>( []( lightflash_t *flash ) {
@@ -1856,7 +1855,6 @@ void P_UnArchiveSpecials (void)
 	    floor = P_AddThinker<floormove_t>();
             saveg_read_floormove_t(floor);
 	    floor->sector->specialdata = floor;
-	    floor->function = T_MoveFloor;
 	    break;
 				
 	  case tc_plat:

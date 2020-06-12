@@ -506,8 +506,8 @@ struct floormove_t
     short	texture;
     fixed_t	floordestheight;
     fixed_t	speed;
-    think_t<floormove_t> function;
-    void action() { function.call_if( this ); };
+    bool deleted;
+    void action();
 
 };
 

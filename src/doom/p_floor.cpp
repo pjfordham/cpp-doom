@@ -208,8 +208,9 @@ void T_MoveGoobers (floormove_t *floor);
 //
 // MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //
-void T_MoveFloor(floormove_t* floor)
+void floormove_t::action()
 {
+   floormove_t* floor = this;
    result_e	res;
    if (floor->type == goobers) {
       return T_MoveGoobers(floor);
@@ -309,7 +310,6 @@ void EV_DoGoobers (void)
 
 	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
-	floor->function = T_MoveFloor;
 	floor->sector = sec;
         floor->type = goobers;
         // [crispy] actually destination ceilingheight here (destination floorheight is always 0),
@@ -352,7 +352,6 @@ EV_DoFloor
 	rtn = 1;
 	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
-	floor->function = T_MoveFloor;
 	floor->type = floortype;
 	floor->crush = false;
 
@@ -555,7 +554,6 @@ EV_BuildStairs
 	rtn = 1;
 	floor = P_AddThinker<floormove_t>();
 	sec->specialdata = floor;
-	floor->function = T_MoveFloor;
 	floor->direction = 1;
 	floor->sector = sec;
 	switch(type)
@@ -614,7 +612,6 @@ EV_BuildStairs
 		floor = P_AddThinker<floormove_t>();
 
 		sec->specialdata = floor;
-		floor->function = T_MoveFloor;
 		floor->direction = 1;
 		floor->sector = sec;
 		floor->speed = speed;
