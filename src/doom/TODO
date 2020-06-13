@@ -2,11 +2,7 @@ Every use of:
 
 create_struct is only used in textscreen, in theory everything could be moved to new/delete in there
 
-Zone Allocator: properly implement this for deletes
-
-zone_malloc
-zone_calloc
-and Z_Free
+Zone Allocator: replace zone_calloc's with some form of Z_Newg
 
 All string manipulation to std::string and stringview with M_StringDuplicate for compat
 

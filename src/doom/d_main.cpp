@@ -796,7 +796,7 @@ static const char *GetGameName(const char *gamename)
 
         auto deh_sub = DEH_String(banners[i]);
 
-        if (deh_sub != banners[i])
+        if (std::string(deh_sub) != std::string(banners[i]))
         {
             // Has been replaced.
             // We need to expand via printf to include the Doom version number
@@ -1056,7 +1056,7 @@ void PrintDehackedBanners(void)
 
         deh_s = DEH_String(copyright_banners[i]);
 
-        if (deh_s != copyright_banners[i])
+        if (std::string(deh_s) != std::string(copyright_banners[i]))
         {
             printf("%s", deh_s);
 
