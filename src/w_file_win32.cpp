@@ -113,7 +113,7 @@ static wad_file_t *W_Win32_OpenFile(const char *path)
 
     // Create a new win32_wad_file_t to hold the file handle.
 
-    result = zone_malloc<win32_wad_file_t(PU_STATIC);
+    result = Z_New<win32_wad_file_t(PU_STATIC);
     result->wad.file_class = &win32_wad_file;
     result->wad.length = GetFileLength(handle);
     result->wad.path = path;
@@ -151,7 +151,7 @@ static void W_Win32_CloseFile(wad_file_t *wad)
         CloseHandle(win32_wad->handle);
     }
 
-    Z_Free(win32_wad);
+    Z_Delete(win32_wad);
 }
 
 // Read data from the specified position in the file into the 

@@ -147,7 +147,7 @@ static void InitSpriteList(void)
     if (sprite_frames == NULL)
     {
         sprite_frames_alloced = 128;
-        sprite_frames = zone_malloc<sprite_frame_t>(PU_STATIC, sprite_frames_alloced);
+        sprite_frames = Z_New<sprite_frame_t>(PU_STATIC, sprite_frames_alloced);
     }
 
     num_sprite_frames = 0;
@@ -203,9 +203,9 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
 
     if (num_sprite_frames >= sprite_frames_alloced)
     {
-        auto newframes = zone_malloc<sprite_frame_t>(PU_STATIC, sprite_frames_alloced * 2);
+        auto newframes = Z_New<sprite_frame_t>(PU_STATIC, sprite_frames_alloced * 2);
         std::copy( sprite_frames, sprite_frames + sprite_frames_alloced, newframes );
-        Z_Free(sprite_frames);
+        Z_Delete(sprite_frames);
         sprite_frames_alloced *= 2;
         sprite_frames = newframes;
     }

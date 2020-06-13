@@ -147,7 +147,7 @@ void P_LoadVertexes (int lump)
     numvertexes = W_LumpLength (lump) / sizeof(mapvertex_t);
 
     // Allocate zone memory for buffer.
-    vertexes = zone_malloc<vertex_t>(PU_LEVEL, numvertexes);
+    vertexes = Z_New<vertex_t>(PU_LEVEL, numvertexes);
 
     // Load data into cache.
     data = cache_lump_num<byte *>(lump, PU_STATIC);
@@ -408,7 +408,7 @@ void P_LoadNodes (int lump)
     node_t*	no;
 	
     numnodes = W_LumpLength (lump) / sizeof(mapnode_t);
-    nodes = zone_malloc<node_t>(PU_LEVEL,numnodes);
+    nodes = Z_New<node_t>(PU_LEVEL,numnodes);
     data = cache_lump_num<byte *>(lump,PU_STATIC);
 	
     // [crispy] warn about missing nodes
@@ -723,9 +723,9 @@ boolean P_LoadBlockMap (int lump)
 	
     // [crispy] remove BLOCKMAP limit
     // adapted from boom202s/P_SETUP.C:1025-1076
-    wadblockmaplump = zone_malloc<short>(PU_LEVEL, lumplen/ sizeof(short));
+    wadblockmaplump = Z_New<short>(PU_LEVEL, lumplen/ sizeof(short));
     W_ReadLump(lump, wadblockmaplump);
-    blockmaplump = zone_malloc<int32_t>(PU_LEVEL, count );
+    blockmaplump = Z_New<int32_t>(PU_LEVEL, count );
     blockmap = blockmaplump + 4;
 
     blockmaplump[0] = SHORT(wadblockmaplump[0]);
@@ -741,7 +741,7 @@ boolean P_LoadBlockMap (int lump)
 	blockmaplump[i] = (t == -1) ? -1l : (int32_t) t & 0xffff;
     }
 
-    Z_Free(wadblockmaplump);
+    Z_Delete(wadblockmaplump);
 		
     // Read the header
 
@@ -802,7 +802,7 @@ void P_GroupLines (void)
     }
 
     // build line tables for each sector	
-    linebuffer = zone_malloc<line_t*>( PU_LEVEL, totallines);
+    linebuffer = Z_New<line_t*>( PU_LEVEL, totallines);
 
     for (i=0; i<numsectors; ++i)
     {
@@ -1010,7 +1010,7 @@ static void P_LoadReject(int lumpnum)
     }
     else
     {
-        rejectmatrix = zone_malloc<byte>(PU_LEVEL, minlength, &rejectmatrix);
+        rejectmatrix = Z_New<byte>(PU_LEVEL, minlength, &rejectmatrix);
         W_ReadLump(lumpnum, rejectmatrix);
 
         PadRejectArray(rejectmatrix + lumplen, minlength - lumplen);
@@ -1269,7 +1269,7 @@ P_SetupLevel
     if (precache)
 	R_PrecacheLevel ();
 
-    //printf ("free memory: 0x%x\n", Z_FreeMemory());
+    //printf ("free memory: 0x%x\n", Z_DeleteMemory());
 
 }
 

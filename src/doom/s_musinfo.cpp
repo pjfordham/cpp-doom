@@ -140,7 +140,7 @@ static void SC_Close(void)
         }
         else
         {
-            Z_Free(ScriptBuffer);
+            Z_Delete(ScriptBuffer);
         }
         ScriptOpen = false;
     }

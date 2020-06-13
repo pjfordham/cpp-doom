@@ -207,7 +207,7 @@ static char *ReadDMXConfig(void)
     }
 
     len = W_LumpLength(lumpnum);
-    data = zone_malloc<char>(PU_STATIC, len + 1);
+    data = Z_New<char>(PU_STATIC, len + 1);
     W_ReadLump(lumpnum, data);
 
     data[len] = '\0';
@@ -283,7 +283,7 @@ boolean GUS_WriteConfig(const char *path)
 
     result = WriteTimidityConfig(path, &config);
 
-    Z_Free(dmxconf);
+    Z_Delete(dmxconf);
 
     return result;
 }

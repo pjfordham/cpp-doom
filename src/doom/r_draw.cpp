@@ -742,7 +742,7 @@ void R_InitTranslationTables (void)
 {
     int		i;
 	
-    translationtables = zone_malloc<unsigned char>(PU_STATIC, 256*3);
+    translationtables = Z_New<unsigned char>(PU_STATIC, 256*3);
     
     // translate just the 16 green colors
     for (i=0 ; i<256 ; i++)
@@ -1062,7 +1062,7 @@ void R_FillBackScreen (void)
     {
         if (background_buffer != NULL)
         {
-            Z_Free(background_buffer);
+            Z_Delete(background_buffer);
             background_buffer = NULL;
         }
 
@@ -1073,7 +1073,7 @@ void R_FillBackScreen (void)
 	
     if (background_buffer == NULL)
     {
-        background_buffer = zone_malloc<pixel_t>( PU_STATIC, MAXWIDTH * (MAXHEIGHT - SBARHEIGHT));
+        background_buffer = Z_New<pixel_t>( PU_STATIC, MAXWIDTH * (MAXHEIGHT - SBARHEIGHT));
     }
 
     if (gamemode == commercial)

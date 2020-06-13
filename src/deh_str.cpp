@@ -143,7 +143,7 @@ static void IncreaseHashtable(void)
 
     // free the old table
 
-    Z_Free(old_table);
+    Z_Delete(old_table);
 }
 
 static void DEH_AddToHashtable(deh_substitution_t *sub)
@@ -185,24 +185,24 @@ void DEH_AddStringReplacement(const char *from_text, const char *to_text)
 
     if (sub != NULL)
     {
-        Z_Free(sub->to_text);
+        Z_Delete(sub->to_text);
 
         len = strlen(to_text) + 1;
-        sub->to_text = zone_malloc<char>(PU_STATIC, len);
+        sub->to_text = Z_New<char>(PU_STATIC, len);
         memcpy(sub->to_text, to_text, len);
     }
     else
     {
         // We need to allocate a new substitution.
-        sub = zone_malloc<deh_substitution_t>(PU_STATIC);
+        sub = Z_New<deh_substitution_t>(PU_STATIC);
 
         // We need to create our own duplicates of the provided strings.
         len = strlen(from_text) + 1;
-        sub->from_text = zone_malloc<char>(PU_STATIC, len);
+        sub->from_text = Z_New<char>(PU_STATIC, len);
         memcpy(sub->from_text, from_text, len);
 
         len = strlen(to_text) + 1;
-        sub->to_text = zone_malloc<char>(PU_STATIC, len);
+        sub->to_text = Z_New<char>(PU_STATIC, len);
         memcpy(sub->to_text, to_text, len);
 
         DEH_AddToHashtable(sub);

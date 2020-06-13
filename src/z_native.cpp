@@ -134,9 +134,9 @@ void Z_Init (void)
 
 
 //
-// Z_Free
+// Z_Delete
 //
-void Z_Free (void* ptr)
+void Z_Delete (void* ptr)
 {
     memblock_t*		block;
 
@@ -144,7 +144,7 @@ void Z_Free (void* ptr)
 
     if (block->id != ZONEID)
     {
-        I_Error ("Z_Free: freed a pointer without ZONEID");
+        I_Error ("Z_Delete: freed a pointer without ZONEID");
     }
 		
     if (block->tag != PU_FREE && block->user != NULL)
@@ -483,10 +483,10 @@ void Z_ChangeUser(void *ptr, void **user)
 
 
 //
-// Z_FreeMemory
+// Z_DeleteMemory
 //
 
-int Z_FreeMemory(void)
+int Z_DeleteMemory(void)
 {
     // Limited by the system??
 

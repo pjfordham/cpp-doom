@@ -159,7 +159,7 @@ void P_CreateBlockMap(void)
 	  count += bmap[i].n + 2; // 1 header word + 1 trailer word + blocklist
 
       // Allocate blockmap lump with computed count
-      blockmaplump = zone_malloc<int>(PU_LEVEL, count);
+      blockmaplump = Z_New<int>(PU_LEVEL, count);
     }
 
     // Now compress the blockmap.

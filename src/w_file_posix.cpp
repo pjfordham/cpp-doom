@@ -88,7 +88,7 @@ static wad_file_t *W_POSIX_OpenFile(const char *path)
 
     // Create a new posix_wad_file_t to hold the file handle.
 
-    result = zone_malloc<posix_wad_file_t>(PU_STATIC);;
+    result = Z_New<posix_wad_file_t>(PU_STATIC);;
     result->wad.file_class = &posix_wad_file;
     result->wad.length = GetFileLength(handle);
     result->wad.path = path;
@@ -112,7 +112,7 @@ static void W_POSIX_CloseFile(wad_file_t *wad)
     // Close the file
   
     close(posix_wad->handle);
-    Z_Free(posix_wad);
+    Z_Delete(posix_wad);
 }
 
 // Read data from the specified position in the file into the 

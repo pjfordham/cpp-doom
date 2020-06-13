@@ -73,11 +73,11 @@ static void SaveDiskData(const char *disk_lump, int xoffs, int yoffs)
 
     if (disk_data != NULL)
     {
-        Z_Free(disk_data);
+        Z_Delete(disk_data);
         disk_data = NULL;
     }
 
-    disk_data = zone_malloc<pixel_t>(PU_STATIC, LOADING_DISK_W * LOADING_DISK_H);
+    disk_data = Z_New<pixel_t>(PU_STATIC, LOADING_DISK_W * LOADING_DISK_H);
 
     // Draw the patch and save the result to disk_data.
     auto *disk = cache_lump_name<patch_t *>(disk_lump, PU_STATIC);
@@ -88,7 +88,7 @@ static void SaveDiskData(const char *disk_lump, int xoffs, int yoffs)
     W_ReleaseLumpName(disk_lump);
 
     V_RestoreBuffer();
-    Z_Free(tmpscreen);
+    Z_Delete(tmpscreen);
 }
 
 void V_EnableLoadingDisk(const char *lump_name, int xoffs, int yoffs)
@@ -98,11 +98,11 @@ void V_EnableLoadingDisk(const char *lump_name, int xoffs, int yoffs)
 
     if (saved_background != NULL)
     {
-        Z_Free(saved_background);
+        Z_Delete(saved_background);
         saved_background = NULL;
     }
 
-    saved_background = zone_malloc<pixel_t>(PU_STATIC,LOADING_DISK_W * LOADING_DISK_H);
+    saved_background = Z_New<pixel_t>(PU_STATIC,LOADING_DISK_W * LOADING_DISK_H);
     SaveDiskData(lump_name, xoffs, yoffs);
 }
 

@@ -225,7 +225,7 @@ void R_InitSpriteDefs(const char **namelist)
     if (!numsprites)
 	return;
 		
-    sprites = zone_malloc<spritedef_t>( PU_STATIC, numsprites);
+    sprites = Z_New<spritedef_t>( PU_STATIC, numsprites);
 	
     start = firstspritelump-1;
     end = lastspritelump+1;
@@ -312,7 +312,7 @@ void R_InitSpriteDefs(const char **namelist)
 	
 	// allocate space for the frames present and copy sprtemp to it
 	sprites[i].numframes = maxframe;
-	sprites[i].spriteframes = zone_malloc<spriteframe_t> (PU_STATIC, maxframe);
+	sprites[i].spriteframes = Z_New<spriteframe_t> (PU_STATIC, maxframe);
         std::copy( sprtemp, sprtemp + maxframe, sprites[i].spriteframes );
     }
 

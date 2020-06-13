@@ -211,7 +211,7 @@ int M_ReadFile(const std::string &name, byte **buffer)
 
     length = M_FileLength(handle);
     
-    buf = zone_malloc<byte>(PU_STATIC, length + 1);
+    buf = Z_New<byte>(PU_STATIC, length + 1);
     count = fread(buf, 1, length, handle);
     fclose (handle);
 	
@@ -226,7 +226,7 @@ int M_ReadFile(const std::string &name, byte **buffer)
 // Returns the path to a temporary file of the given name, stored
 // inside the system temporary directory.
 //
-// The returned value must be freed with Z_Free after use.
+// The returned value must be freed with Z_Delete after use.
 
 std::string M_TempFile(const std::string &s)
 {

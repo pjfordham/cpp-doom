@@ -145,7 +145,7 @@ wipe_initMelt
     
     // setup initial column positions
     // (y<0 => not ready to scroll yet)
-    y = zone_malloc<int>(PU_STATIC, width);
+    y = Z_New<int>(PU_STATIC, width);
     y[0] = -(M_Random()%16);
     for (i=1;i<width;i++)
     {
@@ -219,9 +219,9 @@ wipe_exitMelt
   int	height,
   int	ticks )
 {
-    Z_Free(y);
-    Z_Free(wipe_scr_start);
-    Z_Free(wipe_scr_end);
+    Z_Delete(y);
+    Z_Delete(wipe_scr_start);
+    Z_Delete(wipe_scr_end);
     return 0;
 }
 
@@ -232,7 +232,7 @@ wipe_StartScreen
   int	width,
   int	height )
 {
-    wipe_scr_start = zone_malloc<byte>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
+    wipe_scr_start = Z_New<byte>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
     I_ReadScreen(wipe_scr_start);
     return 0;
 }
@@ -244,7 +244,7 @@ wipe_EndScreen
   int	width,
   int	height )
 {
-    wipe_scr_end = zone_malloc<byte>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
+    wipe_scr_end = Z_New<byte>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
     I_ReadScreen(wipe_scr_end);
     V_DrawBlock(x, y, width, height, wipe_scr_start); // restore start scr.
     return 0;
@@ -270,7 +270,7 @@ wipe_ScreenWipe
     if (!go)
     {
 	go = 1;
-	// wipe_scr = zone_malloc<pixel_t>(PU_STATIC, width*height ); // DEBUG
+	// wipe_scr = Z_New<pixel_t>(PU_STATIC, width*height ); // DEBUG
 	wipe_scr = I_VideoBuffer;
 	(*wipes[wipeno*3])(width, height, ticks);
     }

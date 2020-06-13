@@ -152,7 +152,7 @@ wad_file_t *W_AddFile (const char *filename)
         // them back.  Effectively we're constructing a "fake WAD directory"
         // here, as it would appear on disk.
 
-	fileinfo = zone_malloc<filelump_t>(PU_STATIC);
+	fileinfo = Z_New<filelump_t>(PU_STATIC);
 	fileinfo->filepos = LONG(0);
 	fileinfo->size = LONG(wad_file->length);
 
@@ -194,7 +194,7 @@ wad_file_t *W_AddFile (const char *filename)
 
 	header.infotableofs = LONG(header.infotableofs);
 	length = header.numlumps*sizeof(filelump_t);
-	fileinfo = zone_malloc<filelump_t>(PU_STATIC, header.numlumps);
+	fileinfo = Z_New<filelump_t>(PU_STATIC, header.numlumps);
 
         W_Read(wad_file, header.infotableofs, fileinfo, length);
 	numfilelumps = header.numlumps;
@@ -223,11 +223,11 @@ wad_file_t *W_AddFile (const char *filename)
         ++filerover;
     }
 
-    Z_Free(fileinfo);
+    Z_Delete(fileinfo);
 
     if (lumphash != NULL)
     {
-        Z_Free(lumphash);
+        Z_Delete(lumphash);
         lumphash = NULL;
     }
 
@@ -430,7 +430,8 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
     {
         // Not yet loaded, so load it now
 
-       lump->cache = static_cast<void*>(zone_malloc<char>(tag, W_LumpLength(lumpnum), &lump->cache));
+       lump->cache = static_cast<void*>(Z_New<char>(tag, W_LumpLength(lumpnum),
+                                                    reinterpret_cast<char**>(&lump->cache)));
 	W_ReadLump (lumpnum, lump->cache);
         result = lump->cache;
     }
@@ -559,13 +560,13 @@ void W_GenerateHashTable(void)
     // Free the old hash table, if there is one:
     if (lumphash != NULL)
     {
-        Z_Free(lumphash);
+        Z_Delete(lumphash);
     }
 
     // Generate hash table
     if (numlumps > 0)
     {
-        lumphash = zone_malloc<int>(PU_STATIC, numlumps);
+        lumphash = Z_New<int>(PU_STATIC, numlumps);
 
         for (i = 0; i < numlumps; ++i)
         {
@@ -608,7 +609,7 @@ void W_Reload(void)
     {
         if (lumpinfo[i]->cache != NULL)
         {
-            Z_Free(lumpinfo[i]->cache);
+            Z_Delete(lumpinfo[i]->cache);
         }
     }
 

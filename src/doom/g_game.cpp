@@ -2197,7 +2197,7 @@ G_DeferedInitNew
     if (demorecording)
     {
 	G_CheckDemoStatus();
-	Z_Free(demoname);
+	Z_Delete(demoname);
 
 	G_RecordDemo(orig_demoname);
 	G_BeginRecording();
@@ -2451,7 +2451,7 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
 	G_RecordDemo(defdemoname);
 
 	// [crispy] discard the newly allocated demo buffer
-	Z_Free(demobuffer);
+	Z_Delete(demobuffer);
 	demobuffer = actualbuffer;
 
 	// [crispy] continue recording
@@ -2498,7 +2498,7 @@ static void IncreaseDemoBuffer(void)
     // Generate a new buffer twice the size
     new_length = current_length * 2;
     
-    new_demobuffer = zone_malloc<byte>(PU_STATIC, new_length);
+    new_demobuffer = Z_New<byte>(PU_STATIC, new_length);
     new_demop = new_demobuffer + (demo_p - demobuffer);
 
     // Copy over the old data
@@ -2507,7 +2507,7 @@ static void IncreaseDemoBuffer(void)
 
     // Free the old buffer and point the demo pointers at the new buffer.
 
-    Z_Free(demobuffer);
+    Z_Delete(demobuffer);
 
     demobuffer = new_demobuffer;
     demo_p = new_demop;
@@ -2589,7 +2589,7 @@ void G_RecordDemo (const char *name)
 
     usergame = false;
     demoname_size = strlen(name) + 5 + 6; // [crispy] + 6 for "-00000"
-    demoname = zone_malloc<char>(PU_STATIC, demoname_size);
+    demoname = Z_New<char>(PU_STATIC, demoname_size);
     M_snprintf(demoname, demoname_size, "%s.lmp", name);
 
     // [crispy] prevent overriding demos by adding a file name suffix
@@ -2612,7 +2612,7 @@ void G_RecordDemo (const char *name)
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
        maxsize = atoi(myargv[i+1].c_str())*1024;
-    demobuffer = zone_malloc<byte>(PU_STATIC, maxsize);
+    demobuffer = Z_New<byte>(PU_STATIC, maxsize);
     demoend = demobuffer + maxsize;
 	
     demorecording = true; 
@@ -2751,7 +2751,7 @@ void G_DoPlayDemo (void)
     // of size 'maxsize' previously allocated in G_RecordDemo()
     if (demorecording)
     {
-        Z_Free(demobuffer);
+        Z_Delete(demobuffer);
     }
 
     lumpnum = W_GetNumForName(defdemoname);
@@ -2990,7 +2990,7 @@ boolean G_CheckDemoStatus (void)
     { 
 	*demo_p++ = DEMOMARKER; 
 	M_WriteFile (demoname, demobuffer, demo_p - demobuffer); 
-	Z_Free (demobuffer); 
+	Z_Delete (demobuffer); 
 	demorecording = false; 
 	// [crispy] if a new game is started during demo recording, start a new demo
 	if (gameaction != ga_newgame)

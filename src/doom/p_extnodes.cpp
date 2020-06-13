@@ -98,7 +98,7 @@ void P_LoadSegs_DeePBSP (int lump)
     mapseg_deepbsp_t *data;
 
     numsegs = W_LumpLength(lump) / sizeof(mapseg_deepbsp_t);
-    segs = zone_malloc<seg_t>(PU_LEVEL, numsegs );
+    segs = Z_New<seg_t>(PU_LEVEL, numsegs );
     data = (mapseg_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
 
     for (i = 0; i < numsegs; i++)
@@ -163,7 +163,7 @@ void P_LoadSubsectors_DeePBSP (int lump)
     int i;
 
     numsubsectors = W_LumpLength(lump) / sizeof(mapsubsector_deepbsp_t);
-    subsectors = zone_malloc<subsector_t>(PU_LEVEL, numsubsectors);
+    subsectors = Z_New<subsector_t>(PU_LEVEL, numsubsectors);
     data = (mapsubsector_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
 
     // [crispy] fail on missing subsectors
@@ -184,7 +184,7 @@ void P_LoadNodes_DeePBSP (int lump)
 {
 
     numnodes = (W_LumpLength (lump) - 8) / sizeof(mapnode_deepbsp_t);
-    nodes = zone_malloc<node_t>(PU_LEVEL, numnodes);
+    nodes = Z_New<node_t>(PU_LEVEL, numnodes);
     auto *data = cache_lump_num<const byte *>(lump, PU_STATIC);
 
     // [crispy] warn about missing nodes
@@ -316,7 +316,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     }
     else
     {
-	newvertarray = zone_malloc<vertex_t>(PU_LEVEL, orgVerts + newVerts);
+	newvertarray = Z_New<vertex_t>(PU_LEVEL, orgVerts + newVerts);
 	for(int i =0; i<orgVerts; ++i) {
            newvertarray[i] = vertexes[i];
         }
@@ -344,7 +344,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	    lines[i].v2 = lines[i].v2 - vertexes + newvertarray;
 	}
 
-	Z_Free(vertexes);
+	Z_Delete(vertexes);
 	vertexes = newvertarray;
 	numvertexes = orgVerts + newVerts;
     }
@@ -358,7 +358,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	I_Error("P_LoadNodes: No subsectors in map!");
 
     numsubsectors = numSubs;
-    subsectors = zone_malloc<subsector_t>(PU_LEVEL, numsubsectors);
+    subsectors = Z_New<subsector_t>(PU_LEVEL, numsubsectors);
 
     for (i = currSeg = 0; i < numsubsectors; i++)
     {
@@ -383,7 +383,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     }
 
     numsegs = numSegs;
-    segs = zone_malloc<seg_t>(PU_LEVEL, numsegs);
+    segs = Z_New<seg_t>(PU_LEVEL, numsegs);
 
     for (i = 0; i < numsegs; i++)
     {
@@ -444,7 +444,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
     data += sizeof(numNodes);
 
     numnodes = numNodes;
-    nodes = zone_malloc<node_t>(PU_LEVEL, numnodes);
+    nodes = Z_New<node_t>(PU_LEVEL, numnodes);
 
     for (i = 0; i < numnodes; i++)
     {

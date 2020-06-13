@@ -886,7 +886,7 @@ static boolean ReadSubstituteConfig(const char *musicdir, const char *filename)
         line = next;
     }
 
-    Z_Free(buffer);
+    Z_Delete(buffer);
 
     return true;
 }

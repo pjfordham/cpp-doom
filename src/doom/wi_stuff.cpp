@@ -1902,14 +1902,14 @@ void WI_loadData(void)
     if (gamemode == commercial)
     {
 	NUMCMAPS = (crispy->havemap33) ? 33 : 32;
-	lnames = zone_malloc<patch_t*>(PU_STATIC, NUMCMAPS);
+	lnames = Z_New<patch_t*>(PU_STATIC, NUMCMAPS);
 	num_lnames = NUMCMAPS;
     }
     else
     {
 	// [crispy] support E1M10 "Sewers"
 	int nummaps = crispy->havee1m10 ? NUMMAPS + 1 : NUMMAPS;
-	lnames = zone_malloc<patch_t*>(PU_STATIC, nummaps);
+	lnames = Z_New<patch_t*>(PU_STATIC, nummaps);
 	num_lnames = nummaps;
     }
 

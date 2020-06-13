@@ -542,8 +542,8 @@ void R_GenerateLookup (int texnum)
 
     texturecompositesize[texnum] = csize;
 
-    Z_Free(patchcount);
-    Z_Free(postcount);
+    Z_Delete(patchcount);
+    Z_Delete(postcount);
 }
 
 
@@ -746,7 +746,7 @@ void R_InitTextures (void)
 
     // [crispy] fill up the patch lookup table
     name[8] = 0;
-    patchlookup = zone_malloc<int>(PU_STATIC, nummappatches);
+    patchlookup = Z_New<int>(PU_STATIC, nummappatches);
     for (i = 0, k = 0; i < numpnameslumps; i++)
     {
 	for (j = 0; j < pnameslumps[i].nummappatches; j++)
@@ -801,15 +801,15 @@ void R_InitTextures (void)
     // [crispy] pointer to (i.e. actually before) the first texture file
     auto texturelump = texturelumps.begin() - 1; // [crispy] gets immediately increased below
 
-    textures = zone_malloc<texture_t*> (PU_STATIC, numtextures );
-    texturecolumnlump = zone_malloc<short*> (PU_STATIC, numtextures );
-    texturecolumnofs = zone_malloc<unsigned int *> (PU_STATIC, numtextures );
-    texturecolumnofs2 = zone_malloc<unsigned int *> (PU_STATIC, numtextures );
-    texturecomposite = zone_malloc<byte*> (PU_STATIC, numtextures );
-    texturecompositesize = zone_malloc<int> (PU_STATIC, numtextures );
-    texturewidthmask = zone_malloc<int> (PU_STATIC, numtextures );
-    textureheight = zone_malloc<fixed_t> (PU_STATIC, numtextures );
-    texturebrightmap = zone_malloc<byte*> (PU_STATIC, numtextures );
+    textures = Z_New<texture_t*> (PU_STATIC, numtextures );
+    texturecolumnlump = Z_New<short*> (PU_STATIC, numtextures );
+    texturecolumnofs = Z_New<unsigned int *> (PU_STATIC, numtextures );
+    texturecolumnofs2 = Z_New<unsigned int *> (PU_STATIC, numtextures );
+    texturecomposite = Z_New<byte*> (PU_STATIC, numtextures );
+    texturecompositesize = Z_New<int> (PU_STATIC, numtextures );
+    texturewidthmask = Z_New<int> (PU_STATIC, numtextures );
+    textureheight = Z_New<fixed_t> (PU_STATIC, numtextures );
+    texturebrightmap = Z_New<byte*> (PU_STATIC, numtextures );
 
     totalwidth = 0;
     
@@ -864,8 +864,8 @@ void R_InitTextures (void)
 	mtexture = (maptexture_t *) ( (byte *)maptex + offset);
 
 	// FIXME Where are the frees?
-	texture = textures[i] = zone_malloc<texture_t>(PU_STATIC);
-	texture->patches = zone_malloc<texpatch_t>(PU_STATIC, SHORT(mtexture->patchcount));
+	texture = textures[i] = Z_New<texture_t>(PU_STATIC);
+	texture->patches = Z_New<texpatch_t>(PU_STATIC, SHORT(mtexture->patchcount));
 	
 	texture->width = SHORT(mtexture->width);
 	texture->height = SHORT(mtexture->height);
@@ -900,9 +900,9 @@ void R_InitTextures (void)
 		patch->patch = 0;
 	    }
 	}		
-	texturecolumnlump[i] = zone_malloc<short> (PU_STATIC,texture->width);
-	texturecolumnofs[i] = zone_malloc<unsigned> (PU_STATIC,texture->width);
-	texturecolumnofs2[i] = zone_malloc<unsigned> (PU_STATIC,texture->width);
+	texturecolumnlump[i] = Z_New<short> (PU_STATIC,texture->width);
+	texturecolumnofs[i] = Z_New<unsigned> (PU_STATIC,texture->width);
+	texturecolumnofs2[i] = Z_New<unsigned> (PU_STATIC,texture->width);
 
 	j = 1;
 	while (j*2 <= texture->width)
@@ -914,7 +914,7 @@ void R_InitTextures (void)
 	totalwidth += texture->width;
     }
 
-    Z_Free(patchlookup);
+    Z_Delete(patchlookup);
 
     // [crispy] release memory allocated for texture files
     for (i = 0; i < numtexturelumps; i++)
@@ -928,7 +928,7 @@ void R_InitTextures (void)
 	R_GenerateLookup (i);
     
     // Create translation table for global animation.
-    texturetranslation = zone_malloc<int> ( PU_STATIC, numtextures+1);
+    texturetranslation = Z_New<int> ( PU_STATIC, numtextures+1);
     
     for (i=0 ; i<numtextures ; i++)
 	texturetranslation[i] = i;
@@ -950,7 +950,7 @@ void R_InitFlats (void)
     numflats = lastflat - firstflat + 1;
 	
     // Create translation table for global animation.
-    flattranslation = zone_malloc<int>(PU_STATIC, numflats+1);
+    flattranslation = Z_New<int>(PU_STATIC, numflats+1);
     
     for (i=0 ; i<numflats ; i++)
 	flattranslation[i] = i;
@@ -972,9 +972,9 @@ void R_InitSpriteLumps (void)
     lastspritelump = W_GetNumForName (DEH_String("S_END")) - 1;
     
     numspritelumps = lastspritelump - firstspritelump + 1;
-    spritewidth = zone_malloc<fixed_t> (PU_STATIC, numspritelumps);
-    spriteoffset = zone_malloc<fixed_t> (PU_STATIC, numspritelumps);
-    spritetopoffset = zone_malloc<fixed_t> ( PU_STATIC, numspritelumps);
+    spritewidth = Z_New<fixed_t> (PU_STATIC, numspritelumps);
+    spriteoffset = Z_New<fixed_t> (PU_STATIC, numspritelumps);
+    spritetopoffset = Z_New<fixed_t> ( PU_STATIC, numspritelumps);
 	
     for (i=0 ; i< numspritelumps ; i++)
     {
@@ -1023,7 +1023,7 @@ static void R_InitTranMap()
 	    unsigned char playpal[256*3]; // [crispy] a palette has 768 bytes!
 	} cache;
 
-	tranmap = zone_malloc<byte>( PU_STATIC, 256*256);
+	tranmap = Z_New<byte>( PU_STATIC, 256*256);
 	auto fname = configdir + "tranmap.dat";
 
 	// [crispy] open file readable
@@ -1137,7 +1137,7 @@ void R_InitColormaps (void)
 
 	if (!colormaps)
 	{
-           colormaps = zone_malloc<lighttable_t>(PU_STATIC, (NUMCOLORMAPS + 1) * 256);
+           colormaps = Z_New<lighttable_t>(PU_STATIC, (NUMCOLORMAPS + 1) * 256);
 	}
 
 	if (crispy->truecolor)
@@ -1381,7 +1381,7 @@ void R_PrecacheLevel (void)
 	}
     }
 
-    Z_Free(flatpresent);
+    Z_Delete(flatpresent);
     
     // Precache textures.
     texturepresent = zone_calloc<char>(PU_STATIC, numtextures);
@@ -1420,7 +1420,7 @@ void R_PrecacheLevel (void)
 	}
     }
 
-    Z_Free(texturepresent);
+    Z_Delete(texturepresent);
     
     // Precache sprites.
     spritepresent = zone_calloc<char>(PU_STATIC, numsprites);
@@ -1448,7 +1448,7 @@ void R_PrecacheLevel (void)
 	}
     }
 
-    Z_Free(spritepresent);
+    Z_Delete(spritepresent);
 }
 
 

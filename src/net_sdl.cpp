@@ -115,14 +115,14 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
         new_addr_table = zone_calloc<addrpair_t*>(PU_STATIC, new_addr_table_size);
         memcpy(new_addr_table, addr_table, 
                sizeof(addrpair_t *) * addr_table_size);
-        Z_Free(addr_table);
+        Z_Delete(addr_table);
         addr_table = new_addr_table;
         addr_table_size = new_addr_table_size;
     }
 
     // Add a new entry
     
-    new_entry = zone_malloc<addrpair_t>(PU_STATIC);
+    new_entry = Z_New<addrpair_t>(PU_STATIC);
 
     new_entry->sdl_addr = *addr;
     new_entry->net_addr.refcount = 0;
@@ -142,7 +142,7 @@ static void NET_SDL_FreeAddress(net_addr_t *addr)
     {
         if (addr == &addr_table[i]->net_addr)
         {
-            Z_Free(addr_table[i]);
+            Z_Delete(addr_table[i]);
             addr_table[i] = NULL;
             return;
         }

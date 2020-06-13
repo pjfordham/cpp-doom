@@ -809,7 +809,7 @@ static const char *GetGameName(const char *gamename)
             }
 
             const auto newgamename_size = strlen(deh_sub) + 10;
-            auto *newgamename = zone_malloc<char>(PU_STATIC, newgamename_size);
+            auto *newgamename = Z_New<char>(PU_STATIC, newgamename_size);
             auto version = G_VanillaVersionCode();
             M_snprintf(newgamename, newgamename_size, deh_sub,
                        version / 100, version % 100);
