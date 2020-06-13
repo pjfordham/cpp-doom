@@ -274,9 +274,10 @@ void R_GenerateComposite (int texnum)
     texture = textures[texnum];
 
     // [crispy] initialize composite background to black (index 0)
-    block = zone_calloc<byte>(PU_STATIC, texturecompositesize[texnum],
-                              &texturecomposite[texnum]);
-
+    block = Z_New<byte>(PU_STATIC, texturecompositesize[texnum],
+                        &texturecomposite[texnum]);
+    std::fill( block, block + texturecompositesize[texnum], 0 );
+    
     collump = texturecolumnlump[texnum];
     colofs = texturecolumnofs[texnum];
     
@@ -413,8 +414,10 @@ void R_GenerateLookup (int texnum)
     //  that are covered by more than one patch.
     // Fill in the lump / offset, so columns
     //  with only a single patch are all done.
-    patchcount = zone_calloc<byte>(PU_STATIC, texture->width, &patchcount);
-    postcount = zone_calloc<byte>(PU_STATIC, texture->width, &postcount);
+    patchcount = Z_New<byte>(PU_STATIC, texture->width, &patchcount);
+    std::fill( patchcount, patchcount + texture->width, 0 );
+    postcount = Z_New<byte>(PU_STATIC, texture->width, &postcount);
+    std::fill( postcount, postcount + texture->width, 0);
 
     for (i=0 , patch = texture->patches;
 	 i<texture->patchcount;
@@ -1339,7 +1342,8 @@ void R_PrecacheLevel (void)
 	return;
     
     // Precache flats.
-    flatpresent = zone_calloc<char>(PU_STATIC, numflats);
+    flatpresent = Z_New<char>(PU_STATIC, numflats);
+    std::fill( flatpresent, flatpresent + numflats, 0);
 
     for (i=0 ; i<numsectors ; i++)
     {
@@ -1362,7 +1366,8 @@ void R_PrecacheLevel (void)
     Z_Delete(flatpresent);
     
     // Precache textures.
-    texturepresent = zone_calloc<char>(PU_STATIC, numtextures);
+    texturepresent = Z_New<char>(PU_STATIC, numtextures);
+    std::fill( texturepresent, texturepresent + numtextures, 0);
 
     for (i=0 ; i<numsides ; i++)
     {
@@ -1401,7 +1406,8 @@ void R_PrecacheLevel (void)
     Z_Delete(texturepresent);
     
     // Precache sprites.
-    spritepresent = zone_calloc<char>(PU_STATIC, numsprites);
+    spritepresent = Z_New<char>(PU_STATIC, numsprites);
+    std::fill( spritepresent, spritepresent + numsprites, 0);
 
     P_VisitMobjThinkers([&spritepresent](mobj_t *m) {
           spritepresent[m->sprite] = 1;

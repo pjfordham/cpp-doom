@@ -205,7 +205,9 @@ void P_LoadSegs (int lump)
     int                 sidenum;
 	
     numsegs = W_LumpLength (lump) / sizeof(mapseg_t);
-    segs = zone_calloc<seg_t> (PU_LEVEL,numsegs);
+    segs = Z_New<seg_t> (PU_LEVEL,numsegs);
+    // FIXME I don't think we really need this.
+    std::fill( segs, segs + numsegs, seg_t{} );
     data = cache_lump_num<byte*>(lump,PU_STATIC);
 	
     ml = (mapseg_t *)data;
@@ -323,7 +325,8 @@ void P_LoadSubsectors (int lump)
     subsector_t*	ss;
 	
     numsubsectors = W_LumpLength (lump) / sizeof(mapsubsector_t);
-    subsectors = zone_calloc<subsector_t>(PU_LEVEL,numsubsectors);
+    subsectors = Z_New<subsector_t>(PU_LEVEL,numsubsectors);
+    std::fill( subsectors, subsectors + numsubsectors, subsector_t{} );
     data = cache_lump_num<byte *>(lump,PU_STATIC);
 	
     // [crispy] fail on missing subsectors
@@ -359,7 +362,8 @@ void P_LoadSectors (int lump)
 	I_Error("P_LoadSectors: No sectors in map!");
 
     numsectors = W_LumpLength (lump) / sizeof(mapsector_t);
-    sectors = zone_calloc<sector_t>(PU_LEVEL,numsectors);
+    sectors = Z_New<sector_t>(PU_LEVEL,numsectors);
+    std::fill( sectors, sectors + numsectors, sector_t{} );
     data = cache_lump_num<byte *>(lump,PU_STATIC);
 	
     // [crispy] fail on missing sectors
@@ -540,7 +544,8 @@ void P_LoadLineDefs (int lump)
     int warn, warn2; // [crispy] warn about invalid linedefs
 	
     numlines = W_LumpLength (lump) / sizeof(maplinedef_t);
-    lines = zone_calloc<line_t>(PU_LEVEL,numlines);
+    lines = Z_New<line_t>(PU_LEVEL,numlines);
+    std::fill( lines, lines + numlines, line_t{} );
     data = cache_lump_num<byte *>(lump,PU_STATIC);
 	
     mld = (maplinedef_t *)data;
@@ -681,7 +686,8 @@ void P_LoadSideDefs (int lump)
     side_t*		sd;
 	
     numsides = W_LumpLength (lump) / sizeof(mapsidedef_t);
-    sides = zone_calloc<side_t>(PU_LEVEL,numsides);
+    sides = Z_New<side_t>(PU_LEVEL,numsides);
+    std::fill( sides, sides + numsides, side_t{} );
     data = cache_lump_num<byte *>(lump,PU_STATIC);
 	
     msd = (mapsidedef_t *)data;
@@ -752,7 +758,8 @@ boolean P_LoadBlockMap (int lump)
 	
     // Clear out mobj chains
 
-    blocklinks = zone_calloc<mobj_t*>(PU_LEVEL, bmapwidth * bmapheight);
+    blocklinks = Z_New<mobj_t*>(PU_LEVEL, bmapwidth * bmapheight);
+    std::fill( blocklinks, blocklinks + bmapwidth * bmapheight, nullptr );
 
     // [crispy] (re-)create BLOCKMAP if necessary
     fprintf(stderr, ")\n");

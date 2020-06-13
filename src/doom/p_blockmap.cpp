@@ -188,7 +188,8 @@ void P_CreateBlockMap(void)
 
   // [crispy] copied over from P_LoadBlockMap()
   {
-    blocklinks = zone_calloc<mobj_t*>(PU_LEVEL, bmapwidth * bmapheight);
+    blocklinks = Z_New<mobj_t*>(PU_LEVEL, bmapwidth * bmapheight);
+    std::fill( blocklinks, blocklinks + bmapwidth * bmapheight, nullptr );
     blockmap = blockmaplump+4;
   }
 

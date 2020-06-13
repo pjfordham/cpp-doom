@@ -2,7 +2,7 @@ Every use of:
 
 create_struct is only used in textscreen, in theory everything could be moved to new/delete in there
 
-Zone Allocator: replace zone_calloc's with some form of Z_Newg
+Zone Allocator: Make Z_Delete run the destructors without lambda when it can.
 
 All string manipulation to std::string and stringview with M_StringDuplicate for compat
 
@@ -26,6 +26,7 @@ review all uses of c_str
 
 review all use of taking std::string as a parameter with a view to using std::string_view
 
+migrate dehacked strings to std::string, DEH_String should return std::string, or maybe string_view? not sure.
 
 rm -rf ~/github/cpp-doom/debug
 mkdir ~/github/cpp-doom/debug

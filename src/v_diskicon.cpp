@@ -66,7 +66,9 @@ static void CopyRegion(pixel_t *dest, int dest_pitch,
 static void SaveDiskData(const char *disk_lump, int xoffs, int yoffs)
 {
     // Allocate a complete temporary screen where we'll draw the patch.
-    auto tmpscreen = zone_calloc<pixel_t>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
+    auto tmpscreen = Z_New<pixel_t>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
+    std::fill( tmpscreen, tmpscreen + SCREENWIDTH * SCREENHEIGHT, pixel_t{} );
+
     V_UseBuffer(tmpscreen);
 
     // Buffer where we'll save the disk data.
