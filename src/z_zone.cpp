@@ -39,28 +39,18 @@
 #define MEM_ALIGN sizeof(void *)
 #define ZONEID	0x1d4a11
 
-typedef struct memblock_s
-{
-    int			size;	// including the header and possibly tiny fragments
-    void**		user;
-    int			tag;	// PU_FREE if this is free
-    int			id;	// should be ZONEID
-    struct memblock_s*	next;
-    struct memblock_s*	prev;
-} memblock_t;
 
-
-typedef struct
+struct memzone_t
 {
     // total bytes allocated, including header
     int		size;
 
     // start / end cap for linked list
     memblock_t	blocklist;
-    
+
     memblock_t*	rover;
-    
-} memzone_t;
+
+};
 
 
 
@@ -175,7 +165,7 @@ static void ScanForBlock(void *start, void *end)
 //
 // Z_Free
 //
-void Z_Free (void* ptr)
+void Z_Free (void* ptr, bool run_destructor)
 {
     memblock_t*		block;
     memblock_t*		other;
@@ -185,6 +175,10 @@ void Z_Free (void* ptr)
     if (block->id != ZONEID)
 	I_Error ("Z_Free: freed a pointer without ZONEID");
 
+    if (run_destructor && block->destructor ) {
+       block->destructor( ptr, block->count );
+    }
+    
     if (block->tag != PU_FREE && block->user != NULL)
     {
     	// clear the user's mark
@@ -249,7 +243,9 @@ void*
 Z_Malloc
 ( int		size,
   int		tag,
-  void*		user )
+  void*		user,
+  memblock_t::destructor_t des,
+   int count )
 {
     int		extra;
     memblock_t*	start;
@@ -307,7 +303,7 @@ Z_Malloc
 
                 // the rover can be the base block
                 base = base->prev;
-                Z_Free ((byte *)rover+sizeof(memblock_t));
+                Z_Free ((byte *)rover+sizeof(memblock_t), false);
                 base = base->next;
                 rover = base->next;
             }
@@ -334,7 +330,9 @@ Z_Malloc
         newblock->prev = base;
         newblock->next = base->next;
         newblock->next->prev = newblock;
-
+        newblock->destructor = des;
+        newblock->count = count;
+        
         base->next = newblock;
         base->size = size;
     }
@@ -385,7 +383,7 @@ Z_FreeTags
 	    continue;
 	
 	if (block->tag >= lowtag && block->tag <= hightag)
-	    Z_Free ( (byte *)block+sizeof(memblock_t));
+           Z_Free ( (byte *)block+sizeof(memblock_t), true);
     }
 }
 

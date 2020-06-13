@@ -8,49 +8,28 @@ zone_malloc
 zone_calloc
 and Z_Free
 
-
-zmalloc all gone
-Z_Malloc all gone
-calloc => all_gone
-realloc => all gone!
-
-malloc  all gone from src/doom grep malloc * | grep -v zone_malloc ALL GONE!
-and all variants of free, single free left in src/doom paired locally with strdup ALL GONE!
-
 All string manipulation to std::string and stringview with M_StringDuplicate for compat
 
 Remove M_StringDuplicate/free and replace with string or unique_ptr<char[]>
 
-memcmp => std::equal, all gone
 memcpy => std::copy
-
 memset => std::fill or default init {}
-
 mommove gone from src/doom, just networking ones left.
 
 examine sector_t::specialdata void*, std::variant is awkward
 
-fix savegame restoration of thinker pointers, save gets 1 or 0 if the pointer is set or not. -1 is delete, 0 is NOOP, 1 is set to the function. Do this better.
-
 maintain list of thinkers in order added to lists to keep demo's working.
 
-do savegame fixes to virtualized thnkers.
-
-
-Also consider emplace allocation for thinkers.
-This looks pretty easy, change lists to be actual type not pointers, make P_AddThinker return a reference to the emplaced object, don't use references for first pass, just stick with pointers into the lists.
-
-tweka remove and vists as needed.
 now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
 
-
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
+
 any void*
 
-remove dynamic_Cast from p_extsaveg.cpp
-
 review all uses of c_str
+
 review all use of taking std::string as a parameter with a view to using std::string_view
+
 
 rm -rf ~/github/cpp-doom/debug
 mkdir ~/github/cpp-doom/debug

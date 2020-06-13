@@ -39,28 +39,22 @@ static pixel_t*	wipe_scr_start;
 static pixel_t*	wipe_scr_end;
 static pixel_t*	wipe_scr;
 
-
 void
 wipe_shittyColMajorXform
 ( dpixel_t*	array,
   int		width,
   int		height )
 {
-    int		x;
-    int		y;
-    dpixel_t*	dest;
+    auto dest = Z_New<dpixel_t>(PU_STATIC, width*height);
 
-    dest = zone_malloc<dpixel_t>(PU_STATIC, width*height);
-
-    for(y=0;y<height;y++)
-	for(x=0;x<width;x++)
+    for(int y=0;y<height;y++)
+	for(int x=0;x<width;x++)
 	    dest[x*height+y] = array[y*width+x];
 
-    for(x=0;x<width*height;x++)
+    for(int x=0;x<width*height;x++)
        array[x] = dest[x];
 
-    Z_Free(dest);
-
+    Z_Delete(dest);
 }
 
 int
