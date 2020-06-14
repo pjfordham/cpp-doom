@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "deh_main.hpp"
 #include "i_swap.hpp"
@@ -143,8 +144,9 @@ int		numspritelumps;
 
 int		numtextures;
 texture_t**	textures;
-texture_t**     textures_hashtable;
-
+// NOTE: There's a question mark over the efficicency of the
+// string conversions here.
+std::map<std::string, texture_t *> textures_hashtable;
 
 int*			texturewidthmask;
 // needed for texture pegging
@@ -580,39 +582,23 @@ R_GetColumn
 
 static void GenerateTextureHashTable(void)
 {
-    texture_t **rover;
-    int i;
-    int key;
-
-    textures_hashtable = zone_calloc<texture_t*>(PU_STATIC, numtextures);
-
     // Add all textures to hash table
-
-    for (i=0; i<numtextures; ++i)
+    for (int i=0; i<numtextures; ++i)
     {
         // Store index
-
         textures[i]->index = i;
-
+        auto name = std::string ( textures[i]->name, 8);
+        auto x = textures_hashtable.find( name );
         // Vanilla Doom does a linear search of the texures array
         // and stops at the first entry it finds.  If there are two
         // entries with the same name, the first one in the array
         // wins. The new entry must therefore be added at the end
         // of the hash chain, so that earlier entries win.
-
-        key = W_LumpNameHash(textures[i]->name) % numtextures;
-
-        rover = &textures_hashtable[key];
-
-        while (*rover != NULL)
-        {
-            rover = &(*rover)->next;
+        // Given that we only add new members if we don't already
+        // have one.
+        if (x == textures_hashtable.end() ) {
+           textures_hashtable[ name ] = textures[i];
         }
-
-        // Hook into hash table
-
-        textures[i]->next = NULL;
-        *rover = textures[i];
     }
 }
 
@@ -1283,26 +1269,18 @@ int R_FlatNumForName(const char *name)
 //
 int R_CheckTextureNumForName(const char *name)
 {
-    texture_t *texture;
-    int key;
+   // "NoTexture" marker.
+   if (name[0] == '-')
+      return 0;
 
-    // "NoTexture" marker.
-    if (name[0] == '-')		
-	return 0;
-		
-    key = W_LumpNameHash(name) % numtextures;
+   auto i = textures_hashtable.find(std::string(name,8));
 
-    texture=textures_hashtable[key]; 
-    
-    while (texture != NULL)
-    {
-	if (!strncasecmp (texture->name, name, 8) )
-	    return texture->index;
+   if ( i == textures_hashtable.end() ) {
+      return -1 ;
+   } else {
+      return i->second->index;
+   }
 
-        texture = texture->next;
-    }
-    
-    return -1;
 }
 
 
