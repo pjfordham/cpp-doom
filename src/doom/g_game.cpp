@@ -1801,9 +1801,8 @@ void G_DoCompleted (void)
         // map33 reads its par time from beyond the cpars[] array
         if (gamemap == 33)
         {
-            int cpars32;
-
-            memcpy(&cpars32, DEH_String(GAMMALVL0), sizeof(int));
+            // FIXME: what the hell is this?
+            int cpars32 = *reinterpret_cast<const int*>(DEH_String(GAMMALVL0));
             cpars32 = LONG(cpars32);
 
             wminfo.partime = TICRATE*cpars32;
