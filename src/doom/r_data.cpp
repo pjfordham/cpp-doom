@@ -331,16 +331,19 @@ void R_GenerateComposite (int texnum)
     {
 	if (collump[i] == -1) // process only multipatched columns
 	{
-	    column_t *col = (column_t *)(block + colofs[i] - 3); // cached column
+	    // save column in temporary so we can shuffle it around
+            auto col_data = block + colofs[i] ;
+            std::copy( col_data, col_data + texture->height, source.get() );
+
 	    const byte *mark = marks + i * texture->height;
 	    int j = 0;
 
-	    // save column in temporary so we can shuffle it around
-	    memcpy(source.get(), (byte *) col + 3, texture->height);
 
 	    for ( ; ; ) // reconstruct the column by scanning transparency marks
 	    {
-		unsigned len; // killough 12/98
+                column_t *col = (column_t *)(col_data - 3); // cached column
+
+                unsigned len; // killough 12/98
 
 		while (j < texture->height && !mark[j]) // skip transparent cells
 		    j++;
@@ -362,8 +365,9 @@ void R_GenerateComposite (int texnum)
 		col->length = len; // killough 12/98: intentionally truncate length
 
 		// copy opaque cells from the temporary back into the column
-		memcpy((byte *) col + 3, source.get() + col->topdelta, len);
-		col = (column_t *)((byte *) col + len + 4); // next post
+                std::copy( source.get() + col->topdelta, source.get() + col->topdelta + len, col_data );
+
+                col_data = col_data + len + 4; // next post
 	    }
 	}
     }
