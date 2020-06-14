@@ -29,6 +29,7 @@
 #include "net_packet.hpp"
 #include "net_sdl.hpp"
 #include "z_zone.hpp"
+#include <map>
 
 //
 // NETWORKING
@@ -50,105 +51,51 @@ typedef struct
     IPaddress sdl_addr;
 } addrpair_t;
 
-static addrpair_t **addr_table;
-static int addr_table_size = -1;
+struct CmpByHostThenPort {
+    bool operator()(const IPaddress& a, const IPaddress& b) const {
+       return a.host != b.host ? a.host < b.host : a.port < b.port;
+    }
+};
 
-// Initializes the address table
-
-static void NET_SDL_InitAddrTable(void)
-{
-    addr_table_size = 16;
-
-    addr_table = zone_calloc<addrpair_t*>(PU_STATIC, addr_table_size);
-}
-
-static boolean AddressesEqual(IPaddress *a, IPaddress *b)
-{
-    return a->host == b->host
-        && a->port == b->port;
-}
+std::map<IPaddress, addrpair_t,CmpByHostThenPort> ip_to_net_map;
 
 // Finds an address by searching the table.  If the address is not found,
 // it is added to the table.
 
 static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
 {
-    addrpair_t *new_entry;
-    int empty_entry = -1;
-    int i;
+   auto x = ip_to_net_map.find( *addr );
+   if (x != ip_to_net_map.end()) {
+      return &x->second.net_addr;
+   }
 
-    if (addr_table_size < 0)
-    {
-        NET_SDL_InitAddrTable();
-    }
+   // Was not found in list.  We need to add it.
+   // Add a new entry
 
-    for (i=0; i<addr_table_size; ++i)
-    {
-        if (addr_table[i] != NULL
-         && AddressesEqual(addr, &addr_table[i]->sdl_addr))
-        {
-            return &addr_table[i]->net_addr;
-        }
+   addrpair_t &new_entry = ip_to_net_map[ *addr ];
 
-        if (empty_entry < 0 && addr_table[i] == NULL)
-            empty_entry = i;
-    }
+   new_entry.sdl_addr = *addr;
+   new_entry.net_addr.refcount = 0;
+   new_entry.net_addr.handle = &new_entry.sdl_addr;
+   new_entry.net_addr.module = &net_sdl_module;
 
-    // Was not found in list.  We need to add it.
-
-    // Is there any space in the table? If not, increase the table size
-
-    if (empty_entry < 0)
-    {
-        addrpair_t **new_addr_table;
-        int new_addr_table_size;
-
-        // after re-allocing, we will add this in as the first entry
-        // in the new block of memory
-
-        empty_entry = addr_table_size;
-        
-        // allocate a new array twice the size, init to 0 and copy 
-        // the existing table in.  replace the old table.
-
-        new_addr_table_size = addr_table_size * 2;
-        new_addr_table = zone_calloc<addrpair_t*>(PU_STATIC, new_addr_table_size);
-        memcpy(new_addr_table, addr_table, 
-               sizeof(addrpair_t *) * addr_table_size);
-        Z_Delete(addr_table);
-        addr_table = new_addr_table;
-        addr_table_size = new_addr_table_size;
-    }
-
-    // Add a new entry
-    
-    new_entry = Z_New<addrpair_t>(PU_STATIC);
-
-    new_entry->sdl_addr = *addr;
-    new_entry->net_addr.refcount = 0;
-    new_entry->net_addr.handle = &new_entry->sdl_addr;
-    new_entry->net_addr.module = &net_sdl_module;
-
-    addr_table[empty_entry] = new_entry;
-
-    return &new_entry->net_addr;
+   return &new_entry.net_addr;
 }
 
 static void NET_SDL_FreeAddress(net_addr_t *addr)
 {
-    int i;
-    
-    for (i=0; i<addr_table_size; ++i)
-    {
-        if (addr == &addr_table[i]->net_addr)
-        {
-            Z_Delete(addr_table[i]);
-            addr_table[i] = NULL;
-            return;
-        }
-    }
+   // FIXME, you could.... use an offset of hack to get back to
+   // the IPAddress to lookup using the map to avoid this loop.
+   for (auto it=ip_to_net_map.begin(); it!=ip_to_net_map.end(); ++it)
+   {
+      if (addr == &it->second.net_addr)
+      {
+         ip_to_net_map.erase( it );
+         return;
+      }
+   }
 
-    I_Error("NET_SDL_FreeAddress: Attempted to remove an unused address!");
+   I_Error("NET_SDL_FreeAddress: Attempted to remove an unused address!");
 }
 
 static boolean NET_SDL_InitClient(void)
