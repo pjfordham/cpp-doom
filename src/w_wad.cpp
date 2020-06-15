@@ -529,7 +529,7 @@ void W_Profile (void)
 
     for (i=0 ; i<numlumps ; i++)
     {
-	memcpy (name,lumpinfo[i].name,8);
+       std::copy( lumpinfo[i].name, lumpinfo[i].name + 8, name );
 
 	for (j=0 ; j<8 ; j++)
 	    if (!name[j])

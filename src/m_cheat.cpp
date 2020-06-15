@@ -18,6 +18,7 @@
 
 
 
+#include <algorithm>
 #include <string.h>
 
 #include "doomtype.hpp"
@@ -83,7 +84,8 @@ cht_GetParam
 ( cheatseq_t*	cht,
   char*		buffer )
 {
-    memcpy(buffer, cht->parameter_buf, cht->parameter_chars);
+   std::copy( cht->parameter_buf, cht->parameter_buf + cht->parameter_chars,
+              buffer );
 }
 
 

@@ -895,7 +895,7 @@ void I_FinishUpdate (void)
 //
 void I_ReadScreen (pixel_t* scr)
 {
-    memcpy(scr, I_VideoBuffer, SCREENWIDTH*SCREENHEIGHT*sizeof(*scr));
+   std::copy( I_VideoBuffer, I_VideoBuffer + SCREENWIDTH * SCREENHEIGHT, scr);
 }
 
 
