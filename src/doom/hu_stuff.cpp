@@ -733,7 +733,7 @@ void HU_Start(void)
 
     // dehacked substitution to get modified level name
 
-    s = DEH_String(s);
+    s = DEH_String(s).c_str();
 
     // [crispy] print the map title in white from the first colon onward
     std::string temp = M_StringReplace(s, ":", std::string(":") + crstr[CR_GRAY]);
@@ -989,7 +989,7 @@ void HU_Ticker(void)
 				|| chat_dest[i] == HU_BROADCAST))
 			{
 			    HUlib_addMessageToSText(&w_message,
-						    DEH_String(player_names[i]),
+						    DEH_String(player_names[i]).c_str(),
 						    w_inputbuffer[i].l.l);
 			    
 			    message_nottobefuckedwith = true;

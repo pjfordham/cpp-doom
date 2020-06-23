@@ -38,17 +38,17 @@ std::unordered_set<std::string> list;
 // Look up a string to see if it has been replaced with something else
 // This will be used throughout the program to substitute text
 
-const char *DEH_String(const std::string &s)
+const std::string &DEH_String(const std::string &s)
 {
    auto i = hash_table.find( s );
 
    if (i == hash_table.end()) {
       auto a = list.insert( s );
       //std::cerr << "Sub no " << s << " " <<  a.first->c_str() << "\n";
-      return a.first->c_str();
+      return *a.first;
    } else {
       //std::cerr << "Sub yes " << s << " " <<  i->second.c_str() << "\n";
-      return i->second.c_str();
+      return i->second;
   }
 }
 
@@ -231,7 +231,7 @@ static const char *FormatStringReplacement(const char *s)
 {
     const char *repl;
 
-    repl = DEH_String(s);
+    repl = DEH_String(s).c_str();
 
     if (!ValidFormatReplacement(s, repl))
     {

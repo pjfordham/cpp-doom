@@ -43,6 +43,9 @@ boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suff
 void M_ExtractFileBase(const std::string_view &path, char *dest);
 
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
+inline boolean M_StringCopy(char *dest, const std::string &src, size_t dest_size) {
+   return M_StringCopy(dest, src.c_str(), dest_size);
+}
 
 char *M_StringDuplicate(const std::string_view &orig);
 

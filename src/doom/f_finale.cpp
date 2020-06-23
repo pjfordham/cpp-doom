@@ -101,9 +101,8 @@ static textscreen_t textscreens[] =
     { pack_master, 1, 20, "SLIME16",   M1TEXT},
 };
 
-const char *finaletext;
-const char *finaleflat;
-std::string finaletext_rw;
+std::string finaletext;
+std::string finaleflat;
 
 void	F_StartCast (void);
 void	F_CastTicker (void);
@@ -173,8 +172,6 @@ void F_StartFinale (void)
   
     finaletext = DEH_String(finaletext);
     finaleflat = DEH_String(finaleflat);
-    // [crispy] do the "char* vs. const char*" dance
-    finaletext_rw = std::string(finaletext);
     
     finalestage = F_STAGE_TEXT;
     finalecount = 0;
@@ -236,7 +233,7 @@ void F_Ticker (void)
 	return;
 		
     if (finalestage == F_STAGE_TEXT
-     && finalecount>strlen (finaletext)*TEXTSPEED + TEXTWAIT)
+        && finalecount>finaletext.length()*TEXTSPEED + TEXTWAIT)
     {
 	finalecount = 0;
 	finalestage = F_STAGE_ARTSCREEN;
@@ -309,7 +306,7 @@ void F_TextWrite (void)
     // draw some of the text onto the screen
     int cx = 10;
     int cy = 10;
-    auto ch = finaletext_rw.begin();
+    auto ch = finaletext.begin();
     int count = ((signed int) finalecount - 10) / TEXTSPEED;
 
     if (count < 0)
@@ -337,7 +334,7 @@ void F_TextWrite (void)
 	if (cx+w > ORIGWIDTH)
 	{
 	    // [crispy] add line breaks for lines exceeding screenwidth
-            if (F_AddLineBreak(finaletext_rw, ch))
+            if (F_AddLineBreak(finaletext, ch))
 	    {
 		continue;
 	    }
@@ -822,7 +819,7 @@ void F_CastDrawer (void)
     // erase the entire screen to a background
     V_DrawPatchFullScreen (cache_lump_name<patch_t *>(DEH_String("BOSSBACK"), PU_CACHE), false);
 
-    F_CastPrint (DEH_String(castorder[castnum].name));
+    F_CastPrint (DEH_String(castorder[castnum].name).c_str());
     
     // draw the current frame in the middle of the screen
     sprdef = &sprites[caststate->sprite];
@@ -951,7 +948,7 @@ void F_BunnyScroll (void)
 
 static void F_ArtScreenDrawer(void)
 {
-    const char *lumpname;
+   std::string lumpname;
     
     if (gameepisode == 3)
     {

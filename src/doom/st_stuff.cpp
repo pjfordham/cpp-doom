@@ -1931,7 +1931,7 @@ void ST_Drawer (boolean fullscreen, boolean refresh)
     dp_translucent = false;
 }
 
-typedef void (*load_callback_t)(const char *lumpname, patch_t **variable);
+typedef void (*load_callback_t)(const std::string &lumpname, patch_t **variable);
 
 // Iterates through all graphics to be loaded or unloaded, along with
 // the variable they use, invoking the specified callback function.
@@ -2031,7 +2031,7 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
     ++facenum;
 }
 
-static void ST_loadCallback(const char *lumpname, patch_t **variable)
+static void ST_loadCallback(const std::string &lumpname, patch_t **variable)
 {
     *variable = cache_lump_name<patch_t *>(lumpname, PU_STATIC);
 }
@@ -2063,7 +2063,7 @@ void ST_loadData(void)
     }
 }
 
-static void ST_unloadCallback(const char *lumpname, patch_t **variable)
+static void ST_unloadCallback(const std::string &lumpname, patch_t **variable)
 {
     W_ReleaseLumpName(lumpname);
     *variable = NULL;

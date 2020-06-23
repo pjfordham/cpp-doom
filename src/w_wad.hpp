@@ -59,6 +59,16 @@ void W_Reload(void);
 lumpindex_t W_CheckNumForName(const char *name);
 lumpindex_t W_GetNumForName(const char *name);
 lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to);
+inline lumpindex_t W_CheckNumForName(const std::string &name) {
+   return W_CheckNumForName( name.c_str() );
+}
+inline lumpindex_t W_GetNumForName(const std::string &name) {
+   return W_GetNumForName( name.c_str() );
+}
+
+inline lumpindex_t W_CheckNumForNameFromTo(const std::string &name, int from, int to) {
+   return W_CheckNumForNameFromTo( name.c_str(), from, to );
+}
 
 int W_LumpLength(lumpindex_t lump);
 void W_ReadLump(lumpindex_t lump, void *dest);
@@ -72,6 +82,9 @@ extern unsigned int W_LumpNameHash(const char *s);
 
 void W_ReleaseLumpNum(lumpindex_t lump);
 void W_ReleaseLumpName(const char *name);
+inline void W_ReleaseLumpName(const std::string &name) {
+   W_ReleaseLumpName( name.c_str() );
+}
 
 const char *W_WadNameForLump(const lumpinfo_t *lump);
 boolean W_IsIWADLump(const lumpinfo_t *lump);

@@ -171,8 +171,6 @@ void P_InitPicAnims (void)
     lastanim = anims.data();
     for (i=0 ; animdefs[i].istexture != -1 ; i++)
     {
-        const char *startname, *endname;
-
 	// [crispy] remove MAXANIMS limit
 	if (lastanim >= anims.data() + maxanims)
 	{
@@ -182,8 +180,8 @@ void P_InitPicAnims (void)
 	    maxanims = newmax;
 	}
 
-        startname = DEH_String(animdefs[i].startname);
-        endname = DEH_String(animdefs[i].endname);
+        auto startname = DEH_String(animdefs[i].startname);
+        auto endname = DEH_String(animdefs[i].endname);
 
 	if (animdefs[i].istexture)
 	{
@@ -215,7 +213,7 @@ void P_InitPicAnims (void)
 	else
 	if (lastanim->numpics < 2)
 	    I_Error ("P_InitPicAnims: bad cycle from %s to %s",
-		     startname, endname);
+		     startname.c_str(), endname.c_str());
 	
 	lastanim++;
     }

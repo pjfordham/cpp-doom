@@ -339,7 +339,7 @@ boolean D_Display (void)
 
 void EnableLoadingDisk(void) // [crispy] un-static
 {
-    const char *disk_lump_name;
+   std::string disk_lump_name;
 
     if (show_diskicon)
     {
@@ -352,7 +352,7 @@ void EnableLoadingDisk(void) // [crispy] un-static
             disk_lump_name = DEH_String("STDISK");
         }
 
-        V_EnableLoadingDisk(disk_lump_name,
+        V_EnableLoadingDisk(disk_lump_name.c_str(),
                             SCREENWIDTH - LOADING_DISK_W,
                             SCREENHEIGHT - LOADING_DISK_H);
     }
@@ -597,7 +597,7 @@ void D_DoomLoop (void)
 //
 int             demosequence;
 int             pagetic;
-const char                    *pagename;
+std::string     pagename;
 
 
 //
@@ -679,7 +679,7 @@ void D_DoAdvanceDemo (void)
 	  S_StartMusic (mus_intro);
 	break;
       case 1:
-	G_DeferedPlayDemo(DEH_String("demo1"));
+         G_DeferedPlayDemo(DEH_String("demo1").c_str());
 	break;
       case 2:
 	pagetic = 200;
@@ -687,7 +687,7 @@ void D_DoAdvanceDemo (void)
 	pagename = DEH_String("CREDIT");
 	break;
       case 3:
-	G_DeferedPlayDemo(DEH_String("demo2"));
+         G_DeferedPlayDemo(DEH_String("demo2").c_str());
 	break;
       case 4:
 	gamestate = GS_DEMOSCREEN;
@@ -708,17 +708,17 @@ void D_DoAdvanceDemo (void)
 	}
 	break;
       case 5:
-	G_DeferedPlayDemo(DEH_String("demo3"));
+         G_DeferedPlayDemo(DEH_String("demo3").c_str());
 	break;
         // THE DEFINITIVE DOOM Special Edition demo
       case 6:
-	G_DeferedPlayDemo(DEH_String("demo4"));
+         G_DeferedPlayDemo(DEH_String("demo4").c_str());
 	break;
     }
 
     // The Doom 3: BFG Edition version of doom2.wad does not have a
     // TITLETPIC lump. Use INTERPIC instead as a workaround.
-    if (gamevariant == bfgedition && !strcasecmp(pagename, "TITLEPIC")
+    if (gamevariant == bfgedition && !strcasecmp(pagename.c_str(), "TITLEPIC")
         && W_CheckNumForName("titlepic") < 0)
     {
         // [crispy] use DMENUPIC instead of TITLEPIC, it's awesome
@@ -805,13 +805,13 @@ static const char *GetGameName(const char *gamename)
             // Trim leading spaces
             while (deh_sub[0] != '\0' && isspace(deh_sub[0]))
             {
-               deh_sub++;
+               deh_sub.erase(0,1);
             }
 
-            const auto newgamename_size = strlen(deh_sub) + 10;
+            const auto newgamename_size = deh_sub.length() + 10;
             auto *newgamename = Z_New<char>(PU_STATIC, newgamename_size);
             auto version = G_VanillaVersionCode();
-            M_snprintf(newgamename, newgamename_size, deh_sub,
+            M_snprintf(newgamename, newgamename_size, deh_sub.c_str(),
                        version / 100, version % 100);
 
             // Trim trailing spaces
@@ -1052,18 +1052,16 @@ void PrintDehackedBanners(void)
 
     for (i=0; i<arrlen(copyright_banners); ++i)
     {
-        const char *deh_s;
-
-        deh_s = DEH_String(copyright_banners[i]);
+        auto deh_s = DEH_String(copyright_banners[i]);
 
         if (std::string(deh_s) != std::string(copyright_banners[i]))
         {
-            printf("%s", deh_s);
+           printf("%s", deh_s.c_str());
 
             // Make sure the modified banner always ends in a newline character.
             // If it doesn't, add a newline.  This fixes av.wad.
 
-            if (deh_s[strlen(deh_s) - 1] != '\n')
+           if (deh_s[deh_s.length() - 1] != '\n')
             {
                 printf("\n");
             }
@@ -2093,14 +2091,14 @@ void D_DoomMain (void)
 	
 	if ( gamemode == shareware)
 	    I_Error(DEH_String("\nYou cannot -file with the shareware "
-			       "version. Register!"));
+			       "version. Register!").c_str());
 
 	// Check for fake IWAD with right name,
 	// but w/o all the lumps of the registered version. 
 	if (gamemode == registered)
 	    for (i = 0;i < 23; i++)
 		if (W_CheckNumForName(name[i])<0)
-		    I_Error(DEH_String("\nThis is not the registered version."));
+                   I_Error(DEH_String("\nThis is not the registered version.").c_str());
     }
 
 // [crispy] disable meaningless warning, we always use "-merge" anyway

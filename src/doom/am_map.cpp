@@ -691,7 +691,6 @@ AM_Responder
 
     int rc;
     static int bigstate=0;
-    static char buffer[20];
     int key;
 
     rc = false;
@@ -823,9 +822,8 @@ AM_Responder
         }
         else if (key == key_map_mark)
         {
-            M_snprintf(buffer, sizeof(buffer), "%s %d",
-                       DEH_String(AMSTR_MARKEDSPOT), markpointnum);
-            plr->message = buffer;
+            plr->message = DEH_String(AMSTR_MARKEDSPOT) +
+               " " + std::to_string( markpointnum );
             AM_addMark();
         }
         else if (key == key_map_clearmark)

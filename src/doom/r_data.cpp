@@ -21,6 +21,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include "deh_main.hpp"
 #include "i_swap.hpp"
@@ -594,7 +595,7 @@ static void GenerateTextureHashTable(void)
     {
         // Store index
         textures[i]->index = i;
-        auto name = std::string ( textures[i]->name, 8);
+        auto name = std::string ( textures[i]->name, std::min((int)8,(int)strlen(textures[i]->name)));
         auto x = textures_hashtable.find( name );
         // Vanilla Doom does a linear search of the texures array
         // and stops at the first entry it finds.  If there are two
@@ -689,7 +690,7 @@ void R_InitTextures (void)
     nummappatches = 0;
     for (i = numlumps - 1; i >= 0; i--)
     {
-	if (!strncasecmp(lumpinfo[i]->name, DEH_String("PNAMES"), 6))
+       if (!strncasecmp(lumpinfo[i]->name, DEH_String("PNAMES").c_str(), 6))
 	{
 	    if (numpnameslumps == maxpnameslumps)
 	    {
@@ -710,7 +711,7 @@ void R_InitTextures (void)
 	    numpnameslumps++;
 	}
 	else
-	if (!strncasecmp(lumpinfo[i]->name, DEH_String("TEXTURE"), 7))
+           if (!strncasecmp(lumpinfo[i]->name, DEH_String("TEXTURE").c_str(), 7))
 	{
 	    // [crispy] support only TEXTURE1/2 lumps, not TEXTURE3 etc.
 	    if (lumpinfo[i]->name[7] != '1' &&
@@ -1280,7 +1281,7 @@ int R_CheckTextureNumForName(const char *name)
    if (name[0] == '-')
       return 0;
 
-   auto i = textures_hashtable.find(std::string(name,8));
+   auto i = textures_hashtable.find(std::string(name,std::min((int)8,(int)strlen(name))));
 
    if ( i == textures_hashtable.end() ) {
       return -1 ;

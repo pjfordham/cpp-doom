@@ -1700,7 +1700,7 @@ void WI_Ticker(void)
 
 }
 
-typedef void (*load_callback_t)(const char *lumpname, patch_t **variable);
+typedef void (*load_callback_t)(const std::string &lumpname, patch_t **variable);
 
 // Common load/unload function.  Iterates over all the graphics
 // lumps to be loaded/unloaded into memory.
@@ -1888,7 +1888,7 @@ static void WI_loadUnloadData(load_callback_t callback)
     callback(name, &background);
 }
 
-static void WI_loadCallback(const char *name, patch_t **variable)
+static void WI_loadCallback(const std::string &name, patch_t **variable)
 {
   // [crispy] prevent crashes with maps without map title graphics lump
   if (W_CheckNumForName(name) != -1)
@@ -1925,7 +1925,7 @@ void WI_loadData(void)
     bstar = cache_lump_name<patch_t *>(DEH_String("STFDEAD0"), PU_STATIC);
 }
 
-static void WI_unloadCallback(const char *name, patch_t **variable)
+static void WI_unloadCallback(const std::string &name, patch_t **variable)
 {
     W_ReleaseLumpName(name);
     *variable = NULL;

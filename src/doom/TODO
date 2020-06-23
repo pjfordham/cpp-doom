@@ -51,3 +51,6 @@ cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_
 ( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
 ( cd ~/github/cpp-doom/debug/ ; gdb ~/github/cpp-doom/debug/src/c++-doom )
+
+bug with textures with short names; manifest with missing sky
+

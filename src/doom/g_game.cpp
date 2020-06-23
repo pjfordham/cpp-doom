@@ -814,7 +814,7 @@ void G_DoLoadLevel (void)
     if ((gamemode == commercial)
      && (gameversion == exe_final2 || gameversion == exe_chex || true))
     {
-        const char *skytexturename;
+        std::string skytexturename;
 
         if (gamemap < 12)
         {
@@ -1802,7 +1802,7 @@ void G_DoCompleted (void)
         if (gamemap == 33)
         {
             // FIXME: what the hell is this?
-            int cpars32 = *reinterpret_cast<const int*>(DEH_String(GAMMALVL0));
+           int cpars32 = 0;/**reinterpret_cast<const int*>(DEH_String(GAMMALVL0));*/
             cpars32 = LONG(cpars32);
 
             wminfo.partime = TICRATE*cpars32;
@@ -2229,7 +2229,7 @@ G_InitNew
   int		episode,
   int		map )
 {
-    const char *skytexturename;
+   std::string skytexturename;
     int             i;
     // [crispy] make sure "fast" parameters are really only applied once
     static boolean fast_applied;

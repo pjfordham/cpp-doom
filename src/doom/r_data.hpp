@@ -52,4 +52,14 @@ int R_FlatNumForName(const char *name);
 int R_TextureNumForName(const char *name);
 int R_CheckTextureNumForName(const char *name);
 
+inline int R_FlatNumForName(const std::string &name) {
+   return R_FlatNumForName( name.c_str() );
+}
+inline int R_TextureNumForName(const std::string &name) {
+   return R_TextureNumForName( name.c_str() );
+}
+inline int R_CheckTextureNumForName(const std::string &name) {
+   return R_CheckTextureNumForName( name.c_str() );
+}
+
 #endif

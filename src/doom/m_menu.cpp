@@ -95,7 +95,7 @@ int			quickSaveSlot;
  // 1 = message to be printed
 int			messageToPrint;
 // ...and here is the message string!
-const char		*messageString;
+std::string             messageString;
 
 // message x & y
 int			messx;
@@ -138,8 +138,6 @@ boolean			menuactive;
 
 extern boolean		sendpause;
 char			savegamestrings[10][SAVESTRINGSIZE];
-
-char	endstring[160];
 
 static boolean opldev;
 
@@ -240,7 +238,7 @@ static void M_DrawThermo(int x,int y,int thermWidth,int thermDot);
 static void M_WriteText(int x, int y, const char *string);
 int  M_StringWidth(const char *string); // [crispy] un-static
 static int  M_StringHeight(const char *string);
-static void M_StartMessage(const char *string, void (*routine)(int), boolean input);
+static void M_StartMessage(const std::string &string, void (*routine)(int), boolean input);
 static void M_ClearMenus (void);
 
 // [crispy] Crispness menu
@@ -1798,12 +1796,13 @@ static const char *M_SelectEndMessage(void)
 
 void M_QuitDOOM(int choice)
 {
+    char	endstring[160];
     // [crispy] fast exit if "run" key is held down
     if (speedkeydown())
 	I_Quit();
 
     DEH_snprintf(endstring, sizeof(endstring), "%s\n\n" DOSY,
-                 DEH_String(M_SelectEndMessage()));
+                 DEH_String(M_SelectEndMessage()).c_str());
 
     M_StartMessage(endstring, M_QuitResponse, true);
 }
@@ -1961,7 +1960,7 @@ M_DrawThermo
 
 void
 M_StartMessage
-( const char	*string,
+( const std::string &string,
   void (*routine)(int),
   boolean	input )
 {
@@ -2910,7 +2909,6 @@ void M_Drawer (void)
     unsigned int	i;
     unsigned int	max;
     char		string[80];
-    const char          *name;
     int			start;
 
     inhelpscreens = false;
@@ -2924,17 +2922,18 @@ void M_Drawer (void)
 	    M_DrawCrispnessBackground();
 	}
 
-	start = 0;
-	y = ORIGHEIGHT/2 - M_StringHeight(messageString) / 2;
-	while (messageString[start] != '\0')
+	const char *message = messageString.c_str();
+        start = 0;
+	y = ORIGHEIGHT/2 - M_StringHeight(message) / 2;
+        while (message[start] != '\0')
 	{
 	    boolean foundnewline = false;
 
-            for (i = 0; messageString[start + i] != '\0'; i++)
+            for (i = 0; message[start + i] != '\0'; i++)
             {
-                if (messageString[start + i] == '\n')
+                if (message[start + i] == '\n')
                 {
-                    M_StringCopy(string, messageString + start,
+                   M_StringCopy(string, message + start,
                                  sizeof(string));
                     if (i < sizeof(string))
                     {
@@ -2949,7 +2948,7 @@ void M_Drawer (void)
 
             if (!foundnewline)
             {
-                M_StringCopy(string, messageString + start, sizeof(string));
+                M_StringCopy(string, message + start, sizeof(string));
                 start += strlen(string);
             }
 
@@ -2979,7 +2978,7 @@ void M_Drawer (void)
 
     for (i=0;i<max;i++)
     {
-        name = DEH_String(currentMenu->menuitems[i].name);
+        auto name = DEH_String(currentMenu->menuitems[i].name);
 
 	if (name[0]) // && W_CheckNumForName(name) > 0) // [crispy] moved...
 	{
@@ -3075,7 +3074,7 @@ void M_Init (void)
     screenSize = screenblocks - 3;
     M_SizeDisplay(-1); // [crispy] initialize screenSize_min
     messageToPrint = 0;
-    messageString = NULL;
+    messageString.clear();
     messageLastMenuActive = menuactive;
     quickSaveSlot = -1;
 
@@ -3228,7 +3227,7 @@ void M_ForceLoadGame()
                      "currently not available!\n\n" +
                      PRESSKEY;
 
-        M_StartMessage(savegwarning.c_str(), M_ForceLoadGameResponse, savemaplumpinfo != NULL);
+        M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
 	messageToPrint = 2;
 	S_StartSound(NULL,sfx_swtchn);
 }
@@ -3252,7 +3251,7 @@ void M_ConfirmDeleteGame ()
       crstr[CR_GOLD] + savegamestrings[itemOn] +
       crstr[CR_NONE] + " ?\n\n" + PRESSYN;
 
-   M_StartMessage(savegwarning.c_str(), M_ConfirmDeleteGameResponse, true);
+   M_StartMessage(savegwarning, M_ConfirmDeleteGameResponse, true);
    messageToPrint = 2;
    S_StartSound(NULL,sfx_swtchn);
 }

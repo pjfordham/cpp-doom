@@ -443,7 +443,7 @@ static boolean DirIsFile(const char *path, const char *filename)
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-static std::string CheckDirectoryHasIWAD(const std::string &dir, const char *iwadname)
+static std::string CheckDirectoryHasIWAD(const std::string &dir, const std::string &iwadname)
 {
     std::string filename;
 
@@ -451,7 +451,7 @@ static std::string CheckDirectoryHasIWAD(const std::string &dir, const char *iwa
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
     std::string probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir.c_str(), iwadname) && probe.size() )
+    if (DirIsFile(dir.c_str(), iwadname.c_str()) && probe.size() )
     {
        return probe;
     }
