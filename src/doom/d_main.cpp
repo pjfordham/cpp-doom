@@ -1116,7 +1116,7 @@ static void InitGameVersion(void)
     {
         for (i=0; gameversions[i].description != NULL; ++i)
         {
-           if (!strcmp(myargv[p+1].c_str(), gameversions[i].cmdline))
+           if ( myargv[p+1] == gameversions[i].cmdline)
             {
                 gameversion = gameversions[i].version;
                 break;
@@ -1746,7 +1746,7 @@ void D_DoomMain (void)
 	extern int sidemove[2];
 	
 	if (p<myargv.size()-1)
-           scale = atoi (myargv[p+1].c_str());
+           scale = std::stoi(myargv[p+1]);
 	if (scale < 10)
 	    scale = 10;
 	if (scale > 400)

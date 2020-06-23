@@ -2322,16 +2322,14 @@ void ST_Init (void)
     if (!DEH_HasStringReplacement(STSTR_BEHOLD) &&
         !M_ParmExists("-nodeh"))
     {
-	char str_behold[80];
-	M_snprintf(str_behold, sizeof(str_behold),
-	           "in%sV%suln, %sS%str, %sI%snviso, %sR%sad, %sA%sllmap, or %sL%site-amp",
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str(),
-	           crstr[CR_GOLD].c_str(), crstr[CR_NONE].c_str());
-	DEH_AddStringReplacement(STSTR_BEHOLD, str_behold);
+       DEH_AddStringReplacement(STSTR_BEHOLD,
+                                std::string( "in" ) + crstr[CR_GOLD] + "V" + crstr[CR_NONE] + "uln, " +
+                                crstr[CR_GOLD] + "S" + crstr[CR_NONE] + "tr, " +
+                                crstr[CR_GOLD] + "I" + crstr[CR_NONE] + "nviso, " +
+                                crstr[CR_GOLD] + "R" + crstr[CR_NONE] + "ad, " +
+                                crstr[CR_GOLD] + "A" + crstr[CR_NONE] + "llmap, or " +
+                                crstr[CR_GOLD] + "L" + crstr[CR_NONE] + "ite-amp"
+          );
     }
 
     ST_loadData();

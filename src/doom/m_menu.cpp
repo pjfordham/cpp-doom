@@ -3170,7 +3170,7 @@ void M_Init (void)
 	if (!DEH_HasStringReplacement(string))
 	{
 		auto replace = M_StringReplace(string, "dos", crispy->platform);
-		DEH_AddStringReplacement(string, replace.c_str());
+		DEH_AddStringReplacement(string, replace);
 	}
 
 	// [crispy] "you're trying to say you like dos\nbetter than me, right?"
@@ -3178,7 +3178,7 @@ void M_Init (void)
 	if (!DEH_HasStringReplacement(string))
 	{
 		auto replace = M_StringReplace(string, "dos", crispy->platform);
-		DEH_AddStringReplacement(string, replace.c_str());
+		DEH_AddStringReplacement(string, replace);
 	}
 
 	// [crispy] "don't go now, there's a \ndimensional shambler waiting\nat the dos prompt!"
@@ -3186,7 +3186,7 @@ void M_Init (void)
 	if (!DEH_HasStringReplacement(string))
 	{
 		auto replace = M_StringReplace(string, "dos", "command");
-		DEH_AddStringReplacement(string, replace.c_str());
+		DEH_AddStringReplacement(string, replace);
 	}
     }
 

@@ -332,7 +332,7 @@ void StatDump(void)
 
         // Allow "-" as output file, for stdout.
 
-        if (strcmp(myargv[i + 1].c_str(), "-") != 0)
+        if (myargv[i + 1] != "-")
         {
            dumpfile = fopen(myargv[i + 1].c_str(), "w");
         }
