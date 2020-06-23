@@ -251,10 +251,6 @@ extern boolean inhelpscreens; // [crispy] prevent palette changes
 // #define ST_MSGTEXTY	   (viewwindowy+viewheight-18)
 #define ST_MSGTEXTX			0
 #define ST_MSGTEXTY			0
-// Dimensions given in characters.
-#define ST_MSGWIDTH			52
-// Or shall I say, in lines?
-#define ST_MSGHEIGHT		1
 
 #define ST_OUTTEXTX			0
 #define ST_OUTTEXTY			6
@@ -450,7 +446,6 @@ cheatseq_t cheat_showfps2 = CHEAT("idrate", 0); // [crispy] PrBoom+
 cheatseq_t cheat_goobers = CHEAT("goobers", 0);
 cheatseq_t cheat_version = CHEAT("version", 0); // [crispy] Russian Doom
 cheatseq_t cheat_skill = CHEAT("skill", 0);
-static char msg[ST_MSGWIDTH];
 
 // [crispy] restrict cheat usage
 static inline int cht_CheckCheatSP (cheatseq_t *cht, char key)
@@ -920,23 +915,19 @@ ST_Responder (event_t* ev)
                cht_CheckCheatSP(&cheat_massacre3, ev->data2))
       {
 	int killcount = ST_cheat_massacre();
-	const char *const monster = (gameversion == exe_chex) ? "Flemoid" : "Monster";
-	const char *const killed = (gameversion == exe_chex) ? "returned" : "killed";
+        std::string monster = (gameversion == exe_chex) ? "Flemoid" : "Monster";
+        std::string killed = (gameversion == exe_chex) ? "returned" : "killed";
 
-	M_snprintf(msg, sizeof(msg), "%s%d %s%s%s %s",
-	           crstr[CR_GOLD].c_str(),
-	           killcount, crstr[CR_NONE].c_str(), monster, (killcount == 1) ? "" : "s", killed);
-	plyr->message = msg;
+        plyr->message = crstr[CR_GOLD] + std::to_string( killcount ) + ' ' +
+           crstr[CR_NONE] + monster + ((killcount == 1) ? " " : "s ") + killed;
       }
       // [crispy] implement Crispy Doom's "spechits" cheat
       else if (cht_CheckCheatSP(&cheat_spechits, ev->data2))
       {
 	int triggeredlines = ST_cheat_spechits();
 
-	M_snprintf(msg, sizeof(msg), "%s%d %sSpecial Line%s Triggered",
-	           crstr[CR_GOLD].c_str(),
-	           triggeredlines, crstr[CR_NONE].c_str(), (triggeredlines == 1) ? "" : "s");
-	plyr->message = msg;
+        plyr->message = crstr[CR_GOLD] + std::to_string( triggeredlines ) + ' ' +
+           crstr[CR_NONE] + "Special Line" + ((triggeredlines == 1) ? " Triggered" : "s Triggered");
       }
       // [crispy] implement PrBoom+'s "notarget" cheat
       else if (cht_CheckCheatSP(&cheat_notarget, ev->data2) ||
@@ -946,8 +937,6 @@ ST_Responder (event_t* ev)
 
 	if (plyr->cheats & CF_NOTARGET)
 	{
-		int i;
-
                 // [crispy] let mobjs forget their target and tracer
                 P_VisitMobjThinkers([](mobj_t *mo) {
                       if (mo->target && mo->target->player)
@@ -961,7 +950,7 @@ ST_Responder (event_t* ev)
                       return false;
                    } );
 		// [crispy] let sectors forget their soundtarget
-		for (i = 0; i < numsectors; i++)
+		for (int i = 0; i < numsectors; i++)
 		{
 			sector_t *const sector = &sectors[i];
 
@@ -969,20 +958,14 @@ ST_Responder (event_t* ev)
 		}
 	}
 
-	M_snprintf(msg, sizeof(msg), "Notarget Mode %s%s",
-	           crstr[CR_GREEN].c_str(),
-	           (plyr->cheats & CF_NOTARGET) ? "ON" : "OFF");
-	plyr->message = msg;
+        plyr->message = std::string( "Notarget Mode " ) + crstr[CR_GREEN] + ( (plyr->cheats & CF_NOTARGET) ? "ON" : "OFF");
       }
       // [crispy] implement "nomomentum" cheat, ne debug aid -- pretty useless, though
       else if (cht_CheckCheatSP(&cheat_nomomentum, ev->data2))
       {
 	plyr->cheats ^= CF_NOMOMENTUM;
 
-	M_snprintf(msg, sizeof(msg), "Nomomentum Mode %s%s",
-	           crstr[CR_GREEN].c_str(),
-	           (plyr->cheats & CF_NOMOMENTUM) ? "ON" : "OFF");
-	plyr->message = msg;
+	plyr->message = std::string( "Nomomentum Mode " ) + crstr[CR_GREEN] + ( (plyr->cheats & CF_NOMOMENTUM) ? "ON" : "OFF");
       }
       // [crispy] implement Crispy Doom's "goobers" cheat, ne easter egg
       else if (cht_CheckCheatSP(&cheat_goobers, ev->data2))
@@ -991,8 +974,7 @@ ST_Responder (event_t* ev)
 
 	EV_DoGoobers();
 
-	M_snprintf(msg, sizeof(msg), "Get Psyched!");
-	plyr->message = msg;
+	plyr->message = std::string( "Get Psyched!");
       }
       // [crispy] implement Boom's "tntweap?" weapon cheats
       else if (cht_CheckCheatSP(&cheat_weapon, ev->data2))
@@ -1083,12 +1065,10 @@ ST_Responder (event_t* ev)
 	    }
 	}
 
-	if (!plyr->message)
+	if (plyr->message.empty())
 	{
-	    M_snprintf(msg, sizeof(msg), "Weapon %s%d%s %s",
-	               crstr[CR_GOLD].c_str(), w + 1, crstr[CR_NONE].c_str(),
-	               plyr->weaponowned[w] ? "added" : "removed");
-	    plyr->message = msg;
+           plyr->message = std::string( "Weapon " ) + crstr[CR_GOLD] + std::to_string( w + 1 ) +
+              crstr[CR_NONE] + (plyr->weaponowned[w] ? " added" : " removed");
 	}
       }
     }
@@ -1106,10 +1086,7 @@ ST_Responder (event_t* ev)
     {
 	crispy->flashinghom = !crispy->flashinghom;
 
-	M_snprintf(msg, sizeof(msg), "HOM Detection %s%s",
-	           crstr[CR_GREEN].c_str(),
-	           (crispy->flashinghom) ? "ON" : "OFF");
-	plyr->message = msg;
+	plyr->message = std::string( "HOM Detection " ) + crstr[CR_GREEN] + ( (crispy->flashinghom) ? "ON" : "OFF");
     }
     // [crispy] Show engine version, build date and SDL version
     else if (cht_CheckCheat(&cheat_version, ev->data2))
@@ -1117,23 +1094,17 @@ ST_Responder (event_t* ev)
 #ifndef BUILD_DATE
 #define BUILD_DATE __DATE__
 #endif
-      M_snprintf(msg, sizeof(msg), "%s (%s) x%ld SDL%s",
-                 PACKAGE_STRING,
-                 BUILD_DATE,
-                 (long) sizeof(void *) * CHAR_BIT,
-                 crispy->sdlversion.c_str());
+       plyr->message = std::string( PACKAGE_STRING ) + " (" + std::string( BUILD_DATE ) + ") x" +
+          std::to_string( sizeof(void *) * CHAR_BIT) + " SDL" + crispy->sdlversion;
 #undef BUILD_DATE
-      plyr->message = msg;
-      fprintf(stderr, "%s\n", msg);
+       fprintf(stderr, "%s\n", plyr->message.c_str());
     }
     // [crispy] Show skill level
     else if (cht_CheckCheat(&cheat_skill, ev->data2))
     {
       extern const char *skilltable[];
 
-      M_snprintf(msg, sizeof(msg), "Skill: %s",
-                 skilltable[BETWEEN(0,5,(int) gameskill+1)]);
-      plyr->message = msg;
+      plyr->message = std::string( "Skill: " ) + skilltable[BETWEEN(0,5,(int) gameskill+1)];
     }
     
     // 'clev' change-level cheat

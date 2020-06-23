@@ -2002,7 +2002,7 @@ void G_DoLoadGame (void)
             return;
         }
     }
-    savewadfilename.empty();
+    savewadfilename.clear();
 
     savegame_error = false;
 

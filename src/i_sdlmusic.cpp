@@ -114,7 +114,7 @@ void I_InitTimidityConfig(void)
     }
     else
     {
-        temp_timidity_cfg.empty();
+        temp_timidity_cfg.clear();
     }
 }
 

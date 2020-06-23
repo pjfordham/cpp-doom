@@ -953,11 +953,11 @@ void HU_Ticker(void)
 	}
 
 	// display message if necessary
-	if ((plr->message && !message_nottobefuckedwith)
-	    || (plr->message && message_dontfuckwithme))
+	if ((!plr->message.empty() && !message_nottobefuckedwith)
+	    || (!plr->message.empty() && message_dontfuckwithme))
 	{
-	    HUlib_addMessageToSText(&w_message, 0, plr->message);
-	    plr->message = 0;
+            HUlib_addMessageToSText(&w_message, 0, plr->message.c_str());
+	    plr->message.clear();
 	    message_on = true;
 	    message_counter = HU_MSGTIMEOUT;
 	    message_nottobefuckedwith = message_dontfuckwithme;

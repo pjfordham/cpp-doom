@@ -767,7 +767,10 @@ static void saveg_read_player_t(player_t *str)
     str->secretcount = saveg_read32();
 
     // char* message;
-    str->message = static_cast<const char *>(saveg_readp());
+    auto ptr = static_cast<const char *>(saveg_readp());
+    // Implicit conversion of NULL to std::string doesn't
+    // go well.
+    str->message = ptr ? ptr : "";
 
     // int damagecount;
     str->damagecount = saveg_read32();
@@ -898,7 +901,7 @@ static void saveg_write_player_t(player_t *str)
     saveg_write32(str->secretcount);
 
     // char* message;
-    saveg_writep(str->message);
+    saveg_writep(str->message.c_str());
 
     // int damagecount;
     saveg_write32(str->damagecount);
@@ -1498,7 +1501,7 @@ void P_UnArchivePlayers (void)
 	
 	// will be set when unarc thinker
 	players[i].mo = NULL;	
-	players[i].message = NULL;
+	players[i].message.clear();
 	players[i].attacker = NULL;
     }
 }

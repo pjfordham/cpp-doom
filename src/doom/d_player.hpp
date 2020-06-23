@@ -134,7 +134,7 @@ struct player_t
     int			secretcount;
 
     // Hint messages.
-    const char		*message;
+    std::string		message;
     
     // For screen flashing (red or bright).
     int			damagecount;
