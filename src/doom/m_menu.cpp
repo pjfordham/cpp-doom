@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 #include <ctype.h>
-
+#include <fmt/core.h>
 
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
@@ -235,7 +235,7 @@ static void M_DrawSave(void);
 static void M_DrawSaveLoadBorder(int x,int y);
 static void M_SetupNextMenu(menu_t *menudef);
 static void M_DrawThermo(int x,int y,int thermWidth,int thermDot);
-static void M_WriteText(int x, int y, const char *string);
+static void M_WriteText(int x, int y, const std::string &string);
 int  M_StringWidth(const char *string); // [crispy] un-static
 static int  M_StringHeight(const char *string);
 static void M_StartMessage(const std::string &string, void (*routine)(int), boolean input);
@@ -1387,8 +1387,6 @@ void M_DrawOptions(void)
 // [crispy] mouse sensitivity menu
 static void M_DrawMouse(void)
 {
-    char mouse_menu_text[48];
-
     V_DrawPatchDirect (60, LoadDef_y, cache_lump_name<patch_t *>(DEH_String("M_MSENS"), PU_CACHE));
 
     M_WriteText(MouseDef.x, MouseDef.y + LINEHEIGHT * mouse_horiz + 6,
@@ -1409,12 +1407,11 @@ static void M_DrawMouse(void)
     M_DrawThermo(MouseDef.x, MouseDef.y + LINEHEIGHT * mouse_empty3,
 		 21, mouseSensitivity_y);
 
-    M_snprintf(mouse_menu_text, sizeof(mouse_menu_text),
-               "%sInvert Vertical Axis: %s%s", crstr[CR_NONE].c_str(),
-               mouse_y_invert ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str(),
-               mouse_y_invert ? "On" : "Off");
     M_WriteText(MouseDef.x, MouseDef.y + LINEHEIGHT * mouse_invert + 6,
-                mouse_menu_text);
+                fmt::format( "{}Invert Vertical Axis: {}{}",
+                             crstr[CR_NONE],
+                             mouse_y_invert ? crstr[CR_GREEN] : crstr[CR_DARK],
+                             mouse_y_invert ? "On" : "Off" ) );
 
     dp_translation = NULL;
 }
@@ -1445,45 +1442,39 @@ static void M_DrawCrispnessBackground(void)
 	inhelpscreens = true;
 }
 
-static char crispy_menu_text[48];
-
 static void M_DrawCrispnessHeader(const char *item)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD].c_str(), item);
-    M_WriteText(ORIGWIDTH/2 - M_StringWidth(item) / 2, 12, crispy_menu_text);
+   M_WriteText(ORIGWIDTH/2 - M_StringWidth(item) / 2, 12, crstr[CR_GOLD] + item);
 }
 
 static void M_DrawCrispnessSeparator(int y, const char *item)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD].c_str(), item);
-    M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
+   M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crstr[CR_GOLD] + item);
 }
 
 static void M_DrawCrispnessItem(int y, const char *item, int feat, boolean cond)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s: %s%s", cond ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str(), item,
-               cond ? (feat ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str()) : crstr[CR_DARK].c_str(),
-               cond && feat ? "On" : "Off");
-    M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
+   M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y,
+               fmt::format("{}{}: {}{}",
+                           cond ? crstr[CR_NONE] : crstr[CR_DARK],
+                           item,
+                           cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
+                           cond && feat ? "On" : "Off") );
 }
 
 static void M_DrawCrispnessMultiItem(int y, const char *item, multiitem_t *multiitem, int feat, boolean cond)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s: %s%s", cond ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str(), item,
-               cond ? (feat ? crstr[CR_GREEN].c_str() : crstr[CR_DARK].c_str()) : crstr[CR_DARK].c_str(),
-               cond && feat ? multiitem[feat].name : multiitem[0].name);
-    M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
+   M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y,
+               fmt::format( "{}{}: {}{}",
+                            cond ? crstr[CR_NONE] : crstr[CR_DARK],
+                            item,
+                            cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
+                            cond && feat ? multiitem[feat].name : multiitem[0].name) );
 }
 
 static void M_DrawCrispnessGoto(int y, const char *item)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-               "%s%s", crstr[CR_GOLD].c_str(), item);
-    M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
+    M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crstr[CR_GOLD] + item);
 }
 
 static void M_DrawCrispness1(void)
@@ -2037,7 +2028,7 @@ void
 M_WriteText
 ( int		x,
   int		y,
-  const char *string)
+  const std::string &string)
 {
     int		w;
     const char *ch;
@@ -2046,7 +2037,7 @@ M_WriteText
     int		cy;
 		
 
-    ch = string;
+    ch = string.c_str();
     cx = x;
     cy = y;
 	
@@ -3004,14 +2995,13 @@ void M_Drawer (void)
 	y += LINEHEIGHT;
     }
 
-    
+
     // DRAW SKULL
     if (currentMenu == CrispnessMenus[crispness_cur])
     {
-	char item[4];
-	M_snprintf(item, sizeof(item), "%s>", whichSkull ? crstr[CR_NONE].c_str() : crstr[CR_DARK].c_str());
-	M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * itemOn, item);
-	dp_translation = NULL;
+      std::string item = (whichSkull ? crstr[CR_NONE] : crstr[CR_DARK]) + ">";
+      M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * itemOn, item);
+      dp_translation = NULL;
     }
     else
     V_DrawPatchDirect(x + SKULLXOFF, currentMenu->y - 5 + itemOn*LINEHEIGHT,

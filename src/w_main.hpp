@@ -19,11 +19,12 @@
 #define W_MAIN_H
 
 #include "d_mode.hpp"
+#include <string>
 
 boolean W_ParseCommandLine(void);
 void W_CheckCorrectIWAD(GameMission_t mission);
 
-int W_MergeDump (const char *file);
+int W_MergeDump (const std::string &file);
 int W_LumpDump (const char *lumpname);
 
 // Autoload all .wad files from the given directory:

@@ -248,11 +248,13 @@ std::string M_TempFile(const std::string &s)
 
 boolean M_StrToInt(const std::string &str, int *result)
 {
-   auto c_str = str.c_str();
-   return sscanf(c_str, " 0x%x", result) == 1
-        || sscanf(c_str, " 0X%x", result) == 1
-        || sscanf(c_str, " 0%o", result) == 1
-        || sscanf(c_str, " %d", result) == 1;
+   try {
+      *result = std::stoi( str );
+      return true;
+   }
+   catch (...) {
+      return false;
+   }
 }
 
 // Returns the directory portion of the given path, without the trailing

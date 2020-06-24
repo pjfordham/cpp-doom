@@ -20,6 +20,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <fmt/core.h>
 
 #include "doomdef.hpp" 
 #include "doomkeys.hpp"
@@ -134,8 +135,8 @@ int             extrakills;             // [crispy] count spawned monsters
 int             totalleveltimes;        // [crispy] CPhipps - total time for all completed levels
 int             demostarttic;           // [crispy] fix revenant internal demo bug
  
-char           *demoname;
-const char           *orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
+std::string     demoname;
+std::string     orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
 boolean         demorecording; 
 boolean         longtics;               // cph's doom 1.91 longtics hack
 boolean         lowres_turn;            // low resolution turning for longtics
@@ -351,7 +352,6 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     int		side;
     int		look;
     player_t *const player = &players[consoleplayer];
-    static char playermessage[48];
 
     *cmd = ticcmd_t{};
 
@@ -428,10 +428,10 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
             joybspeed = 29;
         }
 
-        M_snprintf(playermessage, sizeof(playermessage), "ALWAYS RUN %s%s",
-                   crstr[CR_GREEN].c_str(),
-            (joybspeed >= MAX_JOY_BUTTONS) ? "ON" : "OFF");
-        player->message = playermessage;
+        player->message = std::string(
+           "ALWAYS RUN " + crstr[CR_GREEN] +
+           ((joybspeed >= MAX_JOY_BUTTONS) ? "ON" : "OFF"));
+
         S_StartSound(NULL, sfx_swtchn);
 
         gamekeydown[key_toggleautorun] = false;
@@ -442,11 +442,9 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     {
         novert = !novert;
 
-        M_snprintf(playermessage, sizeof(playermessage),
-            "vertical mouse movement %s%s",
-            crstr[CR_GREEN].c_str(),
-            !novert ? "ON" : "OFF");
-        player->message = playermessage;
+        player->message = std::string( "vertical mouse movement " ) +
+           crstr[CR_GREEN] + ( !novert ? "ON" : "OFF");
+
         S_StartSound(NULL, sfx_swtchn);
 
         gamekeydown[key_togglenovert] = false;
@@ -455,12 +453,11 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     // [crispy] extra high precision IDMYPOS variant, updates for 10 seconds
     if (player->powers[pw_mapcoords])
     {
-        M_snprintf(playermessage, sizeof(playermessage),
-            "X=%.10f Y=%.10f A=%d",
-            (double)player->mo->x/FRACUNIT,
-            (double)player->mo->y/FRACUNIT,
-            player->mo->angle >> 24);
-        player->message = playermessage;
+       player->message = fmt::format(
+          "X={:.10} Y={:.10} A={}",
+          (double)player->mo->x/FRACUNIT,
+          (double)player->mo->y/FRACUNIT,
+          player->mo->angle >> 24);
 
         player->powers[pw_mapcoords]--;
 
@@ -2075,7 +2072,7 @@ G_SaveGame
 
 void G_DoSaveGame (void) 
 { 
-    char *savegame_file;
+    std::string savegame_file;
     std::string temp_savegame_file;
     std::string recovery_savegame_file;
 
@@ -2157,8 +2154,8 @@ void G_DoSaveGame (void)
     // Now rename the temporary savegame file to the actual savegame
     // file, overwriting the old savegame if there was one there.
 
-    remove(savegame_file);
-    rename(temp_savegame_file.c_str(), savegame_file);
+    remove(savegame_file.c_str());
+    rename(temp_savegame_file.c_str(), savegame_file.c_str());
 
     gameaction = ga_nothing;
     M_StringCopy(savedescription, "", sizeof(savedescription));
@@ -2196,7 +2193,6 @@ G_DeferedInitNew
     if (demorecording)
     {
 	G_CheckDemoStatus();
-	Z_Delete(demoname);
 
 	G_RecordDemo(orig_demoname);
 	G_BeginRecording();
@@ -2426,7 +2422,7 @@ G_InitNew
 // [crispy] demo progress bar and timer widget
 int defdemotics = 0, deftotaldemotics;
 // [crispy] moved here
-static const char *defdemoname;
+static std::string defdemoname;
 
 void G_ReadDemoTiccmd (ticcmd_t* cmd) 
 { 
@@ -2570,9 +2566,8 @@ void G_WriteDemoTiccmd (ticcmd_t* cmd)
 //
 // G_RecordDemo
 //
-void G_RecordDemo (const char *name)
+void G_RecordDemo (const std::string &name)
 {
-    size_t demoname_size;
     int i;
     int maxsize;
 
@@ -2581,21 +2576,19 @@ void G_RecordDemo (const char *name)
     FILE *fp = NULL;
 
     // [crispy] the name originally chosen for the demo, i.e. without "-00000"
-    if (!orig_demoname)
+    if (orig_demoname.empty())
     {
 	orig_demoname = name;
     }
 
     usergame = false;
-    demoname_size = strlen(name) + 5 + 6; // [crispy] + 6 for "-00000"
-    demoname = Z_New<char>(PU_STATIC, demoname_size);
-    M_snprintf(demoname, demoname_size, "%s.lmp", name);
+    demoname = fmt::format("{}.lmp", name);
 
     // [crispy] prevent overriding demos by adding a file name suffix
-    for ( ; j <= 99999 && (fp = fopen(demoname, "rb")) != NULL; j++)
+    for ( ; j <= 99999 && (fp = fopen(demoname.c_str(), "rb")) != NULL; j++)
     {
-	M_snprintf(demoname, demoname_size, "%s-%05d.lmp", name, j);
-	fclose (fp);
+       demoname = fmt::format( "{}-{:05}.lmp", name, j);
+       fclose (fp);
     }
 
     maxsize = 0x20000;
@@ -2610,12 +2603,12 @@ void G_RecordDemo (const char *name)
 
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
-       maxsize = atoi(myargv[i+1].c_str())*1024;
+       maxsize = std::stoi(myargv[i+1])*1024;
     demobuffer = Z_New<byte>(PU_STATIC, maxsize);
     demoend = demobuffer + maxsize;
-	
-    demorecording = true; 
-} 
+
+    demorecording = true;
+}
 
 // Get the demo version code appropriate for the version set in gameversion.
 int G_VanillaVersionCode(void)
@@ -2683,7 +2676,7 @@ void G_BeginRecording (void)
 //
 
  
-void G_DeferedPlayDemo(const char *name)
+void G_DeferedPlayDemo(const std::string &name)
 { 
     defdemoname = name; 
     gameaction = ga_playdemo; 
@@ -2994,11 +2987,11 @@ boolean G_CheckDemoStatus (void)
 	// [crispy] if a new game is started during demo recording, start a new demo
 	if (gameaction != ga_newgame)
 	{
-	I_Error ("Demo %s recorded",demoname); 
+           I_Error ("Demo %s recorded",demoname.c_str()); 
 	}
 	else
 	{
-	    fprintf(stderr, "Demo %s recorded\n",demoname);
+           fmt::print(stderr, "Demo {} recorded\n",demoname);
 	}
     } 
 	 

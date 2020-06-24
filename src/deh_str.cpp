@@ -30,7 +30,6 @@
 
 #include "../utils/memory.hpp"
 #include "z_zone.hpp"
-#include <iostream>
 
 std::map<std::string, std::string> hash_table;
 std::unordered_set<std::string> list;
@@ -44,10 +43,8 @@ const std::string &DEH_String(const std::string &s)
 
    if (i == hash_table.end()) {
       auto a = list.insert( s );
-      //std::cerr << "Sub no " << s << " " <<  a.first->c_str() << "\n";
       return *a.first;
    } else {
-      //std::cerr << "Sub yes " << s << " " <<  i->second.c_str() << "\n";
       return i->second;
   }
 }
@@ -57,13 +54,11 @@ const std::string &DEH_String(const std::string &s)
 boolean DEH_HasStringReplacement(const std::string &s)
 {
      auto i = hash_table.find( s );
-     //std::cerr << "Has " << s << " " <<  (i != hash_table.end() ? "true" : "false") << "\n";
      return i != hash_table.end();
 }
 
 void DEH_AddStringReplacement(const std::string &from_text, const std::string &to_text)
 {
-   //std::cerr << "Add " << from_text << " " << to_text << "\n";
    hash_table[ from_text ] = to_text;
 }
 

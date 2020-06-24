@@ -24,17 +24,19 @@
 #define W_NWT_MERGE_SPRITES   0x1
 #define W_NWT_MERGE_FLATS     0x2
 
+#include <string>
+
 // Add a new WAD and merge it into the main directory
 
-void W_MergeFile(const char *filename);
+void W_MergeFile(const std::string &filename);
 
 // NWT-style merging
 
-void W_NWTMergeFile(const char *filename, int flags);
+void W_NWTMergeFile(const std::string &filename, int flags);
 
 // Acts the same as NWT's "-merge" option.
 
-void W_NWTDashMerge(const char *filename);
+void W_NWTDashMerge(const std::string &filename);
 
 // Debug function that prints the WAD directory.
 

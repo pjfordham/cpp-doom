@@ -15,6 +15,7 @@ mommove gone from src/doom, just networking ones left.
 examine sector_t::specialdata void*, std::variant is awkward
 
 maintain list of thinkers in order added to lists to keep demo's working.
+list of std::variant of all thinker types .
 
 now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
 
@@ -52,5 +53,15 @@ cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
 ( cd ~/github/cpp-doom/debug/ ; gdb ~/github/cpp-doom/debug/src/c++-doom )
 
-bug with textures with short names; manifest with missing sky
+crispy physical menu is broken // not to do with libfmt in menu
 
+load game seems to be broken.
+
+bool iequals(const string& a, const string& b)
+{
+    return std::equal(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      });
+}

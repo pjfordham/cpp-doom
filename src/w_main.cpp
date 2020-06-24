@@ -17,6 +17,7 @@
 //
 
 #include <stdlib.h>
+#include <fmt/core.h>
 
 #include "config.h"
 #include "d_iwad.hpp"
@@ -50,12 +51,12 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p][0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
-            printf(" merging %s\n", filename.c_str());
-            W_MergeFile(filename.c_str());
+            fmt::print(" merging {}\n", filename);
+            W_MergeFile(filename);
         }
     }
 
@@ -74,12 +75,12 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p][0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
-            printf(" performing NWT-style merge of %s\n", filename.c_str());
-            W_NWTDashMerge(filename.c_str());
+            fmt::print(" performing NWT-style merge of {}\n", filename);
+            W_NWTDashMerge(filename);
         }
     }
     
@@ -97,12 +98,12 @@ boolean W_ParseCommandLine(void)
 
     if (p > 0)
     {
-       for (p = p + 1; p<myargv.size() && myargv[p].c_str()[0] != '-'; ++p)
+       for (p = p + 1; p<myargv.size() && myargv[p][0] != '-'; ++p)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
-            printf(" merging flats from %s\n", filename.c_str());
-            W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_FLATS);
+            fmt::print(" merging flats from {}\n", filename);
+            W_NWTMergeFile(filename, W_NWT_MERGE_FLATS);
         }
     }
 
@@ -122,8 +123,8 @@ boolean W_ParseCommandLine(void)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
-            printf(" merging sprites from %s\n", filename.c_str());
-            W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES);
+            fmt::print(" merging sprites from {}\n", filename);
+            W_NWTMergeFile(filename, W_NWT_MERGE_SPRITES);
         }
     }
 
@@ -142,8 +143,8 @@ boolean W_ParseCommandLine(void)
         {
             modifiedgame = true;
             auto filename = D_TryFindWADByName(myargv[p]);
-            printf(" merging sprites and flats from %s\n", filename.c_str());
-            W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES | W_NWT_MERGE_FLATS);
+            fmt::print(" merging sprites and flats from {}\n", filename);
+            W_NWTMergeFile(filename, W_NWT_MERGE_SPRITES | W_NWT_MERGE_FLATS);
         }
     }
 
@@ -164,8 +165,8 @@ boolean W_ParseCommandLine(void)
         {
             auto filename = D_TryFindWADByName(myargv[p]);
             // [crispy] always merge arguments of "-file" parameter
-            printf(" merging %s !\n", filename.c_str());
-	    W_MergeFile(filename.c_str());
+            fmt::print(" merging {} !\n", filename);
+	    W_MergeFile(filename);
         }
     }
 

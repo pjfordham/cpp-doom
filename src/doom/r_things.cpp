@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <vector>
 #include <algorithm>
+#include <string>
+#include <fmt/core.h>
 
 #include "deh_main.hpp"
 #include "doomdef.hpp"
@@ -104,7 +106,7 @@ int		numsprites;
 
 spriteframe_t	sprtemp[29];
 int		maxframe;
-const char	*spritename;
+std::string     spritename;
 
 
 
@@ -136,12 +138,12 @@ R_InstallSpriteLump
 	// the lump should be used for all rotations
 	// [crispy] make non-fatal
 	if (sprtemp[frame].rotate == false)
-	    fprintf (stderr, "R_InitSprites: Sprite %s frame %c has "
+           fmt::print(stderr, "R_InitSprites: Sprite {} frame {} has "
 		     "multip rot=0 lump\n", spritename, 'A'+frame);
 
 	// [crispy] make non-fatal
 	if (sprtemp[frame].rotate == true)
-	    fprintf (stderr, "R_InitSprites: Sprite %s frame %c has rotations "
+           fmt::print(stderr, "R_InitSprites: Sprite {} frame {} has rotations "
 		     "and a rot=0 lump\n", spritename, 'A'+frame);
 			
 // [crispy] moved ...
@@ -163,7 +165,7 @@ R_InstallSpriteLump
     // the lump is only used for one rotation
     // [crispy] make non-fatal
     if (sprtemp[frame].rotate == false)
-	fprintf (stderr, "R_InitSprites: Sprite %s frame %c has rotations "
+       fmt::print(stderr, "R_InitSprites: Sprite {} frame {} has rotations "
 		 "and a rot=0 lump\n", spritename, 'A'+frame);
 		
 // [crispy] moved ...
@@ -174,9 +176,9 @@ R_InstallSpriteLump
     if (sprtemp[frame].lump[rotation] != -1)
     {
 	// [crispy] make non-fatal
-	fprintf (stderr, "R_InitSprites: Sprite %s : %c : %c "
-		 "has two lumps mapped to it\n",
-		 spritename, 'A'+frame, '1'+rotation);
+        fmt::print(stderr, "R_InitSprites: Sprite {} : {} : {} "
+                   "has two lumps mapped to it\n",
+                   spritename, 'A'+frame, '1'+rotation);
 	return;
     }
 		
@@ -235,7 +237,7 @@ void R_InitSpriteDefs(const char **namelist)
     // Just compare 4 characters as ints
     for (i=0 ; i<numsprites ; i++)
     {
-       spritename = DEH_String(namelist[i]).c_str();
+        spritename = DEH_String(namelist[i]);
 	memset (sprtemp,-1, sizeof(sprtemp));
 		
 	maxframe = -1;
@@ -244,7 +246,7 @@ void R_InitSpriteDefs(const char **namelist)
 	//  filling in the frames for whatever is found
 	for (l=start+1 ; l<end ; l++)
 	{
-	    if (!strncasecmp(lumpinfo[l]->name, spritename, 4))
+            if (!strncasecmp(lumpinfo[l]->name, spritename.c_str(), 4))
 	    {
 		frame = lumpinfo[l]->name[4] - 'A';
 		rotation = lumpinfo[l]->name[5];
@@ -281,8 +283,8 @@ void R_InitSpriteDefs(const char **namelist)
 	      case -1:
 		// no rotations were found for that frame at all
 		// [crispy] make non-fatal
-		fprintf (stderr, "R_InitSprites: No patches found "
-			 "for %s frame %c\n", spritename, frame+'A');
+                 fmt::print(stderr, "R_InitSprites: No patches found "
+			 "for {} frame {}\n", spritename, frame+'A');
 		break;
 		
 	      case 0:
@@ -295,7 +297,7 @@ void R_InitSpriteDefs(const char **namelist)
 		    if (sprtemp[frame].lump[rotation] == -1)
 			I_Error ("R_InitSprites: Sprite %s frame %c "
 				 "is missing rotations",
-				 spritename, frame+'A');
+				 spritename.c_str(), frame+'A');
 
 		// [crispy] support 16 sprite rotations
 		sprtemp[frame].rotate = 2;

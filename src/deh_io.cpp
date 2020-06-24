@@ -21,6 +21,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <string>
+#include <fmt/core.h>
 
 #include "m_misc.hpp"
 #include "w_wad.hpp"
@@ -342,7 +343,7 @@ void DEH_Warning(deh_context_t *context, const char *msg, ...)
 
     va_start(args, msg);
 
-    fprintf(stderr, "%s:%i: warning: ", context->filename.c_str(),
+    fmt::print(stderr, "{}:{}: warning: ", context->filename,
             context->linenum);
     vfprintf(stderr, msg, args);
     fprintf(stderr, "\n");
@@ -356,7 +357,7 @@ void DEH_Error(deh_context_t *context, const char *msg, ...)
 
     va_start(args, msg);
 
-    fprintf(stderr, "%s:%i: ", context->filename.c_str(), context->linenum);
+    fmt::print(stderr, "{}:{}: ", context->filename, context->linenum);
     vfprintf(stderr, msg, args);
     fprintf(stderr, "\n");
 
@@ -376,7 +377,7 @@ std::string DEH_FileName(deh_context_t *context)
 {
     if (context->type == DEH_INPUT_FILE)
     {
-       return context->filename.c_str();;
+       return context->filename;
     }
 
     return {};

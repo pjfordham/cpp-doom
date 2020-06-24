@@ -753,54 +753,47 @@ boolean F_CastResponder (event_t* ev)
 }
 
 
-void F_CastPrint (const char *text)
+void F_CastPrint (const std::string &text)
 {
-    const char *ch;
     int		c;
     int		cx;
     int		w;
     int		width;
-    
+
     // find width
-    ch = text;
     width = 0;
-	
-    while (ch)
-    {
-	c = *ch++;
-	if (!c)
-	    break;
-	c = toupper(c) - HU_FONTSTART;
-	if (c < 0 || c> HU_FONTSIZE)
-	{
-	    width += 4;
-	    continue;
-	}
-		
-	w = SHORT (hu_font[c]->width);
-	width += w;
+
+    for ( const char &ch : text ) {
+       if (!ch)
+          break;
+       c = toupper(ch) - HU_FONTSTART;
+       if (c < 0 || c> HU_FONTSIZE)
+       {
+          width += 4;
+          continue;
+       }
+
+       w = SHORT (hu_font[c]->width);
+       width += w;
     }
-    
+
     // draw it
     cx = ORIGWIDTH/2-width/2;
-    ch = text;
-    while (ch)
-    {
-	c = *ch++;
-	if (!c)
+    for ( const char &ch : text ) {
+	if (!ch)
 	    break;
-	c = toupper(c) - HU_FONTSTART;
+	c = toupper(ch) - HU_FONTSTART;
 	if (c < 0 || c> HU_FONTSIZE)
 	{
 	    cx += 4;
 	    continue;
 	}
-		
+
 	w = SHORT (hu_font[c]->width);
 	V_DrawPatch(cx, 180, hu_font[c]);
 	cx+=w;
     }
-	
+
 }
 
 
@@ -819,7 +812,7 @@ void F_CastDrawer (void)
     // erase the entire screen to a background
     V_DrawPatchFullScreen (cache_lump_name<patch_t *>(DEH_String("BOSSBACK"), PU_CACHE), false);
 
-    F_CastPrint (DEH_String(castorder[castnum].name).c_str());
+    F_CastPrint (DEH_String(castorder[castnum].name));
     
     // draw the current frame in the middle of the screen
     sprdef = &sprites[caststate->sprite];

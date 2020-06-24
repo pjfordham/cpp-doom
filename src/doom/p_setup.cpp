@@ -22,6 +22,7 @@
 #include <math.h>
 #include <algorithm>
 #include <iterator>
+#include <fmt/core.h>
 
 #include "z_zone.hpp"
 
@@ -1188,9 +1189,9 @@ P_SetupLevel
            ( fastparm ? " -fast" : "" ) +
            ( nomonsters ? " -nomonsters" : "" );
 
-	fprintf(stderr, "P_SetupLevel: %s (%s) %s%s %d:%02d:%02d/%d:%02d:%02d ",
+        fmt::print(stderr, "P_SetupLevel: {} ({}) {}{} {}:{:02}:{:02}/{}:{:02}:{:02} ",
 	    maplumpinfo->name, W_WadNameForLump(maplumpinfo),
-            skilltable[BETWEEN(0,5,(int) skill+1)], rfn_str.c_str(),
+            skilltable[BETWEEN(0,5,(int) skill+1)], rfn_str,
 	    ltime/3600, (ltime%3600)/60, ltime%60,
 	    ttime/3600, (ttime%3600)/60, ttime%60);
     }

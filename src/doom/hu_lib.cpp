@@ -250,6 +250,24 @@ HUlib_addMessageToSText
 	HUlib_addCharToTextLine(&s->l[s->cl], *(msg++));
 }
 
+void
+HUlib_addMessageToSText
+( hu_stext_t*	s,
+  const std::string &prefix,
+  const std::string &msg )
+{
+    HUlib_addLineToSText(s);
+    for (const char &ch : prefix )
+    {
+       HUlib_addCharToTextLine(&s->l[s->cl], ch);
+    }
+
+    for (const char &ch : msg )
+    {
+	HUlib_addCharToTextLine(&s->l[s->cl], ch);
+    }
+}
+
 void HUlib_drawSText(hu_stext_t* s)
 {
     int i, idx;

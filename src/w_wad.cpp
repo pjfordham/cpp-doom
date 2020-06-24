@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <fmt/core.h>
 
 #include "doomtype.hpp"
 
@@ -104,8 +105,9 @@ unsigned int W_LumpNameHash(const char *s)
 
 std::vector<lumpinfo_t> filelumps;
 
-wad_file_t *W_AddFile (const char *filename)
+wad_file_t *W_AddFile (const std::string &_filename)
 {
+    std::string filename = _filename;
     wadinfo_t header;
     lumpindex_t i;
     wad_file_t *wad_file;
@@ -131,19 +133,19 @@ wad_file_t *W_AddFile (const char *filename)
 
         reloadname = filename;
         reloadlump = numlumps;
-        ++filename;
+        filename = filename.substr(1);
     }
 
     // Open the file and add to directory
-    wad_file = W_OpenFile(filename);
+    wad_file = W_OpenFile(filename.c_str());
 
     if (wad_file == NULL)
     {
-	printf (" couldn't open %s\n", filename);
-	return NULL;
+       fmt::print(stdout, " couldn't open {}\n", filename);
+       return NULL;
     }
 
-    if (strcasecmp(filename+strlen(filename)-3 , "wad" ) )
+    if (strcasecmp(filename.c_str()+filename.length()-3 , "wad" ) )
     {
 	// single lump file
 
@@ -174,7 +176,7 @@ wad_file_t *W_AddFile (const char *filename)
 	    {
 		W_CloseFile(wad_file);
 		I_Error ("Wad file %s doesn't have IWAD "
-			 "or PWAD id\n", filename);
+			 "or PWAD id\n", filename.c_str());
 	    }
 
 	    // ???modifiedgame = true;
@@ -189,7 +191,7 @@ wad_file_t *W_AddFile (const char *filename)
          {
                  W_CloseFile(wad_file);
                  I_Error ("Error: Vanilla limit for lumps in a WAD is 4046, "
-                          "PWAD %s has %d", filename, header.numlumps);
+                          "PWAD %s has %d", filename.c_str(), header.numlumps);
          }
 
 	header.infotableofs = LONG(header.infotableofs);
@@ -624,7 +626,7 @@ void W_Reload(void)
     reloadname.clear();
     reloadlump = -1;
     reloadhandle = NULL;
-    W_AddFile(filename.c_str());
+    W_AddFile(filename);
 
     // The WAD directory has changed, so we have to regenerate the
     // fast lookup hashtable:

@@ -638,16 +638,17 @@ static void AddSteamDirs(void)
         homedir = "/";
     }
     std::string steampath = std::string(homedir) + "/.steam/root/steamapps/common";
-
-    AddIWADPath(steampath.c_str(), "/Doom 2/base");
-    AddIWADPath(steampath.c_str(), "/Master Levels of Doom/doom2");
-    AddIWADPath(steampath.c_str(), "/Ultimate Doom/base");
-    AddIWADPath(steampath.c_str(), "/Final Doom/base");
-    AddIWADPath(steampath.c_str(), "/DOOM 3 BFG Edition/base/wads");
-    AddIWADPath(steampath.c_str(), "/Heretic Shadow of the Serpent Riders/base");
-    AddIWADPath(steampath.c_str(), "/Hexen/base");
-    AddIWADPath(steampath.c_str(), "/Hexen Deathkings of the Dark Citadel/base");
-    AddIWADPath(steampath.c_str(), "/Strife");
+    auto csteampath = steampath.c_str();
+    
+    AddIWADPath(csteampath, "/Doom 2/base");
+    AddIWADPath(csteampath, "/Master Levels of Doom/doom2");
+    AddIWADPath(csteampath, "/Ultimate Doom/base");
+    AddIWADPath(csteampath, "/Final Doom/base");
+    AddIWADPath(csteampath, "/DOOM 3 BFG Edition/base/wads");
+    AddIWADPath(csteampath, "/Heretic Shadow of the Serpent Riders/base");
+    AddIWADPath(csteampath, "/Hexen/base");
+    AddIWADPath(csteampath, "/Hexen Deathkings of the Dark Citadel/base");
+    AddIWADPath(csteampath, "/Strife");
 }
 #endif // __MACOSX__
 #endif // !_WIN32
@@ -790,7 +791,6 @@ std::string D_TryFindWADByName(const std::string &filename)
 std::string D_FindIWAD(int mask, GameMission_t *mission)
 {
     std::string result;
-    const char *iwadfile;
     int iwadparm;
     int i;
 
@@ -808,13 +808,13 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
     {
         // Search through IWAD dirs for an IWAD with the given name.
 
-       iwadfile = myargv[iwadparm + 1].c_str();
+        auto iwadfile = myargv[iwadparm + 1];
 
         result = D_FindWADByName(iwadfile);
 
         if (result.empty())
         {
-            I_Error("IWAD file '%s' not found!", iwadfile);
+           I_Error("IWAD file '%s' not found!", iwadfile.c_str());
         }
 
         *mission = IdentifyIWADByName(result, mask);

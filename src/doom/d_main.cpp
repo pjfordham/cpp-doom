@@ -26,6 +26,7 @@
 #include <string.h>
 #include <time.h> // [crispy] time_t, time(), struct tm, localtime()
 #include "SDL.h"
+#include <fmt/core.h>
 
 #include "config.h"
 #include "deh_main.hpp"
@@ -679,7 +680,7 @@ void D_DoAdvanceDemo (void)
 	  S_StartMusic (mus_intro);
 	break;
       case 1:
-         G_DeferedPlayDemo(DEH_String("demo1").c_str());
+         G_DeferedPlayDemo(DEH_String("demo1"));
 	break;
       case 2:
 	pagetic = 200;
@@ -687,7 +688,7 @@ void D_DoAdvanceDemo (void)
 	pagename = DEH_String("CREDIT");
 	break;
       case 3:
-         G_DeferedPlayDemo(DEH_String("demo2").c_str());
+         G_DeferedPlayDemo(DEH_String("demo2"));
 	break;
       case 4:
 	gamestate = GS_DEMOSCREEN;
@@ -708,11 +709,11 @@ void D_DoAdvanceDemo (void)
 	}
 	break;
       case 5:
-         G_DeferedPlayDemo(DEH_String("demo3").c_str());
+         G_DeferedPlayDemo(DEH_String("demo3"));
 	break;
         // THE DEFINITIVE DOOM Special Edition demo
       case 6:
-         G_DeferedPlayDemo(DEH_String("demo4").c_str());
+         G_DeferedPlayDemo(DEH_String("demo4"));
 	break;
     }
 
@@ -1008,14 +1009,11 @@ void D_SetGameDescription(void)
     }
 }
 
-//      print title for every printed line
-char            title[128];
-
-static boolean D_AddFile(const char *filename)
+static boolean D_AddFile(const std::string &filename)
 {
     wad_file_t *handle;
 
-    printf(" adding %s\n", filename);
+    fmt::print(stdout, " adding {}\n", filename);
     handle = W_AddFile(filename);
 
     return handle != NULL;
@@ -1054,9 +1052,9 @@ void PrintDehackedBanners(void)
     {
         auto deh_s = DEH_String(copyright_banners[i]);
 
-        if (std::string(deh_s) != std::string(copyright_banners[i]))
+        if ( deh_s != std::string(copyright_banners[i]))
         {
-           printf("%s", deh_s.c_str());
+            fmt::print(stdout, "{}", deh_s);
 
             // Make sure the modified banner always ends in a newline character.
             // If it doesn't, add a newline.  This fixes av.wad.
@@ -1415,7 +1413,7 @@ static void LoadSigilWad(void)
         }
 
         printf(" [expansion]");
-        D_AddFile(sigil_wad.c_str());
+        D_AddFile(sigil_wad);
 
         // [crispy] load SIGIL_SHREDS.WAD
         if (!M_FileExists(sigil_shreds))
@@ -1426,7 +1424,7 @@ static void LoadSigilWad(void)
         if (!sigil_shreds.empty())
         {
             printf(" [expansion]");
-            D_AddFile(sigil_shreds.c_str());
+            D_AddFile(sigil_shreds);
         }
 
         // [crispy] rename intrusive SIGIL_SHREDS.wad music lumps out of the way
@@ -1515,7 +1513,7 @@ static void LoadNerveWad(void)
         }
 
         printf(" [expansion]");
-        D_AddFile(nervewadfile.c_str());
+        D_AddFile(nervewadfile);
 
         // [crispy] rename level name patch lumps out of the way
         for (i = 0; i < 9; i++)
@@ -1783,7 +1781,7 @@ void D_DoomMain (void)
     modifiedgame = false;
 
     DEH_printf("W_Init: Init WADfiles.\n");
-    D_AddFile(iwadfile.c_str());
+    D_AddFile(iwadfile);
     numiwadlumps = numlumps;
 
     W_CheckCorrectIWAD(doom);
@@ -1918,7 +1916,7 @@ void D_DoomMain (void)
 
 	    if (M_StringEndsWith(myargv[p+1], ".wad"))
 	    {
-               M_StringCopy(file, myargv[p+1].c_str(), sizeof(file));
+               M_StringCopy(file, myargv[p+1], sizeof(file));
 	    }
 	    else
 	    {
@@ -1951,7 +1949,7 @@ void D_DoomMain (void)
 	{
 	    int dumped;
 
-	    M_StringCopy(file, myargv[p+1].c_str(), sizeof(file));
+	    M_StringCopy(file, myargv[p+1], sizeof(file));
 
 	    dumped = W_LumpDump(file);
 
@@ -2007,7 +2005,7 @@ void D_DoomMain (void)
         // but make that optional.
         if (M_StringEndsWith(uc_filename, ".LMP"))
         {
-           M_StringCopy(file, myargv[p + 1].c_str(), sizeof(file));
+           M_StringCopy(file, myargv[p + 1], sizeof(file));
         }
         else
         {
@@ -2025,7 +2023,7 @@ void D_DoomMain (void)
             // the demo in the same way as Vanilla Doom.  This makes
             // tricks like "-playdemo demo1" possible.
 
-           M_StringCopy(demolumpname, myargv[p + 1].c_str(), sizeof(demolumpname));
+           M_StringCopy(demolumpname, myargv[p + 1], sizeof(demolumpname));
         }
 
         printf("Playing demo %s.\n", file);
@@ -2090,7 +2088,7 @@ void D_DoomMain (void)
 	int i;
 	
 	if ( gamemode == shareware)
-	    I_Error(DEH_String("\nYou cannot -file with the shareware "
+           I_Error("%s",DEH_String("\nYou cannot -file with the shareware "
 			       "version. Register!").c_str());
 
 	// Check for fake IWAD with right name,
@@ -2098,7 +2096,7 @@ void D_DoomMain (void)
 	if (gamemode == registered)
 	    for (i = 0;i < 23; i++)
 		if (W_CheckNumForName(name[i])<0)
-                   I_Error(DEH_String("\nThis is not the registered version.").c_str());
+                   I_Error("%s",DEH_String("\nThis is not the registered version.").c_str());
     }
 
 // [crispy] disable meaningless warning, we always use "-merge" anyway
@@ -2224,7 +2222,7 @@ void D_DoomMain (void)
 
     if (p)
     {
-       timelimit = atoi(myargv[p+1].c_str());
+       timelimit = std::stoi(myargv[p+1]);
     }
 
     //!
@@ -2255,7 +2253,7 @@ void D_DoomMain (void)
     if (p)
     {
         if (gamemode == commercial)
-           startmap = atoi (myargv[p+1].c_str());
+           startmap = std::stoi (myargv[p+1]);
         else
         {
            startepisode = myargv[p+1].c_str()[0]-'0';
@@ -2331,7 +2329,7 @@ void D_DoomMain (void)
     
     if (p)
     {
-       startloadgame = atoi(myargv[p+1].c_str());
+       startloadgame = std::stoi(myargv[p+1]);
     }
     else
     {
@@ -2387,7 +2385,7 @@ void D_DoomMain (void)
 
     if (p)
     {
-       G_RecordDemo (myargv[p+1].c_str());
+       G_RecordDemo (myargv[p+1]);
 	autostart = true;
     }
 

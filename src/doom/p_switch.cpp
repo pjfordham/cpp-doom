@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <fmt/core.h>
 
 #include "i_system.hpp"
 #include "deh_main.hpp"
@@ -171,8 +172,8 @@ void P_InitSwitchList(void)
 
 	    if (texture1 == -1 || texture2 == -1)
 	    {
-		fprintf(stderr, "P_InitSwitchList: could not add %s(%d)/%s(%d)\n",
-		        name1.c_str(), texture1, name2.c_str(), texture2);
+               fmt::print(stderr, "P_InitSwitchList: could not add {}({})/{}({})\n",
+                          name1, texture1, name2, texture2);
 	    }
 	    else
 	    {

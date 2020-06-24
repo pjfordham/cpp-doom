@@ -421,7 +421,7 @@ static void NET_SV_SendWaitingData(net_client_t *client)
     for (i = 0; i < wait_data.num_players; ++i)
     {
         M_StringCopy(wait_data.player_names[i],
-                     sv_players[i]->name.c_str(),
+                     sv_players[i]->name,
                      MAXPLAYERNAME);
         M_StringCopy(wait_data.player_addrs[i],
                      NET_AddrToString(sv_players[i]->addr),

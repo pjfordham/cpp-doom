@@ -57,24 +57,11 @@ std::string P_TempSaveGameFile(void)
 
 // Get the filename of the save game file to use for the specified slot.
 
-char *P_SaveGameFile(int slot)
+std::string P_SaveGameFile(int slot)
 {
-    static char *filename = NULL;
-    static size_t filename_size = 0;
     char basename[32];
-
-    if (filename == NULL)
-    {
-        filename_size = savegamedir.length() + 32;
-        // Flipping this for a unique_ptr didn't work.
-        // FIXME: This leaks memory, but so did the original code.
-        filename = new char[filename_size];
-    }
-
     DEH_snprintf(basename, 32, SAVEGAMENAME "%d.dsg", slot);
-    M_snprintf(filename, filename_size, "%s%s", savegamedir.c_str(), basename);
-
-    return filename;
+    return savegamedir + basename;
 }
 
 // Endian-safe integer read/write functions

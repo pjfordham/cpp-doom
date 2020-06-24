@@ -50,6 +50,8 @@
 #include "v_trans.hpp" // [crispy] colored kills/items/secret/etc. messages
 #include "v_video.hpp" // [crispy] V_DrawPatch() et al.
 
+#include <fmt/core.h>
+
 //
 // Locally used constants, shortcuts.
 //
@@ -414,16 +416,13 @@ const char *mapnames_commercial[] =
 
 static void CrispyReplaceColor (const char *str, const int cr, const char *col)
 {
-    char col_replace[16];
-
     if (DEH_HasStringReplacement(str))
     {
 	return;
     }
 
-    M_snprintf(col_replace, sizeof(col_replace),
-               "%s%s%s", crstr[cr].c_str(), col, crstr[CR_NONE].c_str());
-    DEH_AddStringReplacement(str, M_StringReplace(str, col, col_replace).c_str());
+    std::string col_replace = crstr[cr] + col + crstr[CR_NONE];
+    DEH_AddStringReplacement(str, M_StringReplace(str, col, col_replace));
 }
 
 std::string cr_stat, cr_stat2, kills;
@@ -725,22 +724,18 @@ void HU_Start(void)
     {
 	auto str = crstr[CR_GOLD] + W_WadNameForLump(maplumpinfo) + ": " + crstr[CR_GRAY] + maplumpinfo->name;
 
-	const char *m = str.c_str();
-
-	while (*m)
-	    HUlib_addCharToTextLine(&w_map, *(m++));
+	for (const char &c: str ) {
+            HUlib_addCharToTextLine(&w_map, c);
+        }
     }
 
     // dehacked substitution to get modified level name
-
-    s = DEH_String(s).c_str();
-
     // [crispy] print the map title in white from the first colon onward
-    std::string temp = M_StringReplace(s, ":", std::string(":") + crstr[CR_GRAY]);
-    s = temp.c_str();
-    
-    while (*s)
-	HUlib_addCharToTextLine(&w_title, *(s++));
+    std::string title = M_StringReplace(DEH_String(s), ":", std::string(":") + crstr[CR_GRAY]);
+
+    for (const char &c: title ) {
+	HUlib_addCharToTextLine(&w_title, c);
+    }
 
     // create the chat widget
     HUlib_initIText(&w_chat,
@@ -922,7 +917,6 @@ void HU_Ticker(void)
 
     int i, rc;
     char c;
-    char str[32], *s;
 
     // tick down message counter if message is up
     if (message_counter && !--message_counter)
@@ -956,7 +950,7 @@ void HU_Ticker(void)
 	if ((!plr->message.empty() && !message_nottobefuckedwith)
 	    || (!plr->message.empty() && message_dontfuckwithme))
 	{
-            HUlib_addMessageToSText(&w_message, 0, plr->message.c_str());
+           HUlib_addMessageToSText(&w_message, "", plr->message);
 	    plr->message.clear();
 	    message_on = true;
 	    message_counter = HU_MSGTIMEOUT;
@@ -989,7 +983,7 @@ void HU_Ticker(void)
 				|| chat_dest[i] == HU_BROADCAST))
 			{
 			    HUlib_addMessageToSText(&w_message,
-						    DEH_String(player_names[i]).c_str(),
+						    DEH_String(player_names[i]),
 						    w_inputbuffer[i].l.l);
 			    
 			    message_nottobefuckedwith = true;
@@ -1017,82 +1011,61 @@ void HU_Ticker(void)
 	    w_title.y = HU_TITLEY;
     }
 
+    auto HUlib_clearAndAddStringToLine = []( hu_textline_t *line, const std::string &str) {
+                                            HUlib_clearTextLine( line );
+                                            for (const char &c: str) {
+                                               HUlib_addCharToTextLine( line, c );
+                                            }
+                                            return;
+                                         };
+
     if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
     {
-	// [crispy] count spawned monsters
-	if (extrakills)
-           M_snprintf(str, sizeof(str), "%s%s%s%d/%d+%d", cr_stat.c_str(), kills.c_str(), crstr[CR_GRAY].c_str(),
-	            plr->killcount, totalkills, extrakills);
-	else
-           M_snprintf(str, sizeof(str), "%s%s%s%d/%d", cr_stat.c_str(), kills.c_str(), crstr[CR_GRAY].c_str(),
-	            plr->killcount, totalkills);
-	HUlib_clearTextLine(&w_kills);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_kills, *(s++));
+       // [crispy] count spawned monsters
+       HUlib_clearAndAddStringToLine(
+          &w_kills, extrakills ?
+          fmt::format( "{}{}{}{}/{}+{}", cr_stat, kills, crstr[CR_GRAY], plr->killcount, totalkills, extrakills) :
+          fmt::format( "{}{}{}{}/{}", cr_stat, kills, crstr[CR_GRAY], plr->killcount, totalkills) );
 
-	M_snprintf(str, sizeof(str), "%sI %s%d/%d", cr_stat.c_str(), crstr[CR_GRAY].c_str(),
-	        plr->itemcount, totalitems);
-	HUlib_clearTextLine(&w_items);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_items, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_items,
+          fmt::format( "{}I {}{}/{}", cr_stat, crstr[CR_GRAY], plr->itemcount, totalitems) );
 
-	M_snprintf(str, sizeof(str), "%sS %s%d/%d", cr_stat.c_str(), crstr[CR_GRAY].c_str(),
-	        plr->secretcount, totalsecret);
-	HUlib_clearTextLine(&w_scrts);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_scrts, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_scrts,
+          fmt::format( "{}S {}{}/{}", cr_stat, crstr[CR_GRAY], plr->secretcount, totalsecret) );
     }
 
     if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
     {
-	const int time = leveltime / TICRATE;
+       const int time = leveltime / TICRATE;
 
-	if (time >= 3600)
-           M_snprintf(str, sizeof(str), "%s%02d:%02d:%02d", crstr[CR_GRAY].c_str(),
-	            time/3600, (time%3600)/60, time%60);
-	else
-           M_snprintf(str, sizeof(str), "%s%02d:%02d", crstr[CR_GRAY].c_str(),
-	            time/60, time%60);
-	HUlib_clearTextLine(&w_ltime);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_ltime, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_ltime, time >= 3600 ?
+          fmt::format( "{}{:02}:{:02}:{:02}", crstr[CR_GRAY], time/3600, (time%3600)/60, time%60) :
+          fmt::format( "{}{:02}:{:02}", crstr[CR_GRAY], time/60, time%60) );
     }
 
     if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
     {
-       M_snprintf(str, sizeof(str), "%sX %s%-5d", cr_stat2.c_str(), crstr[CR_GRAY].c_str(),
-	        (plr->mo->x)>>FRACBITS);
-	HUlib_clearTextLine(&w_coordx);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_coordx, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_coordx,
+          fmt::format( "{}X {}{:>5}", cr_stat2, crstr[CR_GRAY], (plr->mo->x)>>FRACBITS) );
 
-	M_snprintf(str, sizeof(str), "%sY %s%-5d", cr_stat2.c_str(), crstr[CR_GRAY].c_str(),
-	        (plr->mo->y)>>FRACBITS);
-	HUlib_clearTextLine(&w_coordy);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_coordy, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_coordy,
+          fmt::format( "{}Y {}{:>5}", cr_stat2, crstr[CR_GRAY], (plr->mo->y)>>FRACBITS) );
 
-	M_snprintf(str, sizeof(str), "%sA %s%-5d", cr_stat2.c_str(), crstr[CR_GRAY].c_str(),
-	        (plr->mo->angle)/ANG1);
-	HUlib_clearTextLine(&w_coorda);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_coorda, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_coorda,
+          fmt::format( "{}A {}{:>5}", cr_stat2, crstr[CR_GRAY], (plr->mo->angle)/ANG1) );
     }
 
     if (plr->powers[pw_showfps])
     {
-	M_snprintf(str, sizeof(str), "%s%-4d %sFPS", crstr[CR_GRAY].c_str(), crispy->fps, cr_stat2.c_str());
-	HUlib_clearTextLine(&w_fps);
-	s = str;
-	while (*s)
-	    HUlib_addCharToTextLine(&w_fps, *(s++));
+       HUlib_clearAndAddStringToLine(
+          &w_fps,
+          fmt::format( "{}{:>4} {}FPS", crstr[CR_GRAY], crispy->fps, cr_stat2) );
     }
 }
 

@@ -21,6 +21,7 @@
 
 
 #include <stdio.h>
+#include <fmt/core.h>
 
 #include "i_swap.hpp" // [crispy] SHORT()
 #include "i_system.hpp"
@@ -1097,7 +1098,7 @@ ST_Responder (event_t* ev)
        plyr->message = std::string( PACKAGE_STRING ) + " (" + std::string( BUILD_DATE ) + ") x" +
           std::to_string( sizeof(void *) * CHAR_BIT) + " SDL" + crispy->sdlversion;
 #undef BUILD_DATE
-       fprintf(stderr, "%s\n", plyr->message.c_str());
+       fmt::print(stderr, "{}\n", plyr->message);
     }
     // [crispy] Show skill level
     else if (cht_CheckCheat(&cheat_skill, ev->data2))

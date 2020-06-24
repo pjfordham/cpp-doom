@@ -21,6 +21,7 @@
 #define __P_SAVEG__
 
 #include <stdio.h>
+#include <string>
 
 #define SAVEGAME_EOF 0x1d
 #define VERSIONSIZE 16
@@ -35,7 +36,7 @@ std::string P_TempSaveGameFile(void);
 
 // filename to use for a savegame slot
 
-char *P_SaveGameFile(int slot);
+std::string P_SaveGameFile(int slot);
 
 // Savegame file header read/write functions
 

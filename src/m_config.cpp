@@ -24,6 +24,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <assert.h>
+#include <fmt/core.h>
 
 #include "SDL_filesystem.h"
 
@@ -2540,14 +2541,14 @@ void M_LoadDefaults (void)
     if (i)
     {
 	doom_defaults.filename = myargv[i+1];
-	printf ("	default file: %s\n",doom_defaults.filename.c_str());
+        fmt::print("	default file: {}\n",doom_defaults.filename);
     }
     else
     {
        doom_defaults.filename = configdir + default_main_config;
     }
 
-    printf("saving config in %s\n", doom_defaults.filename.c_str());
+    fmt::print("saving config in {}\n", doom_defaults.filename);
 
     //!
     // @arg <file>
@@ -2561,8 +2562,8 @@ void M_LoadDefaults (void)
     if (i)
     {
         extra_defaults.filename = myargv[i+1];
-        printf("        extra configuration file: %s\n", 
-               extra_defaults.filename.c_str());
+        fmt::print("        extra configuration file: {}\n",
+               extra_defaults.filename);
     }
     else
     {
@@ -2747,7 +2748,7 @@ void M_SetConfigDir(const char *dir)
 
     if (strcmp(configdir.c_str(), "") != 0)
     {
-        printf("Using %s for configuration and saves\n", configdir.c_str());
+       fmt::print("Using {} for configuration and saves\n", configdir);
     }
 
     // Make the directory if it doesn't already exist:
@@ -2822,7 +2823,7 @@ std::string M_GetSaveGameDir(const char *iwadname)
         // add separator at end just in case
         savegamedir = savegamedir + DIR_SEPARATOR_S;
 
-        printf("Save directory changed to %s.\n", savegamedir.c_str());
+        fmt::print("Save directory changed to {}.\n", savegamedir);
     }
 #ifdef _WIN32
     // In -cdrom mode, we write savegames to a specific directory
@@ -2861,7 +2862,7 @@ std::string M_GetSaveGameDir(const char *iwadname)
 // Calculate the path to the directory for autoloaded WADs/DEHs.
 // Creates the directory as necessary.
 //
-std::string M_GetAutoloadDir(const char *iwadname)
+std::string M_GetAutoloadDir(const std::string &iwadname)
 {
     if (autoload_path == NULL || strlen(autoload_path) == 0)
     {

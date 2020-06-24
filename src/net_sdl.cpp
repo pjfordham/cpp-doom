@@ -115,7 +115,7 @@ static boolean NET_SDL_InitClient(void)
 
     p = M_CheckParmWithArgs("-port", 1);
     if (p > 0)
-       port = atoi(myargv[p+1].c_str());
+       port = std::stoi(myargv[p+1]);
 
     SDLNet_Init();
 
@@ -146,7 +146,7 @@ static boolean NET_SDL_InitServer(void)
 
     p = M_CheckParmWithArgs("-port", 1);
     if (p > 0)
-       port = atoi(myargv[p+1].c_str());
+       port = std::stoi(myargv[p+1]);
 
     SDLNet_Init();
 

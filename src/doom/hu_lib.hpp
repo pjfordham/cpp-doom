@@ -136,6 +136,11 @@ HUlib_addMessageToSText
 ( hu_stext_t*	s,
   const char*	prefix,
   const char*	msg );
+void
+HUlib_addMessageToSText
+( hu_stext_t*	s,
+  const std::string &prefix,
+  const std::string &msg );
 
 // draws stext
 void HUlib_drawSText(hu_stext_t* s);

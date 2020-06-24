@@ -297,9 +297,7 @@ void S_Init(int sfxVolume, int musicVolume)
     for (i = mus_e4m1; i <= mus_e5m9; i++)
     {
         musicinfo_t *const music = &S_music[i];
-        char namebuf[9];
-
-        M_snprintf(namebuf, sizeof(namebuf), "d_%s", DEH_String(music->name).c_str());
+        std::string namebuf = std::string("d_") + DEH_String(music->name);
         music->lumpnum = W_CheckNumForName(namebuf);
     }
 
@@ -911,7 +909,6 @@ void S_StartMusic(int m_id)
 void S_ChangeMusic(int musicnum, int looping)
 {
     musicinfo_t *music = NULL;
-    char namebuf[9];
     void *handle;
 
     if (gamestate != GS_LEVEL)
@@ -985,7 +982,7 @@ void S_ChangeMusic(int musicnum, int looping)
     // get lumpnum if neccessary
     if (!music->lumpnum)
     {
-       M_snprintf(namebuf, sizeof(namebuf), "d_%s", DEH_String(music->name).c_str());
+        auto namebuf = std::string("d_") + DEH_String(music->name);
         music->lumpnum = W_GetNumForName(namebuf);
     }
 

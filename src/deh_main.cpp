@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <fmt/core.h>
 
 #include "doomtype.hpp"
 #include "i_glob.hpp"
@@ -403,7 +404,7 @@ static void DEH_ParseContext(deh_context_t *context)
 
 // Parses a dehacked file
 
-int DEH_LoadFile(const char *filename)
+int DEH_LoadFile(const std::string &filename)
 {
     deh_context_t *context;
 
@@ -422,13 +423,13 @@ int DEH_LoadFile(const char *filename)
     deh_allow_extended_strings = false;
 */
 
-    printf(" loading %s\n", filename);
+    fmt::print(stdout, " loading {}\n", filename);
 
-    context = DEH_OpenFile(filename);
+    context = DEH_OpenFile(filename.c_str());
 
     if (context == NULL)
     {
-        fprintf(stderr, "DEH_LoadFile: Unable to open %s\n", filename);
+        fmt::print(stderr, "DEH_LoadFile: Unable to open {}\n", filename);
         return 0;
     }
 
@@ -544,7 +545,7 @@ void DEH_ParseCommandLine(void)
         while (p < myargv.size() && myargv[p][0] != '-')
         {
             auto filename = D_TryFindWADByName(myargv[p]);
-            DEH_LoadFile(filename.c_str());
+            DEH_LoadFile(filename);
             ++p;
         }
     }

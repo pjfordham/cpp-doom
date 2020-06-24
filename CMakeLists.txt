@@ -45,6 +45,8 @@ if(PNG_FOUND)
     set(HAVE_LIBPNG TRUE)
 endif()
 
+find_package(fmt)
+
 find_package(m)
 
 include(CheckSymbolExists)
