@@ -24,33 +24,47 @@
 
 int	leveltime;
 
-#include <tuple>
+#include <variant>
 #include <list>
 
-std::tuple<std::list<fireflicker_t>, std::list<lightflash_t>,
-           std::list<strobe_t>, std::list<glow_t>, std::list<plat_t>,
-           std::list<vldoor_t>, std::list<ceiling_t>,
-           std::list<floormove_t>, std::list<mobj_t>>
-    static_thinkers;
+std::list<std::variant<fireflicker_t, lightflash_t, strobe_t, glow_t, plat_t, vldoor_t, ceiling_t, floormove_t, mobj_t>> static_thinkers;
 
 //
 // P_InitThinkers
 //
 void P_InitThinkers (void)
 {
-    std::apply([](auto&&... args) {((args.clear()), ...);}, static_thinkers);
+   static_thinkers.clear();
 }
 
 bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
    return P_VisitThinkers<mobj_t>(visitor);
 }
 
+struct {
+   template <typename Thinker>
+   void operator()( Thinker &&i) { i.action(); }
+} action;
+
+struct {
+   template <typename Thinker>
+   bool operator()( Thinker &&i) { return i.deleted; }
+} deleted;
+
 //
 // P_RunThinkers
 //
 void P_RunThinkers (void)
 {
-   std::apply([](auto&&... args) {((P_RunThinkers(args)), ...);}, static_thinkers);
+   auto i = static_thinkers.begin();
+
+   while ( i != static_thinkers.end() ) {
+      if ( std::visit( deleted, *i ) ) {
+         i = static_thinkers.erase( i );
+      } else {
+         std::visit( action, *(i++) );
+      }
+   }
 
    // [crispy] support MUSINFO lump (dynamic music changing)
    T_MusInfo();
@@ -62,12 +76,10 @@ void P_RunThinkers (void)
 
 void P_Ticker (void)
 {
-    int		i;
-    
     // run the tic
     if (paused)
 	return;
-		
+
     // pause if in menu and at least one tic has been run
     if ( !netgame
 	 && menuactive
@@ -76,16 +88,16 @@ void P_Ticker (void)
     {
 	return;
     }
-    
-		
-    for (i=0 ; i<MAXPLAYERS ; i++)
+
+
+    for (int i=0 ; i<MAXPLAYERS ; i++)
 	if (playeringame[i])
 	    P_PlayerThink (&players[i]);
-			
+
     P_RunThinkers ();
     P_UpdateSpecials ();
     P_RespawnSpecials ();
 
     // for par times
-    leveltime++;	
+    leveltime++;
 }

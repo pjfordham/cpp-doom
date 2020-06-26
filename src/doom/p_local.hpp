@@ -60,7 +60,7 @@
 #define	BASETHRESHOLD	 	100
 
 #include <functional>
-#include <tuple>
+#include <variant>
 #include <list>
 #include "s_musinfo.hpp" // [crispy] T_MAPMusic()
 #include "p_spec.hpp"
@@ -75,15 +75,9 @@
 // All thinkers should be allocated by zone_malloc
 // so they can be operated on uniformly.
 
-extern std::tuple< std::list<fireflicker_t>,
-            std::list<lightflash_t>,
-            std::list<strobe_t>,
-            std::list<glow_t>,
-            std::list<plat_t>,
-            std::list<vldoor_t>,
-            std::list<ceiling_t>,
-            std::list<floormove_t>,
-            std::list<mobj_t> > static_thinkers;
+extern std::list<std::variant<fireflicker_t, lightflash_t, strobe_t, glow_t, plat_t, vldoor_t, ceiling_t, floormove_t, mobj_t>>
+    static_thinkers;
+
 
 void P_InitThinkers (void);
 void P_RunThinkers (void);
@@ -98,8 +92,8 @@ bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor);
 template <typename Thinker>
 Thinker *P_AddThinker()
 {
-   std::get<std::list<Thinker>>(static_thinkers).emplace_back();
-   return &std::get<std::list<Thinker>>(static_thinkers).back();
+   static_thinkers.emplace_back(std::in_place_type_t<Thinker>());
+   return &std::get<Thinker>(static_thinkers.back());
 }
 
 //
@@ -119,39 +113,14 @@ void P_RemoveThinker (Thinker* thinker)
 template <typename Thinker>
 bool P_VisitThinkers(std::function<bool(Thinker *)> visitor)
 {
-   auto &thinkers = std::get<std::list<Thinker>>(static_thinkers);
-
-   for( auto i = thinkers.begin(); i != thinkers.end(); i++ ) {
+   for( auto i = static_thinkers.begin(); i != static_thinkers.end(); i++ ) {
       // Break out early if return true;
-      if ( visitor( &*i ) ) {
+      if ( holds_alternative<Thinker>( *i ) && visitor( &std::get<Thinker>(*i) ) ) {
          return true;
       }
    }
    return false;
 }
-
-template <typename Thinker>
-void P_RunThinkers (std::list<Thinker> &thinkers)
-{
-   auto i = thinkers.begin();
-   do {
-      while ( i != thinkers.end() && i->deleted )
-      {
-         i = thinkers.erase( i );
-      }
-      if ( i != thinkers.end() ) {
-         i->action();
-         i++;
-      }
-      else
-      {
-         break;
-      }
-   } while ( true );
-
-   return;
-}
-
 
 //
 // P_PSPR
