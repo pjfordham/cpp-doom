@@ -2746,7 +2746,7 @@ void M_SetConfigDir(const char *dir)
         configdir = GetDefaultConfigDir();
     }
 
-    if (strcmp(configdir.c_str(), "") != 0)
+    if (configdir != "")
     {
        fmt::print("Using {} for configuration and saves\n", configdir);
     }

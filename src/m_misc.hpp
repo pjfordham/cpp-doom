@@ -25,7 +25,8 @@
 #include <memory>
 #include <algorithm>
 #include "doomtype.hpp"
-
+#include <string_view>
+    
 boolean M_WriteFile(const std::string &name, const void *source, int length);
 int M_ReadFile(const std::string &name, byte **buffer);
 void M_MakeDirectory(const std::string &dir);
@@ -51,6 +52,15 @@ char *M_StringDuplicate(const std::string_view &orig);
 
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);
 int M_snprintf(char *buf, size_t buf_len, const char *s, ...) PRINTF_ATTR(3, 4);
+
+inline bool iequals(const std::string_view a, const std::string_view b)
+{
+   return std::equal(a.begin(), a.end(),
+                     b.begin(), b.end(),
+                     [](char a, char b) {
+                        return tolower(a) == tolower(b);
+                     });
+}
 
 #endif
 

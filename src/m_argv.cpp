@@ -42,11 +42,9 @@ std::vector<std::string> myargv;
 
 int M_CheckParmWithArgs(const char *check, int num_args)
 {
-    int i;
-
-    for (i = 1; i < myargv.size() - num_args; i++)
+    for (int i = 1; i < myargv.size() - num_args; i++)
     {
-        if (!strcasecmp(check, myargv[i].c_str()))
+        if (iequals(check, myargv[i]))
 	    return i;
     }
 

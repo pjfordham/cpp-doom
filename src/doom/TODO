@@ -57,7 +57,7 @@ crispy physical menu is broken // not to do with libfmt in menu
 
 load game seems to be broken.
 
-bool iequals(const string& a, const string& b)
+bool iequals(const std::string_view a, const std::string_view b)
 {
     return std::equal(a.begin(), a.end(),
                       b.begin(), b.end(),

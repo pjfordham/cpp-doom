@@ -145,7 +145,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
        return NULL;
     }
 
-    if (strcasecmp(filename.c_str()+filename.length()-3 , "wad" ) )
+    if (!iequals( filename.substr(filename.size() - std::min((std::size_t)3, filename.size())), "wad" ) )
     {
 	// single lump file
 

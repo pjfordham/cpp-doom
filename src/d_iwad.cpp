@@ -58,7 +58,7 @@ boolean D_IsIWADName(const char *name)
 
     for (i = 0; i < arrlen(iwads); i++)
     {
-        if (!strcasecmp(name, iwads[i].name))
+        if (iequals(name, iwads[i].name))
         {
             return true;
         }
@@ -436,7 +436,7 @@ static void CheckDOSDefaults(void)
 static boolean DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != NULL
-       && !strcasecmp(std::string(M_BaseName(path)).c_str(), filename);
+       && iequals( M_BaseName(path), filename );
 }
 
 // Check if the specified directory contains the specified IWAD
@@ -519,7 +519,7 @@ static GameMission_t IdentifyIWADByName(const std::string &name, int mask)
 
         // Check if it ends in this IWAD name.
 
-        if (!strcasecmp(std::string(M_BaseName(name)).c_str(), iwads[i].name))
+        if ( iequals( M_BaseName(name), iwads[i].name) )
         {
             mission = iwads[i].mission;
             break;

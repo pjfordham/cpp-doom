@@ -1992,7 +1992,7 @@ void G_DoLoadGame (void)
         // [crispy] strings are not equal
         if (!savemaplumpinfo ||
             // [crispy] case-insensitive, so "doom.wad" matches "DOOM.WAD"
-            strcasecmp(savewadfilename.c_str(), W_WadNameForLump(savemaplumpinfo)))
+            !iequals( savewadfilename, W_WadNameForLump(savemaplumpinfo)))
         {
             M_ForceLoadGame();
             fclose(save_stream);
