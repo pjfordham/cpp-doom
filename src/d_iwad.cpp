@@ -814,7 +814,7 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
 
         if (result.empty())
         {
-           I_Error("IWAD file '%s' not found!", iwadfile.c_str());
+           I_Error("IWAD file '%s' not found!", iwadfile);
         }
 
         *mission = IdentifyIWADByName(result, mask);

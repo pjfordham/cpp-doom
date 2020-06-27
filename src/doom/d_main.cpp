@@ -856,7 +856,7 @@ static void SetMissionForPackName(const std::string &pack_name)
         printf("\t%s\n", pack.name);
     }
 
-    I_Error("Unknown mission pack name: %s", pack_name.c_str());
+    I_Error("Unknown mission pack name: %s", pack_name);
 }
 
 //
@@ -1129,7 +1129,7 @@ static void InitGameVersion(void)
                         gameversions[i].description);
             }
             
-            I_Error("Unknown game version '%s'", myargv[p+1].c_str());
+            I_Error("Unknown game version '%s'", myargv[p+1]);
         }
     }
     else
@@ -2089,14 +2089,14 @@ void D_DoomMain (void)
 	
 	if ( gamemode == shareware)
            I_Error("%s",DEH_String("\nYou cannot -file with the shareware "
-			       "version. Register!").c_str());
+			       "version. Register!"));
 
 	// Check for fake IWAD with right name,
 	// but w/o all the lumps of the registered version. 
 	if (gamemode == registered)
 	    for (i = 0;i < 23; i++)
 		if (W_CheckNumForName(name[i])<0)
-                   I_Error("%s",DEH_String("\nThis is not the registered version.").c_str());
+                   I_Error("%s",DEH_String("\nThis is not the registered version."));
     }
 
 // [crispy] disable meaningless warning, we always use "-merge" anyway

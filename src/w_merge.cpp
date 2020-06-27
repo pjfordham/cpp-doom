@@ -735,7 +735,7 @@ int W_MergeDump (const std::string &file)
     fp = fopen(file, "wb");
     if (!fp)
     {
-       I_Error("W_MergeDump: Failed writing to file '%s'!", file.c_str());
+       I_Error("W_MergeDump: Failed writing to file '%s'!", file);
     }
 
     // [crispy] prepare directory

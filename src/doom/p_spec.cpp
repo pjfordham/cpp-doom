@@ -213,7 +213,7 @@ void P_InitPicAnims (void)
 	else
 	if (lastanim->numpics < 2)
 	    I_Error ("P_InitPicAnims: bad cycle from %s to %s",
-		     startname.c_str(), endname.c_str());
+		     startname, endname);
 	
 	lastanim++;
     }

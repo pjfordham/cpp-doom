@@ -204,7 +204,7 @@ int M_ReadFile(const std::string &name, byte **buffer)
 	
     handle = fopen(name, "rb");
     if (handle == NULL)
-        I_Error ("Couldn't read file %s", name.c_str());
+        I_Error ("Couldn't read file %s", name);
 
     // find the size of the file by seeking to the end and
     // reading the current position
@@ -216,7 +216,7 @@ int M_ReadFile(const std::string &name, byte **buffer)
     fclose (handle);
 	
     if (count < length)
-        I_Error ("Couldn't read file %s", name.c_str());
+        I_Error ("Couldn't read file %s", name);
 		
     buf[length] = '\0';
     *buffer = buf;

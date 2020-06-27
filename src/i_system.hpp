@@ -22,7 +22,8 @@
 
 #include "d_ticcmd.hpp"
 #include "d_event.hpp"
-
+#include "fmt/core.h"
+#include "fmt/printf.h"
 
 typedef void (*atexit_func_t)(void);
 
@@ -52,7 +53,17 @@ ticcmd_t* I_BaseTiccmd (void);
 // Clean exit, displays sell blurb.
 void I_Quit (void) NORETURN;
 
-void I_Error (const char *error, ...) NORETURN PRINTF_ATTR(1, 2);
+void _I_Error (const char *error, ...) NORETURN PRINTF_ATTR(1, 2);
+
+// Prints formatted error message.
+inline void vreport_error(const char* format, fmt::printf_args args) {
+   _I_Error("%s",fmt::vsprintf(format, args).c_str());
+}
+template <typename... Args>
+void I_Error(const char* format, const Args & ... args) {
+   vreport_error(format, fmt::make_printf_args(args...));
+}
+
 
 void I_Tactile (int on, int off, int total);
 

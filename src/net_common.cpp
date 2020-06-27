@@ -474,7 +474,7 @@ void NET_OpenLog(void)
        net_debug = fopen(myargv[p + 1], "w");
         if (net_debug == NULL)
         {
-           I_Error("Failed to open %s to write debug log.", myargv[p + 1].c_str());
+           I_Error("Failed to open %s to write debug log.", myargv[p + 1]);
         }
         I_AtExit(CloseLog, true);
     }

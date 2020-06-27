@@ -998,7 +998,7 @@ static void DumpSubstituteConfig(const std::string &filename)
 
     if (fs == NULL)
     {
-        I_Error("Failed to open %s for writing", filename.c_str());
+        I_Error("Failed to open %s for writing", filename);
         return;
     }
 

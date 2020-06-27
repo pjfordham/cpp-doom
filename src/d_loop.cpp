@@ -498,7 +498,7 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
 
             if (addr == NULL)
             {
-               I_Error("Unable to resolve '%s'\n", myargv[i+1].c_str());
+               I_Error("Unable to resolve '%s'\n", myargv[i+1]);
             }
         }
     }
@@ -513,7 +513,7 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
         if (!NET_CL_Connect(addr, connect_data))
         {
             I_Error("D_InitNetGame: Failed to connect to %s:\n%s\n",
-                    NET_AddrToString(addr), net_client_reject_reason.c_str());
+                    NET_AddrToString(addr), net_client_reject_reason);
         }
 
         printf("D_InitNetGame: Connected to %s\n", NET_AddrToString(addr));

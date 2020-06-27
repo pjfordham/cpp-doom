@@ -2094,7 +2094,7 @@ void G_DoSaveGame (void)
         if (save_stream == NULL)
         {
             I_Error("Failed to open either '%s' or '%s' to write savegame.",
-                    temp_savegame_file.c_str(), recovery_savegame_file.c_str());
+                    temp_savegame_file, recovery_savegame_file);
         }
     }
 
@@ -2148,7 +2148,7 @@ void G_DoSaveGame (void)
         // with an error.
         I_Error("Failed to open savegame file '%s' for writing.\n"
                 "But your game has been saved to '%s' for recovery.",
-                temp_savegame_file.c_str(), recovery_savegame_file.c_str());
+                temp_savegame_file, recovery_savegame_file);
     }
 
     // Now rename the temporary savegame file to the actual savegame
@@ -2987,7 +2987,7 @@ boolean G_CheckDemoStatus (void)
 	// [crispy] if a new game is started during demo recording, start a new demo
 	if (gameaction != ga_newgame)
 	{
-           I_Error ("Demo %s recorded",demoname.c_str()); 
+           I_Error ("Demo %s recorded",demoname); 
 	}
 	else
 	{

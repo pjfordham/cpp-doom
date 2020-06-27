@@ -272,7 +272,7 @@ void I_Quit (void)
 
 static boolean already_quitting = false;
 
-void I_Error (const char *error, ...)
+void _I_Error (const char *error, ...)
 {
     char msgbuf[512] = { 0 };
     va_list argptr;

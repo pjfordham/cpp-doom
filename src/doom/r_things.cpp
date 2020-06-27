@@ -297,7 +297,7 @@ void R_InitSpriteDefs(const char **namelist)
 		    if (sprtemp[frame].lump[rotation] == -1)
 			I_Error ("R_InitSprites: Sprite %s frame %c "
 				 "is missing rotations",
-				 spritename.c_str(), frame+'A');
+				 spritename, frame+'A');
 
 		// [crispy] support 16 sprite rotations
 		sprtemp[frame].rotate = 2;

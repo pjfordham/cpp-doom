@@ -176,7 +176,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
 	    {
 		W_CloseFile(wad_file);
 		I_Error ("Wad file %s doesn't have IWAD "
-			 "or PWAD id\n", filename.c_str());
+			 "or PWAD id\n", filename);
 	    }
 
 	    // ???modifiedgame = true;
@@ -191,7 +191,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
          {
                  W_CloseFile(wad_file);
                  I_Error ("Error: Vanilla limit for lumps in a WAD is 4046, "
-                          "PWAD %s has %d", filename.c_str(), header.numlumps);
+                          "PWAD %s has %d", filename, header.numlumps);
          }
 
 	header.infotableofs = LONG(header.infotableofs);
@@ -660,7 +660,7 @@ int W_LumpDump (const char *lumpname)
     FILE *fp = fopen(filename, "wb");
     if (!fp)
     {
-	I_Error("W_LumpDump: Failed writing to file '%s'!", filename.c_str());
+	I_Error("W_LumpDump: Failed writing to file '%s'!", filename);
     }
 
     std::string lump_p(lumpinfo[i]->size, 0);
