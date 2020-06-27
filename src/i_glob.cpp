@@ -87,8 +87,8 @@ struct glob_t
     int next_index;
 };
 
-glob_t *I_StartMultiGlob(const char *directory, int flags,
-                         const char *glob, ...)
+glob_t *I_StartMultiGlob(const std::string &directory, int flags,
+                         const std::string  &glob, ...)
 {
     int num_globs;
     va_list args;
@@ -120,7 +120,7 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
     }
     va_end(args);
 
-    result->dir = opendir(directory);
+    result->dir = opendir(directory.c_str());
     if (result->dir == NULL)
     {
         globs.clear();
@@ -138,7 +138,7 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
     return result;
 }
 
-glob_t *I_StartGlob(const char *directory, const char *glob, int flags)
+glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags)
 {
     return I_StartMultiGlob(directory, flags, glob, NULL);
 }
@@ -157,9 +157,12 @@ void I_EndGlob(glob_t *glob)
     delete glob;
 }
 
-static boolean MatchesGlob(const char *name, const char *glob, int flags)
+static boolean MatchesGlob(const std::string &_name, const std::string &_glob, int flags)
 {
     int n, g;
+
+    auto glob = _glob.c_str();
+    auto name = _name.c_str();
 
     while (*glob != '\0')
     {
@@ -202,13 +205,13 @@ static boolean MatchesGlob(const char *name, const char *glob, int flags)
     return *name == '\0';
 }
 
-static boolean MatchesAnyGlob(const char *name, glob_t *glob)
+static boolean MatchesAnyGlob(const std::string &name, glob_t *glob)
 {
     int i;
 
     for (i = 0; i < glob->num_globs; ++i)
     {
-       if (MatchesGlob(name, glob->globs[i].c_str(), glob->flags))
+       if (MatchesGlob(name, glob->globs[i], glob->flags))
         {
             return true;
         }
@@ -290,7 +293,7 @@ const char *I_NextGlob(glob_t *glob)
 
 #warning No native implementation of file globbing.
 
-glob_t *I_StartGlob(const char *directory, const char *glob, int flags)
+glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags)
 {
     return NULL;
 }

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <fmt/core.h>
 
 #include "../utils/memory.hpp"
 #include "m_misc.hpp"
@@ -237,8 +238,8 @@ static boolean WriteTimidityConfig(const char *path, gus_config_t *config)
         if (config->mapping[i] >= 0 && config->mapping[i] < MAX_INSTRUMENTS
             && !config->patch_names[config->mapping[i]].empty())
         {
-            fprintf(fstream, "%u %s\n",
-                    i, config->patch_names[config->mapping[i]].c_str());
+           fmt::print(fstream, "{} {}\n",
+                    i, config->patch_names[config->mapping[i]]);
         }
     }
 
@@ -249,8 +250,8 @@ static boolean WriteTimidityConfig(const char *path, gus_config_t *config)
         if (config->mapping[i] >= 0 && config->mapping[i] < MAX_INSTRUMENTS
             && !config->patch_names[config->mapping[i]].empty())
         {
-            fprintf(fstream, "%u %s\n",
-                    i - 128, config->patch_names[config->mapping[i]].c_str());
+           fmt::print(fstream, "{} {}\n",
+                    i - 128, config->patch_names[config->mapping[i]]);
         }
     }
 

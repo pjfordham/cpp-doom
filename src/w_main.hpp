@@ -28,7 +28,7 @@ int W_MergeDump (const std::string &file);
 int W_LumpDump (const char *lumpname);
 
 // Autoload all .wad files from the given directory:
-void W_AutoLoadWADs(const char *path);
+void W_AutoLoadWADs(const std::string &path);
 
 #endif /* #ifndef W_MAIN_H */
 

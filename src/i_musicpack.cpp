@@ -24,6 +24,7 @@
 #include <vector>
 #include <algorithm>
 #include "../utils/memory.hpp"
+#include <fmt/core.h>
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -566,7 +567,7 @@ static void ParseOggFile(file_metadata_t *metadata, FILE *fs)
     }
 }
 
-static void ReadLoopPoints(const char *filename, file_metadata_t *metadata)
+static void ReadLoopPoints(const std::string &filename, file_metadata_t *metadata)
 {
     FILE *fs;
     char header[4];
@@ -576,7 +577,7 @@ static void ReadLoopPoints(const char *filename, file_metadata_t *metadata)
     metadata->start_time = 0;
     metadata->end_time = -1;
 
-    fs = fopen(filename, "rb");
+    fs = fopen(filename.c_str(), "rb");
 
     if (fs == NULL)
     {
@@ -668,7 +669,7 @@ static std::string GetSubstituteMusicFile(void *data, size_t data_len)
     return filename;
 }
 
-static std::string GetFullPath(const char *musicdir, const char *path)
+static std::string GetFullPath(const std::string &musicdir, const std::string &path)
 {
     // Starting with directory separator means we have an absolute path,
     // so just return it.
@@ -692,14 +693,14 @@ static std::string GetFullPath(const char *musicdir, const char *path)
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    return std::string( musicdir ) + systemized_path;
+    return musicdir + systemized_path;
 }
 
 // If filename ends with .{ext}, check if a .ogg, .flac or .mp3 exists with
 // that name, returning it if found. If none exist, NULL is returned. If the
 // filename doesn't end with .{ext} then it just acts as a wrapper around
 // GetFullPath().
-static std::string ExpandFileExtension(const char *musicdir, const char *filename)
+static std::string ExpandFileExtension(const std::string &musicdir, const std::string &filename)
 {
     static const char *extns[] = {".flac", ".ogg", ".mp3"};
     int i;
@@ -712,7 +713,7 @@ static std::string ExpandFileExtension(const char *musicdir, const char *filenam
     for (i = 0; i < arrlen(extns); ++i)
     {
         auto replaced = M_StringReplace(filename, ".{ext}", extns[i]);
-        auto result = GetFullPath(musicdir, replaced.c_str());
+        auto result = GetFullPath(musicdir, replaced);
         if (M_FileExists(result))
         {
             return result;
@@ -723,8 +724,9 @@ static std::string ExpandFileExtension(const char *musicdir, const char *filenam
 }
 
 // Add a substitute music file to the lookup list.
-static void AddSubstituteMusic(const char *musicdir, const char *hash_prefix,
-                               const char *filename)
+static void AddSubstituteMusic(const std::string &musicdir,
+                               const std::string &hash_prefix,
+                               const std::string &filename)
 {
     subst_music_t *s;
 
@@ -772,7 +774,7 @@ static std::string ReadHashPrefix(char *line)
 // Parse a line from substitute music configuration file; returns error
 // message or NULL for no error.
 
-static const char *ParseSubstituteLine(const char *musicdir, char *line)
+static const char *ParseSubstituteLine(const std::string &musicdir, char *line)
 {
     char *filename;
     char *p;
@@ -833,14 +835,14 @@ static const char *ParseSubstituteLine(const char *musicdir, char *line)
     }
 
     // Expand full path and add to our database of substitutes.
-    AddSubstituteMusic(musicdir, hash_prefix.c_str(), filename);
+    AddSubstituteMusic(musicdir, hash_prefix, filename);
 
     return NULL;
 }
 
 // Read a substitute music configuration file.
 
-static boolean ReadSubstituteConfig(const char *musicdir, const char *filename)
+static boolean ReadSubstituteConfig(const std::string &musicdir, const std::string &filename)
 {
     char *buffer;
     char *line;
@@ -879,7 +881,7 @@ static boolean ReadSubstituteConfig(const char *musicdir, const char *filename)
 
         if (error != NULL)
         {
-            fprintf(stderr, "%s:%i: Error: %s\n", filename, linenum, error);
+           fmt::print(stderr, "{}:{}: Error: {}\n", filename, linenum, error);
         }
 
         ++linenum;
@@ -918,7 +920,7 @@ static void LoadSubstituteConfigs(void)
     }
 
     // Load all music packs, by searching for .cfg files.
-    glob = I_StartGlob(musicdir.c_str(), "*.cfg", GLOB_FLAG_SORTED|GLOB_FLAG_NOCASE);
+    glob = I_StartGlob(musicdir, "*.cfg", GLOB_FLAG_SORTED|GLOB_FLAG_NOCASE);
     for (;;)
     {
         path = I_NextGlob(glob);
@@ -926,7 +928,7 @@ static void LoadSubstituteConfigs(void)
         {
             break;
         }
-        ReadSubstituteConfig(musicdir.c_str(), path);
+        ReadSubstituteConfig(musicdir, path);
     }
     I_EndGlob(glob);
 
@@ -942,9 +944,9 @@ static void LoadSubstituteConfigs(void)
     // configuration files, so that the entries here can be overridden.
     for (i = 0; i < arrlen(known_filenames); ++i)
     {
-       AddSubstituteMusic(musicdir.c_str(),
-                          known_filenames[i].hash_prefix.c_str(),
-                          known_filenames[i].filename.c_str());
+       AddSubstituteMusic(musicdir,
+                          known_filenames[i].hash_prefix,
+                          known_filenames[i].filename);
     }
 
     if (subst_music_len > old_music_len)
@@ -982,7 +984,7 @@ static boolean IsMusicLump(int lumpnum)
 // Dump an example config file containing checksums for all MIDI music
 // found in the WAD directory.
 
-static void DumpSubstituteConfig(const char *filename)
+static void DumpSubstituteConfig(const std::string &filename)
 {
     sha1_context_t context;
     sha1_digest_t digest;
@@ -992,11 +994,11 @@ static void DumpSubstituteConfig(const char *filename)
     unsigned int lumpnum;
     size_t h;
 
-    fs = fopen(filename, "w");
+    fs = fopen(filename.c_str(), "w");
 
     if (fs == NULL)
     {
-        I_Error("Failed to open %s for writing", filename);
+        I_Error("Failed to open %s for writing", filename.c_str());
         return;
     }
 
@@ -1032,7 +1034,7 @@ static void DumpSubstituteConfig(const char *filename)
     fprintf(fs, "\n");
     fclose(fs);
 
-    printf("Substitute MIDI config file written to %s.\n", filename);
+    fmt::print(stdout, "Substitute MIDI config file written to {}.\n", filename);
     I_Quit();
 }
 
@@ -1085,7 +1087,7 @@ static boolean I_MP_InitMusic(void)
 
     if (i > 0)
     {
-       DumpSubstituteConfig(myargv[i + 1].c_str());
+       DumpSubstituteConfig(myargv[i + 1]);
     }
 
     // If we're in GENMIDI mode, try to load sound packs.
@@ -1252,8 +1254,8 @@ static void *I_MP_RegisterSong(void *data, int len)
     {
         // Fall through and play MIDI normally, but print an error
         // message.
-        fprintf(stderr, "Failed to load substitute music file: %s: %s\n",
-                filename.c_str(), Mix_GetError());
+        fmt::print(stderr, "Failed to load substitute music file: {}: {}\n",
+                filename, Mix_GetError());
         return NULL;
     }
 

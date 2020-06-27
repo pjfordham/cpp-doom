@@ -63,7 +63,7 @@ static void CopyRegion(pixel_t *dest, int dest_pitch,
     }
 }
 
-static void SaveDiskData(const char *disk_lump, int xoffs, int yoffs)
+static void SaveDiskData(const std::string &disk_lump, int xoffs, int yoffs)
 {
     // Allocate a complete temporary screen where we'll draw the patch.
     auto tmpscreen = Z_New<pixel_t>(PU_STATIC, SCREENWIDTH * SCREENHEIGHT);
@@ -93,7 +93,7 @@ static void SaveDiskData(const char *disk_lump, int xoffs, int yoffs)
     Z_Delete(tmpscreen);
 }
 
-void V_EnableLoadingDisk(const char *lump_name, int xoffs, int yoffs)
+void V_EnableLoadingDisk(const std::string &lump_name, int xoffs, int yoffs)
 {
     loading_disk_xoffs = xoffs;
     loading_disk_yoffs = yoffs;

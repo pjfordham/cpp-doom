@@ -425,7 +425,7 @@ int DEH_LoadFile(const std::string &filename)
 
     fmt::print(stdout, " loading {}\n", filename);
 
-    context = DEH_OpenFile(filename.c_str());
+    context = DEH_OpenFile(filename);
 
     if (context == NULL)
     {
@@ -446,9 +446,9 @@ int DEH_LoadFile(const std::string &filename)
 }
 
 // Load all dehacked patches from the given directory.
-void DEH_AutoLoadPatches(const char *path)
+void DEH_AutoLoadPatches(const std::string &path)
 {
-    const char *filename;
+   std::string filename;
     glob_t *glob;
 
     glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
@@ -456,7 +456,7 @@ void DEH_AutoLoadPatches(const char *path)
     for (;;)
     {
         filename = I_NextGlob(glob);
-        if (filename == NULL)
+        if (filename.empty())
         {
             break;
         }

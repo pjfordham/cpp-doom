@@ -353,7 +353,7 @@ void EnableLoadingDisk(void) // [crispy] un-static
             disk_lump_name = DEH_String("STDISK");
         }
 
-        V_EnableLoadingDisk(disk_lump_name.c_str(),
+        V_EnableLoadingDisk(disk_lump_name,
                             SCREENWIDTH - LOADING_DISK_W,
                             SCREENHEIGHT - LOADING_DISK_H);
     }
@@ -828,7 +828,7 @@ static const char *GetGameName(const char *gamename)
     return gamename;
 }
 
-static void SetMissionForPackName(const char *pack_name)
+static void SetMissionForPackName(const std::string &pack_name)
 {
     static constexpr struct
     {
@@ -842,7 +842,7 @@ static void SetMissionForPackName(const char *pack_name)
 
     for (const auto &pack : packs)
     {
-        if (!strcasecmp(pack_name, pack.name))
+        if (iequals(pack_name, pack.name))
         {
             gamemission = pack.mission;
             return;
@@ -856,7 +856,7 @@ static void SetMissionForPackName(const char *pack_name)
         printf("\t%s\n", pack.name);
     }
 
-    I_Error("Unknown mission pack name: %s", pack_name);
+    I_Error("Unknown mission pack name: %s", pack_name.c_str());
 }
 
 //
@@ -940,7 +940,7 @@ void D_IdentifyVersion(void)
         p = M_CheckParmWithArgs("-pack", 1);
         if (p > 0)
         {
-            SetMissionForPackName(myargv[p + 1].c_str());
+            SetMissionForPackName(myargv[p + 1]);
         }
     }
 }
@@ -1316,7 +1316,7 @@ static void LoadIwadDeh(void)
                     "   utils/exe_edit/patches/chexdeh.zip");
         }
 
-        if (!DEH_LoadFile(chex_deh.c_str()))
+        if (!DEH_LoadFile(chex_deh))
         {
             I_Error("Failed to load chex.deh needed for emulating chex.exe.");
         }
@@ -1874,15 +1874,15 @@ void D_DoomMain (void)
         if (gamemission < pack_chex)
         {
             auto autoload_dir = M_GetAutoloadDir("doom-all");
-            DEH_AutoLoadPatches(autoload_dir.c_str());
-            W_AutoLoadWADs(autoload_dir.c_str());
+            DEH_AutoLoadPatches(autoload_dir);
+            W_AutoLoadWADs(autoload_dir);
         }
 
         // auto-loaded files per IWAD
 
         auto autoload_dir = M_GetAutoloadDir(D_SaveGameIWADName(gamemission));
-        DEH_AutoLoadPatches(autoload_dir.c_str());
-        W_AutoLoadWADs(autoload_dir.c_str());
+        DEH_AutoLoadPatches(autoload_dir);
+        W_AutoLoadWADs(autoload_dir);
     }
 
     // Load Dehacked patches specified on the command line with -deh.
@@ -2187,7 +2187,7 @@ void D_DoomMain (void)
     if (p)
     {
         // todo does this need error handling?
-       startskill = static_cast<skill_t>(myargv[p+1].c_str()[0]-'1');
+        startskill = static_cast<skill_t>(myargv[p+1][0]-'1');
 	autostart = true;
     }
 
@@ -2203,7 +2203,7 @@ void D_DoomMain (void)
 
     if (p)
     {
-       startepisode = myargv[p+1].c_str()[0]-'0';
+       startepisode = myargv[p+1][0]-'0';
 	startmap = 1;
 	autostart = true;
     }
@@ -2256,10 +2256,10 @@ void D_DoomMain (void)
            startmap = std::stoi (myargv[p+1]);
         else
         {
-           startepisode = myargv[p+1].c_str()[0]-'0';
+           startepisode = myargv[p+1][0]-'0';
 
             // [crispy] only if second argument is not another option
-           if (p + 2 < myargv.size() && myargv[p+2].c_str()[0] != '-')
+           if (p + 2 < myargv.size() && myargv[p+2][0] != '-')
             {
                 startmap = myargv[p+2][0]-'0';
             }

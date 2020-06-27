@@ -176,21 +176,21 @@ boolean W_ParseCommandLine(void)
 }
 
 // Load all WAD files from the given directory.
-void W_AutoLoadWADs(const char *path)
+void W_AutoLoadWADs(const std::string &path)
 {
     glob_t *glob;
-    const char *filename;
+    std::string filename;
 
     glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
                             "*.wad", "*.lmp", NULL);
     for (;;)
     {
         filename = I_NextGlob(glob);
-        if (filename == NULL)
+        if (filename.empty())
         {
             break;
         }
-        printf(" [autoload] merging %s\n", filename);
+        fmt::print(" [autoload] merging {}\n", filename);
         W_MergeFile(filename);
     }
 
