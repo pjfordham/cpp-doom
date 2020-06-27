@@ -1021,7 +1021,7 @@ static void R_InitTranMap()
 	auto fname = configdir + "tranmap.dat";
 
 	// [crispy] open file readable
-	if ((cachefp = fopen(fname.c_str(), "rb")) &&
+	if ((cachefp = fopen(fname, "rb")) &&
 	    // [crispy] could read struct cache from file
 	    fread(&cache, 1, sizeof(cache), cachefp) == sizeof(cache) &&
 	    // [crispy] same filter percents
@@ -1071,7 +1071,7 @@ static void R_InitTranMap()
 	    }
 
 	    // [crispy] file not readable, open writable
-	    if ((cachefp = fopen(fname.c_str(), "wb")))
+	    if ((cachefp = fopen(fname, "wb")))
 	    {
 		// [crispy] set filter percents
 		cache.pct = tran_filter_pct;

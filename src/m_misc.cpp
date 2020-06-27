@@ -70,7 +70,7 @@ boolean M_FileExists(const std::string &filename)
 {
     FILE *fstream;
 
-    fstream = fopen(filename.c_str(), "r");
+    fstream = fopen(filename, "r");
 
     if (fstream != NULL)
     {
@@ -177,7 +177,7 @@ boolean M_WriteFile(const std::string &name, const void *source, int length)
     FILE *handle;
     int	count;
 	
-    handle = fopen(name.c_str(), "wb");
+    handle = fopen(name, "wb");
 
     if (handle == NULL)
 	return false;
@@ -202,7 +202,7 @@ int M_ReadFile(const std::string &name, byte **buffer)
     int	count, length;
     byte *buf;
 	
-    handle = fopen(name.c_str(), "rb");
+    handle = fopen(name, "rb");
     if (handle == NULL)
         I_Error ("Couldn't read file %s", name.c_str());
 

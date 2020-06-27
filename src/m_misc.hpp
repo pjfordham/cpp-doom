@@ -62,5 +62,12 @@ inline bool iequals(const std::string_view a, const std::string_view b)
                      });
 }
 
+inline FILE *fopen(const std::string &filename, const char *mode) {
+   return fopen( filename.c_str(), mode );
+}
+inline int remove(const std::string &filename) {
+   return remove( filename.c_str() );
+}
+
 #endif
 

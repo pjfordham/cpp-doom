@@ -124,7 +124,7 @@ static void RemoveTimidityConfig(void)
 {
     if (temp_timidity_cfg.size())
     {
-        remove(temp_timidity_cfg.c_str());
+        remove(temp_timidity_cfg);
     }
 }
 
@@ -459,7 +459,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
 
         if (strlen(snd_musiccmd) == 0)
         {
-            remove(filename.c_str());
+            remove(filename);
         }
     }
 

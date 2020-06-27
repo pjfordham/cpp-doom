@@ -577,7 +577,7 @@ static void ReadLoopPoints(const std::string &filename, file_metadata_t *metadat
     metadata->start_time = 0;
     metadata->end_time = -1;
 
-    fs = fopen(filename.c_str(), "rb");
+    fs = fopen(filename, "rb");
 
     if (fs == NULL)
     {
@@ -994,7 +994,7 @@ static void DumpSubstituteConfig(const std::string &filename)
     unsigned int lumpnum;
     size_t h;
 
-    fs = fopen(filename.c_str(), "w");
+    fs = fopen(filename, "w");
 
     if (fs == NULL)
     {

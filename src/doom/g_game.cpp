@@ -2083,14 +2083,14 @@ void G_DoSaveGame (void)
     // and then rename it at the end if it was successfully written.
     // This prevents an existing savegame from being overwritten by
     // a corrupted one, or if a savegame buffer overrun occurs.
-    save_stream = fopen(temp_savegame_file.c_str(), "wb");
+    save_stream = fopen(temp_savegame_file, "wb");
 
     if (save_stream == NULL)
     {
         // Failed to save the game, so we're going to have to abort. But
         // to be nice, save to somewhere else before we call I_Error().
         recovery_savegame_file = M_TempFile("recovery.dsg");
-        save_stream = fopen(recovery_savegame_file.c_str(), "wb");
+        save_stream = fopen(recovery_savegame_file, "wb");
         if (save_stream == NULL)
         {
             I_Error("Failed to open either '%s' or '%s' to write savegame.",
@@ -2154,7 +2154,7 @@ void G_DoSaveGame (void)
     // Now rename the temporary savegame file to the actual savegame
     // file, overwriting the old savegame if there was one there.
 
-    remove(savegame_file.c_str());
+    remove(savegame_file);
     rename(temp_savegame_file.c_str(), savegame_file.c_str());
 
     gameaction = ga_nothing;
@@ -2585,7 +2585,7 @@ void G_RecordDemo (const std::string &name)
     demoname = fmt::format("{}.lmp", name);
 
     // [crispy] prevent overriding demos by adding a file name suffix
-    for ( ; j <= 99999 && (fp = fopen(demoname.c_str(), "rb")) != NULL; j++)
+    for ( ; j <= 99999 && (fp = fopen(demoname, "rb")) != NULL; j++)
     {
        demoname = fmt::format( "{}-{:05}.lmp", name, j);
        fclose (fp);

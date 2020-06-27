@@ -26,7 +26,8 @@
 #include "d_player.hpp"
 #include "d_mode.hpp"
 #include "m_argv.hpp"
-
+#include "m_misc.hpp"
+ 
 #include "statdump.hpp"
 
 /* Par times for E1M1-E1M9. */
@@ -334,7 +335,7 @@ void StatDump(void)
 
         if (myargv[i + 1] != "-")
         {
-           dumpfile = fopen(myargv[i + 1].c_str(), "w");
+           dumpfile = fopen(myargv[i + 1], "w");
         }
         else
         {

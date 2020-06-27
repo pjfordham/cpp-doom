@@ -24,6 +24,7 @@
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "m_argv.hpp"
+#include "m_misc.hpp"
 
 #include "../utils/memory.hpp"
 #include "net_common.hpp"
@@ -470,7 +471,7 @@ void NET_OpenLog(void)
     p = M_CheckParmWithArgs("-netlog", 1);
     if (p > 0)
     {
-       net_debug = fopen(myargv[p + 1].c_str(), "w");
+       net_debug = fopen(myargv[p + 1], "w");
         if (net_debug == NULL)
         {
            I_Error("Failed to open %s to write debug log.", myargv[p + 1].c_str());

@@ -94,7 +94,7 @@ deh_context_t *DEH_OpenFile(const std::string &filename)
     FILE *fstream;
     deh_context_t *context;
 
-    fstream = fopen(filename.c_str(), "r");
+    fstream = fopen(filename, "r");
 
     if (fstream == NULL)
         return NULL;

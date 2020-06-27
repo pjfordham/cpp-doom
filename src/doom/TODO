@@ -65,3 +65,27 @@ bool iequals(const std::string_view a, const std::string_view b)
                           return tolower(a) == tolower(b);
                       });
 }
+
+wrap
+
+opendir
+stat
+IsDirectory?
+CreateProcess?
+setenv
+M_SetVariable
+M_MakeDirectory
+mkdir
+
+
+convert I_Error to fmt
+
+// Prints formatted error message.
+void vreport_error(const char* format, fmt::format_args args) {
+  fmt::print("Error: ");
+  fmt::vprint(format, args);
+}
+template <typename... Args>
+void report_error(const char* format, const Args & ... args) {
+  vreport_error(format, fmt::make_format_args(args...));
+}

@@ -732,7 +732,7 @@ int W_MergeDump (const std::string &file)
     } directory_t;
 
     // [crispy] open file for writing
-    fp = fopen(file.c_str(), "wb");
+    fp = fopen(file, "wb");
     if (!fp)
     {
        I_Error("W_MergeDump: Failed writing to file '%s'!", file.c_str());

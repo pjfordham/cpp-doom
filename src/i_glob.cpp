@@ -88,7 +88,7 @@ struct glob_t
 };
 
 glob_t *I_StartMultiGlob(const std::string &directory, int flags,
-                         const std::string  &glob, ...)
+                         const std::string glob, ...)
 {
     int num_globs;
     va_list args;

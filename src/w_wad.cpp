@@ -657,7 +657,7 @@ int W_LumpDump (const char *lumpname)
     std::string filename = std::string(lumpname) + ".lmp";
     std::transform(filename.begin(), filename.end(),
                    filename.begin(), ::tolower);
-    FILE *fp = fopen(filename.c_str(), "wb");
+    FILE *fp = fopen(filename, "wb");
     if (!fp)
     {
 	I_Error("W_LumpDump: Failed writing to file '%s'!", filename.c_str());
