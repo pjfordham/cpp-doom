@@ -899,7 +899,6 @@ static void LoadSubstituteConfigs(void)
 {
     glob_t *glob;
     std::string musicdir;
-    const char *path;
     unsigned int old_music_len;
     unsigned int i;
 
@@ -923,8 +922,8 @@ static void LoadSubstituteConfigs(void)
     glob = I_StartGlob(musicdir, "*.cfg", GLOB_FLAG_SORTED|GLOB_FLAG_NOCASE);
     for (;;)
     {
-        path = I_NextGlob(glob);
-        if (path == NULL)
+        auto path = I_NextGlob(glob);
+        if (path.empty())
         {
             break;
         }

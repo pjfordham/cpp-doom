@@ -256,13 +256,11 @@ static void ReadAllFilenames(glob_t *glob)
     }
 }
 
-const char *I_NextGlob(glob_t *glob)
+std::string I_NextGlob(glob_t *glob)
 {
-    const char *result;
-
     if (glob == NULL)
     {
-        return NULL;
+       return {};
     }
 
     // In unsorted mode we just return the filenames as we read
@@ -270,7 +268,7 @@ const char *I_NextGlob(glob_t *glob)
     if ((glob->flags & GLOB_FLAG_SORTED) == 0)
     {
         glob->last_filename = NextGlob(glob);
-        return glob->last_filename.c_str();
+        return glob->last_filename;
     }
 
     // In sorted mode we read the whole list of filenames into memory,
@@ -282,9 +280,9 @@ const char *I_NextGlob(glob_t *glob)
     }
     if (glob->next_index >= glob->filenames_len)
     {
-        return NULL;
+       return {};
     }
-    result = glob->filenames[glob->next_index].c_str();
+    auto result = glob->filenames[glob->next_index];
     ++glob->next_index;
     return result;
 }
@@ -302,7 +300,7 @@ void I_EndGlob(glob_t *glob)
 {
 }
 
-const char *I_NextGlob(glob_t *glob)
+std::string I_NextGlob(glob_t *glob)
 {
     return "";
 }

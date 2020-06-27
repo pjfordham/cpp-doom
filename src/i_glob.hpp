@@ -40,7 +40,7 @@ void I_EndGlob(glob_t *glob);
 
 // Read the name of the next globbed filename. NULL is returned if there
 // are no more found.
-const char *I_NextGlob(glob_t *glob);
+std::string I_NextGlob(glob_t *glob);
 
 #endif
 
