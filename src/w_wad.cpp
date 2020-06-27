@@ -137,7 +137,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
     }
 
     // Open the file and add to directory
-    wad_file = W_OpenFile(filename.c_str());
+    wad_file = W_OpenFile(filename);
 
     if (wad_file == NULL)
     {
@@ -644,7 +644,7 @@ boolean W_IsIWADLump(const lumpinfo_t *lump)
 }
 
 // [crispy] dump lump data into a new LMP file
-int W_LumpDump (const char *lumpname)
+int W_LumpDump (const std::string &lumpname)
 {
     const auto i = W_CheckNumForName(lumpname);
 
@@ -654,7 +654,7 @@ int W_LumpDump (const char *lumpname)
     }
 
     // [crispy] open file for writing
-    std::string filename = std::string(lumpname) + ".lmp";
+    std::string filename = lumpname + ".lmp";
     std::transform(filename.begin(), filename.end(),
                    filename.begin(), ::tolower);
     FILE *fp = fopen(filename, "wb");

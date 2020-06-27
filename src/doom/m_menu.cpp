@@ -22,6 +22,8 @@
 #include <ctype.h>
 #include <fmt/core.h>
 
+#include "m_misc.hpp"
+
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
 #include "dstrings.hpp"
@@ -236,8 +238,8 @@ static void M_DrawSaveLoadBorder(int x,int y);
 static void M_SetupNextMenu(menu_t *menudef);
 static void M_DrawThermo(int x,int y,int thermWidth,int thermDot);
 static void M_WriteText(int x, int y, const std::string &string);
-int  M_StringWidth(const char *string); // [crispy] un-static
-static int  M_StringHeight(const char *string);
+int  M_StringWidth(const std::string &string); // [crispy] un-static
+static int  M_StringHeight(const std::string &string);
 static void M_StartMessage(const std::string &string, void (*routine)(int), boolean input);
 static void M_ClearMenus (void);
 
@@ -1074,8 +1076,6 @@ void M_SaveGame (int choice)
 //
 //      M_QuickSave
 //
-static char tempstring[90];
-
 void M_QuickSaveResponse(int key)
 {
     if (key == key_menu_confirm)
@@ -1107,8 +1107,7 @@ void M_QuickSave(void)
     // [crispy] print savegame name in golden letters
     auto savegamestring = crstr[CR_GOLD] + savegamestrings[quickSaveSlot] + crstr[CR_NONE];
 
-    DEH_snprintf(tempstring, sizeof(tempstring),
-                 QSPROMPT, savegamestring.c_str());
+    auto tempstring = DEH_sprintf( QSPROMPT, savegamestring);
     M_StartMessage(tempstring, M_QuickSaveResponse, true);
 }
 
@@ -1148,8 +1147,7 @@ void M_QuickLoad(void)
     // [crispy] print savegame name in golden letters
     auto savegamestring = crstr[CR_GOLD] + savegamestrings[quickSaveSlot] + crstr[CR_NONE];
 
-    DEH_snprintf(tempstring, sizeof(tempstring),
-                 QLPROMPT, savegamestring.c_str());
+    auto tempstring = DEH_sprintf( QLPROMPT, savegamestring );
     M_StartMessage(tempstring, M_QuickLoadResponse, true);
 }
 
@@ -1787,13 +1785,12 @@ static const char *M_SelectEndMessage(void)
 
 void M_QuitDOOM(int choice)
 {
-    char	endstring[160];
     // [crispy] fast exit if "run" key is held down
     if (speedkeydown())
 	I_Quit();
 
-    DEH_snprintf(endstring, sizeof(endstring), "%s\n\n" DOSY,
-                 DEH_String(M_SelectEndMessage()).c_str());
+    auto endstring = DEH_sprintf( "%s\n\n" DOSY,
+                                  DEH_String(M_SelectEndMessage()));
 
     M_StartMessage(endstring, M_QuitResponse, true);
 }
@@ -1973,13 +1970,13 @@ M_StartMessage
 //
 // Find string width from hu_font chars
 //
-int M_StringWidth(const char *string)
+int M_StringWidth(const std::string &string)
 {
     size_t             i;
     int             w = 0;
     int             c;
 	
-    for (i = 0;i < strlen(string);i++)
+    for (i = 0;i < string.length();i++)
     {
 	// [crispy] correctly center colorized strings
 	if (string[i] == cr_esc)
@@ -2006,17 +2003,14 @@ int M_StringWidth(const char *string)
 //
 //      Find string height from hu_font chars
 //
-int M_StringHeight(const char* string)
+int M_StringHeight(const std::string &string)
 {
-    size_t             i;
-    int             h;
     int             height = SHORT(hu_font[0]->height);
-	
-    h = height;
-    for (i = 0;i < strlen(string);i++)
-	if (string[i] == '\n')
+    int h = height;
+    for (auto &i : string)
+	if (i == '\n')
 	    h += height;
-		
+
     return h;
 }
 
@@ -2031,13 +2025,12 @@ M_WriteText
   const std::string &string)
 {
     int		w;
-    const char *ch;
     int		c;
     int		cx;
     int		cy;
 		
 
-    ch = string.c_str();
+    auto ch = string.begin();
     cx = x;
     cy = y;
 	
@@ -2858,33 +2851,15 @@ void M_StartControlPanel (void)
 
 static void M_DrawOPLDev(void)
 {
-    extern void I_OPL_DevMessages(char *, size_t);
-    char debug[1024];
-    char *curr, *p;
-    int line;
+    extern std::string I_OPL_DevMessages();
 
-    I_OPL_DevMessages(debug, sizeof(debug));
-    curr = debug;
-    line = 0;
+    std::string debug = I_OPL_DevMessages();
+    int line = 0;
 
-    for (;;)
+    for (auto &curr : split( debug, '\n' ) )
     {
-        p = strchr(curr, '\n');
-
-        if (p != NULL)
-        {
-            *p = '\0';
-        }
-
         M_WriteText(0, line * 8, curr);
         ++line;
-
-        if (p == NULL)
-        {
-            break;
-        }
-
-        curr = p + 1;
     }
 }
 
@@ -2899,7 +2874,6 @@ void M_Drawer (void)
     static short	y;
     unsigned int	i;
     unsigned int	max;
-    char		string[80];
     int			start;
 
     inhelpscreens = false;
@@ -2913,37 +2887,14 @@ void M_Drawer (void)
 	    M_DrawCrispnessBackground();
 	}
 
-	const char *message = messageString.c_str();
+	auto lines = split( messageString, '\n' );
+
         start = 0;
-	y = ORIGHEIGHT/2 - M_StringHeight(message) / 2;
-        while (message[start] != '\0')
+	y = ORIGHEIGHT/2 - M_StringHeight(messageString) / 2;
+        for ( auto &string : lines )
 	{
-	    boolean foundnewline = false;
-
-            for (i = 0; message[start + i] != '\0'; i++)
-            {
-                if (message[start + i] == '\n')
-                {
-                   M_StringCopy(string, message + start,
-                                 sizeof(string));
-                    if (i < sizeof(string))
-                    {
-                        string[i] = '\0';
-                    }
-
-                    foundnewline = true;
-                    start += i + 1;
-                    break;
-                }
-            }
-
-            if (!foundnewline)
-            {
-                M_StringCopy(string, message + start, sizeof(string));
-                start += strlen(string);
-            }
-
-	    x = ORIGWIDTH/2 - M_StringWidth(string) / 2;
+            // Dropped check for 80 char line limit.
+            x = ORIGWIDTH/2 - M_StringWidth(string) / 2;
 	    M_WriteText(x > 0 ? x : 0, y, string); // [crispy] prevent negative x-coords
 	    y += SHORT(hu_font[0]->height);
 	}
@@ -2961,7 +2912,7 @@ void M_Drawer (void)
 
     if (currentMenu->routine)
 	currentMenu->routine();         // call Draw routine
-    
+
     // DRAW MENU
     x = currentMenu->x;
     y = currentMenu->y;

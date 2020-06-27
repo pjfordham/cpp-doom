@@ -1952,9 +1952,9 @@ extern boolean setsizeneeded;
 void R_ExecuteSetViewSize (void);
 
 
-void G_LoadGame (char* name) 
+void G_LoadGame (const std::string& name) 
 { 
-    M_StringCopy(savename, name, sizeof(savename));
+    M_StringCopy(savename, name.c_str(), sizeof(savename));
     gameaction = ga_loadgame; 
 } 
 
@@ -2155,7 +2155,7 @@ void G_DoSaveGame (void)
     // file, overwriting the old savegame if there was one there.
 
     remove(savegame_file);
-    rename(temp_savegame_file.c_str(), savegame_file.c_str());
+    rename(temp_savegame_file, savegame_file);
 
     gameaction = ga_nothing;
     M_StringCopy(savedescription, "", sizeof(savedescription));

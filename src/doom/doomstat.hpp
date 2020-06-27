@@ -59,7 +59,7 @@ extern GameMode_t	gamemode;
 extern GameMission_t	gamemission;
 extern GameVersion_t    gameversion;
 extern GameVariant_t    gamevariant;
-extern const char       *gamedescription;
+extern std::string      gamedescription;
 extern std::string      nervewadfile;
 
 // Convenience macro.

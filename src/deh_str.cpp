@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <fmt/core.h>
 
 #include <map>
 #include <string>
@@ -108,48 +109,49 @@ static format_arg_t FormatArgumentType(char c)
 // Given the specified string, get the type of the first format
 // string encountered.
 
-static format_arg_t NextFormatArgument(const char **str)
+static format_arg_t NextFormatArgument(std::string::const_iterator &str,
+                                       std::string::const_iterator end)
 {
     format_arg_t argtype;
 
     // Search for the '%' starting the next string.
 
-    while (**str != '\0')
+    while (*str != '\0')
     {
-        if (**str == '%')
+        if (*str == '%')
         {
-            ++*str;
+            ++str;
 
             // Don't stop for double-%s.
 
-            if (**str != '%')
+            if (*str != '%')
             {
                 break;
             }
         }
 
-        ++*str;
+        ++str;
     }
 
     // Find the type of the format string.
 
-    while (**str != '\0')
+    while (*str != '\0')
     {
-        argtype = FormatArgumentType(**str);
+        argtype = FormatArgumentType(*str);
 
         if (argtype != FORMAT_ARG_INVALID)
         {
-            ++*str;
+            ++str;
 
             return argtype;
         }
 
-        ++*str;
+        ++str;
     }
 
     // Stop searching, we have reached the end.
 
-    *str = NULL;
+    str = end;
 
     return FORMAT_ARG_INVALID;
 }
@@ -183,19 +185,17 @@ static boolean ValidArgumentReplacement(format_arg_t original,
 
 // Return true if the specified string contains no format arguments.
 
-static boolean ValidFormatReplacement(const char *original, const char *replacement)
+static boolean ValidFormatReplacement(const std::string &original, const std::string &replacement)
 {
-    const char *rover1;
-    const char *rover2;
-
     // Check each argument in turn and compare types.
 
-    rover1 = original; rover2 = replacement;
+    auto rover1 = original.begin();
+    auto rover2 = replacement.begin();
 
     for (;;)
     {
-        const auto argtype1 = NextFormatArgument(&rover1);
-        const auto argtype2 = NextFormatArgument(&rover2);
+       const auto argtype1 = NextFormatArgument(rover1, original.end());
+       const auto argtype2 = NextFormatArgument(rover2, replacement.end());
 
         if (argtype2 == FORMAT_ARG_INVALID)
         {
@@ -222,16 +222,14 @@ static boolean ValidFormatReplacement(const char *original, const char *replacem
 
 // Get replacement format string, checking arguments.
 
-static const char *FormatStringReplacement(const char *s)
+std::string FormatStringReplacement(const std::string &s)
 {
-    const char *repl;
-
-    repl = DEH_String(s).c_str();
+    auto repl = DEH_String(s);
 
     if (!ValidFormatReplacement(s, repl))
     {
-        printf("WARNING: Unsafe dehacked replacement provided for "
-               "printf format string: %s\n", s);
+       fmt::print("WARNING: Unsafe dehacked replacement provided for "
+                  "printf format string: %s\n", s);
 
         return s;
     }
@@ -244,13 +242,12 @@ static const char *FormatStringReplacement(const char *s)
 void DEH_printf(const char *fmt, ...)
 {
     va_list args;
-    const char *repl;
 
-    repl = FormatStringReplacement(fmt);
+    auto repl = FormatStringReplacement(fmt);
 
     va_start(args, fmt);
 
-    vprintf(repl, args);
+    vprintf(repl.c_str(), args);
 
     va_end(args);
 }
@@ -260,13 +257,12 @@ void DEH_printf(const char *fmt, ...)
 void DEH_fprintf(FILE *fstream, const char *fmt, ...)
 {
     va_list args;
-    const char *repl;
 
-    repl = FormatStringReplacement(fmt);
+    auto repl = FormatStringReplacement(fmt);
 
     va_start(args, fmt);
 
-    vfprintf(fstream, repl, args);
+    vfprintf(fstream, repl.c_str(), args);
 
     va_end(args);
 }
@@ -276,13 +272,12 @@ void DEH_fprintf(FILE *fstream, const char *fmt, ...)
 void DEH_snprintf(char *buffer, size_t len, const char *fmt, ...)
 {
     va_list args;
-    const char *repl;
 
-    repl = FormatStringReplacement(fmt);
+    auto repl = FormatStringReplacement(fmt);
 
     va_start(args, fmt);
 
-    M_vsnprintf(buffer, len, repl, args);
+    M_vsnprintf(buffer, len, repl.c_str(), args);
 
     va_end(args);
 }

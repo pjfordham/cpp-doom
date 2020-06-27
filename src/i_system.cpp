@@ -169,15 +169,15 @@ byte *I_ZoneBase (int *size)
     return zonemem;
 }
 
-void I_PrintBanner(const char *msg)
+void I_PrintBanner(const std::string &msg)
 {
     int i;
-    int spaces = 35 - (strlen(msg) / 2);
+    int spaces = 35 - msg.length() / 2;
 
     for (i=0; i<spaces; ++i)
         putchar(' ');
 
-    puts(msg);
+    puts(msg.c_str());
 }
 
 void I_PrintDivider(void)
@@ -192,7 +192,7 @@ void I_PrintDivider(void)
     putchar('\n');
 }
 
-void I_PrintStartupBanner(const char *gamedescription)
+void I_PrintStartupBanner(const std::string &gamedescription)
 {
     I_PrintDivider();
     I_PrintBanner(gamedescription);

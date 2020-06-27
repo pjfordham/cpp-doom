@@ -2875,7 +2875,7 @@ std::string M_GetAutoloadDir(const std::string &iwadname)
     M_MakeDirectory(autoload_path);
 
     auto result = std::string(autoload_path) + DIR_SEPARATOR_S + iwadname;
-    M_MakeDirectory(result.c_str());
+    M_MakeDirectory(result);
 
     // TODO: Add README file
 

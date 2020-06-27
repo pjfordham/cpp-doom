@@ -83,11 +83,11 @@ void I_BindVariables(void);
 
 // Print startup banner copyright message.
 
-void I_PrintStartupBanner(const char *gamedescription);
+void I_PrintStartupBanner(const std::string &gamedescription);
 
 // Print a centered text banner displaying the given string.
 
-void I_PrintBanner(const char *text);
+void I_PrintBanner(const std::string &text);
 
 // Print a dividing line for startup banners.
 

@@ -27,6 +27,7 @@
 #include <time.h> // [crispy] time_t, time(), struct tm, localtime()
 #include "SDL.h"
 #include <fmt/core.h>
+#include <fmt/printf.h>
 
 #include "config.h"
 #include "deh_main.hpp"
@@ -789,7 +790,7 @@ static const char *banners[] =
 // Otherwise, use the name given
 // 
 
-static const char *GetGameName(const char *gamename)
+static const std::string GetGameName(const std::string &gamename)
 {
     for (size_t i=0; i<arrlen(banners); ++i)
     {
@@ -809,16 +810,13 @@ static const char *GetGameName(const char *gamename)
                deh_sub.erase(0,1);
             }
 
-            const auto newgamename_size = deh_sub.length() + 10;
-            auto *newgamename = Z_New<char>(PU_STATIC, newgamename_size);
             auto version = G_VanillaVersionCode();
-            M_snprintf(newgamename, newgamename_size, deh_sub.c_str(),
-                       version / 100, version % 100);
+            std::string newgamename = fmt::sprintf( deh_sub, version / 100, version % 100);
 
             // Trim trailing spaces
-            while (newgamename[0] != '\0' && isspace(newgamename[strlen(newgamename)-1]))
+            while (!newgamename.empty() && isspace(newgamename[newgamename.size()-1]))
             {
-                newgamename[strlen(newgamename) - 1] = '\0';
+               newgamename = newgamename.substr(0, newgamename.size() - 1);
             }
 
             return newgamename;
@@ -1557,7 +1555,7 @@ static void G_CheckDemoStatusAtExit (void)
 void D_DoomMain (void)
 {
     int p;
-    char file[256];
+    std::string file;
     char demolumpname[9];
     int numiwadlumps;
 
@@ -1912,15 +1910,15 @@ void D_DoomMain (void)
 
 	if (p)
 	{
-	    int merged;
+            int merged;
 
 	    if (M_StringEndsWith(myargv[p+1], ".wad"))
 	    {
-               M_StringCopy(file, myargv[p+1], sizeof(file));
+               file = myargv[p+1];
 	    }
 	    else
 	    {
-               DEH_snprintf(file, sizeof(file), "%s.wad", myargv[p+1].c_str());
+               file = DEH_sprintf("%s.wad", myargv[p+1]);
 	    }
 
 	    merged = W_MergeDump(file);
@@ -1949,7 +1947,7 @@ void D_DoomMain (void)
 	{
 	    int dumped;
 
-	    M_StringCopy(file, myargv[p+1], sizeof(file));
+	    file = myargv[p+1];
 
 	    dumped = W_LumpDump(file);
 
@@ -2005,11 +2003,11 @@ void D_DoomMain (void)
         // but make that optional.
         if (M_StringEndsWith(uc_filename, ".LMP"))
         {
-           M_StringCopy(file, myargv[p + 1], sizeof(file));
+           file = myargv[p + 1];
         }
         else
         {
-           DEH_snprintf(file, sizeof(file), "%s.lmp", myargv[p+1].c_str());
+           file = DEH_sprintf("%s.lmp", myargv[p+1]);
         }
 
         if (D_AddFile(file))
@@ -2026,7 +2024,7 @@ void D_DoomMain (void)
            M_StringCopy(demolumpname, myargv[p + 1], sizeof(demolumpname));
         }
 
-        printf("Playing demo %s.\n", file);
+        fmt::print("Playing demo %s.\n", file);
     }
 
     I_AtExit(G_CheckDemoStatusAtExit, true);
@@ -2407,8 +2405,8 @@ void D_DoomMain (void)
 	
     if (startloadgame >= 0)
     {
-        M_StringCopy(file, P_SaveGameFile(startloadgame), sizeof(file));
-	G_LoadGame(file);
+        file = P_SaveGameFile(startloadgame);
+        G_LoadGame(file);
     }
 	
     if (gameaction != ga_loadgame )

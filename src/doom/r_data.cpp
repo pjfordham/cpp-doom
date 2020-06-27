@@ -1247,19 +1247,14 @@ void R_InitData (void)
 // R_FlatNumForName
 // Retrieval, get a flat number for a flat name.
 //
-int R_FlatNumForName(const char *name)
+int R_FlatNumForName(const std::string &name)
 {
-    int		i;
-    char	namet[9];
-
-    i = W_CheckNumForNameFromTo (name, lastflat, firstflat);
+    int i = W_CheckNumForNameFromTo (name, lastflat, firstflat);
 
     if (i == -1)
     {
-	namet[8] = 0;
-	strncpy(namet, name,8);
 	// [crispy] make non-fatal
-	fprintf (stderr, "R_FlatNumForName: %s not found\n", namet);
+        fmt::print(stderr, "R_FlatNumForName: %s not found\n", name);
 	// [crispy] since there is no "No Flat" marker,
 	// render missing flats as SKY
 	return skyflatnum;
@@ -1275,16 +1270,16 @@ int R_FlatNumForName(const char *name)
 // Check whether texture is available.
 // Filter out NoTexture indicator.
 //
-int R_CheckTextureNumForName(const char *name)
+int R_CheckTextureNumForName(const std::string &name)
 {
    // "NoTexture" marker.
    if (name[0] == '-')
       return 0;
 
-   auto i = textures_hashtable.find(std::string(name,std::min((int)8,(int)strlen(name))));
+   auto i = textures_hashtable.find( name );
 
    if ( i == textures_hashtable.end() ) {
-      return -1 ;
+      return -1;
    } else {
       return i->second->index;
    }
@@ -1298,22 +1293,14 @@ int R_CheckTextureNumForName(const char *name)
 // Calls R_CheckTextureNumForName,
 //  aborts with error message.
 //
-int R_TextureNumForName(const char *name)
+int R_TextureNumForName(const std::string &name)
 {
-    int		i;
-	
-    i = R_CheckTextureNumForName (name);
+    int i = R_CheckTextureNumForName (name);
 
     if (i==-1)
     {
-	// [crispy] fix absurd texture name in error message
-	char	namet[9];
-	namet[8] = '\0';
-	strncpy(namet, name, 8);
-	// [crispy] make non-fatal
-	fprintf (stderr, "R_TextureNumForName: %s not found\n",
-		 namet);
-	return 0;
+        fmt::print(stderr, "R_TextureNumForName: %s not found\n", name);
+        return 0;
     }
     return i;
 }

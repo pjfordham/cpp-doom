@@ -66,7 +66,7 @@ static std::string temp_timidity_cfg;
 // is needed to inject a "dir" command so that the patches are read
 // relative to the actual config file.
 
-static boolean WriteWrapperTimidityConfig(const char *write_path)
+static boolean WriteWrapperTimidityConfig(const std::string &write_path)
 {
     FILE *fstream;
 
@@ -82,9 +82,9 @@ static boolean WriteWrapperTimidityConfig(const char *write_path)
         return false;
     }
 
-    fprintf(fstream, "dir %s\n", M_DirName(timidity_cfg_path).c_str() );
+    fmt::print(fstream, "dir {}\n", M_DirName(timidity_cfg_path) );
+    fmt::print(fstream, "source %s\n", timidity_cfg_path);
 
-    fprintf(fstream, "source %s\n", timidity_cfg_path);
     fclose(fstream);
 
     return true;
@@ -102,7 +102,7 @@ void I_InitTimidityConfig(void)
     }
     else
     {
-        success = WriteWrapperTimidityConfig(temp_timidity_cfg.c_str());
+        success = WriteWrapperTimidityConfig(temp_timidity_cfg);
     }
 
     // Set the TIMIDITY_CFG environment variable to point to the temporary

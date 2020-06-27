@@ -65,7 +65,7 @@ static SDL_Renderer *renderer;
 
 // Window title
 
-static const char *window_title = "";
+static std::string window_title;
 
 // These are (1) the 320x200x8 paletted buffer that we draw to (i.e. the one
 // that holds I_VideoBuffer), (2) the 320x200x32 RGBA intermediate buffer that
@@ -1025,7 +1025,7 @@ void I_SetPalette (int palette)
 // Set the window title
 //
 
-void I_SetWindowTitle(const char *title)
+void I_SetWindowTitle(const std::string &title)
 {
     window_title = title;
 }
@@ -1037,7 +1037,7 @@ void I_SetWindowTitle(const char *title)
 
 void I_InitWindowTitle(void)
 {
-    auto buf = std::string( window_title ) + " - " + PACKAGE_STRING;
+    auto buf = window_title + " - " + PACKAGE_STRING;
     SDL_SetWindowTitle(screen, buf.c_str());
 }
 

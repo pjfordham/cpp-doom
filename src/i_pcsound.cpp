@@ -243,19 +243,10 @@ static void I_PCS_StopSound(int handle)
 
 static int I_PCS_GetSfxLumpNum(sfxinfo_t* sfx)
 {
-    char namebuf[9];
+   std::string namebuf = ( use_sfx_prefix ? std::string("dp") : std::string("") ) + DEH_String(sfx->name);
 
-    if (use_sfx_prefix)
-    {
-       M_snprintf(namebuf, sizeof(namebuf), "dp%s", DEH_String(sfx->name).c_str());
-    }
-    else
-    {
-        M_StringCopy(namebuf, DEH_String(sfx->name), sizeof(namebuf));
-    }
-
-     // [crispy] make missing sounds non-fatal
-    return W_CheckNumForName(namebuf);
+   // [crispy] make missing sounds non-fatal
+   return W_CheckNumForName(namebuf);
 }
 
 

@@ -840,24 +840,20 @@ static boolean CacheSFX(sfxinfo_t *sfxinfo)
 
 #ifdef DEBUG_DUMP_WAVS
     {
-        char filename[16];
-        allocated_sound_t * snd;
-
-        M_snprintf(filename, sizeof(filename), "%s.wav",
-                   DEH_String(sfxinfo->name));
-        snd = GetAllocatedSoundBySfxInfoAndPitch(sfxinfo, NORM_PITCH);
-        WriteWAV(filename, snd->chunk.abuf, snd->chunk.alen,mixer_freq);
+       std::string filename = DEH_String(sfxinfo->name) + ".wav";
+       allocated_sound_t *snd = GetAllocatedSoundBySfxInfoAndPitch(sfxinfo, NORM_PITCH);
+       WriteWAV(filename.c_str(), snd->chunk.abuf, snd->chunk.alen,mixer_freq);
     }
 #endif
 
     // don't need the original lump any more
-  
+
     W_ReleaseLumpNum(lumpnum);
 
     return true;
 }
 
-static void GetSfxLumpName(sfxinfo_t *sfx, char *buf, size_t buf_len)
+static std::string GetSfxLumpName(sfxinfo_t *sfx)
 {
     // Linked sfx lumps? Get the lump number for the sound linked to.
 
@@ -868,15 +864,7 @@ static void GetSfxLumpName(sfxinfo_t *sfx, char *buf, size_t buf_len)
 
     // Doom adds a DS* prefix to sound lumps; Heretic and Hexen don't
     // do this.
-
-    if (use_sfx_prefix)
-    {
-       M_snprintf(buf, buf_len, "ds%s", DEH_String(sfx->name).c_str());
-    }
-    else
-    {
-        M_StringCopy(buf, DEH_String(sfx->name), buf_len);
-    }
+    return ( use_sfx_prefix ? std::string("ds") : std::string("") ) + DEH_String(sfx->name);
 }
 
 #ifdef HAVE_LIBSAMPLERATE
@@ -885,11 +873,7 @@ static void GetSfxLumpName(sfxinfo_t *sfx, char *buf, size_t buf_len)
 
 static void I_SDL_PrecacheSounds(sfxinfo_t *sounds, int num_sounds)
 {
-    char namebuf[9];
-    int i;
-
     // Don't need to precache the sounds unless we are using libsamplerate.
-
     if (use_libsamplerate == 0)
     {
 	return;
@@ -897,7 +881,7 @@ static void I_SDL_PrecacheSounds(sfxinfo_t *sounds, int num_sounds)
 
     printf("I_SDL_PrecacheSounds: Precaching all sound effects..");
 
-    for (i=0; i<num_sounds; ++i)
+    for (int i=0; i<num_sounds; ++i)
     {
         if ((i % 6) == 0)
         {
@@ -905,7 +889,7 @@ static void I_SDL_PrecacheSounds(sfxinfo_t *sounds, int num_sounds)
             fflush(stdout);
         }
 
-        GetSfxLumpName(&sounds[i], namebuf, sizeof(namebuf));
+        auto namebuf = GetSfxLumpName(&sounds[i]);
 
         sounds[i].lumpnum = W_CheckNumForName(namebuf);
 
@@ -952,12 +936,8 @@ static boolean LockSound(sfxinfo_t *sfxinfo)
 
 static int I_SDL_GetSfxLumpNum(sfxinfo_t *sfx)
 {
-    char namebuf[9];
-
-    GetSfxLumpName(sfx, namebuf, sizeof(namebuf));
-
-     // [crispy] make missing sounds non-fatal
-    return W_CheckNumForName(namebuf);
+   // [crispy] make missing sounds non-fatal
+   return W_CheckNumForName( GetSfxLumpName( sfx ) );
 }
 
 static void I_SDL_UpdateSoundParams(int handle, int vol, int sep)

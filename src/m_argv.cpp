@@ -70,7 +70,7 @@ int M_CheckParm(const char *check)
 
 #define MAXARGVS        100
 
-static void LoadResponseFile(int argv_index, const char *filename)
+static void LoadResponseFile(int argv_index, const std::string &filename)
 {
     FILE *handle;
     int size;
@@ -87,7 +87,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
         exit(1);
     }
 
-    printf("Found response file %s!\n", filename);
+    fmt::print("Found response file {}!\n", filename);
 
     size = M_FileLength(handle);
 
@@ -210,7 +210,7 @@ void M_FindResponseFile(void)
     {
         if (myargv[i][0] == '@')
         {
-           LoadResponseFile(i, myargv[i].c_str() + 1);
+           LoadResponseFile(i, myargv[i].substr(1));
         }
     }
 
@@ -234,7 +234,7 @@ void M_FindResponseFile(void)
         // an argument beginning with a '-' is encountered, we keep something
         // that starts with a '-'.
         myargv[i] = "-_";
-        LoadResponseFile(i + 1, myargv[i + 1].c_str());
+        LoadResponseFile(i + 1, myargv[i + 1]);
     }
 }
 

@@ -19,9 +19,11 @@
 #ifndef I_VIDEOHR_H
 #define I_VIDEOHR_H
 
+#include <string>
+
 boolean I_SetVideoModeHR(void);
 void I_UnsetVideoModeHR(void);
-void I_SetWindowTitleHR(const char *title);
+void I_SetWindowTitleHR(const std::string &title);
 void I_ClearScreenHR(void);
 void I_SlamBlockHR(int x, int y, int w, int h, const byte *src);
 void I_SlamHR(const byte *buffer);

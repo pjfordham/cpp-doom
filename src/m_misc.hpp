@@ -26,6 +26,7 @@
 #include <algorithm>
 #include "doomtype.hpp"
 #include <string_view>
+#include <sstream>
     
 boolean M_WriteFile(const std::string &name, const void *source, int length);
 int M_ReadFile(const std::string &name, byte **buffer);
@@ -68,6 +69,22 @@ inline FILE *fopen(const std::string &filename, const char *mode) {
 inline int remove(const std::string &filename) {
    return remove( filename.c_str() );
 }
+inline int rename(const std::string &oldname, const std::string &newname) {
+   return rename(oldname.c_str(), newname.c_str());
+}
+
+inline std::vector<std::string> split(const std::string& s, char delimiter)
+{
+   std::vector<std::string> tokens;
+   std::string token;
+   std::istringstream tokenStream(s);
+   while (std::getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
+}
+
 
 #endif
 

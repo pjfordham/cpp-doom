@@ -1836,7 +1836,7 @@ static int ChannelInUse(opl_channel_data_t *channel)
     return 0;
 }
 
-void I_OPL_DevMessages(char *result, size_t result_len)
+std::string I_OPL_DevMessages()
 {
     int instr_num;
     int lines;
@@ -1844,8 +1844,7 @@ void I_OPL_DevMessages(char *result, size_t result_len)
 
     if (num_tracks == 0)
     {
-        M_snprintf(result, result_len, "No OPL track!");
-        return;
+        return "No OPL track!";
     }
 
     std::stringstream ss;
@@ -1884,7 +1883,6 @@ void I_OPL_DevMessages(char *result, size_t result_len)
         i = (i + PERCUSSION_LOG_LEN - 1) % PERCUSSION_LOG_LEN;
     } while (lines < 25 && i != last_perc_count);
 
-    strncpy( result, ss.str().c_str(), result_len );
-    result[result_len - 1] = '\0';
+    return ss.str();
 }
 

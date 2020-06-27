@@ -32,7 +32,7 @@
 
 static SDL_Window *hr_screen = NULL;
 static SDL_Surface *hr_surface = NULL;
-static const char *window_title = "";
+static std::string window_title;
 
 boolean I_SetVideoModeHR(void)
 {
@@ -47,7 +47,7 @@ boolean I_SetVideoModeHR(void)
 
     // Create screen surface at the native desktop pixel depth (bpp=0),
     // as we cannot trust true 8-bit to reliably work nowadays.
-    hr_screen = SDL_CreateWindow(window_title, x, y,
+    hr_screen = SDL_CreateWindow(window_title.c_str(), x, y,
         HR_SCREENWIDTH, HR_SCREENHEIGHT,
         0);
 
@@ -64,7 +64,7 @@ boolean I_SetVideoModeHR(void)
     return true;
 }
 
-void I_SetWindowTitleHR(const char *title)
+void I_SetWindowTitleHR(const std::string &title)
 {
     window_title = title;
 }
