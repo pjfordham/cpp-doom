@@ -1932,7 +1932,7 @@ void ST_Drawer (boolean fullscreen, boolean refresh)
     dp_translucent = false;
 }
 
-typedef void (*load_callback_t)(const std::string &lumpname, patch_t **variable);
+typedef void (*load_callback_t)(const lump_name_t &lumpname, patch_t **variable);
 
 // Iterates through all graphics to be loaded or unloaded, along with
 // the variable they use, invoking the specified callback function.
@@ -1943,38 +1943,38 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
     int		i;
     int		j;
     int		facenum;
-    
-    char	namebuf[9];
 
+    lump_name_t namebuf;
+    
     // Load the numbers, tall and short
     for (i=0;i<10;i++)
     {
-	DEH_snprintf(namebuf, 9, "STTNUM%d", i);
+	namebuf = DEH_sprintf("STTNUM%d", i);
         callback(namebuf, &tallnum[i]);
 
-	DEH_snprintf(namebuf, 9, "STYSNUM%d", i);
+	namebuf = DEH_sprintf("STYSNUM%d", i);
         callback(namebuf, &shortnum[i]);
     }
 
     // Load percent key.
     //Note: why not load STMINUS here, too?
 
-    callback(DEH_String("STTPRCNT"), &tallpercent);
+    callback(DEH_LumpName("STTPRCNT"), &tallpercent);
 
     // key cards
     for (i=0;i<NUMCARDS;i++)
     {
-	DEH_snprintf(namebuf, 9, "STKEYS%d", i);
+	namebuf = DEH_sprintf("STKEYS%d", i);
         callback(namebuf, &keys[i]);
     }
 
     // arms background
-    callback(DEH_String("STARMS"), &armsbg);
+    callback(DEH_LumpName("STARMS"), &armsbg);
 
     // arms ownership widgets
     for (i=0; i<6; i++)
     {
-	DEH_snprintf(namebuf, 9, "STGNUM%d", i+2);
+	namebuf = DEH_sprintf("STGNUM%d", i+2);
 
 	// gray #
         callback(namebuf, &arms[i][0]);
@@ -1984,19 +1984,19 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
     }
 
     // face backgrounds for different color players
-    DEH_snprintf(namebuf, 9, "STFB%d", consoleplayer);
+    namebuf = DEH_sprintf("STFB%d", consoleplayer);
     callback(namebuf, &faceback);
 
     // status bar background bits
     if (W_CheckNumForName("STBAR") >= 0)
     {
-        callback(DEH_String("STBAR"), &sbar);
+        callback(DEH_LumpName("STBAR"), &sbar);
         sbarr = NULL;
     }
     else
     {
-        callback(DEH_String("STMBARL"), &sbar);
-        callback(DEH_String("STMBARR"), &sbarr);
+        callback(DEH_LumpName("STMBARL"), &sbar);
+        callback(DEH_LumpName("STMBARR"), &sbarr);
     }
 
     // face states
@@ -2005,34 +2005,34 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
     {
 	for (j=0; j<ST_NUMSTRAIGHTFACES; j++)
 	{
-	    DEH_snprintf(namebuf, 9, "STFST%d%d", i, j);
+	    namebuf = DEH_sprintf("STFST%d%d", i, j);
             callback(namebuf, &faces[facenum]);
             ++facenum;
 	}
-	DEH_snprintf(namebuf, 9, "STFTR%d0", i);	// turn right
+	namebuf = DEH_sprintf("STFTR%d0", i);	// turn right
         callback(namebuf, &faces[facenum]);
         ++facenum;
-	DEH_snprintf(namebuf, 9, "STFTL%d0", i);	// turn left
+	namebuf = DEH_sprintf("STFTL%d0", i);	// turn left
         callback(namebuf, &faces[facenum]);
         ++facenum;
-	DEH_snprintf(namebuf, 9, "STFOUCH%d", i);	// ouch!
+	namebuf = DEH_sprintf("STFOUCH%d", i);	// ouch!
         callback(namebuf, &faces[facenum]);
         ++facenum;
-	DEH_snprintf(namebuf, 9, "STFEVL%d", i);	// evil grin ;)
+	namebuf = DEH_sprintf("STFEVL%d", i);	// evil grin ;)
         callback(namebuf, &faces[facenum]);
         ++facenum;
-	DEH_snprintf(namebuf, 9, "STFKILL%d", i);	// pissed off
+	namebuf = DEH_sprintf("STFKILL%d", i);	// pissed off
         callback(namebuf, &faces[facenum]);
         ++facenum;
     }
 
-    callback(DEH_String("STFGOD0"), &faces[facenum]);
+    callback(DEH_LumpName("STFGOD0"), &faces[facenum]);
     ++facenum;
-    callback(DEH_String("STFDEAD0"), &faces[facenum]);
+    callback(DEH_LumpName("STFDEAD0"), &faces[facenum]);
     ++facenum;
 }
 
-static void ST_loadCallback(const std::string &lumpname, patch_t **variable)
+static void ST_loadCallback(const lump_name_t &lumpname, patch_t **variable)
 {
     *variable = cache_lump_name<patch_t *>(lumpname, PU_STATIC);
 }
@@ -2046,17 +2046,16 @@ void ST_loadData(void)
 {
     int i;
 
-    lu_palette = W_GetNumForName (DEH_String("PLAYPAL"));
+    lu_palette = W_GetNumForName (DEH_LumpName("PLAYPAL"));
     ST_loadGraphics();
 
     // [crispy] support combined card and skull keys (if provided by PWAD)
     // i.e. only for display in the status bar
     for (i = NUMCARDS; i < NUMCARDS+3; i++)
     {
-	char lumpname[9];
 	int lumpnum;
 
-	DEH_snprintf(lumpname, 9, "STKEYS%d", i);
+	auto lumpname = DEH_sprintf("STKEYS%d", i);
 	lumpnum = W_CheckNumForName(lumpname);
 
 	keys[i] = static_cast<patch_t *>(
@@ -2064,7 +2063,7 @@ void ST_loadData(void)
     }
 }
 
-static void ST_unloadCallback(const std::string &lumpname, patch_t **variable)
+static void ST_unloadCallback(const lump_name_t &lumpname, patch_t **variable)
 {
     W_ReleaseLumpName(lumpname);
     *variable = NULL;

@@ -31,6 +31,7 @@
 
 #include "i_swap.hpp"
 #include "i_system.hpp"
+#include "m_misc.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"
 
@@ -246,7 +247,7 @@ void R_InitSpriteDefs(const char **namelist)
 	//  filling in the frames for whatever is found
 	for (l=start+1 ; l<end ; l++)
 	{
-            if (!strncasecmp(lumpinfo[l]->name, spritename.c_str(), 4))
+            if (inequals(lumpinfo[l]->name.name, spritename, 4))
 	    {
 		frame = lumpinfo[l]->name[4] - 'A';
 		rotation = lumpinfo[l]->name[5];

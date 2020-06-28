@@ -180,22 +180,23 @@ void P_InitPicAnims (void)
 	    maxanims = newmax;
 	}
 
-        auto startname = DEH_String(animdefs[i].startname);
-        auto endname = DEH_String(animdefs[i].endname);
+        // FIXME - these are 9 chars?
+        auto startname = DEH_LumpName(lump_name_t(animdefs[i].startname));
+        auto endname = DEH_LumpName(lump_name_t(animdefs[i].endname));
 
 	if (animdefs[i].istexture)
 	{
 	    // different episode ?
 	    if (R_CheckTextureNumForName(startname) == -1)
-		continue;	
+		continue;
 
 	    lastanim->picnum = R_TextureNumForName(endname);
 	    lastanim->basepic = R_TextureNumForName(startname);
 	}
 	else
 	{
-	    if (W_CheckNumForName(startname) == -1)
-		continue;
+           if (W_CheckNumForName(startname) == -1)
+              continue;
 
 	    lastanim->picnum = R_FlatNumForName(endname);
 	    lastanim->basepic = R_FlatNumForName(startname);
@@ -212,8 +213,8 @@ void P_InitPicAnims (void)
 	}
 	else
 	if (lastanim->numpics < 2)
-	    I_Error ("P_InitPicAnims: bad cycle from %s to %s",
-		     startname, endname);
+//	    I_Error ("P_InitPicAnims: bad cycle from %s to %s",
+//		     startname, endname);
 	
 	lastanim++;
     }

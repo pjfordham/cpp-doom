@@ -987,7 +987,6 @@ static void DumpSubstituteConfig(const std::string &filename)
 {
     sha1_context_t context;
     sha1_digest_t digest;
-    char name[9];
     byte *data;
     FILE *fs;
     unsigned int lumpnum;
@@ -1006,8 +1005,7 @@ static void DumpSubstituteConfig(const std::string &filename)
 
     for (lumpnum = 0; lumpnum < numlumps; ++lumpnum)
     {
-        strncpy(name, lumpinfo[lumpnum]->name, 8);
-        name[8] = '\0';
+        auto name = lumpinfo[lumpnum]->name;
 
         if (!IsMusicLump(lumpnum))
         {
@@ -1027,7 +1025,7 @@ static void DumpSubstituteConfig(const std::string &filename)
             fprintf(fs, "%02x", digest[h]);
         }
 
-        fprintf(fs, " = %s.ogg\n", name);
+        fmt::print(fs, " = {}.ogg\n", name);
     }
 
     fprintf(fs, "\n");

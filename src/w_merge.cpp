@@ -70,13 +70,11 @@ static int sprite_frames_alloced;
 //
 // Returns -1 if not found
 
-static int FindInList(searchlist_t *list, const char *name)
+static int FindInList(searchlist_t *list, const lump_name_t &name)
 {
-    int i;
-
-    for (i=0; i<list->numlumps; ++i)
+    for (int i=0; i<list->numlumps; ++i)
     {
-        if (!strncasecmp(list->lumps[i]->name, name, 8))
+        if (list->lumps[i]->name ==  name)
             return i;
     }
 
@@ -90,20 +88,20 @@ static boolean SetupList(searchlist_t *list, searchlist_t *src_list,
     int startlump, endlump;
 
     list->numlumps = 0;
-    startlump = FindInList(src_list, startname);
+    startlump = FindInList(src_list, lump_name_t(startname));
 
     if (startname2 != NULL && startlump < 0)
     {
-        startlump = FindInList(src_list, startname2);
+       startlump = FindInList(src_list, lump_name_t(startname2));
     }
 
     if (startlump >= 0)
     {
-        endlump = FindInList(src_list, endname);
+       endlump = FindInList(src_list,lump_name_t( endname));
 
         if (endname2 != NULL && endlump < 0)
         {
-            endlump = FindInList(src_list, endname2);
+           endlump = FindInList(src_list,lump_name_t( endname2));
         }
 
         if (endlump > startlump)
@@ -153,7 +151,7 @@ static void InitSpriteList(void)
     num_sprite_frames = 0;
 }
 
-static boolean ValidSpriteLumpName(char *name)
+static boolean ValidSpriteLumpName(const lump_name_t &name)
 {
     if (name[0] == '\0' || name[1] == '\0'
      || name[2] == '\0' || name[3] == '\0')
@@ -180,7 +178,7 @@ static boolean ValidSpriteLumpName(char *name)
 
 // Find a sprite frame
 
-static sprite_frame_t *FindSpriteFrame(char *name, int frame)
+static sprite_frame_t *FindSpriteFrame(const lump_name_t &name, int frame)
 {
     sprite_frame_t *result;
     int i;
@@ -191,7 +189,7 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
     {
         sprite_frame_t *cur = &sprite_frames[i];
 
-        if (!strncasecmp(cur->sprname, name, 4) && cur->frame == frame)
+        if (!strncasecmp(cur->sprname, name.name, 4) && cur->frame == frame)
         {
             return cur;
         }
@@ -213,7 +211,7 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
     // Add to end of list
     
     result = &sprite_frames[num_sprite_frames];
-    strncpy(result->sprname, name, 4);
+    strncpy(result->sprname, name.name, 4);
     result->frame = frame;
 
     for (i=0; i<8; ++i)
@@ -405,11 +403,11 @@ static void DoMerge(void)
         switch (current_section)
         {
             case SECTION_NORMAL:
-                if (!strncasecmp(lump->name, "F_START", 8))
+               if (lump->name == lump_name_t("F_START"))
                 {
                     current_section = SECTION_FLATS;
                 }
-                else if (!strncasecmp(lump->name, "S_START", 8))
+               else if (lump->name == lump_name_t("S_START"))
                 {
                     current_section = SECTION_SPRITES;
                 }
@@ -422,7 +420,7 @@ static void DoMerge(void)
 
                 // Have we reached the end of the section?
 
-                if (!strncasecmp(lump->name, "F_END", 8))
+               if (lump->name == lump_name_t("F_END"))
                 {
                     // Add all new flats from the PWAD to the end
                     // of the section
@@ -458,7 +456,7 @@ static void DoMerge(void)
 
                 // Have we reached the end of the section?
 
-                if (!strncasecmp(lump->name, "S_END", 8))
+               if (lump->name == lump_name_t("S_END"))
                 {
                     // add all the PWAD sprites
 
@@ -501,14 +499,14 @@ static void DoMerge(void)
         switch (current_section)
         {
             case SECTION_NORMAL:
-                if (!strncasecmp(lump->name, "F_START", 8)
-                 || !strncasecmp(lump->name, "FF_START", 8))
+               if (lump->name == lump_name_t("F_START")
+                   || lump->name == lump_name_t("FF_START"))
                 {
                     current_section = SECTION_FLATS;
                 }
-                else if (!strncasecmp(lump->name, "S_START", 8)
-                      || !strncasecmp(lump->name, "SS_START", 8))
-                {
+                   else if (lump->name == lump_name_t("S_START")
+                            || lump->name == lump_name_t("SS_START"))
+                      {
                     current_section = SECTION_SPRITES;
                 }
                 else
@@ -522,9 +520,9 @@ static void DoMerge(void)
             case SECTION_FLATS:
 
                 // PWAD flats are ignored (already merged)
-  
-                if (!strncasecmp(lump->name, "FF_END", 8)
-                 || !strncasecmp(lump->name, "F_END", 8))
+                               
+                            if (lump->name == lump_name_t( "FF_END" )
+                                || lump->name ==  lump_name_t("F_END"))
                 {
                     // end of section
                     current_section = SECTION_NORMAL;
@@ -535,8 +533,8 @@ static void DoMerge(void)
 
                 // PWAD sprites are ignored (already merged)
 
-                if (!strncasecmp(lump->name, "SS_END", 8)
-                 || !strncasecmp(lump->name, "S_END", 8))
+               if (lump->name == lump_name_t("SS_END")
+                   || lump->name == lump_name_t( "S_END") )
                 {
                     // end of section
                     current_section = SECTION_NORMAL;
@@ -705,7 +703,7 @@ void W_NWTDashMerge(const std::string &filename)
             // Replace this entry with an empty string.  This is what
             // nwt -merge does.
 
-            M_StringCopy(iwad_sprites.lumps[i]->name, "", 8);
+           iwad_sprites.lumps[i]->name[0] = 0;
         }
     }
 
@@ -728,7 +726,7 @@ int W_MergeDump (const std::string &file)
        uint32_t pos;
        uint32_t size;
 	// [crispy] lump names are zero-byte padded
-       char name[8]{0};
+       lump_name_t name;
     } directory_t;
 
     // [crispy] open file for writing
@@ -751,7 +749,7 @@ int W_MergeDump (const std::string &file)
     {
 	dir[i].pos = LONG(ftell(fp));
 	dir[i].size = LONG(lumpinfo[i]->size);
-	strncpy(dir[i].name, lumpinfo[i]->name, 8);
+	dir[i].name = lumpinfo[i]->name;
 
 	// [crispy] avoid flooding Doom's Zone Memory
 	auto lump_p = new char[lumpinfo[i]->size];

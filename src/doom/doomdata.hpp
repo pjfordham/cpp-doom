@@ -67,9 +67,9 @@ typedef PACKED_STRUCT (
 {
   short		textureoffset;
   short		rowoffset;
-  char		toptexture[8];
-  char		bottomtexture[8];
-  char		midtexture[8];
+  lump_name_t toptexture;
+  lump_name_t bottomtexture;
+  lump_name_t midtexture;
   // Front sector, towards viewer.
   short		sector;
 }) mapsidedef_t;
@@ -154,8 +154,8 @@ typedef	PACKED_STRUCT (
 {
   short		floorheight;
   short		ceilingheight;
-  char		floorpic[8];
-  char		ceilingpic[8];
+  lump_name_t floorpic;
+  lump_name_t ceilingpic;
   short		lightlevel;
   short		special;
   short		tag;

@@ -120,8 +120,8 @@ deh_context_t *DEH_OpenLump(int lumpnum)
     context->input_buffer_len = W_LumpLength(lumpnum);
     context->input_buffer_pos = 0;
 
-    context->filename =  lumpinfo[lumpnum]->name;
-    
+    context->filename = lumpinfo[lumpnum]->name.to_string();
+
     return context;
 }
 

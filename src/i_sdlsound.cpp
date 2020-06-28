@@ -523,7 +523,7 @@ static boolean ExpandSoundData_SRC(sfxinfo_t *sfxinfo,
 
     if (clipped > 0)
     {
-        fprintf(stderr, "Sound '%s': clipped %u samples (%0.2f %%)\n", 
+       fmt::print(stderr, "Sound '{}': clipped {} samples ({0.2} %)\n", 
                         sfxinfo->name, clipped,
                         400.0 * clipped / chunk->alen);
     }
@@ -864,7 +864,7 @@ static std::string GetSfxLumpName(sfxinfo_t *sfx)
 
     // Doom adds a DS* prefix to sound lumps; Heretic and Hexen don't
     // do this.
-    return ( use_sfx_prefix ? std::string("ds") : std::string("") ) + DEH_String(sfx->name);
+    return ( use_sfx_prefix ? std::string("ds") : std::string("") ) + DEH_LumpName(sfx->name).to_string();
 }
 
 #ifdef HAVE_LIBSAMPLERATE

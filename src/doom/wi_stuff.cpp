@@ -1700,7 +1700,7 @@ void WI_Ticker(void)
 
 }
 
-typedef void (*load_callback_t)(const std::string &lumpname, patch_t **variable);
+typedef void (*load_callback_t)(const lump_name_t &lumpname, patch_t **variable);
 
 // Common load/unload function.  Iterates over all the graphics
 // lumps to be loaded/unloaded into memory.
@@ -1708,19 +1708,19 @@ typedef void (*load_callback_t)(const std::string &lumpname, patch_t **variable)
 static void WI_loadUnloadData(load_callback_t callback)
 {
     int i, j;
-    char name[9];
+    lump_name_t name;
     anim_t *a;
 
     if (!nervewadfile.empty() && gamemission == pack_nerve)
     {
 	for (i=0 ; i<9 ; i++)
 	{
-	    DEH_snprintf(name, 9, "NWILV%2.2d", i);
+	    name = DEH_sprintf("NWILV%2.2d", i);
             callback(name, &lnames[i]);
 	}
 	for ( ; i<NUMCMAPS ; i++)
 	{
-	    DEH_snprintf(name, 9, "CWILV%2.2d", i);
+	    name = DEH_sprintf("CWILV%2.2d", i);
             callback(name, &lnames[i]);
 	}
     }
@@ -1729,7 +1729,7 @@ static void WI_loadUnloadData(load_callback_t callback)
     {
 	for (i=0 ; i<NUMCMAPS ; i++)
 	{
-	    DEH_snprintf(name, 9, "CWILV%2.2d", i);
+	    name = DEH_sprintf("CWILV%2.2d", i);
             callback(name, &lnames[i]);
 	}
     }
@@ -1737,24 +1737,24 @@ static void WI_loadUnloadData(load_callback_t callback)
     {
 	for (i=0 ; i<NUMMAPS ; i++)
 	{
-	    DEH_snprintf(name, 9, "WILV%d%d", wbs->epsd, i);
+	    name = DEH_sprintf("WILV%d%d", wbs->epsd, i);
             callback(name, &lnames[i]);
 	}
 	// [crispy] special-casing for E1M10 "Sewers" support
 	if (crispy->havee1m10)
 	{
-	    DEH_snprintf(name, 9, "SEWERS");
+	    name = DEH_LumpName("SEWERS");
 	    callback(name, &lnames[i]);
 	}
 
 	// you are here
-        callback(DEH_String("WIURH0"), &yah[0]);
+        callback(DEH_LumpName("WIURH0"), &yah[0]);
 
 	// you are here (alt.)
-        callback(DEH_String("WIURH1"), &yah[1]);
+        callback(DEH_LumpName("WIURH1"), &yah[1]);
 
 	// splat
-        callback(DEH_String("WISPLAT"), &splat[0]);
+        callback(DEH_LumpName("WISPLAT"), &splat[0]);
 
 	if (wbs->epsd < 3)
 	{
@@ -1767,7 +1767,7 @@ static void WI_loadUnloadData(load_callback_t callback)
 		    if (wbs->epsd != 1 || j != 8)
 		    {
 			// animations
-			DEH_snprintf(name, 9, "WIA%d%.2d%.2d", wbs->epsd, j, i);
+			name = DEH_sprintf("WIA%d%.2d%.2d", wbs->epsd, j, i);
                         callback(name, &a->p[i]);
 		    }
 		    else
@@ -1781,46 +1781,46 @@ static void WI_loadUnloadData(load_callback_t callback)
     }
 
     // More hacks on minus sign.
-    if (W_CheckNumForName(DEH_String("WIMINUS")) > 0)
-        callback(DEH_String("WIMINUS"), &wiminus);
+    if (W_CheckNumForName(DEH_LumpName("WIMINUS")) > 0)
+        callback(DEH_LumpName("WIMINUS"), &wiminus);
     else
         wiminus = NULL;
 
     for (i=0;i<10;i++)
     {
 	 // numbers 0-9
-	DEH_snprintf(name, 9, "WINUM%d", i);
+	name = DEH_sprintf("WINUM%d", i);
         callback(name, &num[i]);
     }
 
     // percent sign
-    callback(DEH_String("WIPCNT"), &percent);
+    callback(DEH_LumpName("WIPCNT"), &percent);
 
     // "finished"
-    callback(DEH_String("WIF"), &finished);
+    callback(DEH_LumpName("WIF"), &finished);
 
     // "entering"
-    callback(DEH_String("WIENTER"), &entering);
+    callback(DEH_LumpName("WIENTER"), &entering);
 
     // "kills"
-    callback(DEH_String("WIOSTK"), &kills);
+    callback(DEH_LumpName("WIOSTK"), &kills);
 
     // "scrt"
-    callback(DEH_String("WIOSTS"), &secret);
+    callback(DEH_LumpName("WIOSTS"), &secret);
 
      // "secret"
-    callback(DEH_String("WISCRT2"), &sp_secret);
+    callback(DEH_LumpName("WISCRT2"), &sp_secret);
 
     // french wad uses WIOBJ (?)
-    if (W_CheckNumForName(DEH_String("WIOBJ")) >= 0)
+    if (W_CheckNumForName(DEH_LumpName("WIOBJ")) >= 0)
     {
     	// "items"
     	if (netgame && !deathmatch)
-            callback(DEH_String("WIOBJ"), &items);
+            callback(DEH_LumpName("WIOBJ"), &items);
     	else
-            callback(DEH_String("WIOSTI"), &items);
+            callback(DEH_LumpName("WIOSTI"), &items);
     } else {
-        callback(DEH_String("WIOSTI"), &items);
+        callback(DEH_LumpName("WIOSTI"), &items);
     }
 
     // "frgs"
@@ -1850,11 +1850,11 @@ static void WI_loadUnloadData(load_callback_t callback)
     for (i=0 ; i<MAXPLAYERS ; i++)
     {
 	// "1,2,3,4"
-	DEH_snprintf(name, 9, "STPB%d", i);
+	name = DEH_sprintf("STPB%d", i);
         callback(name, &p[i]);
 
 	// "1,2,3,4"
-	DEH_snprintf(name, 9, "WIBP%d", i+1);
+	name = DEH_sprintf("WIBP%d", i+1);
         callback(name, &bp[i]);
     }
 
@@ -1862,25 +1862,25 @@ static void WI_loadUnloadData(load_callback_t callback)
 
     if (gamemode == commercial)
     {
-        M_StringCopy(name, DEH_String("INTERPIC"), sizeof(name));
+       name = DEH_String("INTERPIC");
     }
     else if (gameversion >= exe_ultimate && wbs->epsd == 3)
     {
-        M_StringCopy(name, DEH_String("INTERPIC"), sizeof(name));
+       name = DEH_String("INTERPIC");
     }
     else if (crispy->haved1e5 && wbs->epsd == 4 && W_CheckNumForName(DEH_String("SIGILINT")) != -1) // [crispy] Sigil
     {
-        M_StringCopy(name, DEH_String("SIGILINT"), sizeof(name));
+       name = DEH_String("SIGILINT");
     }
     else
     {
-	DEH_snprintf(name, sizeof(name), "WIMAP%d", wbs->epsd);
+	name = DEH_sprintf("WIMAP%d", wbs->epsd);
     }
 
     // [crispy] if still in doubt, use INTERPIC
     if (W_CheckNumForName(name) == -1)
     {
-        M_StringCopy(name, DEH_String("INTERPIC"), sizeof(name));
+       name = DEH_String("INTERPIC");
     }
 
     // Draw backdrop and save to a temporary buffer
@@ -1888,7 +1888,7 @@ static void WI_loadUnloadData(load_callback_t callback)
     callback(name, &background);
 }
 
-static void WI_loadCallback(const std::string &name, patch_t **variable)
+static void WI_loadCallback(const lump_name_t &name, patch_t **variable)
 {
   // [crispy] prevent crashes with maps without map title graphics lump
   if (W_CheckNumForName(name) != -1)
@@ -1925,7 +1925,7 @@ void WI_loadData(void)
     bstar = cache_lump_name<patch_t *>(DEH_String("STFDEAD0"), PU_STATIC);
 }
 
-static void WI_unloadCallback(const std::string &name, patch_t **variable)
+static void WI_unloadCallback(const lump_name_t &name, patch_t **variable)
 {
     W_ReleaseLumpName(name);
     *variable = NULL;

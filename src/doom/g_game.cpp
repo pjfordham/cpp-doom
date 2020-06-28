@@ -136,7 +136,7 @@ int             totalleveltimes;        // [crispy] CPhipps - total time for all
 int             demostarttic;           // [crispy] fix revenant internal demo bug
  
 std::string     demoname;
-std::string     orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
+lump_name_t     orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
 boolean         demorecording; 
 boolean         longtics;               // cph's doom 1.91 longtics hack
 boolean         lowres_turn;            // low resolution turning for longtics
@@ -803,7 +803,7 @@ void G_DoLoadLevel (void)
     //  we look for an actual index, instead of simply
     //  setting one.
 
-    skyflatnum = R_FlatNumForName(DEH_String(SKYFLATNAME));
+    skyflatnum = R_FlatNumForName(DEH_LumpName(SKYFLATNAME));
 
     // The "Sky never changes in Doom II" bug was fixed in
     // the id Anthology version of doom2.exe for Final Doom.
@@ -811,7 +811,7 @@ void G_DoLoadLevel (void)
     if ((gamemode == commercial)
      && (gameversion == exe_final2 || gameversion == exe_chex || true))
     {
-        std::string skytexturename;
+        const char *skytexturename;
 
         if (gamemap < 12)
         {
@@ -826,9 +826,8 @@ void G_DoLoadLevel (void)
             skytexturename = "SKY3";
         }
 
-        skytexturename = DEH_String(skytexturename);
-
-        skytexture = R_TextureNumForName(skytexturename);
+        skytexture = R_TextureNumForName(
+           DEH_LumpName(lump_name_t(skytexturename)));
     }
     // [crispy] sky texture scales
     R_InitSkyMap();
@@ -2225,7 +2224,6 @@ G_InitNew
   int		episode,
   int		map )
 {
-   std::string skytexturename;
     int             i;
     // [crispy] make sure "fast" parameters are really only applied once
     static boolean fast_applied;
@@ -2373,16 +2371,17 @@ G_InitNew
 
     if (gamemode == commercial)
     {
-        skytexturename = DEH_String("SKY3");
+        auto skytexturename = DEH_LumpName(lump_name_t("SKY3"));
         skytexture = R_TextureNumForName(skytexturename);
         if (gamemap < 21)
         {
-            skytexturename = DEH_String(gamemap < 12 ? "SKY1" : "SKY2");
+            skytexturename = DEH_LumpName(lump_name_t(gamemap < 12 ? "SKY1" : "SKY2"));
             skytexture = R_TextureNumForName(skytexturename);
         }
     }
     else
     {
+        const char *skytexturename;
         switch (gameepisode)
         {
           default:
@@ -2400,14 +2399,14 @@ G_InitNew
             break;
           case 5:        // [crispy] Sigil
             skytexturename = "SKY5_ZD";
-            if (R_CheckTextureNumForName(DEH_String(skytexturename)) == -1)
+            if (R_CheckTextureNumForName(DEH_LumpName(lump_name_t(skytexturename))) == -1)
             {
                 skytexturename = "SKY3";
             }
             break;
         }
-        skytexturename = DEH_String(skytexturename);
-        skytexture = R_TextureNumForName(skytexturename);
+        auto xskytexturename = DEH_LumpName(lump_name_t(skytexturename));
+        skytexture = R_TextureNumForName(xskytexturename);
     }
 
     G_DoLoadLevel ();
@@ -2422,7 +2421,7 @@ G_InitNew
 // [crispy] demo progress bar and timer widget
 int defdemotics = 0, deftotaldemotics;
 // [crispy] moved here
-static std::string defdemoname;
+static lump_name_t defdemoname;
 
 void G_ReadDemoTiccmd (ticcmd_t* cmd) 
 { 
@@ -2566,7 +2565,7 @@ void G_WriteDemoTiccmd (ticcmd_t* cmd)
 //
 // G_RecordDemo
 //
-void G_RecordDemo (const std::string &name)
+void G_RecordDemo (const lump_name_t &name)
 {
     int i;
     int maxsize;
@@ -2576,9 +2575,9 @@ void G_RecordDemo (const std::string &name)
     FILE *fp = NULL;
 
     // [crispy] the name originally chosen for the demo, i.e. without "-00000"
-    if (orig_demoname.empty())
+    if (orig_demoname.no_texture())
     {
-	orig_demoname = name;
+       orig_demoname = name;
     }
 
     usergame = false;
@@ -2676,7 +2675,7 @@ void G_BeginRecording (void)
 //
 
  
-void G_DeferedPlayDemo(const std::string &name)
+void G_DeferedPlayDemo(const lump_name_t &name)
 { 
     defdemoname = name; 
     gameaction = ga_playdemo; 
@@ -2884,7 +2883,7 @@ void G_DoPlayDemo (void)
 //
 // G_TimeDemo 
 //
-void G_TimeDemo (char* name) 
+void G_TimeDemo (const lump_name_t &name) 
 {
     //!
     // @category video

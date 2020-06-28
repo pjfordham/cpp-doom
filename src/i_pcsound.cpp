@@ -152,18 +152,18 @@ static boolean CachePCSLump(sfxinfo_t *sfxinfo)
 static boolean IsDisabledSound(sfxinfo_t *sfxinfo)
 {
     int i;
-    const char *disabled_sounds[] = {
-        "posact",
-        "bgact",
-        "dmact",
-        "dmpain",
-        "popain",
-        "sawidl",
+    const lump_name_t disabled_sounds[] = {
+       lump_name_t("posact"),
+       lump_name_t("bgact"),
+       lump_name_t("dmact"),
+       lump_name_t("dmpain"),
+       lump_name_t("popain"),
+       lump_name_t("sawidl"),
     };
 
     for (i=0; i<arrlen(disabled_sounds); ++i)
     {
-        if (!strcmp(sfxinfo->name, disabled_sounds[i]))
+        if (sfxinfo->name == disabled_sounds[i])
         {
             return true;
         }
@@ -243,7 +243,7 @@ static void I_PCS_StopSound(int handle)
 
 static int I_PCS_GetSfxLumpNum(sfxinfo_t* sfx)
 {
-   std::string namebuf = ( use_sfx_prefix ? std::string("dp") : std::string("") ) + DEH_String(sfx->name);
+   std::string namebuf = ( use_sfx_prefix ? std::string("dp") : std::string("") ) + DEH_LumpName(sfx->name).to_string();
 
    // [crispy] make missing sounds non-fatal
    return W_CheckNumForName(namebuf);

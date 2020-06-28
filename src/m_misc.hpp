@@ -63,6 +63,18 @@ inline bool iequals(const std::string_view a, const std::string_view b)
                      });
 }
 
+inline bool inequals(std::string_view a, const std::string_view b, std::size_t n)
+{
+   if (a.length() > n) {
+      a.remove_suffix( a.length() - n );
+   }
+   return std::equal(a.begin(), a.end(),
+                     b.begin(), b.end(),
+                     [](char a, char b) {
+                        return tolower(a) == tolower(b);
+                     });
+}
+
 inline FILE *fopen(const std::string &filename, const char *mode) {
    return fopen( filename.c_str(), mode );
 }

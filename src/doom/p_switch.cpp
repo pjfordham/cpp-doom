@@ -163,9 +163,9 @@ void P_InitSwitchList(void)
 	// warn if either one is missing, but only add if both are valid
 	if (alphSwitchList_episode <= episode)
 	{
-	    int texture1, texture2;
-	    auto name1 = DEH_String(alphSwitchList[i].name1);
-	    auto name2 = DEH_String(alphSwitchList[i].name2);
+           int texture1, texture2; // again these are char 9?
+	    auto name1 = DEH_LumpName(lump_name_t(alphSwitchList[i].name1));
+	    auto name2 = DEH_LumpName(lump_name_t(alphSwitchList[i].name2));
 
 	    texture1 = R_CheckTextureNumForName(name1);
 	    texture2 = R_CheckTextureNumForName(name2);

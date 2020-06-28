@@ -51,7 +51,7 @@ typedef PACKED_STRUCT (
 {
     int			filepos;
     int			size;
-    char		name[8];
+    lump_name_t	name;
 }) filelump_t;
 
 //
@@ -74,7 +74,7 @@ static std::string reloadname;
 static int reloadlump = -1;
 
 // Hash function used for lump names.
-unsigned int W_LumpNameHash(const char *s)
+unsigned int W_LumpNameHash(const lump_name_t &s)
 {
     // This is the djb2 string hash function, modded to work on strings
     // that have a maximum length of 8.
@@ -161,7 +161,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
         // Name the lump after the base of the filename (without the
         // extension).
 
-	M_ExtractFileBase (filename, fileinfo->name);
+	M_ExtractFileBase (filename, fileinfo->name.name);
 	numfilelumps = 1;
     }
     else
@@ -219,7 +219,7 @@ wad_file_t *W_AddFile (const std::string &_filename)
         lump_p->position = LONG(filerover->filepos);
         lump_p->size = LONG(filerover->size);
         lump_p->cache = NULL;
-        strncpy(lump_p->name, filerover->name, 8);
+        lump_p->name = filerover->name;
         lumpinfo[i] = lump_p;
 
         ++filerover;
@@ -260,9 +260,7 @@ int W_NumLumps (void)
 // W_CheckNumForName
 // Returns -1 if name not found.
 //
-
-lumpindex_t W_CheckNumForName(const char *name)
-{
+lumpindex_t W_CheckNumForName(const lump_name_t &name) {
     lumpindex_t i;
 
     // Do we have a hash table yet?
@@ -277,7 +275,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = lumphash[hash]; i != -1; i = lumpinfo[i]->next)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (lumpinfo[i]->name == name)
             {
                 return i;
             }
@@ -291,7 +289,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = numlumps - 1; i >= 0; --i)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (lumpinfo[i]->name == name)
             {
                 return i;
             }
@@ -310,7 +308,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 // W_GetNumForName
 // Calls W_CheckNumForName, but bombs out if not found.
 //
-lumpindex_t W_GetNumForName(const char *name)
+lumpindex_t W_GetNumForName(const lump_name_t &name)
 {
     lumpindex_t i;
 
@@ -318,19 +316,37 @@ lumpindex_t W_GetNumForName(const char *name)
 
     if (i < 0)
     {
-        I_Error ("W_GetNumForName: %s not found!", name);
+       I_Error ("W_GetNumForName: %s not found!", name.to_string());
     }
  
     return i;
 }
 
-lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to)
+//
+// W_GetNumForName
+// Calls W_CheckNumForName, but bombs out if not found.
+//
+// lumpindex_t W_GetNumForName(const char *name)
+// {
+//     lumpindex_t i;
+
+//     i = W_CheckNumForName (name);
+
+//     if (i < 0)
+//     {
+//         I_Error ("W_GetNumForName: %s not found!", name);
+//     }
+ 
+//     return i;
+// }
+
+lumpindex_t W_CheckNumForNameFromTo(const lump_name_t &name, int from, int to)
 {
     lumpindex_t i;
 
     for (i = from; i >= to; i--)
     {
-        if (!strncasecmp(lumpinfo[i]->name, name, 8))
+        if (lumpinfo[i]->name == name)
         {
             return i;
         }
@@ -446,7 +462,7 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
 //
 // W_CacheLumpName
 //
-void *W_CacheLumpName(const char *name, int tag)
+void *W_CacheLumpName(const lump_name_t &name, int tag)
 {
     return W_CacheLumpNum(W_GetNumForName(name), tag);
 }
@@ -482,7 +498,7 @@ void W_ReleaseLumpNum(lumpindex_t lumpnum)
     }
 }
 
-void W_ReleaseLumpName(const char *name)
+void W_ReleaseLumpName(const lump_name_t &name)
 {
     W_ReleaseLumpNum(W_GetNumForName(name));
 }
@@ -503,7 +519,7 @@ void W_Profile (void)
     char	ch;
     FILE*	f;
     int		j;
-    char	name[9];
+    lump_name_t 	name;
 	
 	
     for (i=0 ; i<numlumps ; i++)
@@ -525,13 +541,12 @@ void W_Profile (void)
 	info[i][profilecount] = ch;
     }
     profilecount++;
-	
+
     f = fopen ("waddump.txt","w");
-    name[8] = 0;
 
     for (i=0 ; i<numlumps ; i++)
     {
-       std::copy( lumpinfo[i].name, lumpinfo[i].name + 8, name );
+       name = lumpinfo[i].name;
 
 	for (j=0 ; j<8 ; j++)
 	    if (!name[j])
@@ -540,7 +555,7 @@ void W_Profile (void)
 	for ( ; j<8 ; j++)
 	    name[j] = ' ';
 
-	fprintf (f,"%s ",name);
+        fmt:print(f,"{} ",name);
 
 	for (j=0 ; j<profilecount ; j++)
 	    fprintf (f,"    %c",info[i][j]);

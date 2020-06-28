@@ -432,13 +432,12 @@ void HU_Init(void)
 
     int		i;
     int		j;
-    char	buffer[9];
 
     // load the heads-up font
     j = HU_FONTSTART;
     for (i=0;i<HU_FONTSIZE;i++)
     {
-	DEH_snprintf(buffer, 9, "STCFN%.3d", j++);
+	auto buffer = DEH_sprintf("STCFN%.3d", j++);
 	hu_font[i] = (patch_t *) W_CacheLumpName(buffer, PU_STATIC);
     }
 
@@ -470,7 +469,7 @@ void HU_Init(void)
 	// [crispy] check for alternative crosshair patches from e.g. prboom-plus.wad first
 //	if ((laserpatch[i].l = W_CheckNumForName(laserpatch[i].a)) == -1)
 	{
-		DEH_snprintf(buffer, 9, "STCFN%.3d", toupper(laserpatch[i].c));
+		auto buffer = DEH_sprintf("STCFN%.3d", toupper(laserpatch[i].c));
 		laserpatch[i].l = W_GetNumForName(buffer);
 
 		patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU_STATIC);
@@ -584,7 +583,8 @@ static void HU_SetSpecialLevelName (const char *wad, const char **name)
 	    gamemap == speciallevel.map &&
 	    (!speciallevel.wad || !strcasecmp(wad, speciallevel.wad)))
 	{
-	    *name = speciallevel.name ? speciallevel.name : maplumpinfo->name;
+          // HACK
+           *name = speciallevel.name ? speciallevel.name : maplumpinfo->name.name;
 	    break;
 	}
     }
@@ -722,7 +722,7 @@ void HU_Start(void)
     // map is from a PWAD or if the map title string has been dehacked
     if (DEH_HasStringReplacement(s) || (!W_IsIWADLump(maplumpinfo) && (nervewadfile.empty() || gamemission != pack_nerve)))
     {
-	auto str = crstr[CR_GOLD] + W_WadNameForLump(maplumpinfo) + ": " + crstr[CR_GRAY] + maplumpinfo->name;
+       auto str = crstr[CR_GOLD] + W_WadNameForLump(maplumpinfo) + ": " + crstr[CR_GRAY] + maplumpinfo->name.to_string();
 
 	for (const char &c: str ) {
             HUlib_addCharToTextLine(&w_map, c);

@@ -27,6 +27,9 @@
 // Used to do dehacked text substitutions throughout the program
 
 const std::string &DEH_String(const std::string &s);
+
+const lump_name_t DEH_LumpName(const lump_name_t &s);
+
 void DEH_printf(const char *fmt, ...) PRINTF_ATTR(1, 2);
 void DEH_fprintf(FILE *fstream, const char *fmt, ...) PRINTF_ATTR(2, 3);
 void DEH_snprintf(char *buffer, size_t len, const char *fmt, ...) PRINTF_ATTR(3, 4);

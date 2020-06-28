@@ -51,9 +51,7 @@
 // is stored in vertical runs of opaque pixels (posts).
 // A column is composed of zero or more posts,
 // a patch or sprite is composed of zero or more columns.
-// 
-
-
+//
 
 //
 // Texture definition.
@@ -80,7 +78,7 @@ typedef PACKED_STRUCT (
 //
 typedef PACKED_STRUCT (
 {
-    char		name[8];
+    lump_name_t	name;
     int			masked;	
     short		width;
     short		height;
@@ -111,7 +109,7 @@ typedef struct
 struct texture_t
 {
     // Keep name for switch changing, etc.
-    char	name[8];		
+    lump_name_t name;
     short	width;
     short	height;
 
@@ -147,7 +145,7 @@ int		numtextures;
 texture_t**	textures;
 // NOTE: There's a question mark over the efficicency of the
 // string conversions here.
-std::map<std::string, texture_t *> textures_hashtable;
+std::map<lump_name_t, texture_t *> textures_hashtable;
 
 int*			texturewidthmask;
 // needed for texture pegging
@@ -506,11 +504,8 @@ void R_GenerateLookup (int texnum)
 	if (!patchcount[x] && !err++) // killough 10/98: non-verbose output
 	{
 	    // [crispy] fix absurd texture name in error message
-	    char namet[9];
-	    namet[8] = 0;
-	    strncpy(namet, texture->name, 8);
-	    printf ("R_GenerateLookup: column without a patch (%s)\n",
-		    namet);
+            fmt::print("R_GenerateLookup: column without a patch ({})\n",
+                       texture->name);
 	    // [crispy] do not return yet
 	    /*
 	    return;
@@ -595,8 +590,7 @@ static void GenerateTextureHashTable(void)
     {
         // Store index
         textures[i]->index = i;
-        auto name = std::string ( textures[i]->name, std::min((int)8,(int)strlen(textures[i]->name)));
-        auto x = textures_hashtable.find( name );
+        auto x = textures_hashtable.find( textures[i]->name );
         // Vanilla Doom does a linear search of the texures array
         // and stops at the first entry it finds.  If there are two
         // entries with the same name, the first one in the array
@@ -605,7 +599,7 @@ static void GenerateTextureHashTable(void)
         // Given that we only add new members if we don't already
         // have one.
         if (x == textures_hashtable.end() ) {
-           textures_hashtable[ name ] = textures[i];
+           textures_hashtable[ textures[i]->name ] = textures[i];
         }
     }
 }
@@ -630,7 +624,7 @@ void R_InitTextures (void)
 
     int*		maptex = NULL;
     
-    char		name[9];
+    lump_name_t		name;
     
     int*		patchlookup;
     
@@ -690,7 +684,7 @@ void R_InitTextures (void)
     nummappatches = 0;
     for (i = numlumps - 1; i >= 0; i--)
     {
-       if (!strncasecmp(lumpinfo[i]->name, DEH_String("PNAMES").c_str(), 6))
+       if (lumpinfo[i]->name ==  DEH_LumpName(lump_name_t("PNAMES")))
 	{
 	    if (numpnameslumps == maxpnameslumps)
 	    {
@@ -711,11 +705,11 @@ void R_InitTextures (void)
 	    numpnameslumps++;
 	}
 	else
-           if (!strncasecmp(lumpinfo[i]->name, DEH_String("TEXTURE").c_str(), 7))
+           if (lumpinfo[i]->name == DEH_LumpName(lump_name_t("TEXTURE")))
 	{
 	    // [crispy] support only TEXTURE1/2 lumps, not TEXTURE3 etc.
-	    if (lumpinfo[i]->name[7] != '1' &&
-	        lumpinfo[i]->name[7] != '2')
+	    if (lumpinfo[i]->name.name[7] != '1' &&
+	        lumpinfo[i]->name.name[7] != '2')
 		continue;
 
 	    // [crispy] make sure the first available TEXTURE1/2 lumps
@@ -747,7 +741,8 @@ void R_InitTextures (void)
 	{
 	    int p, po;
 
-	    M_StringCopy(name, pnameslumps[i].name_p + j * 8, sizeof(name));
+	    // FIXME, what the hell is this?
+            name = pnameslumps[i].name_p + j * 8;
 	    p = po = W_CheckNumForName(name);
 	    // [crispy] prevent flat lumps from being mistaken as patches
 	    while (p >= firstflat && p <= lastflat)
@@ -865,7 +860,7 @@ void R_InitTextures (void)
 	texture->height = SHORT(mtexture->height);
 	texture->patchcount = SHORT(mtexture->patchcount);
 	
-	strncpy(texture->name, mtexture->name, 8);
+	texture->name = mtexture->name;
 	mpatch = &mtexture->patches[0];
 	patch = &texture->patches[0];
 
@@ -885,12 +880,9 @@ void R_InitTextures (void)
 		patch->patch = patchlookup[p];
 	    if (patch->patch == -1 || p >= nummappatches)
 	    {
-		char	texturename[9];
-		texturename[8] = '\0';
-		strncpy(texturename, texture->name, 8);
 		// [crispy] make non-fatal
-		fprintf (stderr, "R_InitTextures: Missing patch in texture %s\n",
-			 texturename);
+                fmt::print(stderr, "R_InitTextures: Missing patch in texture {}\n",
+			 texture->name);
 		patch->patch = 0;
 	    }
 	}		
@@ -1247,14 +1239,14 @@ void R_InitData (void)
 // R_FlatNumForName
 // Retrieval, get a flat number for a flat name.
 //
-int R_FlatNumForName(const std::string &name)
+int R_FlatNumForName(const lump_name_t &name)
 {
-    int i = W_CheckNumForNameFromTo (name, lastflat, firstflat);
+   int i = W_CheckNumForNameFromTo(name, lastflat, firstflat);
 
     if (i == -1)
     {
 	// [crispy] make non-fatal
-        fmt::print(stderr, "R_FlatNumForName: %s not found\n", name);
+        fmt::print(stderr, "R_FlatNumForName: {} not found\n", name);
 	// [crispy] since there is no "No Flat" marker,
 	// render missing flats as SKY
 	return skyflatnum;
@@ -1270,10 +1262,10 @@ int R_FlatNumForName(const std::string &name)
 // Check whether texture is available.
 // Filter out NoTexture indicator.
 //
-int R_CheckTextureNumForName(const std::string &name)
+int R_CheckTextureNumForName(const lump_name_t &name)
 {
    // "NoTexture" marker.
-   if (name[0] == '-')
+   if (name.no_texture())
       return 0;
 
    auto i = textures_hashtable.find( name );
@@ -1293,13 +1285,13 @@ int R_CheckTextureNumForName(const std::string &name)
 // Calls R_CheckTextureNumForName,
 //  aborts with error message.
 //
-int R_TextureNumForName(const std::string &name)
+int R_TextureNumForName(const lump_name_t &name)
 {
     int i = R_CheckTextureNumForName (name);
 
     if (i==-1)
     {
-        fmt::print(stderr, "R_TextureNumForName: %s not found\n", name);
+        fmt::print(stderr, "R_TextureNumForName: {} not found\n", name);
         return 0;
     }
     return i;

@@ -132,9 +132,9 @@ musicinfo_t S_music[] =
 //
 
 #define SOUND(name, priority) \
-  { NULL, name, priority, NULL, -1, -1, 0, 0, -1, NULL }
+   { NULL, lump_name_t(name), priority, NULL, -1, -1, 0, 0, -1, NULL }
 #define SOUND_LINK(name, priority, link_id, pitch, volume) \
-  { NULL, name, priority, &S_sfx[link_id], pitch, volume, 0, 0, -1, NULL }
+   { NULL, lump_name_t(name), priority, &S_sfx[link_id], pitch, volume, 0, 0, -1, NULL }
 
 sfxinfo_t S_sfx[] =
 {

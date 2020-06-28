@@ -1039,16 +1039,16 @@ const char *skilltable[] =
 // [crispy] factor out map lump name and number finding into a separate function
 int P_GetNumForMap (int episode, int map, boolean critical)
 {
-    char	lumpname[9];
+    lump_name_t lumpname;
     int		lumpnum;
 
     // find map name
     if ( gamemode == commercial)
     {
 	if (map<10)
-	    DEH_snprintf(lumpname, 9, "map0%i", map);
+	    lumpname = DEH_sprintf("map0%i", map);
 	else
-	    DEH_snprintf(lumpname, 9, "map%i", map);
+	    lumpname = DEH_sprintf("map%i", map);
     }
     else
     {
@@ -1061,7 +1061,7 @@ int P_GetNumForMap (int episode, int map, boolean critical)
 
     // [crispy] special-casing for E1M10 "Sewers" support
     if (crispy->havee1m10 && episode == 1 && map == 10)
-	DEH_snprintf(lumpname, 9, "E1M10");
+	lumpname = DEH_sprintf("E1M10");
 
     lumpnum = critical ? W_GetNumForName (lumpname) : W_CheckNumForName (lumpname);
 
@@ -1087,7 +1087,7 @@ P_SetupLevel
   skill_t	skill)
 {
     int		i;
-    char	lumpname[9];
+    lump_name_t	lumpname;
     int		lumpnum;
     boolean	crispy_validblockmap;
     mapformat_t	crispy_mapformat;
@@ -1174,7 +1174,7 @@ P_SetupLevel
     lumpnum = P_GetNumForMap (episode, map, true);
 	
     maplumpinfo = lumpinfo[lumpnum];
-    strncpy(lumpname, maplumpinfo->name, 8);
+    lumpname = maplumpinfo->name;
 
     leveltime = 0;
     oldleveltime = 0;
@@ -1261,7 +1261,8 @@ P_SetupLevel
     // [crispy] support MUSINFO lump (dynamic music changing)
     if (gamemode != shareware)
     {
-	S_ParseMusInfo(lumpname);
+       //hack
+       S_ParseMusInfo(lumpname.name);
     }
 
     // clear special respawning que

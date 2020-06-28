@@ -3158,7 +3158,7 @@ void M_ForceLoadGame()
 	savegwarning = savemaplumpinfo ?
            std::string( "This savegame requires the file\n" ) +
 	             crstr[CR_GOLD] + savewadfilename + crstr[CR_NONE] + "\n" +
-	             "to restore " + crstr[CR_GOLD] + savemaplumpinfo->name + crstr[CR_NONE] + " .\n\n" +
+           "to restore " + crstr[CR_GOLD] + savemaplumpinfo->name.to_string() + crstr[CR_NONE] + " .\n\n" +
 	             "Continue to restore from\n" +
 	             crstr[CR_GOLD] + W_WadNameForLump(savemaplumpinfo) + crstr[CR_NONE] + " ?\n\n" +
 	             PRESSYN :

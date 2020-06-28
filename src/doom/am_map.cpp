@@ -540,26 +540,20 @@ void AM_initVariables(void)
 //
 void AM_loadPics(void)
 {
-    int i;
-    char namebuf[9];
-  
-    for (i=0;i<10;i++)
+    for (int i=0;i<10;i++)
     {
-	DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-	marknums[i] = cache_lump_name<patch_t *>(namebuf, PU_STATIC);
+	auto name = DEH_sprintf("AMMNUM%d", i);
+	marknums[i] = cache_lump_name<patch_t *>(name, PU_STATIC);
     }
 
 }
 
 void AM_unloadPics(void)
 {
-    int i;
-    char namebuf[9];
-  
-    for (i=0;i<10;i++)
+    for (int i=0;i<10;i++)
     {
-	DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-	W_ReleaseLumpName(namebuf);
+	auto name = DEH_sprintf("AMMNUM%d", i);
+	W_ReleaseLumpName(name);
     }
 }
 

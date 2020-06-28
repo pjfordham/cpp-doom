@@ -38,7 +38,7 @@ struct sfxinfo_struct
     // lump name.  If we are running with use_sfx_prefix=true, a
     // 'DS' (or 'DP' for PC speaker sounds) is prepended to this.
 
-    char name[9];
+    lump_name_t name;
 
     // Sfx priority
     int priority;

@@ -143,5 +143,73 @@ typedef int64_t dpixel_t;
 
 #define arrlen(array) (sizeof(array) / sizeof(*array))
 
+#include <iterator>
+#include <fmt/core.h>
+#include <string_view>
+
+struct lump_name_t {
+   char name[8];
+   lump_name_t(const std::string &_name) {
+      std::fill(std::begin(name), std::end(name), 0);
+      std::copy_n(std::begin(_name), std::min((std::size_t)8,_name.length()), std::begin(name));
+   }
+   lump_name_t(const char *_name) {
+      std::fill(std::begin(name), std::end(name), 0);
+        strncpy( name, _name, 8);
+
+      }
+   lump_name_t() {
+      std::fill(std::begin(name), std::end(name), 0);
+      name[0] = '-';
+   }
+
+   int length() const {
+      for( int i = 0; i < 8; ++i ) {
+         if (name[i] == 0)
+            return i;
+      }
+      return 8;
+   }
+
+   std::string to_string() const {
+      return std::string( name, length() );
+   }
+
+   char &operator[](std::size_t t) {
+      return name[t];
+   }
+   const char &operator[](std::size_t t) const {
+      return name[t];
+   }
+
+   bool operator==( const lump_name_t &that ) const {
+      return std::equal( std::begin(name), std::end(name),
+                         std::begin(that.name), std::end(that.name),
+                         [](char a, char b) {
+                            return tolower(a) == tolower(b);
+                         });
+   }
+
+   bool no_texture() const { return name[0] == '-'; }
+   bool operator<( const lump_name_t &that ) const {
+      return strncmp(name, that.name, 8) < 0;
+   }
+};
+
+template <>
+struct fmt::formatter<lump_name_t> {
+  constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+
+  template <typename FormatContext>
+  auto format(const lump_name_t& t, FormatContext& ctx) {
+     std::size_t i = 0;
+     std::string out;
+     while( i < 8 && t.name[i] != 0 ) {
+        out.push_back( t.name[i++] );
+     }
+     return format_to(ctx.out(), "{}", out);
+  }
+};
+
 #endif
 

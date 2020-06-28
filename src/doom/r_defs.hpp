@@ -491,7 +491,7 @@ typedef struct
 typedef struct
 {
 	char c;
-	char a[9];
+	lump_name_t a;
 	int l, w, h;
 } laserpatch_t;
 extern laserpatch_t *laserpatch;

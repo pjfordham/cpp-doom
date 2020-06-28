@@ -51,7 +51,7 @@ mapformat_t P_CheckMapFormat (int lumpnum)
     int b;
 
     if ((b = lumpnum+ML_BLOCKMAP+1) < numlumps &&
-        !strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
+        lumpinfo[b]->name == lump_name_t("BEHAVIOR"))
     {
 	fprintf(stderr, "Hexen (");
 	format = static_cast<mapformat_t>(format | MFMT_HEXEN);

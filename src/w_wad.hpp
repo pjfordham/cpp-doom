@@ -39,7 +39,7 @@ typedef int lumpindex_t;
 
 struct lumpinfo_t
 {
-   char	name[8]{};
+   lump_name_t	name;
    wad_file_t *wad_file{};
    int		position{};
    int		size{};
@@ -56,35 +56,22 @@ extern unsigned int numlumps;
 wad_file_t *W_AddFile(const std::string &filename);
 void W_Reload(void);
 
-lumpindex_t W_CheckNumForName(const char *name);
-lumpindex_t W_GetNumForName(const char *name);
-lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to);
-inline lumpindex_t W_CheckNumForName(const std::string &name) {
-   return W_CheckNumForName( name.c_str() );
-}
-inline lumpindex_t W_GetNumForName(const std::string &name) {
-   return W_GetNumForName( name.c_str() );
-}
-
-inline lumpindex_t W_CheckNumForNameFromTo(const std::string &name, int from, int to) {
-   return W_CheckNumForNameFromTo( name.c_str(), from, to );
-}
+lumpindex_t W_CheckNumForName(const lump_name_t &name);
+lumpindex_t W_GetNumForName(const lump_name_t &name);
+lumpindex_t W_CheckNumForNameFromTo(const lump_name_t &name, int from, int to);
 
 int W_LumpLength(lumpindex_t lump);
 void W_ReadLump(lumpindex_t lump, void *dest);
 
 void *W_CacheLumpNum(lumpindex_t lump, int tag);
-void *W_CacheLumpName(const char *name, int tag);
+void *W_CacheLumpName(const lump_name_t &name, int tag);
 
 void W_GenerateHashTable(void);
 
 extern unsigned int W_LumpNameHash(const char *s);
 
 void W_ReleaseLumpNum(lumpindex_t lump);
-void W_ReleaseLumpName(const char *name);
-inline void W_ReleaseLumpName(const std::string &name) {
-   W_ReleaseLumpName( name.c_str() );
-}
+void W_ReleaseLumpName(const lump_name_t &name);
 
 const char *W_WadNameForLump(const lumpinfo_t *lump);
 boolean W_IsIWADLump(const lumpinfo_t *lump);

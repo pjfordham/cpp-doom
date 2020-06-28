@@ -216,9 +216,7 @@ static void S_RegisterAltMusic()
 	// [crispy] chicken-out if only one lump is missing, something must be wrong
 	for (altmusic = altmusic_fromto; altmusic->from; altmusic++)
 	{
-		char name[9];
-
-		M_snprintf(name, sizeof(name), "d_%s", altmusic->to);
+           lump_name_t name = fmt::format("d_{}", altmusic->to);
 
 		if (W_CheckNumForName(name) == -1)
 		{
@@ -993,10 +991,8 @@ void S_ChangeMusic(int musicnum, int looping)
     I_PlaySong(handle, looping);
     // [crispy] log played music
     {
-        char name[9];
-        M_snprintf(name, sizeof(name), "%s", lumpinfo[music->lumpnum]->name);
-        fprintf(stderr, "S_ChangeMusic: %s (%s)\n", name,
-                W_WadNameForLump(lumpinfo[music->lumpnum]));
+       fprintf(stderr, "S_ChangeMusic: %s (%s)\n" ,lumpinfo[music->lumpnum]->name.to_string().c_str(),
+               W_WadNameForLump(lumpinfo[music->lumpnum]));
     }
 
     mus_playing = music;
@@ -1047,10 +1043,8 @@ void S_ChangeMusInfoMusic (int lumpnum, int looping)
     I_PlaySong(music->handle, looping);
     // [crispy] log played music
     {
-        char name[9];
-        M_snprintf(name, sizeof(name), "%s", lumpinfo[music->lumpnum]->name);
-        fprintf(stderr, "S_ChangeMusInfoMusic: %s (%s)\n", name,
-                W_WadNameForLump(lumpinfo[music->lumpnum]));
+       fprintf(stderr, "S_ChangeMusInfoMusic: %s (%s)\n", lumpinfo[music->lumpnum]->name.to_string().c_str(),
+               W_WadNameForLump(lumpinfo[music->lumpnum]));
     }
 
     mus_playing = music;

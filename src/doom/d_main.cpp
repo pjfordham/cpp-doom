@@ -661,7 +661,7 @@ void D_DoAdvanceDemo (void)
     /*
     if (gameversion == exe_ultimate || gameversion == exe_final)
     */
-    if (W_CheckNumForName(DEH_String("demo4")) >= 0)
+    if (W_CheckNumForName(DEH_LumpName(lump_name_t("demo4"))) >= 0)
       demosequence = (demosequence+1)%7;
     else
       demosequence = (demosequence+1)%6;
@@ -681,7 +681,7 @@ void D_DoAdvanceDemo (void)
 	  S_StartMusic (mus_intro);
 	break;
       case 1:
-         G_DeferedPlayDemo(DEH_String("demo1"));
+         G_DeferedPlayDemo(DEH_LumpName(lump_name_t("demo1")));
 	break;
       case 2:
 	pagetic = 200;
@@ -689,7 +689,7 @@ void D_DoAdvanceDemo (void)
 	pagename = DEH_String("CREDIT");
 	break;
       case 3:
-         G_DeferedPlayDemo(DEH_String("demo2"));
+         G_DeferedPlayDemo(DEH_LumpName(lump_name_t("demo2")));
 	break;
       case 4:
 	gamestate = GS_DEMOSCREEN;
@@ -710,11 +710,11 @@ void D_DoAdvanceDemo (void)
 	}
 	break;
       case 5:
-         G_DeferedPlayDemo(DEH_String("demo3"));
+         G_DeferedPlayDemo(DEH_LumpName(lump_name_t("demo3")));
 	break;
         // THE DEFINITIVE DOOM Special Edition demo
       case 6:
-         G_DeferedPlayDemo(DEH_String("demo4"));
+         G_DeferedPlayDemo(DEH_LumpName(lump_name_t("demo4")));
 	break;
     }
 
@@ -875,12 +875,12 @@ void D_IdentifyVersion(void)
 
         for (i=0; i<numlumps; ++i)
         {
-            if (!strncasecmp(lumpinfo[i]->name, "MAP01", 8))
+           if (lumpinfo[i]->name ==  lump_name_t("MAP01"))
             {
                 gamemission = doom2;
                 break;
             } 
-            else if (!strncasecmp(lumpinfo[i]->name, "E1M1", 8))
+           else if (lumpinfo[i]->name == lump_name_t("E1M1"))
             {
                 gamemission = doom;
                 break;
@@ -901,13 +901,13 @@ void D_IdentifyVersion(void)
     {
         // Doom 1.  But which version?
 
-        if (W_CheckNumForName("E4M1") > 0)
+       if (W_CheckNumForName(lump_name_t("E4M1")) > 0)
         {
             // Ultimate Doom
 
             gamemode = retail;
         } 
-        else if (W_CheckNumForName("E3M1") > 0)
+       else if (W_CheckNumForName(lump_name_t("E3M1")) > 0)
         {
             gamemode = registered;
         }
@@ -1156,7 +1156,7 @@ static void InitGameVersion(void)
             for (i = 1; i <= 3; ++i)
             {
                 M_snprintf(demolumpname, 6, "demo%i", i);
-                if (W_CheckNumForName(demolumpname) > 0)
+                if (W_CheckNumForName(lump_name_t(demolumpname)) > 0)
                 {
                     demolump = cache_lump_name<byte *>(demolumpname, PU_STATIC);
                     demoversion = demolump[0];
@@ -1326,20 +1326,20 @@ static void LoadSigilWad(void)
 {
     int i;
 
-    static constexpr struct {
+    static struct {
         const char *name;
-        const char new_name[9];
+       const lump_name_t new_name;
     } sigil_lumps [] = {
-        {"CREDIT",   "SIGCREDI"},
-        {"HELP1",    "SIGHELP1"},
-        {"TITLEPIC", "SIGTITLE"},
-        {"DEHACKED", "SIG_DEH"},
-        {"DEMO1",    "SIGDEMO1"},
-        {"DEMO2",    "SIGDEMO2"},
-        {"DEMO3",    "SIGDEMO3"},
-        {"DEMO4",    "SIGDEMO4"},
-        {"D_INTER",  "D_SIGINT"},
-        {"D_INTRO",  "D_SIGTIT"},
+       {"CREDIT",   lump_name_t("SIGCREDI")},
+       {"HELP1",    lump_name_t("SIGHELP1")},
+       {"TITLEPIC", lump_name_t("SIGTITLE")},
+       {"DEHACKED", lump_name_t("SIG_DEH")},
+       {"DEMO1",    lump_name_t("SIGDEMO1")},
+       {"DEMO2",    lump_name_t("SIGDEMO2")},
+       {"DEMO3",    lump_name_t("SIGDEMO3")},
+       {"DEMO4",    lump_name_t("SIGDEMO4")},
+       {"D_INTER",  lump_name_t("D_SIGINT")},
+       {"D_INTRO",  lump_name_t("D_SIGTIT")},
     };
 
     const char *const texture_files[] = {
@@ -1349,14 +1349,14 @@ static void LoadSigilWad(void)
     };
 
     // [crispy] don't load SIGIL.wad if another PWAD already provides E5M1
-    i = W_CheckNumForName("E5M1");
+    i = W_CheckNumForName(lump_name_t("E5M1"));
     if (i != -1)
     {
         return;
     }
 
     // [crispy] don't load SIGIL.wad if SIGIL_COMPAT.wad is already loaded
-    i = W_CheckNumForName("E3M1");
+    i = W_CheckNumForName(lump_name_t("E3M1"));
     if (i != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[i]), "SIGIL_COMPAT", 12))
     {
         return;
@@ -1440,7 +1440,7 @@ static void LoadSigilWad(void)
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL_SHREDS", 12))
             {
-                strncpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
+                lumpinfo[j]->name = sigil_lumps[i].new_name;
             }
         }
 
@@ -1453,7 +1453,7 @@ static void LoadSigilWad(void)
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL", 5))
             {
-                strncpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
+               lumpinfo[j]->name = sigil_lumps[i].new_name;
             }
         }
 
@@ -1516,10 +1516,8 @@ static void LoadNerveWad(void)
         // [crispy] rename level name patch lumps out of the way
         for (i = 0; i < 9; i++)
         {
-            char lumpname[9];
-
-            M_snprintf (lumpname, 9, "CWILV%2.2d", i);
-            lumpinfo[W_GetNumForName(lumpname)]->name[0] = 'N';
+            auto name = fmt::format("CWILV{2.2}", i);
+            lumpinfo[W_GetNumForName(name)]->name[0] = 'N';
         }
 
         // [crispy] regenerate the hashtable
@@ -1556,7 +1554,7 @@ void D_DoomMain (void)
 {
     int p;
     std::string file;
-    char demolumpname[9];
+    lump_name_t demolumpname;
     int numiwadlumps;
 
     I_AtExit(D_Endoom, false);
@@ -2012,8 +2010,7 @@ void D_DoomMain (void)
 
         if (D_AddFile(file))
         {
-            M_StringCopy(demolumpname, lumpinfo[numlumps - 1]->name,
-                         sizeof(demolumpname));
+           demolumpname = lumpinfo[numlumps - 1]->name;
         }
         else
         {
@@ -2021,7 +2018,7 @@ void D_DoomMain (void)
             // the demo in the same way as Vanilla Doom.  This makes
             // tricks like "-playdemo demo1" possible.
 
-           M_StringCopy(demolumpname, myargv[p + 1], sizeof(demolumpname));
+           demolumpname = lump_name_t(myargv[p + 1].c_str());
         }
 
         fmt::print("Playing demo %s.\n", file);
@@ -2056,7 +2053,7 @@ void D_DoomMain (void)
 
         for (i = numiwadlumps; i < numlumps; ++i)
         {
-            if (!strncmp(lumpinfo[i]->name, "DEHACKED", 8))
+           if (lumpinfo[i]->name == lump_name_t( "DEHACKED"))
             {
                 DEH_LoadLump(i, true, true); // [crispy] allow long, allow error
                 loaded++;
@@ -2077,7 +2074,7 @@ void D_DoomMain (void)
     {
 	// These are the lumps that will be checked in IWAD,
 	// if any one is not present, execution will be aborted.
-	char name[23][9]=
+	lump_name_t name[23]=
 	{
 	    "e2m1","e2m2","e2m3","e2m4","e2m5","e2m6","e2m7","e2m8","e2m9",
 	    "e3m1","e3m3","e3m3","e3m4","e3m5","e3m6","e3m7","e3m8","e3m9",
@@ -2383,7 +2380,7 @@ void D_DoomMain (void)
 
     if (p)
     {
-       G_RecordDemo (myargv[p+1]);
+       G_RecordDemo (lump_name_t(myargv[p+1].c_str()));
 	autostart = true;
     }
 

@@ -50,6 +50,18 @@ const std::string &DEH_String(const std::string &s)
   }
 }
 
+const lump_name_t DEH_LumpName(const lump_name_t &s)
+{
+   auto i = hash_table.find( s.to_string() );
+
+   if (i == hash_table.end()) {
+      auto a = list.insert( s.to_string() );
+      return *a.first;
+   } else {
+      return i->second;
+  }
+}
+
 // [crispy] returns true if a string has been substituted
 
 boolean DEH_HasStringReplacement(const std::string &s)
