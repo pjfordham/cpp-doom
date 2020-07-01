@@ -2021,7 +2021,7 @@ void D_DoomMain (void)
            demolumpname = lump_name_t(myargv[p + 1].c_str());
         }
 
-        fmt::print("Playing demo %s.\n", file);
+        fmt::print("Playing demo {}.\n", file);
     }
 
     I_AtExit(G_CheckDemoStatusAtExit, true);
