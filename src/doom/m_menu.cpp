@@ -129,7 +129,7 @@ int             	saveSlot;	// which slot to save in
 int			saveCharIndex;	// which char we're editing
 static boolean          joypadSave = false; // was the save action initiated by joypad?
 // old save description before edit
-char			saveOldString[SAVESTRINGSIZE];  
+std::string		saveOldString;
 
 boolean			inhelpscreens;
 boolean			menuactive;
@@ -139,7 +139,7 @@ boolean			menuactive;
 #define CRISPY_LINEHEIGHT	10 // [crispy] Crispness menu
 
 extern boolean		sendpause;
-char			savegamestrings[10][SAVESTRINGSIZE];
+std::string		savegamestrings[10];
 
 static boolean opldev;
 
@@ -821,22 +821,22 @@ void M_ReadSaveStrings(void)
 {
     FILE   *handle;
     int     i;
-    char    name[256];
+    char    name[SAVESTRINGSIZE];
 
     for (i = 0;i < load_end;i++)
     {
         int retval;
-        M_StringCopy(name, P_SaveGameFile(i), sizeof(name));
 
-	handle = fopen(name, "rb");
+	handle = fopen(P_SaveGameFile(i), "rb");
         if (handle == NULL)
         {
-            M_StringCopy(savegamestrings[i], EMPTYSTRING, SAVESTRINGSIZE);
+            savegamestrings[i].clear();
             LoadMenu[i].status = 0;
             continue;
         }
-        retval = fread(&savegamestrings[i], 1, SAVESTRINGSIZE, handle);
-	fclose(handle);
+        retval = fread(name, 1, SAVESTRINGSIZE, handle);
+        fclose(handle);
+	savegamestrings[i] = name;
         LoadMenu[i].status = retval == SAVESTRINGSIZE;
     }
 }
@@ -945,7 +945,7 @@ void M_DrawSave(void)
 	
     if (saveStringEnter)
     {
-	i = M_StringWidth(savegamestrings[saveSlot]);
+        i = M_StringWidth(savegamestrings[saveSlot]);
 	M_WriteText(LoadDef.x + i,LoadDef.y+LINEHEIGHT*saveSlot,"_");
     }
 }
@@ -972,8 +972,7 @@ static void SetDefaultSaveName(int slot)
     // map from IWAD or PWAD?
     if (W_IsIWADLump(maplumpinfo) && !savegamedir.empty())
     {
-        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-                   "%s", maplumpinfo->name.to_string().c_str());
+        savegamestrings[itemOn] = maplumpinfo->name.to_string();
     }
     else
     {
@@ -985,30 +984,27 @@ static void SetDefaultSaveName(int slot)
            wadname.resize( pos - 1 );
         }
 
-        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-                   "%s (%s)", maplumpinfo->name.to_string().c_str(),
-                   wadname.c_str());
+        savegamestrings[itemOn] = maplumpinfo->name.to_string() + " (" + wadname + ")";
     }
-    auto len = strlen( savegamestrings[itemOn] );
-    std::transform(savegamestrings[itemOn], savegamestrings[itemOn] + len,
-                   savegamestrings[itemOn], ::toupper);
+    std::transform(savegamestrings[itemOn].begin(), savegamestrings[itemOn].end(),
+                   savegamestrings[itemOn].begin(), ::toupper);
     joypadSave = false;
 }
 
 // [crispy] override savegame name if it already starts with a map identifier
-static boolean StartsWithMapIdentifier (char *str)
+static boolean StartsWithMapIdentifier (std::string str)
 {
-    auto len = strlen( str );
-    std::transform(str, str + len,
-                   str, ::toupper);
+   std::transform(str.begin(), str.end(),
+                  str.begin(), ::toupper);
 
-    if (len >= 4 &&
-        str[0] == 'E' && isdigit(str[1]) &&
-        str[2] == 'M' && isdigit(str[3]))
-    {
-        return true;
-    }
-
+   auto len = str.length();
+   if (len >= 4 &&
+       str[0] == 'E' && isdigit(str[1]) &&
+       str[2] == 'M' && isdigit(str[3]))
+   {
+      return true;
+   }
+   
     if (len >= 5 &&
         str[0] == 'M' && str[1] == 'A' && str[2] == 'P' &&
         isdigit(str[3]) && isdigit(str[4]))
@@ -1038,19 +1034,19 @@ void M_SaveSelect(int choice)
     I_StartTextInput(x, y, x + 8 + 24 * 8 + 8, y + LINEHEIGHT - 2);
 
     saveSlot = choice;
-    M_StringCopy(saveOldString,savegamestrings[choice], SAVESTRINGSIZE);
-    if (!strcmp(savegamestrings[choice], EMPTYSTRING) ||
+    saveOldString = savegamestrings[choice];
+    if (savegamestrings[choice].empty() ||
         // [crispy] override savegame name if it already starts with a map identifier
         StartsWithMapIdentifier(savegamestrings[choice]))
     {
-        savegamestrings[choice][0] = 0;
+        savegamestrings[choice].clear();
 
         if (joypadSave || true) // [crispy] always prefill empty savegame slot names
         {
             SetDefaultSaveName(choice);
         }
     }
-    saveCharIndex = strlen(savegamestrings[choice]);
+    saveCharIndex = savegamestrings[choice].length();
 }
 
 //
@@ -2424,21 +2420,20 @@ boolean M_Responder (event_t* ev)
 	    if (saveCharIndex > 0)
 	    {
 		saveCharIndex--;
-		savegamestrings[saveSlot][saveCharIndex] = 0;
+		savegamestrings[saveSlot].resize(saveCharIndex);
 	    }
 	    break;
 
           case KEY_ESCAPE:
             saveStringEnter = 0;
             I_StopTextInput();
-            M_StringCopy(savegamestrings[saveSlot], saveOldString,
-                         SAVESTRINGSIZE);
+            savegamestrings[saveSlot] = saveOldString;
             break;
 
 	  case KEY_ENTER:
 	    saveStringEnter = 0;
             I_StopTextInput();
-	    if (savegamestrings[saveSlot][0])
+	    if (!savegamestrings[saveSlot].empty())
 		M_DoSave(saveSlot);
 	    break;
 
@@ -2477,9 +2472,9 @@ boolean M_Responder (event_t* ev)
 		M_StringWidth(savegamestrings[saveSlot]) <
 		(SAVESTRINGSIZE-2)*8)
 	    {
-		savegamestrings[saveSlot][saveCharIndex++] = ch;
-		savegamestrings[saveSlot][saveCharIndex] = 0;
-	    }
+               saveCharIndex++;
+               savegamestrings[saveSlot] += ch;
+            }
 	    break;
 	}
 	return true;

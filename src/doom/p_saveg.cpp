@@ -1362,14 +1362,15 @@ static void saveg_write_glow_t(glow_t *str)
 // Write the header for a savegame
 //
 
-void P_WriteSaveGameHeader(char *description)
+void P_WriteSaveGameHeader(const std::string &description)
 {
     char name[VERSIONSIZE] = { 0 }; 
-    int i; 
-	
-    for (i=0; description[i] != '\0'; ++i)
-        saveg_write8(description[i]);
-    for (; i<SAVESTRINGSIZE; ++i)
+    int i;
+
+    for (const char &ch : description)
+        saveg_write8(ch);
+
+    for (i=description.length(); i<SAVESTRINGSIZE; ++i)
         saveg_write8(0);
 
     M_snprintf(name, sizeof(name), "version %i", G_VanillaVersionCode());

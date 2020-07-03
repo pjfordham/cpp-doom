@@ -231,9 +231,9 @@ static int      joylook; // [crispy]
 static boolean  joyarray[MAX_JOY_BUTTONS + 1]; 
 static boolean *joybuttons = &joyarray[1];		// allow [-1] 
  
-static char     savename[256]; // [crispy] moved here, made static
+std::string    savename; // [crispy] moved here, made static
 static int      savegameslot; 
-static char     savedescription[32]; 
+std::string      savedescription; 
  
 #define	BODYQUESIZE	32
 
@@ -1224,10 +1224,9 @@ void G_Ticker (void)
 		    // [crispy] never override savegames by demo playback
 		    if (demoplayback)
 			break;
-		    if (!savedescription[0]) 
+		    if (savedescription.empty()) 
                     {
-                        M_StringCopy(savedescription, "NET GAME",
-                                     sizeof(savedescription));
+                       savedescription = "NET GAME";
                     }
 
 		    savegameslot =  
@@ -1515,7 +1514,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 // i.e. restart level from scratch upon resurrection
 static inline void G_ClearSavename ()
 {
-    M_StringCopy(savename, "", sizeof(savename));
+   savename.clear();
 }
 
 //
@@ -1530,7 +1529,7 @@ void G_DoReborn (int playernum)
 	// [crispy] if the player dies and the game has been loaded or saved
 	// in the mean time, reload that savegame instead of restarting the level
 	// when "Run" is pressed upon resurrection
-	if (crispy->singleplayer && *savename && speedkeydown())
+        if (crispy->singleplayer && !savename.empty() && speedkeydown())
 	gameaction = ga_loadgame;
 	else
 	{
@@ -1953,7 +1952,7 @@ void R_ExecuteSetViewSize (void);
 
 void G_LoadGame (const std::string& name) 
 { 
-    M_StringCopy(savename, name.c_str(), sizeof(savename));
+    savename = name;
     gameaction = ga_loadgame; 
 } 
 
@@ -2062,10 +2061,10 @@ void G_DoLoadGame (void)
 void
 G_SaveGame
 ( int	slot,
-  char*	description )
+  const std::string &description )
 {
     savegameslot = slot;
-    M_StringCopy(savedescription, description, sizeof(savedescription));
+    savedescription = description;
     sendsave = true;
 }
 
@@ -2157,8 +2156,8 @@ void G_DoSaveGame (void)
     rename(temp_savegame_file, savegame_file);
 
     gameaction = ga_nothing;
-    M_StringCopy(savedescription, "", sizeof(savedescription));
-    M_StringCopy(savename, savegame_file, sizeof(savename));
+    savedescription.clear();
+    savename = savegame_file;
 
     players[consoleplayer].message = DEH_String(GGSAVED);
 
@@ -2841,7 +2840,7 @@ void G_DoPlayDemo (void)
     // [crispy] support playing demos from savegames
     if (startloadgame >= 0)
     {
-	M_StringCopy(savename, P_SaveGameFile(startloadgame), sizeof(savename));
+        savename = P_SaveGameFile(startloadgame);
 	G_DoLoadGame();
     }
     else
