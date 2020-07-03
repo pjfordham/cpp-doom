@@ -435,7 +435,7 @@ uint32_t P_ThinkerToIndex (thinker_t* thinker)
 thinker_t* P_IndexToThinker (uint32_t index)
 {
     thinker_t*	th;
-    uint32_t	i;
+    uint32_t	i = 0;
 
     if (!index)
 	return NULL;
