@@ -973,7 +973,7 @@ static void SetDefaultSaveName(int slot)
     if (W_IsIWADLump(maplumpinfo) && !savegamedir.empty())
     {
         M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-                   "%s", maplumpinfo->name);
+                   "%s", maplumpinfo->name.to_string().c_str());
     }
     else
     {
@@ -986,7 +986,7 @@ static void SetDefaultSaveName(int slot)
         }
 
         M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-                   "%s (%s)", maplumpinfo->name,
+                   "%s (%s)", maplumpinfo->name.to_string().c_str(),
                    wadname.c_str());
     }
     auto len = strlen( savegamestrings[itemOn] );

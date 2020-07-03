@@ -13,11 +13,9 @@ memset => std::fill or default init {}
 mommove gone from src/doom, just networking ones left.
 
 examine sector_t::specialdata void*, std::variant is awkward
+May be able to use same type as thinkers list
 
-maintain list of thinkers in order added to lists to keep demo's working.
-list of std::variant of all thinker types .
-
-now thinkers are in wrong order anyway  we can probably move from std::list to std::Vector
+move mobj_t builtin lists to std::lists
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
 
@@ -27,7 +25,6 @@ review all uses of c_str
 
 review all use of taking std::string as a parameter with a view to using std::string_view
 
-migrate dehacked strings to std::string, DEH_String should return std::string, or maybe string_view? not sure.
 
 rm -rf ~/github/cpp-doom/debug
 mkdir ~/github/cpp-doom/debug
@@ -37,7 +34,7 @@ export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
 
-( cd ~/github/cpp-doom/src ; echo *.cpp doom/*.cpp | xargs clang-tidy-10  -p=~/github/cpp-doom/debug )
+( cd ~/github/cpp-doom/src ; echo *.cpp doom/*.cpp | xargs clang-rename-10 -qualified-name=texture_name_t -new-name=lump_name_t   -p=~/github/cpp-doom/debug )
 
 
 rm -rf ~/github/cpp-doom/asan
@@ -50,42 +47,13 @@ cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_
 
 
 ( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
-( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom )
 ( cd ~/github/cpp-doom/debug/ ; gdb ~/github/cpp-doom/debug/src/c++-doom )
+( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom -timedemo demo1 -nogui )
+( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom -loadgame 4 )
 
 crispy physical menu is broken // not to do with libfmt in menu
 
-load game seems to be broken.
+load and save is mostly working, save names are garbled.
+verified load of crsipy save works, and load of our own saves works,
+haven't verified crispy will load our saves
 
-bool iequals(const std::string_view a, const std::string_view b)
-{
-    return std::equal(a.begin(), a.end(),
-                      b.begin(), b.end(),
-                      [](char a, char b) {
-                          return tolower(a) == tolower(b);
-                      });
-}
-
-wrap
-
-opendir
-stat
-IsDirectory?
-CreateProcess?
-setenv
-M_SetVariable
-M_MakeDirectory
-mkdir
-
-
-convert I_Error to fmt
-
-// Prints formatted error message.
-void vreport_error(const char* format, fmt::format_args args) {
-  fmt::print("Error: ");
-  fmt::vprint(format, args);
-}
-template <typename... Args>
-void report_error(const char* format, const Args & ... args) {
-  vreport_error(format, fmt::make_format_args(args...));
-}

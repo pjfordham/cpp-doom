@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <memory>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <algorithm>
 
 #include "deh_main.hpp"
@@ -145,7 +145,23 @@ int		numtextures;
 texture_t**	textures;
 // NOTE: There's a question mark over the efficicency of the
 // string conversions here.
-std::map<lump_name_t, texture_t *> textures_hashtable;
+struct lump_name_t_hasher
+{
+  std::size_t operator()(const lump_name_t& k) const
+  {
+     return
+        (std::hash<char>()(tolower(k.name[0])) << 0) ^
+        (std::hash<char>()(tolower(k.name[1])) << 2) ^
+        (std::hash<char>()(tolower(k.name[2])) << 4) ^
+        (std::hash<char>()(tolower(k.name[3])) << 6) ^
+        (std::hash<char>()(tolower(k.name[4])) << 8) ^
+        (std::hash<char>()(tolower(k.name[5])) << 10) ^
+        (std::hash<char>()(tolower(k.name[6])) << 12) ^
+        (std::hash<char>()(tolower(k.name[7])) << 14);
+  }
+};
+
+std::unordered_map<lump_name_t, texture_t *, lump_name_t_hasher> textures_hashtable;
 
 int*			texturewidthmask;
 // needed for texture pegging

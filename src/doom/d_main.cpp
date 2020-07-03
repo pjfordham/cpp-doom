@@ -2403,7 +2403,7 @@ void D_DoomMain (void)
     if (startloadgame >= 0)
     {
         file = P_SaveGameFile(startloadgame);
-        G_LoadGame(file);
+        G_LoadGame(file.c_str());
     }
 	
     if (gameaction != ga_loadgame )

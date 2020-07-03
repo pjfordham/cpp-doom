@@ -191,9 +191,6 @@ struct lump_name_t {
    }
 
    bool no_texture() const { return name[0] == '-'; }
-   bool operator<( const lump_name_t &that ) const {
-      return strncmp(name, that.name, 8) < 0;
-   }
 };
 
 template <>
