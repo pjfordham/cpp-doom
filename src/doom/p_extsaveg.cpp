@@ -372,11 +372,11 @@ static void P_WriteMusInfo (const char *key)
 {
 	if (musinfo.current_item > 0 && musinfo.items[0] > 0)
 	{
-		auto lump = lumpinfo[musinfo.current_item]->name.to_string();
-		auto orig = lumpinfo[musinfo.items[0]]->name.to_string();
+		auto lump = lumpinfo[musinfo.current_item]->name;
+		auto orig = lumpinfo[musinfo.items[0]]->name;
 
-		M_snprintf(line, MAX_LINE_LEN, "%s %s %s\n", key, lump.c_str(), orig.c_str());
-		fputs(line, save_stream);
+                auto line = fmt::format("{} {} {}\n", key, lump, orig);
+		fputs(line.c_str(), save_stream);
 	}
 }
 

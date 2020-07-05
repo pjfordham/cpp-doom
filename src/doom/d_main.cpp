@@ -2018,7 +2018,7 @@ void D_DoomMain (void)
             // the demo in the same way as Vanilla Doom.  This makes
             // tricks like "-playdemo demo1" possible.
 
-           demolumpname = lump_name_t(myargv[p + 1].c_str());
+           demolumpname = lump_name_t(myargv[p + 1]);
         }
 
         fmt::print("Playing demo {}.\n", file);
@@ -2380,7 +2380,7 @@ void D_DoomMain (void)
 
     if (p)
     {
-       G_RecordDemo (lump_name_t(myargv[p+1].c_str()));
+       G_RecordDemo (lump_name_t(myargv[p+1]));
 	autostart = true;
     }
 
@@ -2403,7 +2403,7 @@ void D_DoomMain (void)
     if (startloadgame >= 0)
     {
         file = P_SaveGameFile(startloadgame);
-        G_LoadGame(file.c_str());
+        G_LoadGame(file);
     }
 	
     if (gameaction != ga_loadgame )
