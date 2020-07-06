@@ -33,6 +33,7 @@
 #include "s_musinfo.hpp"
 #include "s_sound.hpp"
 #include "z_zone.hpp"
+#include <fmt/core.h>
 
 #define MAX_LINE_LEN 260
 #define MAX_STRING_LEN 80
@@ -41,8 +42,7 @@ static char *line, *string;
 
 static void P_WritePackageTarname (const char *key)
 {
-	M_snprintf(line, MAX_LINE_LEN, "%s %s\n", key, PACKAGE_VERSION);
-	fputs(line, save_stream);
+   fmt::print( save_stream, "{} {}\n", key, PACKAGE_VERSION );
 }
 
 // maplumpinfo->wad_file->basename
@@ -51,8 +51,7 @@ std::string savewadfilename;
 
 static void P_WriteWadFileName (const char *key)
 {
-	M_snprintf(line, MAX_LINE_LEN, "%s %s\n", key, W_WadNameForLump(maplumpinfo));
-	fputs(line, save_stream);
+   fmt::print( save_stream, "{} {}\n", key, W_WadNameForLump(maplumpinfo) );
 }
 
 static void P_ReadWadFileName (const char *key)
@@ -79,8 +78,7 @@ static void P_WriteExtraKills (const char *key)
 {
 	if (extrakills)
 	{
-		M_snprintf(line, MAX_LINE_LEN, "%s %d\n", key, extrakills);
-		fputs(line, save_stream);
+           fmt::print( save_stream, "{} {}\n", key, extrakills);
 	}
 }
 
@@ -375,8 +373,7 @@ static void P_WriteMusInfo (const char *key)
 		auto lump = lumpinfo[musinfo.current_item]->name;
 		auto orig = lumpinfo[musinfo.items[0]]->name;
 
-                auto line = fmt::format("{} {} {}\n", key, lump, orig);
-		fputs(line.c_str(), save_stream);
+                fmt::print(save_stream, "{} {} {}\n", key, lump, orig);
 	}
 }
 
