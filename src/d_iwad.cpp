@@ -433,9 +433,9 @@ static void CheckDOSDefaults(void)
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-static boolean DirIsFile(const char *path, const char *filename)
+static boolean DirIsFile(const std::string &path, const std::string &filename)
 {
-    return strchr(path, DIR_SEPARATOR) != NULL
+    return path.find(DIR_SEPARATOR) != std::string::npos
        && iequals( M_BaseName(path), filename );
 }
 
@@ -451,7 +451,7 @@ static std::string CheckDirectoryHasIWAD(const std::string &dir, const std::stri
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
     std::string probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir.c_str(), iwadname.c_str()) && probe.size() )
+    if (DirIsFile(dir, iwadname) && probe.size() )
     {
        return probe;
     }
@@ -739,7 +739,7 @@ std::string D_FindWADByName(const std::string &name)
         // file.
 
         probe = M_FileCaseExists(iwad_dirs[i]);
-        if (DirIsFile(iwad_dirs[i].c_str(), name.c_str()) && !probe.empty())
+        if (DirIsFile(iwad_dirs[i], name) && !probe.empty())
         {
            return probe;
         }
