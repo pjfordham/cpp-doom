@@ -638,17 +638,16 @@ static void AddSteamDirs(void)
         homedir = "/";
     }
     std::string steampath = std::string(homedir) + "/.steam/root/steamapps/common";
-    auto csteampath = steampath.c_str();
-    
-    AddIWADPath(csteampath, "/Doom 2/base");
-    AddIWADPath(csteampath, "/Master Levels of Doom/doom2");
-    AddIWADPath(csteampath, "/Ultimate Doom/base");
-    AddIWADPath(csteampath, "/Final Doom/base");
-    AddIWADPath(csteampath, "/DOOM 3 BFG Edition/base/wads");
-    AddIWADPath(csteampath, "/Heretic Shadow of the Serpent Riders/base");
-    AddIWADPath(csteampath, "/Hexen/base");
-    AddIWADPath(csteampath, "/Hexen Deathkings of the Dark Citadel/base");
-    AddIWADPath(csteampath, "/Strife");
+
+    AddIWADPath(steampath, "/Doom 2/base");
+    AddIWADPath(steampath, "/Master Levels of Doom/doom2");
+    AddIWADPath(steampath, "/Ultimate Doom/base");
+    AddIWADPath(steampath, "/Final Doom/base");
+    AddIWADPath(steampath, "/DOOM 3 BFG Edition/base/wads");
+    AddIWADPath(steampath, "/Heretic Shadow of the Serpent Riders/base");
+    AddIWADPath(steampath, "/Hexen/base");
+    AddIWADPath(steampath, "/Hexen Deathkings of the Dark Citadel/base");
+    AddIWADPath(steampath, "/Strife");
 }
 #endif // __MACOSX__
 #endif // !_WIN32
