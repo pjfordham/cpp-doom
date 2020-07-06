@@ -59,7 +59,7 @@ static void ChecksumAddLump(sha1_context_t *sha1_context, lumpinfo_t *lump)
 {
     char buf[9];
 
-    M_StringCopy(buf, lump->name.to_string().c_str(), sizeof(buf));
+    M_StringCopy(buf, lump->name.to_string(), sizeof(buf));
     // Maybe add a new SHA1_UpdateLumpName
     SHA1_UpdateString(sha1_context, buf);
     SHA1_UpdateInt32(sha1_context, GetFileNumber(lump->wad_file));
