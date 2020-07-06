@@ -157,17 +157,14 @@ void I_EndGlob(glob_t *glob)
     delete glob;
 }
 
-static boolean MatchesGlob(const std::string &_name, const std::string &_glob, int flags)
+static boolean _MatchesGlob(std::string::const_iterator name, std::string::const_iterator name_end,
+                            std::string::const_iterator glob, std::string::const_iterator glob_end,
+                            int flags)
 {
-    int n, g;
-
-    auto glob = _glob.c_str();
-    auto name = _name.c_str();
-
     while (*glob != '\0')
     {
-        n = *name;
-        g = *glob;
+        int n = *name;
+        int g = *glob;
 
         if ((flags & GLOB_FLAG_NOCASE) != 0)
         {
@@ -182,7 +179,9 @@ static boolean MatchesGlob(const std::string &_name, const std::string &_glob, i
             // match then the whole match is a failure.
             while (*name != '\0')
             {
-                if (MatchesGlob(name, glob + 1, flags))
+               if (_MatchesGlob(name, name_end,
+                                glob + 1, glob_end,
+                                flags))
                 {
                     return true;
                 }
@@ -203,6 +202,10 @@ static boolean MatchesGlob(const std::string &_name, const std::string &_glob, i
 
     // Match successful when glob and name end at the same time.
     return *name == '\0';
+}
+
+static boolean MatchesGlob(const std::string &name, const std::string &glob, int flags) {
+   return _MatchesGlob(name.begin(), name.end(), glob.begin(), glob.end(), flags);
 }
 
 static boolean MatchesAnyGlob(const std::string &name, glob_t *glob)
