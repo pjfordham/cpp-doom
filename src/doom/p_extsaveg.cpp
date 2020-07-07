@@ -99,8 +99,7 @@ static void P_WriteTotalLevelTimes (const char *key)
 {
 	if (totalleveltimes)
 	{
-		M_snprintf(line, MAX_LINE_LEN, "%s %d\n", key, totalleveltimes);
-		fputs(line, save_stream);
+           fmt::print( save_stream, "{} {}\n", key, totalleveltimes);
 	}
 }
 
@@ -120,13 +119,12 @@ static void P_ReadTotalLevelTimes (const char *key)
 static void P_WriteFireFlicker (const char *key)
 {
    P_VisitThinkers<fireflicker_t>( [key]( fireflicker_t *flick ) {
-         M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
+        fmt::print( save_stream, "{} {} {} {} {}\n",
                     key,
                     (int)(flick->sector - sectors),
                     (int)flick->count,
                     (int)flick->maxlight,
                     (int)flick->minlight);
-         fputs(line, save_stream);
          return false;
       } );
 }
@@ -162,11 +160,10 @@ static void P_WriteSoundTarget (const char *key)
 	{
 		if (sector->soundtarget)
 		{
-			M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
-			           key,
-			           i,
-			           P_MobjThinkerToIndex(sector->soundtarget));
-			fputs(line, save_stream);
+                   fmt::print( save_stream, "{} {} {}\n",
+                               key,
+                               i,
+                               P_MobjThinkerToIndex(sector->soundtarget));
 		}
 	}
 }
@@ -196,11 +193,10 @@ static void P_WriteOldSpecial (const char *key)
 	{
 		if (sector->oldspecial)
 		{
-			M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
-			           key,
-			           i,
-			           sector->oldspecial);
-			fputs(line, save_stream);
+                   fmt::print( save_stream, "{} {} {}\n",
+                               key,
+                               i,
+                               sector->oldspecial);
 		}
 	}
 }
@@ -225,21 +221,18 @@ extern void P_StartButton (line_t *line, bwhere_e w, int texture, int time);
 
 static void P_WriteButton (const char *key)
 {
-	int i;
-
-	for (i = 0; i < maxbuttons; i++)
+	for (int i = 0; i < maxbuttons; i++)
 	{
 		button_t *button = &buttonlist[i];
 
 		if (button->btimer)
 		{
-			M_snprintf(line, MAX_LINE_LEN, "%s %d %d %d %d\n",
-			           key,
-			           (int)(button->line - lines),
-			           (int)button->where,
-			           (int)button->btexture,
-			           (int)button->btimer);
-			fputs(line, save_stream);
+                   fmt::print( save_stream, "{} {} {} {} {}\n",
+                               key,
+                               (int)(button->line - lines),
+                               (int)button->where,
+                               (int)button->btexture,
+                               (int)button->btimer);
 		}
 	}
 }
@@ -269,11 +262,10 @@ static void P_WriteBrainTarget (const char *key)
    P_VisitMobjThinkers([key](mobj_t *mo) {
          if (mo->state == &states[S_BRAINEYE1])
          {
-            M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
-                       key,
-                       numbraintargets,
-                       braintargeton);
-            fputs(line, save_stream);
+            fmt::print( save_stream, "{} {} {}\n",
+                        key,
+                        numbraintargets,
+                        braintargeton);
 
             // [crispy] return after the first brain spitter is found
             return true;
@@ -308,13 +300,12 @@ static void P_WriteMarkPoints (const char *key)
 
 	if (p[0] != -1)
 	{
-		M_snprintf(line, MAX_LINE_LEN, "%s %d %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld\n",
-		           key, n,
-		           p[0], p[1], p[2], p[3], p[4],
-		           p[5], p[6], p[7], p[8], p[9],
-		           p[10], p[11], p[12], p[13], p[14],
-		           p[15], p[16], p[17], p[18], p[19]);
-		fputs(line, save_stream);
+           fmt::print( save_stream, "{} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}\n",
+                       key, n,
+                       p[0], p[1], p[2], p[3], p[4],
+                       p[5], p[6], p[7], p[8], p[9],
+                       p[10], p[11], p[12], p[13], p[14],
+                       p[15], p[16], p[17], p[18], p[19]);
 	}
 }
 
@@ -339,14 +330,11 @@ static void P_ReadMarkPoints (const char *key)
 
 static void P_WritePlayersLookdir (const char *key)
 {
-	int i;
-
-	for (i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		if (playeringame[i] && players[i].lookdir)
 		{
-			M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n", key, i, players[i].lookdir);
-			fputs(line, save_stream);
+                   fmt::print( save_stream, "{} {} {}\n", key, i, players[i].lookdir);
 		}
 	}
 }
@@ -432,16 +420,10 @@ static const extsavegdata_t extsavegdata[] =
 
 void P_WriteExtendedSaveGameData (void)
 {
-	int i;
-
-	line = new char[MAX_LINE_LEN];
-
-	for (i = 0; i < arrlen(extsavegdata); i++)
+	for (int i = 0; i < arrlen(extsavegdata); i++)
 	{
 		extsavegdata[i].extsavegwritefn(extsavegdata[i].key);
 	}
-
-	delete line;
 }
 
 static void P_ReadKeyValuePairs (int pass)
@@ -450,9 +432,7 @@ static void P_ReadKeyValuePairs (int pass)
 	{
 		if (sscanf(line, "%s", string) == 1)
 		{
-			int i;
-
-			for (i = 1; i < arrlen(extsavegdata); i++)
+			for (int i = 1; i < arrlen(extsavegdata); i++)
 			{
 				if (extsavegdata[i].extsavegreadfn &&
 				    extsavegdata[i].pass == pass &&
