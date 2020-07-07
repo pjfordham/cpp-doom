@@ -2295,9 +2295,7 @@ void ST_Start (void)
     // demos recorded by another player than player 1
     if (netgame && consoleplayer)
     {
-	char namebuf[8];
-
-	DEH_snprintf(namebuf, 7, "STFB%d", consoleplayer);
+	auto namebuf = DEH_sprintf("STFB%d", consoleplayer);
 	faceback = static_cast<patch_t *>(W_CacheLumpName(namebuf, PU_STATIC));
     }
 }

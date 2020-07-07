@@ -879,10 +879,9 @@ void F_BunnyScroll (void)
 {
     signed int  scrolled;
     int		x;
-    char	name[10];
     int		stage;
     static int	laststage;
-		
+
     dxi = (ORIGWIDTH << FRACBITS) / HIRESWIDTH;
     dy = (SCREENHEIGHT << FRACBITS) / ORIGHEIGHT;
     dyi = (ORIGHEIGHT << FRACBITS) / SCREENHEIGHT;
@@ -933,7 +932,7 @@ void F_BunnyScroll (void)
 	laststage = stage;
     }
 	
-    DEH_snprintf(name, 10, "END%i", stage);
+    auto name = DEH_sprintf( "END%i", stage);
     V_DrawPatch((ORIGWIDTH - 13 * 8) / 2,
                 (ORIGHEIGHT - 8 * 8) / 2,
                 cache_lump_name<patch_t *>(name,PU_CACHE));

@@ -59,9 +59,7 @@ std::string P_TempSaveGameFile(void)
 
 std::string P_SaveGameFile(int slot)
 {
-    char basename[32];
-    DEH_snprintf(basename, 32, SAVEGAMENAME "%d.dsg", slot);
-    return savegamedir + basename;
+   return savegamedir + DEH_sprintf(SAVEGAMENAME "%d.dsg", slot);
 }
 
 // Endian-safe integer read/write functions

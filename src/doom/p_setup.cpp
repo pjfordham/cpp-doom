@@ -1150,29 +1150,9 @@ P_SetupLevel
     // if working with a devlopment map, reload it
     W_Reload ();
 
-// [crispy] factor out map lump name and number finding into a separate function
-/*
-    // find map name
-    if ( gamemode == commercial)
-    {
-	if (map<10)
-	    DEH_snprintf(lumpname, 9, "map0%i", map);
-	else
-	    DEH_snprintf(lumpname, 9, "map%i", map);
-    }
-    else
-    {
-	lumpname[0] = 'E';
-	lumpname[1] = '0' + episode;
-	lumpname[2] = 'M';
-	lumpname[3] = '0' + map;
-	lumpname[4] = 0;
-    }
-
-    lumpnum = W_GetNumForName (lumpname);
-*/
+    // [crispy] factor out map lump name and number finding into a separate function
     lumpnum = P_GetNumForMap (episode, map, true);
-	
+
     maplumpinfo = lumpinfo[lumpnum];
     lumpname = maplumpinfo->name;
 

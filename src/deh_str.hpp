@@ -30,9 +30,6 @@ const std::string &DEH_String(const std::string &s);
 
 const lump_name_t DEH_LumpName(const lump_name_t &s);
 
-void DEH_printf(const char *fmt, ...) PRINTF_ATTR(1, 2);
-void DEH_fprintf(FILE *fstream, const char *fmt, ...) PRINTF_ATTR(2, 3);
-void DEH_snprintf(char *buffer, size_t len, const char *fmt, ...) PRINTF_ATTR(3, 4);
 void DEH_AddStringReplacement(const std::string &from_text, const std::string &to_text);
 boolean DEH_HasStringReplacement(const std::string &s);
 std::string FormatStringReplacement(const std::string &s);
@@ -47,6 +44,19 @@ std::string DEH_sprintf(const std::string &format, const Args & ... args) {
    return zreport_error(format, fmt::make_printf_args(args...));
 }
 
+// Prints formatted error message.
+inline void yreport_error(std::FILE *fstream, const std::string &format, fmt::printf_args args) {
+   fmt::vfprintf(fstream, FormatStringReplacement(format), args);
+}
+template <typename... Args>
+void DEH_fprintf(FILE *fstream, const std::string &format, const Args & ... args) {
+   yreport_error(fstream, format, fmt::make_printf_args(args...));
+}
+
+template <typename... Args>
+void DEH_printf(const std::string &format, const Args & ... args) {
+   yreport_error(stdout, format, fmt::make_printf_args(args...));
+}
 
 #if 0
 // Static macro versions of the functions above
