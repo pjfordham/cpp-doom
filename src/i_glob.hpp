@@ -23,6 +23,7 @@
 #define GLOB_FLAG_SORTED  0x02
 
 #include <string>
+#include <vector>
 
 struct glob_t;
 
@@ -33,7 +34,7 @@ glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int f
 // Same as I_StartGlob but multiple glob patterns can be provided. The list
 // of patterns must be terminated with NULL.
 glob_t *I_StartMultiGlob(const std::string &directory, int flags,
-                         const std::string glob, ...);
+                         const std::vector<std::string> &globs );
 
 // Finish reading file list.
 void I_EndGlob(glob_t *glob);

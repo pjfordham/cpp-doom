@@ -76,7 +76,6 @@ static boolean IsDirectory(const char *dir, struct dirent *de)
 struct glob_t
 {
     std::vector<std::string> globs;
-    int num_globs;
     int flags;
     DIR *dir;
     std::string directory;
@@ -88,49 +87,26 @@ struct glob_t
 };
 
 glob_t *I_StartMultiGlob(const std::string &directory, int flags,
-                         const std::string glob, ...)
+                         const std::vector<std::string> &globs )
 {
-    int num_globs;
-    va_list args;
-
     auto result = new glob_t;
     if (result == NULL)
     {
         return NULL;
     }
 
-    auto &globs = result->globs;
-    globs.resize( 1 );
-    globs[0] = glob;
-    num_globs = 1;
-
-    va_start(args, glob);
-    for (;;)
-    {
-        const char *arg = va_arg(args, const char *);
-
-        if (arg == NULL)
-        {
-            break;
-        }
-
-        globs.resize( num_globs + 1);
-        globs[num_globs] = arg;
-        ++num_globs;
-    }
-    va_end(args);
+    result->globs = globs;
 
     result->dir = opendir(directory.c_str());
     if (result->dir == NULL)
     {
-        globs.clear();
+        result->globs.clear();
         delete result;
         return NULL;
     }
 
     result->directory = directory;
     result->globs = globs;
-    result->num_globs = num_globs;
     result->flags = flags;
     result->last_filename.clear();
     result->filenames_len = 0;
@@ -140,7 +116,7 @@ glob_t *I_StartMultiGlob(const std::string &directory, int flags,
 
 glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags)
 {
-    return I_StartMultiGlob(directory, flags, glob, NULL);
+   return I_StartMultiGlob(directory, flags, std::vector<std::string> { glob } );
 }
 
 void I_EndGlob(glob_t *glob)
@@ -212,7 +188,7 @@ static boolean MatchesAnyGlob(const std::string &name, glob_t *glob)
 {
     int i;
 
-    for (i = 0; i < glob->num_globs; ++i)
+    for (i = 0; i < glob->globs.size(); ++i)
     {
        if (MatchesGlob(name, glob->globs[i], glob->flags))
         {

@@ -2869,7 +2869,6 @@ void M_Drawer (void)
     static short	y;
     unsigned int	i;
     unsigned int	max;
-    int			start;
 
     inhelpscreens = false;
     
@@ -2884,7 +2883,6 @@ void M_Drawer (void)
 
 	auto lines = split( messageString, '\n' );
 
-        start = 0;
 	y = ORIGHEIGHT/2 - M_StringHeight(messageString) / 2;
         for ( auto &string : lines )
 	{

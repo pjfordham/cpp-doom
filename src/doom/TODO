@@ -19,7 +19,9 @@ move mobj_t builtin lists to std::lists
 
 any c-style cast" "-Wold-style-cast" in `/githug/cpp-doom/CMakeLists.txt
 
-any void*
+any void* -
+S_Sound... takes liberties with void*
+
 
 review all uses of c_str
 

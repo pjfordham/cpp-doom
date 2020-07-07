@@ -77,7 +77,7 @@ static boolean iwad_dirs_built = false;
 static std::string iwad_dirs[MAX_IWAD_DIRS];
 static int num_iwad_dirs = 0;
 
-static void AddIWADDir(const std::string dir)
+static void AddIWADDir(const std::string &dir)
 {
     if (num_iwad_dirs < MAX_IWAD_DIRS)
     {

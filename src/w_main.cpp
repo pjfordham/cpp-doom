@@ -181,8 +181,9 @@ void W_AutoLoadWADs(const std::string &path)
     glob_t *glob;
     std::string filename;
 
+    std::vector<std::string> globs = { "*.wad", "*.lmp" };
     glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
-                            "*.wad", "*.lmp", NULL);
+                            globs);
     for (;;)
     {
         filename = I_NextGlob(glob);

@@ -448,11 +448,11 @@ int DEH_LoadFile(const std::string &filename)
 // Load all dehacked patches from the given directory.
 void DEH_AutoLoadPatches(const std::string &path)
 {
-   std::string filename;
+    std::string filename;
     glob_t *glob;
 
-    glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
-                            "*.deh", "*.bex", "*.hhe", "*.seh", NULL); // [crispy] *.bex
+    std::vector<std::string> globs = { "*.deh", "*.bex", "*.hhe", "*.seh" };
+    glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED, globs );
     for (;;)
     {
         filename = I_NextGlob(glob);

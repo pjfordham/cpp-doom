@@ -121,7 +121,7 @@ std::string M_FileCaseExists(const std::string &path)
     }
 
     // 3. uppercase basename with lowercase extension, e.g. DOOM2.wad
-    pos = path_dup.rfind( "." );
+    pos = path_dup.rfind( '.' );
     if ( pos != std::string::npos ) {
        std::transform(path_dup.begin() + pos, path_dup.end(), path_dup.begin() + pos, ::tolower);
 

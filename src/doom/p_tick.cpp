@@ -38,7 +38,7 @@ void P_InitThinkers (void)
 }
 
 bool P_VisitMobjThinkers(std::function<bool(mobj_t *)> visitor) {
-   return P_VisitThinkers<mobj_t>(visitor);
+   return P_VisitThinkers<mobj_t>( std::move( visitor) );
 }
 
 struct {
