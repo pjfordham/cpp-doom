@@ -885,8 +885,9 @@ static void saveg_write_player_t(player_t *str)
     // int secretcount;
     saveg_write32(str->secretcount);
 
-    // char* message;
-    saveg_writep(str->message.c_str());
+    // char* message; PETE: there's no way this can
+    // actually work so just NULL it out.
+    saveg_writep( nullptr );
 
     // int damagecount;
     saveg_write32(str->damagecount);
