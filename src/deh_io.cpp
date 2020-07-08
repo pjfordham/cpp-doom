@@ -337,33 +337,19 @@ char *DEH_ReadLine(deh_context_t *context, boolean extended)
     return context->readbuffer;
 }
 
-void DEH_Warning(deh_context_t *context, const char *msg, ...)
-{
-    va_list args;
-
-    va_start(args, msg);
-
-    fmt::print(stderr, "{}:{}: warning: ", context->filename,
-            context->linenum);
-    vfprintf(stderr, msg, args);
-    fprintf(stderr, "\n");
-
-    va_end(args);
+void deh_report_warning(deh_context_t *context, const std::string &format, fmt::printf_args args) {
+   fmt::print(stderr, "{}:{}: warning: ", context->filename,
+              context->linenum);
+   fmt::vprintf(format, args);
+   fmt::print(stderr, "\n" );
 }
 
-void DEH_Error(deh_context_t *context, const char *msg, ...)
-{
-    va_list args;
+void deh_report_error(deh_context_t *context, const std::string &format, fmt::printf_args args) {
 
-    va_start(args, msg);
-
-    fmt::print(stderr, "{}:{}: ", context->filename, context->linenum);
-    vfprintf(stderr, msg, args);
-    fprintf(stderr, "\n");
-
-    va_end(args);
-
-    context->had_error = true;
+   fmt::print(stderr, "{}:{}: ", context->filename, context->linenum);
+   fmt::vfprintf(stderr, format, args);
+   fmt::print(stderr, "\n" );
+   context->had_error = true;
 }
 
 boolean DEH_HadError(deh_context_t *context)

@@ -77,7 +77,7 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
 
     if (!M_FileExists(try_path) || !DEH_LoadFile(try_path))
     {
-	DEH_Warning(context, "Could not include \"%s\"", inc_file.c_str());
+	DEH_Warning(context, "Could not include \"%s\"", inc_file);
     }
 
     bex_nested = false;
