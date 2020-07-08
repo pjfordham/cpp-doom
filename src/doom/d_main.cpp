@@ -1606,8 +1606,8 @@ void D_DoomMain (void)
 
     if (p)
     {
-       NET_QueryAddress(myargv[p+1].c_str());
-        exit(0);
+       NET_QueryAddress(myargv[p+1]);
+       exit(0);
     }
 
     //!

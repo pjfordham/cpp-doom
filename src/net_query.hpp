@@ -18,6 +18,7 @@
 #ifndef NET_QUERY_H
 #define NET_QUERY_H
 
+#include <string>
 #include "net_defs.hpp"
 
 typedef void (*net_query_callback_t)(net_addr_t *addr,
@@ -31,6 +32,11 @@ extern int NET_StartMasterQuery(void);
 extern void NET_LANQuery(void);
 extern void NET_MasterQuery(void);
 extern void NET_QueryAddress(const char *addr);
+
+inline void NET_QueryAddress(const std::string &addr) {
+   NET_QueryAddress( addr.c_str() );
+}
+
 extern net_addr_t *NET_FindLANServer(void);
 
 extern int NET_Query_Poll(net_query_callback_t callback, void *user_data);
