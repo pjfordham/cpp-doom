@@ -571,17 +571,15 @@ static void AddIWADPath(const std::string &path, const char *suffix)
 // <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>
 static void AddXdgDirs(void)
 {
-   const char *env;
-   std::string tmp_env;
-
     // Quote:
     // > $XDG_DATA_HOME defines the base directory relative to which
     // > user specific data files should be stored. If $XDG_DATA_HOME
     // > is either not set or empty, a default equal to
     // > $HOME/.local/share should be used.
-    env = getenv("XDG_DATA_HOME");
+    char *tmp_env = getenv("XDG_DATA_HOME");
+    std::string env = tmp_env ? tmp_env : "";
 
-    if (env == NULL)
+    if (env.empty())
     {
         const char *homedir = getenv("HOME");
         if (homedir == NULL)
@@ -589,14 +587,13 @@ static void AddXdgDirs(void)
             homedir = "/";
         }
 
-        tmp_env = std::string(homedir) + "/.local/share";
-        env = tmp_env.c_str();
+        env = std::string(homedir) + "/.local/share";
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    AddIWADDir(std::string(env) + "/games/doom");
+    AddIWADDir(env + "/games/doom");
 
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
@@ -606,8 +603,9 @@ static void AddXdgDirs(void)
     // >
     // > If $XDG_DATA_DIRS is either not set or empty, a value equal to
     // > /usr/local/share/:/usr/share/ should be used.
-    env = getenv("XDG_DATA_DIRS");
-    if (env == NULL)
+    tmp_env = getenv("XDG_DATA_DIRS");
+    env = tmp_env ? tmp_env : "";
+    if (env.empty())
     {
         // (Trailing / omitted from paths, as it is added below)
         env = "/usr/local/share:/usr/share";
