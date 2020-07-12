@@ -96,12 +96,20 @@ template<typename Type>
 void Z_Delete( Type *mem ) {
 
    // Run the destructor directly
-   bool run_destructor = !std::is_trivially_destructible<Type>::value;
-
-   // FIXME we know the type here so we don't need to call thru the lambda
+   if ( !std::is_trivially_destructible<Type>::value ) {
+      memblock_t* block = (memblock_t *) ( (unsigned char *)mem - sizeof(memblock_t));
+      for (int i = 0; i < block->count ;i++ ) {
+         (mem + i)->~Type();
+      }
+   }
 
    // Free the underlying memory
-   Z_Free(mem, run_destructor);
+   Z_Free(mem);
+}
+
+template<>
+inline void Z_Delete<void>( void *mem ) {
+   Z_Free(mem, true);
 }
 
 void	Z_Init (void);
