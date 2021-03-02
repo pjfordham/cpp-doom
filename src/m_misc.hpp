@@ -36,20 +36,20 @@ boolean M_FileExists(const std::string &file);
 std::string M_FileCaseExists(const std::string &file);
 long M_FileLength(FILE *handle);
 boolean M_StrToInt(const std::string &str, int *result);
-std::string M_DirName(const std::string_view &path);
-const std::string_view M_BaseName(const std::string_view &path);
-std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
-                            const std::string_view &replacement);
-boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix);
-boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix);
-void M_ExtractFileBase(const std::string_view &path, char *dest);
+std::string M_DirName(const std::string_view path);
+const std::string_view M_BaseName(const std::string_view path);
+std::string M_StringReplace(const std::string_view haystack, const std::string_view needle,
+                            const std::string_view replacement);
+boolean M_StringStartsWith(const std::string_view s, const std::string_view prefix);
+boolean M_StringEndsWith(const std::string_view s, const std::string_view suffix);
+lump_name_t M_ExtractFileBase(const std::string_view path);
 
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);
 inline boolean M_StringCopy(char *dest, const std::string &src, size_t dest_size) {
    return M_StringCopy(dest, src.c_str(), dest_size);
 }
 
-char *M_StringDuplicate(const std::string_view &orig);
+char *M_StringDuplicate(const std::string_view orig);
 
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args);
 int M_snprintf(char *buf, size_t buf_len, const char *s, ...) PRINTF_ATTR(3, 4);

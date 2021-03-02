@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <string>
 #include <algorithm>
+#include <fmt/core.h>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -261,7 +262,7 @@ boolean M_StrToInt(const std::string &str, int *result)
 // slash separator character. If no directory is described in the path,
 // the string "." is returned. In either case, the result is newly allocated
 // and must be freed by the caller after use.
-std::string M_DirName(const std::string_view &path)
+std::string M_DirName(const std::string_view path)
 {
     std::size_t p = path.rfind( DIR_SEPARATOR );
     if (p == std::string::npos)
@@ -277,7 +278,7 @@ std::string M_DirName(const std::string_view &path)
 // Returns the base filename described by the given path (without the
 // directory name). The result points inside path and nothing new is
 // allocated.
-const std::string_view M_BaseName(const std::string_view &path)
+const std::string_view M_BaseName(const std::string_view path)
 {
     auto p = path.rfind( DIR_SEPARATOR );
     if (p == std::string::npos)
@@ -290,7 +291,7 @@ const std::string_view M_BaseName(const std::string_view &path)
     }
 }
 
-void M_ExtractFileBase(const std::string_view &path, char *dest)
+lump_name_t M_ExtractFileBase(const std::string_view path)
 {
     auto filename = M_BaseName( path );
 
@@ -299,7 +300,7 @@ void M_ExtractFileBase(const std::string_view &path, char *dest)
     // with a base of more than eight characters.  To remove the 8.3
     // filename limit, instead we simply truncate the name.
 
-    std::fill(dest, dest + 8, 0);
+    lump_name_t dest;
 
     auto src = filename.begin();
     auto length = 0;
@@ -307,13 +308,14 @@ void M_ExtractFileBase(const std::string_view &path, char *dest)
     {
         if (length >= 8)
         {
-            printf("Warning: Truncated '%*s' lump name to '%.8s'.\n",
-                   (int)filename.length(), filename.data(), dest);
-            break;
+           fmt::print("Warning: Truncated '{}' lump name to '{}'.\n",
+                      filename, dest);
+           break;
         }
 
-	dest[length++] = toupper((int)*src++);
+	dest[length++] = toupper(*src++);
     }
+    return dest;
 }
 
 //
@@ -321,7 +323,7 @@ void M_ExtractFileBase(const std::string_view &path, char *dest)
 // allocated.
 //
 
-char *M_StringDuplicate(const std::string_view &orig)
+char *M_StringDuplicate(const std::string_view orig)
 {
     char *result;
 
@@ -340,8 +342,8 @@ char *M_StringDuplicate(const std::string_view &orig)
 // String replace function.
 //
 
-std::string M_StringReplace(const std::string_view &haystack, const std::string_view &needle,
-                            const std::string_view &replacement)
+std::string M_StringReplace(const std::string_view haystack, const std::string_view needle,
+                            const std::string_view replacement)
 {
     std::string result;
     auto remainder = haystack;
@@ -381,14 +383,14 @@ boolean M_StringCopy(char *dest, const char *src, size_t dest_size)
 
 // Returns true if 's' begins with the specified prefix.
 
-boolean M_StringStartsWith(const std::string_view &s, const std::string_view &prefix)
+boolean M_StringStartsWith(const std::string_view s, const std::string_view prefix)
 {
    return s.rfind( prefix, 0 ) == 0;
 }
 
 // Returns true if 's' ends with the specified suffix.
 
-boolean M_StringEndsWith(const std::string_view &s, const std::string_view &suffix)
+boolean M_StringEndsWith(const std::string_view s, const std::string_view suffix)
 {
     if (suffix.size() > s.size()) return false;
     return std::equal(suffix.rbegin(), suffix.rend(), s.rbegin());

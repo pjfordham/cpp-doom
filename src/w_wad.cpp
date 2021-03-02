@@ -145,7 +145,7 @@ wad_file_t *W_AddFile (const std::string_view _filename)
        return NULL;
     }
 
-    if (!iequals( filename.substr(filename.size() - std::min((std::size_t)3, filename.size())), "wad" ) )
+    if (!iequals( filename.substr(filename.size() - std::min<std::size_t>(3, filename.size())), "wad" ) )
     {
 	// single lump file
 
@@ -161,7 +161,7 @@ wad_file_t *W_AddFile (const std::string_view _filename)
         // Name the lump after the base of the filename (without the
         // extension).
 
-	M_ExtractFileBase (filename, fileinfo->name.name);
+	fileinfo->name = M_ExtractFileBase(filename);
 	numfilelumps = 1;
     }
     else

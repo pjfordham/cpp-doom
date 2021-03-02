@@ -113,7 +113,8 @@ static void OpenScript(const char *name, int type)
     {                           // File script - zone
         ScriptLumpNum = -1;
         ScriptSize = M_ReadFile(name, (byte **) & ScriptBuffer);
-        M_ExtractFileBase(name, ScriptName);
+        auto lumpname = M_ExtractFileBase(name);
+        M_StringCopy(ScriptName, lumpname.to_string(), 8);
     }
     ScriptPtr = ScriptBuffer;
     ScriptEndPtr = ScriptPtr + ScriptSize;
