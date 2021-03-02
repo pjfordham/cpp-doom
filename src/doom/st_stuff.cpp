@@ -916,8 +916,8 @@ ST_Responder (event_t* ev)
                cht_CheckCheatSP(&cheat_massacre3, ev->data2))
       {
 	int killcount = ST_cheat_massacre();
-        std::string monster = (gameversion == exe_chex) ? "Flemoid" : "Monster";
-        std::string killed = (gameversion == exe_chex) ? "returned" : "killed";
+        auto monster = (gameversion == exe_chex) ? "Flemoid" : "Monster";
+        auto killed = (gameversion == exe_chex) ? "returned" : "killed";
 
         plyr->message = crstr[CR_GOLD] + std::to_string( killcount ) + ' ' +
            crstr[CR_NONE] + monster + ((killcount == 1) ? " " : "s ") + killed;

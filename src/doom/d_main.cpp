@@ -790,7 +790,7 @@ static const char *banners[] =
 // Otherwise, use the name given
 // 
 
-static const std::string GetGameName(const std::string &gamename)
+static const std::string GetGameName(const std::string_view gamename)
 {
     for (size_t i=0; i<arrlen(banners); ++i)
     {
@@ -823,10 +823,10 @@ static const std::string GetGameName(const std::string &gamename)
         }
     }
 
-    return gamename;
+    return std::string( gamename );
 }
 
-static void SetMissionForPackName(const std::string &pack_name)
+static void SetMissionForPackName(const std::string_view pack_name)
 {
     static constexpr struct
     {
@@ -1007,7 +1007,7 @@ void D_SetGameDescription(void)
     }
 }
 
-static boolean D_AddFile(const std::string &filename)
+static boolean D_AddFile(const std::string_view filename)
 {
     wad_file_t *handle;
 

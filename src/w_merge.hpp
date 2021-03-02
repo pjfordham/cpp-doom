@@ -28,15 +28,15 @@
 
 // Add a new WAD and merge it into the main directory
 
-void W_MergeFile(const std::string &filename);
+void W_MergeFile(const std::string_view filename);
 
 // NWT-style merging
 
-void W_NWTMergeFile(const std::string &filename, int flags);
+void W_NWTMergeFile(const std::string_view filename, int flags);
 
 // Acts the same as NWT's "-merge" option.
 
-void W_NWTDashMerge(const std::string &filename);
+void W_NWTDashMerge(const std::string_view filename);
 
 // Debug function that prints the WAD directory.
 

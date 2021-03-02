@@ -105,9 +105,9 @@ unsigned int W_LumpNameHash(const lump_name_t &s)
 
 std::vector<lumpinfo_t> filelumps;
 
-wad_file_t *W_AddFile (const std::string &_filename)
+wad_file_t *W_AddFile (const std::string_view _filename)
 {
-    std::string filename = _filename;
+   std::string filename = std::string(_filename );
     wadinfo_t header;
     lumpindex_t i;
     wad_file_t *wad_file;
@@ -659,7 +659,7 @@ boolean W_IsIWADLump(const lumpinfo_t *lump)
 }
 
 // [crispy] dump lump data into a new LMP file
-int W_LumpDump (const std::string &lumpname)
+int W_LumpDump (const std::string_view lumpname)
 {
     const auto i = W_CheckNumForName(lumpname);
 
@@ -669,7 +669,7 @@ int W_LumpDump (const std::string &lumpname)
     }
 
     // [crispy] open file for writing
-    std::string filename = lumpname + ".lmp";
+    std::string filename = std::string(lumpname) + ".lmp";
     std::transform(filename.begin(), filename.end(),
                    filename.begin(), ::tolower);
     FILE *fp = fopen(filename, "wb");

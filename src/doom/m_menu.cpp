@@ -237,9 +237,9 @@ static void M_DrawSave(void);
 static void M_DrawSaveLoadBorder(int x,int y);
 static void M_SetupNextMenu(menu_t *menudef);
 static void M_DrawThermo(int x,int y,int thermWidth,int thermDot);
-static void M_WriteText(int x, int y, const std::string &string);
-int  M_StringWidth(const std::string &string); // [crispy] un-static
-static int  M_StringHeight(const std::string &string);
+static void M_WriteText(int x, int y, const std::string_view string);
+int  M_StringWidth(const std::string_view string); // [crispy] un-static
+static int  M_StringHeight(const std::string_view string);
 static void M_StartMessage(const std::string &string, void (*routine)(int), boolean input);
 static void M_ClearMenus (void);
 
@@ -1966,7 +1966,7 @@ M_StartMessage
 //
 // Find string width from hu_font chars
 //
-int M_StringWidth(const std::string &string)
+int M_StringWidth(const std::string_view string)
 {
     size_t             i;
     int             w = 0;
@@ -1999,7 +1999,7 @@ int M_StringWidth(const std::string &string)
 //
 //      Find string height from hu_font chars
 //
-int M_StringHeight(const std::string &string)
+int M_StringHeight(const std::string_view string)
 {
     int             height = SHORT(hu_font[0]->height);
     int h = height;
@@ -2018,7 +2018,7 @@ void
 M_WriteText
 ( int		x,
   int		y,
-  const std::string &string)
+  const std::string_view string)
 {
     int		w;
     int		c;

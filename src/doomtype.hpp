@@ -153,6 +153,10 @@ struct lump_name_t {
       std::fill(std::begin(name), std::end(name), 0);
       std::copy_n(std::begin(_name), std::min((std::size_t)8,_name.length()), std::begin(name));
    }
+   lump_name_t(const std::string_view _name) {
+      std::fill(std::begin(name), std::end(name), 0);
+      std::copy_n(std::begin(_name), std::min((std::size_t)8,_name.length()), std::begin(name));
+   }
    lump_name_t(const char *_name) {
       std::fill(std::begin(name), std::end(name), 0);
         strncpy( name, _name, 8);

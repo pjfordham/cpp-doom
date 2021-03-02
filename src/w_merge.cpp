@@ -563,7 +563,7 @@ void W_PrintDirectory(void)
 
 // Merge in a file by name
 
-void W_MergeFile(const std::string &filename)
+void W_MergeFile(const std::string_view filename)
 {
     int old_numlumps;
 
@@ -619,7 +619,7 @@ static void W_NWTAddLumps(searchlist_t *list)
 // Merge sprites and flats in the way NWT does with its -af and -as
 // command-line options.
 
-void W_NWTMergeFile(const std::string &filename, int flags)
+void W_NWTMergeFile(const std::string_view filename, int flags)
 {
     int old_numlumps;
 
@@ -665,7 +665,7 @@ void W_NWTMergeFile(const std::string &filename, int flags)
 // a PWAD, then search the IWAD sprites, removing any sprite lumps that also
 // exist in the PWAD.
 
-void W_NWTDashMerge(const std::string &filename)
+void W_NWTDashMerge(const std::string_view filename)
 {
     wad_file_t *wad_file;
     int old_numlumps;
@@ -716,7 +716,7 @@ void W_NWTDashMerge(const std::string &filename)
 }
 
 // [crispy] dump merged WAD data into a new IWAD file
-int W_MergeDump (const std::string &file)
+int W_MergeDump (const std::string_view file)
 {
     FILE *fp = NULL;
     uint32_t i, dir_p;
@@ -730,7 +730,7 @@ int W_MergeDump (const std::string &file)
     } directory_t;
 
     // [crispy] open file for writing
-    fp = fopen(file, "wb");
+    fp = fopen(std::string(file).c_str(), "wb");
     if (!fp)
     {
        I_Error("W_MergeDump: Failed writing to file '%s'!", file);
