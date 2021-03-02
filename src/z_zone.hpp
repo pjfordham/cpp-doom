@@ -97,7 +97,7 @@ void Z_Delete( Type *mem ) {
 
    // Run the destructor directly
    if ( !std::is_trivially_destructible<Type>::value ) {
-      memblock_t* block = (memblock_t *) ( (unsigned char *)mem - sizeof(memblock_t));
+      memblock_t* block = reinterpret_cast<memblock_t *>( ( reinterpret_cast<unsigned char *>(mem) - sizeof(memblock_t)) );
       for (int i = 0; i < block->count ;i++ ) {
          (mem + i)->~Type();
       }
