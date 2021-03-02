@@ -12,7 +12,7 @@ memcpy => std::copy
 memset => std::fill or default init {}
 mommove gone from src/doom, just networking ones left.
 
-examine sector_t::specialdata void*, std::variant is awkward
+examine sector_t::specialdata void*, std::variant is awkward, made into a std::any, consider variant
 May be able to use same type as thinkers list
 
 move mobj_t builtin lists to std::lists
@@ -59,4 +59,3 @@ load and save is mostly working, save names are garbled.
 verified load of crsipy save works, and load of our own saves works,
 haven't verified crispy will load our saves
 
-migrate all of p_extsaveg.cpp to use fmt
