@@ -2407,7 +2407,7 @@ static void SetVariable(default_t *def, const char *value)
             break;
 
         case DEFAULT_FLOAT:
-            *def->location.f = (float) atof(value);
+            *def->location.f = std::stof(value);
             break;
     }
 }
