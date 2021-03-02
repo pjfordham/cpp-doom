@@ -29,12 +29,12 @@ struct glob_t;
 
 // Start reading a list of file paths from the given directory which match
 // the given glob pattern. I_EndGlob() must be called on completion.
-glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags);
+glob_t *I_StartGlob(const std::string_view directory, const std::string_view glob, int flags);
 
 // Same as I_StartGlob but multiple glob patterns can be provided. The list
 // of patterns must be terminated with NULL.
-glob_t *I_StartMultiGlob(const std::string &directory, int flags,
-                         const std::vector<std::string> &globs );
+glob_t *I_StartMultiGlob(const std::string_view directory, int flags,
+                         const std::vector<std::string_view> &globs );
 
 // Finish reading file list.
 void I_EndGlob(glob_t *glob);

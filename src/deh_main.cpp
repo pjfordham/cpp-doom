@@ -451,7 +451,7 @@ void DEH_AutoLoadPatches(const std::string &path)
     std::string filename;
     glob_t *glob;
 
-    std::vector<std::string> globs = { "*.deh", "*.bex", "*.hhe", "*.seh" };
+    std::vector<std::string_view> globs = { "*.deh", "*.bex", "*.hhe", "*.seh" };
     glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED, globs );
     for (;;)
     {

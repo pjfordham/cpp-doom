@@ -75,10 +75,10 @@ static boolean IsDirectory(const char *dir, struct dirent *de)
 
 struct glob_t
 {
-    std::vector<std::string> globs;
+    std::vector<std::string_view> globs;
     int flags;
     DIR *dir;
-    std::string directory;
+    std::string_view directory;
     std::string last_filename;
     // These fields are only used when the GLOB_FLAG_SORTED flag is set:
     std::vector<std::string> filenames;
@@ -86,8 +86,8 @@ struct glob_t
     int next_index;
 };
 
-glob_t *I_StartMultiGlob(const std::string &directory, int flags,
-                         const std::vector<std::string> &globs )
+glob_t *I_StartMultiGlob(const std::string_view directory, int flags,
+                         const std::vector<std::string_view> &globs )
 {
     auto result = new glob_t;
     if (result == NULL)
@@ -97,7 +97,7 @@ glob_t *I_StartMultiGlob(const std::string &directory, int flags,
 
     result->globs = globs;
 
-    result->dir = opendir(directory.c_str());
+    result->dir = opendir(std::string(directory).c_str());
     if (result->dir == NULL)
     {
         result->globs.clear();
@@ -114,9 +114,9 @@ glob_t *I_StartMultiGlob(const std::string &directory, int flags,
     return result;
 }
 
-glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags)
+glob_t *I_StartGlob(const std::string_view directory, const std::string_view glob, int flags)
 {
-   return I_StartMultiGlob(directory, flags, std::vector<std::string> { glob } );
+   return I_StartMultiGlob(directory, flags, std::vector<std::string_view>( { glob } ));
 }
 
 void I_EndGlob(glob_t *glob)
@@ -133,8 +133,8 @@ void I_EndGlob(glob_t *glob)
     delete glob;
 }
 
-static boolean _MatchesGlob(std::string::const_iterator name, std::string::const_iterator name_end,
-                            std::string::const_iterator glob, std::string::const_iterator glob_end,
+static boolean _MatchesGlob(std::string_view::const_iterator name, std::string_view::const_iterator name_end,
+                            std::string_view::const_iterator glob, std::string_view::const_iterator glob_end,
                             int flags)
 {
     while (*glob != '\0')
@@ -180,11 +180,11 @@ static boolean _MatchesGlob(std::string::const_iterator name, std::string::const
     return *name == '\0';
 }
 
-static boolean MatchesGlob(const std::string &name, const std::string &glob, int flags) {
+static boolean MatchesGlob(const std::string_view name, const std::string_view glob, int flags) {
    return _MatchesGlob(name.begin(), name.end(), glob.begin(), glob.end(), flags);
-}
+ }
 
-static boolean MatchesAnyGlob(const std::string &name, glob_t *glob)
+static boolean MatchesAnyGlob(const std::string_view name, glob_t *glob)
 {
     int i;
 
@@ -209,11 +209,11 @@ static std::string NextGlob(glob_t *glob)
         {
            return std::string();
         }
-    } while (IsDirectory(glob->directory.c_str(), de)
+    } while (IsDirectory(std::string(glob->directory).c_str(), de)
           || !MatchesAnyGlob(de->d_name, glob));
 
     // Return the fully-qualified path, not just the bare filename.
-    return glob->directory + DIR_SEPARATOR_S + de->d_name;
+    return std::string(glob->directory) + DIR_SEPARATOR_S + de->d_name;
 }
 
 static void ReadAllFilenames(glob_t *glob)
@@ -270,7 +270,7 @@ std::string I_NextGlob(glob_t *glob)
 
 #warning No native implementation of file globbing.
 
-glob_t *I_StartGlob(const std::string &directory, const std::string &glob, int flags)
+glob_t *I_StartGlob(const std::string_view directory, const std::string_view glob, int flags)
 {
     return NULL;
 }

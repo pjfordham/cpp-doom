@@ -176,12 +176,12 @@ boolean W_ParseCommandLine(void)
 }
 
 // Load all WAD files from the given directory.
-void W_AutoLoadWADs(const std::string &path)
+void W_AutoLoadWADs(const std::string_view path)
 {
     glob_t *glob;
     std::string filename;
 
-    std::vector<std::string> globs = { "*.wad", "*.lmp" };
+    std::vector<std::string_view> globs = { "*.wad", "*.lmp" };
     glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
                             globs);
     for (;;)
