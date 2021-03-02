@@ -21,6 +21,8 @@
 #ifndef __DOOMDATA__
 #define __DOOMDATA__
 
+#include <limits>
+
 // The most basic types we use, portability.
 #include "doomtype.hpp"
 
@@ -222,7 +224,7 @@ typedef PACKED_STRUCT (
 
 // Indicate a leaf.
 #define	NF_SUBSECTOR	0x80000000 // [crispy] extended nodes
-#define	NO_INDEX	((unsigned short)-1) // [crispy] extended nodes
+#define	NO_INDEX	std::numeric_limits<unsigned short>::max() // [crispy] extended nodes
 
 typedef PACKED_STRUCT (
 {

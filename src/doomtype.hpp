@@ -213,4 +213,3 @@ struct fmt::formatter<lump_name_t> {
 };
 
 #endif
-
