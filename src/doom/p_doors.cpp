@@ -105,7 +105,7 @@ void vldoor_t::action()
 	    {
 	      case vld_blazeRaise:
 	      case vld_blazeClose:
-		door->sector->specialdata = NULL;
+                door->sector->specialdata.reset();
 		P_RemoveThinker (door);  // unlink and free
 		// [crispy] fix "fast doors make two closing sounds"
 		if (!crispy->soundfix)
@@ -114,7 +114,7 @@ void vldoor_t::action()
 		
 	      case vld_normal:
 	      case vld_close:
-		door->sector->specialdata = NULL;
+                door->sector->specialdata.reset();
 		P_RemoveThinker (door);  // unlink and free
 		break;
 		
@@ -172,7 +172,7 @@ void vldoor_t::action()
 	      case vld_close30ThenOpen:
 	      case vld_blazeOpen:
 	      case vld_open:
-		door->sector->specialdata = NULL;
+                door->sector->specialdata.reset();
 		P_RemoveThinker (door);  // unlink and free
 		break;
 		
@@ -261,7 +261,7 @@ EV_DoDoor
     while ((secnum = P_FindSectorFromLineTag(line,secnum)) >= 0)
     {
 	sec = &sectors[secnum];
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	    continue;
 		
 	
@@ -410,9 +410,9 @@ EV_VerticalDoor
 
     sec = sides[ line->sidenum[side^1]] .sector;
 
-    if (sec->specialdata)
+    if (sec->specialdata.has_value())
     {
-	door = static_cast<vldoor_t *>(sec->specialdata);
+        door = std::any_cast<vldoor_t *>(sec->specialdata);
 	switch(line->special)
 	{
 	  case	1: // ONLY FOR "RAISE" DOORS, NOT "OPEN"s

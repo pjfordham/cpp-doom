@@ -20,6 +20,7 @@
 #ifndef __R_DEFS__
 #define __R_DEFS__
 
+#include <any>
 
 // Screenwidth.
 #include "doomdef.hpp"
@@ -130,7 +131,7 @@ typedef	struct
     mobj_t*	thinglist;
 
     // thinker_t for reversable actions
-    void *	specialdata;
+    std::any	specialdata;
 
     int			linecount;
     struct line_s**	lines;	// [linecount] size

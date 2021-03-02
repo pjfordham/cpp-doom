@@ -183,7 +183,7 @@ EV_DoCeiling
     while ((secnum = P_FindSectorFromLineTag(line,secnum)) >= 0)
     {
 	sec = &sectors[secnum];
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	    continue;
 	
 	// new door thinker
@@ -238,7 +238,7 @@ void P_RemoveActiveCeiling(ceiling_t* c)
     P_VisitThinkers<ceiling_t>([c](ceiling_t *ceiling) {
           if (ceiling == c)
           {
-             c->sector->specialdata = NULL;
+             c->sector->specialdata.reset();
              P_RemoveThinker(c);
              return true;
           }

@@ -1309,7 +1309,7 @@ void P_UpdateSpecials (void)
 		// and always play second sound on single-sided linedefs.
 		if (crispy->soundfix)
 		{
-			if (!buttonlist[i].line->backsector || !buttonlist[i].line->backsector->specialdata)
+                     if (!buttonlist[i].line->backsector || !buttonlist[i].line->backsector->specialdata.has_value())
 			{
 				S_StartSoundOnce(buttonlist[i].soundorg,sfx_swtchn);
 			}
@@ -1459,7 +1459,7 @@ int EV_DoDonut(line_t*	line)
 	s1 = &sectors[secnum];
 
 	// ALREADY MOVING?  IF SO, KEEP GOING...
-	if (s1->specialdata)
+	if (s1->specialdata.has_value())
 	    continue;
 
 	rtn = 1;

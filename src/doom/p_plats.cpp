@@ -153,7 +153,7 @@ EV_DoPlat
     {
 	sec = &sectors[secnum];
 
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	    continue;
 	
 	// Find lowest & highest floors around sector
@@ -264,7 +264,7 @@ void P_RemoveActivePlat(plat_t* rplat)
 {
    bool found = P_VisitThinkers<plat_t>([rplat](plat_t *plat) {
          if (plat == rplat) {
-            rplat->sector->specialdata = nullptr;
+            rplat->sector->specialdata.reset();
             P_RemoveThinker(rplat);
             return true;
          }

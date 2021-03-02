@@ -226,7 +226,7 @@ void floormove_t::action()
     
     if (res == pastdest)
     {
-	floor->sector->specialdata = NULL;
+        floor->sector->specialdata.reset();
 
 	if (floor->direction == 1)
 	{
@@ -281,7 +281,7 @@ void T_MoveGoobers (floormove_t *floor)
     // have reached their respective destination heights
     if ((res1 & res2) == pastdest)
     {
-	floor->sector->specialdata = NULL;
+        floor->sector->specialdata.reset();
 	P_RemoveThinker(floor);
 
 	S_StartSound(&floor->sector->soundorg, sfx_pstop);
@@ -301,11 +301,11 @@ void EV_DoGoobers (void)
 	sec = &sectors[i];
 
 	// [crispy] remove thinker for sectors that are already moving
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	{
-	    floor = static_cast<floormove_t *>(sec->specialdata);
+            floor = std::any_cast<floormove_t *>(sec->specialdata);
 	    P_RemoveThinker(floor);
-	    sec->specialdata = NULL;
+	    sec->specialdata.reset();
 	}
 
 	floor = P_AddThinker<floormove_t>();
@@ -345,7 +345,7 @@ EV_DoFloor
 	sec = &sectors[secnum];
 		
 	// ALREADY MOVING?  IF SO, KEEP GOING...
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	    continue;
 	
 	// new floor thinker
@@ -547,7 +547,7 @@ EV_BuildStairs
 	sec = &sectors[secnum];
 		
 	// ALREADY MOVING?  IF SO, KEEP GOING...
-	if (sec->specialdata)
+	if (sec->specialdata.has_value())
 	    continue;
 	
 	// new floor thinker
@@ -604,7 +604,7 @@ EV_BuildStairs
 					
 		height += stairsize;
 
-		if (tsec->specialdata)
+		if (tsec->specialdata.has_value())
 		    continue;
 					
 		sec = tsec;

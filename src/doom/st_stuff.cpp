@@ -557,7 +557,7 @@ static int ST_cheat_spechits()
 	    // do not change door direction if it is already moving
 	    if (lines[i].tag == 0 &&
 	        lines[i].sidenum[1] != NO_INDEX &&
-	        sides[lines[i].sidenum[1]].sector->specialdata)
+	        sides[lines[i].sidenum[1]].sector->specialdata.has_value())
 	    {
 	        continue;
 	    }
