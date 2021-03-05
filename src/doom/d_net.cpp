@@ -142,7 +142,7 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->deathmatch = deathmatch;
     settings->episode = startepisode;
     settings->map = startmap;
-    settings->skill = startskill;
+    settings->skill = startskill.get_value();
     settings->loadgame = startloadgame;
     settings->gameversion = gameversion;
     settings->nomonsters = nomonsters;

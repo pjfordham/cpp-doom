@@ -643,7 +643,7 @@ P_SpawnMobjSafe
     mobj->flags = info->flags;
     mobj->health = info->spawnhealth;
 
-    if (gameskill != sk_nightmare)
+    if (gameskill != skill_t::nightmare())
 	mobj->reactiontime = info->reactiontime;
     
     mobj->lastlook = safe ? Crispy_Random () % MAXPLAYERS : P_Random () % MAXPLAYERS;
@@ -903,7 +903,6 @@ void P_SpawnPlayer (mapthing_t* mthing)
 void P_SpawnMapThing (mapthing_t* mthing)
 {
     int			i;
-    int			bit;
     mobj_t*		mobj;
     fixed_t		x;
     fixed_t		y;
@@ -944,13 +943,6 @@ void P_SpawnMapThing (mapthing_t* mthing)
     // check for apropriate skill level
     if (!netgame && (mthing->options & 16) )
 	return;
-		
-    if (gameskill == sk_baby)
-	bit = 1;
-    else if (gameskill == sk_nightmare)
-	bit = 4;
-    else
-	bit = 1<<(gameskill-1);
 
     // [crispy] warn about mapthings without any skill tag set
     if (!(mthing->options & (MTF_EASY|MTF_NORMAL|MTF_HARD)))
@@ -959,7 +951,19 @@ void P_SpawnMapThing (mapthing_t* mthing)
 	       mthing->type, mthing->x, mthing->y);
     }
 
-    if (!(mthing->options & bit) )
+    auto mtf_bit = [](skill_t skill) {
+                      if ( skill == skill_t::baby() || skill == skill_t::easy()) {
+                         return MTF_EASY;
+                      } else if ( skill == skill_t::medium() ) {
+                         return MTF_NORMAL;
+                      } else if ( skill == skill_t::hard() || skill == skill_t::nightmare() ) {
+                         return MTF_HARD;
+                      } else {
+                         return 0;
+                      }
+                   };
+
+    if (!(mthing->options & mtf_bit( gameskill )) )
 	return;
 	
     // [crispy] support MUSINFO lump (dynamic music changing)

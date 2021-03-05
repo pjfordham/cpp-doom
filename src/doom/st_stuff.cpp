@@ -684,7 +684,7 @@ ST_Responder (event_t* ev)
   // if a user keypress...
   else if (ev->type == ev_keydown)
   {
-    if (!netgame && gameskill != sk_nightmare)
+    if (!netgame && gameskill != skill_t::nightmare())
     {
       // 'dqd' cheat for toggleable god mode
       if (cht_CheckCheatSP(&cheat_god, ev->data2))
@@ -1103,9 +1103,7 @@ ST_Responder (event_t* ev)
     // [crispy] Show skill level
     else if (cht_CheckCheat(&cheat_skill, ev->data2))
     {
-      extern const char *skilltable[];
-
-      plyr->message = std::string( "Skill: " ) + skilltable[BETWEEN(0,5,(int) gameskill+1)];
+       plyr->message = std::string( "Skill: " ) + gameskill.to_string();
     }
     
     // 'clev' change-level cheat

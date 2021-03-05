@@ -88,15 +88,69 @@ typedef enum
 
 // Skill level.
 
-typedef enum
+class skill_t {
+   char skill;
+public:
+   skill_t() : skill(0) {}
+   explicit skill_t(char _skill) : skill(_skill) {}
+   char get_value() const { return skill; }
+   static skill_t noitems() { return skill_t(-1); }
+   static skill_t baby() { return skill_t(0); }
+   static skill_t easy() { return skill_t(1); }
+   static skill_t medium() { return skill_t(2); }
+   static skill_t hard() { return skill_t(3); }
+   static skill_t nightmare() { return skill_t(4); }
+
+   std::string to_string() const {
+      switch (skill) {
+      case -1: return "Nothing";  // the "-skill 0" hack
+      case 0: return "Baby";
+      case 1: return "Easy";
+      case 2: return "Normal";
+      case 3: return"Hard";
+      case 4: return "Nightmare";
+      }
+      return "Invalid skill level";
+   }
+   friend bool operator> (const skill_t &c1, const skill_t &c2);
+   friend bool operator< (const skill_t &c1, const skill_t &c2);
+   friend bool operator== (const skill_t &c1, const skill_t &c2);
+   friend bool operator<= (const skill_t &c1, const skill_t &c2);
+};
+
+template <>
+struct fmt::formatter<skill_t> {
+  constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+
+  template <typename FormatContext>
+  auto format(const skill_t& t, FormatContext& ctx) {
+     std::string out = t.to_string();;
+     return format_to(ctx.out(), "{}", out);
+  }
+};
+
+inline std::ostream& operator<<(std::ostream& os, const skill_t& dt)
 {
-    sk_noitems = -1,        // the "-skill 0" hack
-    sk_baby = 0,
-    sk_easy,
-    sk_medium,
-    sk_hard,
-    sk_nightmare
-} skill_t;
+   os << dt.to_string();
+   return os;
+}
+
+inline bool operator> (const skill_t &c1, const skill_t &c2)
+{
+   return c1.skill > c2.skill;
+}
+inline bool operator< (const skill_t &c1, const skill_t &c2)
+{
+   return c1.skill < c2.skill;
+}
+inline bool operator<= (const skill_t &c1, const skill_t &c2)
+{
+   return c1.skill <= c2.skill;
+}
+inline bool operator== (const skill_t &c1, const skill_t &c2)
+{
+   return c1.skill == c2.skill;
+}
 
 boolean D_ValidGameMode(int mission, int mode);
 boolean D_ValidGameVersion(GameMission_t mission, GameVersion_t version);

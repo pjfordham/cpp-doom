@@ -1025,17 +1025,6 @@ static void P_LoadReject(int lumpnum)
     }
 }
 
-// [crispy] log game skill in plain text
-const char *skilltable[] =
-{
-    "Nothing",
-    "Baby",
-    "Easy",
-    "Normal",
-    "Hard",
-    "Nightmare"
-};
-
 // [crispy] factor out map lump name and number finding into a separate function
 int P_GetNumForMap (int episode, int map, boolean critical)
 {
@@ -1171,7 +1160,7 @@ P_SetupLevel
 
         fmt::print(stderr, "P_SetupLevel: {} ({}) {}{} {}:{:02}:{:02}/{}:{:02}:{:02} ",
 	    maplumpinfo->name, W_WadNameForLump(maplumpinfo),
-            skilltable[BETWEEN(0,5,(int) skill+1)], rfn_str,
+                   skill, rfn_str,
 	    ltime/3600, (ltime%3600)/60, ltime%60,
 	    ttime/3600, (ttime%3600)/60, ttime%60);
     }

@@ -2163,7 +2163,7 @@ void D_DoomMain (void)
     D_ConnectNetGame();
 
     // get skill / episode / map from parms
-    startskill = sk_medium;
+    startskill = skill_t::medium();
     startepisode = 1;
     startmap = 1;
     autostart = false;
@@ -2182,7 +2182,7 @@ void D_DoomMain (void)
     if (p)
     {
         // todo does this need error handling?
-        startskill = static_cast<skill_t>(myargv[p+1][0]-'1');
+        startskill = skill_t(myargv[p+1][0]-'1');
 	autostart = true;
     }
 

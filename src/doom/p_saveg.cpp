@@ -1377,7 +1377,7 @@ void P_WriteSaveGameHeader(const std::string &description)
     for (i=0; i<VERSIONSIZE; ++i)
         saveg_write8(name[i]);
 	 
-    saveg_write8(gameskill);
+    saveg_write8(gameskill.get_value());
     saveg_write8(gameepisode);
     saveg_write8(gamemap);
 

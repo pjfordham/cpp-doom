@@ -2104,10 +2104,9 @@ void G_DoSaveGame (void)
     {
 	const int ltime = leveltime / TICRATE,
 	          ttime = (totalleveltimes + leveltime) / TICRATE;
-	extern const char *skilltable[];
 
-	fprintf(stderr, "G_DoSaveGame: Episode %d, Map %d, %s, Time %d:%02d:%02d, Total %d:%02d:%02d.\n",
-	        gameepisode, gamemap, skilltable[BETWEEN(0,5,(int) gameskill+1)],
+        fmt::print(stderr, "G_DoSaveGame: Episode {}, Map {}, {}, Time {}:%02d:%02d, Total {}:{:02}:{:20.\n",
+	        gameepisode, gamemap,
 	        ltime/3600, (ltime%3600)/60, ltime%60,
 	        ttime/3600, (ttime%3600)/60, ttime%60);
     }
@@ -2263,8 +2262,8 @@ G_InitNew
     }
     */
 
-    if (skill > sk_nightmare)
-	skill = sk_nightmare;
+    if (skill > skill_t::nightmare())
+       skill = skill_t::nightmare();
 
   // [crispy] only fix episode/map if it doesn't exist
   if (P_GetNumForMap(episode, map, false) < 0)
@@ -2309,13 +2308,13 @@ G_InitNew
 
     M_ClearRandom ();
 
-    if (skill == sk_nightmare || respawnparm )
+    if (skill == skill_t::nightmare() || respawnparm )
 	respawnmonsters = true;
     else
 	respawnmonsters = false;
 
     // [crispy] make sure "fast" parameters are really only applied once
-    if ((fastparm || skill == sk_nightmare) && !fast_applied)
+    if ((fastparm || skill == skill_t::nightmare()) && !fast_applied)
     {
 	for (i=S_SARG_RUN1 ; i<=S_SARG_PAIN2 ; i++)
 	    // [crispy] Fix infinite loop caused by Demon speed bug
@@ -2328,7 +2327,7 @@ G_InitNew
 	mobjinfo[MT_TROOPSHOT].speed = 20*FRACUNIT;
 	fast_applied = true;
     }
-    else if (!fastparm && skill != sk_nightmare && fast_applied)
+    else if (!fastparm && skill != skill_t::nightmare() && fast_applied)
     {
 	for (i=S_SARG_RUN1 ; i<=S_SARG_PAIN2 ; i++)
 	    states[i].tics <<= 1;
@@ -2652,7 +2651,7 @@ void G_BeginRecording (void)
         *demo_p++ = G_VanillaVersionCode();
     }
 
-    *demo_p++ = gameskill; 
+    *demo_p++ = gameskill.get_value(); 
     *demo_p++ = gameepisode; 
     *demo_p++ = gamemap; 
     if (longtics || gameversion > exe_doom_1_2)
@@ -2731,7 +2730,6 @@ static const char *DemoVersionDescription(int version)
 
 void G_DoPlayDemo (void)
 {
-    skill_t skill;
     int i, lumpnum, episode, map;
     int demoversion;
     boolean olddemo = false;
@@ -2802,7 +2800,7 @@ void G_DoPlayDemo (void)
         }
     }
 
-    skill = static_cast<skill_t>(*demo_p++);
+    auto skill = skill_t(*demo_p++);
     episode = *demo_p++; 
     map = *demo_p++; 
     if (!olddemo)

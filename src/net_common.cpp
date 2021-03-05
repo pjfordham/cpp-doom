@@ -443,7 +443,7 @@ boolean NET_ValidGameSettings(GameMode_t mode, GameMission_t mission,
     if (settings->deathmatch < 0 || settings->deathmatch > 3)
         return false;
 
-    if (settings->skill < sk_noitems || settings->skill > sk_nightmare)
+    if (skill_t(settings->skill) < skill_t::noitems() || skill_t(settings->skill) > skill_t::nightmare())
         return false;
 
     if (!D_ValidGameVersion(mission, static_cast<GameVersion_t>(settings->gameversion)))

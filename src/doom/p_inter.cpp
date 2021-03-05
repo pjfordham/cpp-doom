@@ -85,8 +85,8 @@ P_GiveAmmo
     else
 	num = clipammo[ammo]/2;
     
-    if (gameskill == sk_baby
-	|| gameskill == sk_nightmare)
+    if (gameskill == skill_t::baby()
+	|| gameskill == skill_t::nightmare())
     {
 	// give double ammo in trainer mode,
 	// you'll need in nightmare
@@ -852,7 +852,7 @@ P_DamageMobj
     }
 	
     player = target->player;
-    if (player && gameskill == sk_baby)
+    if (player && gameskill == skill_t::baby())
 	damage >>= 1; 	// take half damage in trainer mode
 		
 
