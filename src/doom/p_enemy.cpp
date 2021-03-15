@@ -1251,7 +1251,7 @@ void A_VileChase (mobj_t* actor)
 		    {
 		        corpsehit->flags |= MF_TRANSLUCENT;
 		        fprintf(stderr, "A_VileChase: Resurrected ghost monster (%d) at (%d/%d)!\n",
-		                corpsehit->type, corpsehit->x>>FRACBITS, corpsehit->y>>FRACBITS);
+		                corpsehit->type, (int)corpsehit->x>>FRACBITS, (int)corpsehit->y>>FRACBITS);
 		    }
 
 		    return;
