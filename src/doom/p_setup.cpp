@@ -218,7 +218,7 @@ void P_LoadSegs (int lump)
 	li->v1 = &vertexes[(unsigned short)SHORT(ml->v1)]; // [crispy] extended nodes
 	li->v2 = &vertexes[(unsigned short)SHORT(ml->v2)]; // [crispy] extended nodes
 
-	li->angle = (SHORT(ml->angle))<<FRACBITS;
+	li->angle = (angle_t)((SHORT(ml->angle))<<FRACBITS);
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
 	linedef = (unsigned short)SHORT(ml->linedef); // [crispy] extended nodes
 	ldef = &lines[linedef];

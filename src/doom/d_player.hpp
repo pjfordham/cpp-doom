@@ -164,7 +164,7 @@ struct player_t
 
     // [AM] Previous position of viewz before think.
     //      Used to interpolate between camera positions.
-    angle_t		oldviewz;
+    fixed_t		oldviewz;
 
     // [crispy] show centered "Secret Revealed!" message
     const char	*centermessage;

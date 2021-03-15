@@ -38,9 +38,9 @@ public:
    operator int() const { return value; }
    operator int64_t() const { return value; }
    operator bool() const { return value != 0; }
-   operator double() const { return (double)value; }
-   operator short() const { return (short)value; }
-   operator unsigned char() const { return (unsigned char)value; }
+   explicit operator double() const { return (double)value; }
+   explicit operator short() const { return (short)value; }
+   explicit operator unsigned char() const { return (unsigned char)value; }
    operator unsigned int() const { return (unsigned int)value; }
    friend fixed_t operator-(fixed_t lhs) {
       return fixed_t(-lhs.value);

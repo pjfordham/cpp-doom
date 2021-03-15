@@ -111,7 +111,7 @@ void P_LoadSegs_DeePBSP (int lump)
 	li->v1 = &vertexes[ml->v1];
 	li->v2 = &vertexes[ml->v2];
 
-	li->angle = (SHORT(ml->angle))<<FRACBITS;
+	li->angle = (angle_t)((SHORT(ml->angle))<<FRACBITS);
 
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
 	linedef = (unsigned short)SHORT(ml->linedef);

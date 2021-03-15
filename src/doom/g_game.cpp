@@ -1194,7 +1194,7 @@ void G_Ticker (void)
 			     cmd->consistancy, consistancy[i][buf]); 
 		} 
 		if (players[i].mo) 
-		    consistancy[i][buf] = players[i].mo->x; 
+                   consistancy[i][buf] = (byte)players[i].mo->x; 
 		else 
 		    consistancy[i][buf] = rndindex; 
 	    } 
@@ -1320,11 +1320,10 @@ void G_PlayerFinishLevel (int player)
     p->damagecount = 0;			// no palette changes 
     p->bonuscount = 0; 
     // [crispy] reset additional player properties
-    p->lookdir = p->oldlookdir =
-    p->centering =
-    p->jumpTics =
-    p->recoilpitch = p->oldrecoilpitch =
-    p->psp_dy_max = 0;
+    p->lookdir = p->oldlookdir = 0;
+    p->centering = false;
+    p->jumpTics = 0;
+    p->recoilpitch = p->oldrecoilpitch = p->psp_dy_max = 0;
 } 
  
 
