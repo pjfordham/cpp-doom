@@ -698,7 +698,7 @@ void R_ProjectSprite (mobj_t* thing)
     
     // calculate edges of the shape
     // [crispy] fix sprite offsets for mirrored sprites
-    tx -= flip ? spritewidth[lump] - spriteoffset[lump] : spriteoffset[lump];
+    tx -= flip ? static_cast<fixed_t>(spritewidth[lump] - spriteoffset[lump]) : spriteoffset[lump];
     x1 = (centerxfrac + FixedMul (tx,xscale) ) >>FRACBITS;
 
     // off the right side?
@@ -892,7 +892,7 @@ static void R_DrawLSprite (void)
 
     xscale = FixedDiv(projection, tz);
     // [crispy] the original patch has 5x5 pixels, cap the projection at 20x20
-    xscale = (xscale > 4*FRACUNIT) ? 4*FRACUNIT : xscale;
+    xscale = (xscale > 4*FRACUNIT) ? static_cast<fixed_t>(4*FRACUNIT) : xscale;
 
     tx = -(FixedMul(laserspot->y - viewy, viewcos) -
            FixedMul(laserspot->x - viewx, viewsin));

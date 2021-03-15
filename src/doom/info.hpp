@@ -23,6 +23,7 @@
 
 // Needed for action function pointer handling.
 #include "d_think.hpp"
+#include "m_fixed.hpp"
 #include "event_function_decls.hpp"
 
 typedef enum
@@ -2524,7 +2525,7 @@ typedef struct
     unsigned int flags;
     int	raisestate;
     // [crispy] height of the spawnstate's first sprite in pixels
-    int	actualheight;
+    fixed_t actualheight;
 
 } mobjinfo_t;
 

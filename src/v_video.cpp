@@ -89,8 +89,8 @@ void V_MarkRect(int x, int y, int width, int height)
 
     if (dest_screen == I_VideoBuffer)
     {
-        M_AddToBox (dirtybox, x, y); 
-        M_AddToBox (dirtybox, x + width-1, y + height-1); 
+       M_AddToBox ((fixed_t*)dirtybox, x, y); 
+       M_AddToBox ((fixed_t*)dirtybox, x + width-1, y + height-1); 
     }
 } 
  

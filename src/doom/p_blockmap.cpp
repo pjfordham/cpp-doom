@@ -36,15 +36,15 @@ void P_CreateBlockMap(void)
 
   for (i=0; i<numvertexes; i++)
     {
-      if (vertexes[i].x >> FRACBITS < minx)
+      if ((vertexes[i].x >> FRACBITS) < minx)
 	minx = vertexes[i].x >> FRACBITS;
       else
-	if (vertexes[i].x >> FRACBITS > maxx)
+        if ((vertexes[i].x >> FRACBITS) > maxx)
 	  maxx = vertexes[i].x >> FRACBITS;
-      if (vertexes[i].y >> FRACBITS < miny)
+        if ((vertexes[i].y >> FRACBITS) < miny)
 	miny = vertexes[i].y >> FRACBITS;
       else
-	if (vertexes[i].y >> FRACBITS > maxy)
+        if ((vertexes[i].y >> FRACBITS) > maxy)
 	  maxy = vertexes[i].y >> FRACBITS;
     }
 
