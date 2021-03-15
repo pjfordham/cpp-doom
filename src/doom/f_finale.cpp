@@ -902,7 +902,7 @@ void F_BunnyScroll (void)
 	scrolled = ORIGWIDTH;
     if (scrolled < 0)
 	scrolled = 0;
-    scrolled <<= FRACBITS;
+    scrolled = scrolled << FRACBITS;
 		
     for ( x=0 ; x<ORIGWIDTH << FRACBITS; x+=dxi)
     {

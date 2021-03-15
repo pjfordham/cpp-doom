@@ -144,7 +144,7 @@ void R_DrawColumn (void)
   if (dc_texheight & heightmask) // not a power of 2 -- killough
   {
     heightmask++;
-    heightmask <<= FRACBITS;
+    heightmask = heightmask << FRACBITS;
 
     if (frac < 0)
 	while ((frac += heightmask) < 0);
@@ -280,7 +280,7 @@ void R_DrawColumnLow (void)
   if (dc_texheight & heightmask) // not a power of 2 -- killough
   {
     heightmask++;
-    heightmask <<= FRACBITS;
+    heightmask = heightmask << FRACBITS;
 
     if (frac < 0)
 	while ((frac += heightmask) < 0);

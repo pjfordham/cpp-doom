@@ -54,6 +54,9 @@ public:
    friend int64_t operator+=(int64_t &lhs, const fixed_t rhs) {
       return lhs += rhs.value;
    }
+   friend int64_t operator+(fixed_t lhs, const int64_t rhs) {
+      return (int64_t)lhs.value + rhs;
+   }
    friend short operator+=(short &lhs, const fixed_t rhs) {
       return lhs += rhs.value;
    }
@@ -119,6 +122,9 @@ public:
    }
    friend int64_t operator/(const int64_t lhs, const fixed_t rhs) {
       return lhs / rhs.value;
+   }
+   friend int64_t operator%(const int64_t lhs, const fixed_t rhs) {
+      return lhs % rhs.value;
    }
    friend int operator*(const fixed_t lhs, const fixed_t rhs) {
       return lhs.value * rhs.value;
@@ -244,12 +250,46 @@ inline fixed_t abs(fixed_t a) {
 fixed_t FixedMul	(fixed_t a, fixed_t b);
 fixed_t FixedDiv	(fixed_t a, fixed_t b);
 
-const int FRACBITS{16};
+class fracbits_t {
+   friend fixed_t operator<<( int a, fracbits_t b) {
+      return fixed_t( a << 16 );
+   }
+   friend int operator>>( fixed_t a, fracbits_t b) {
+      return (int)a >> 16;
+   }
+   // This is definitely dodgy
+   friend int64_t operator<<( int64_t a, fracbits_t b) {
+      return a << 16;
+   }
+   friend int64_t operator>>( int64_t a, fracbits_t b) {
+      return a >> 16;
+   }
+   // these should be factored out
+   friend int operator+( int a, fracbits_t b) {
+      return a + 16;
+   }
+   friend int operator+( fracbits_t b, int a) {
+      return a + 16;
+   }
+   friend int operator*( fracbits_t b, int a) {
+      return a * 16;
+   }
+   friend int operator-( int a, fracbits_t b) {
+      return a - 16;
+   }
+   friend int operator-( fracbits_t b, int a) {
+      return 16 - a;
+   }
+   // This is definitely dodgy
+   friend fixed_t operator<<( fixed_t a, fracbits_t b) {
+      return fixed_t( (int)a << 16 );
+   }
+};
+
+const fracbits_t FRACBITS;
 const fixed_t FRACUNIT{1<<FRACBITS};
 inline double FIXED2DOUBLE( fixed_t x ) {
    return x / static_cast<double>(FRACUNIT);
 }
-
-
 
 #endif

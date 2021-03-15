@@ -234,7 +234,7 @@ boolean P_CheckMissileRange (mobj_t* actor)
     if (!actor->info->meleestate)
 	dist -= 128*FRACUNIT;	// no melee attack, so fire more
 
-    dist >>= FRACBITS;
+    dist = dist >> FRACBITS;
 
     if (actor->type == MT_VILE)
     {
@@ -1251,7 +1251,7 @@ void A_VileChase (mobj_t* actor)
 		    {
 		        corpsehit->flags |= MF_TRANSLUCENT;
 		        fprintf(stderr, "A_VileChase: Resurrected ghost monster (%d) at (%d/%d)!\n",
-		                corpsehit->type, (int)corpsehit->x>>FRACBITS, (int)corpsehit->y>>FRACBITS);
+		                corpsehit->type, (corpsehit->x)>>FRACBITS, (corpsehit->y)>>FRACBITS);
 		    }
 
 		    return;
