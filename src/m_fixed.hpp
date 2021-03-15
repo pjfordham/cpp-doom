@@ -29,10 +29,6 @@
 #include <cstdint>
 #include <fmt/core.h>
 
-#define FRACBITS		16
-#define FRACUNIT		(1<<FRACBITS)
-#define FIXED2DOUBLE(x)		(x / static_cast<double>(FRACUNIT))
-
 class fixed_t {
    int value;
 public:
@@ -79,6 +75,9 @@ public:
    friend fixed_t operator&(fixed_t lhs, const int rhs) {
       return lhs.value & rhs;
    }
+   friend fixed_t operator&(fixed_t lhs, const fixed_t rhs) {
+      return lhs.value & rhs.value;
+   }
    friend fixed_t operator&(fixed_t lhs, const unsigned int rhs) {
       return lhs.value & rhs;
    }
@@ -109,6 +108,9 @@ public:
    friend int operator/(const fixed_t lhs, const int rhs) {
       return lhs.value / rhs;
    }
+   friend int operator/(const fixed_t lhs, const fixed_t rhs) {
+      return lhs.value / rhs.value;
+   }
    friend double operator/(const fixed_t lhs, const double rhs) {
       return lhs.value / rhs;
    }
@@ -126,6 +128,12 @@ public:
    }
    friend int64_t operator*(const int64_t lhs, const fixed_t rhs) {
       return lhs * rhs.value;
+   }
+   friend double operator*(const double lhs, const fixed_t rhs) {
+      return lhs * rhs.value;
+   }
+   friend double operator/(const double lhs, const fixed_t rhs) {
+      return lhs / rhs.value;
    }
    friend fixed_t operator+(const fixed_t lhs, const fixed_t rhs) {
       return fixed_t(lhs.value + rhs.value);
@@ -235,6 +243,12 @@ inline fixed_t abs(fixed_t a) {
 
 fixed_t FixedMul	(fixed_t a, fixed_t b);
 fixed_t FixedDiv	(fixed_t a, fixed_t b);
+
+const int FRACBITS{16};
+const fixed_t FRACUNIT{1<<FRACBITS};
+inline double FIXED2DOUBLE( fixed_t x ) {
+   return x / static_cast<double>(FRACUNIT);
+}
 
 
 
