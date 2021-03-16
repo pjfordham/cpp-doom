@@ -185,9 +185,9 @@ R_PointOnSide
     dy = (y - node->y);
 	
     // Try to quickly decide by looking at sign bits.
-    if ( (node->dy ^ node->dx ^ dx ^ dy)&0x80000000 )
+    if ( (node->dy ^ node->dx ^ dx ^ dy) < 0 )
     {
-	if  ( (node->dy ^ dx) & 0x80000000 )
+	if  ( (node->dy ^ dx) < 0 )
 	{
 	    // (left is negative)
 	    return 1;
@@ -248,9 +248,9 @@ R_PointOnSegSide
     dy = (y - ly);
 	
     // Try to quickly decide by looking at sign bits.
-    if ( (ldy ^ ldx ^ dx ^ dy)&0x80000000 )
+    if ( (ldy ^ ldx ^ dx ^ dy) < 0 )
     {
-	if  ( (ldy ^ dx) & 0x80000000 )
+	if  ( (ldy ^ dx) < 0 )
 	{
 	    // (left is negative)
 	    return 1;

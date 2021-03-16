@@ -113,19 +113,16 @@ public:
 
    // dodgy operators allowing implicit type conversions, should be factored out.
    friend unsigned int operator+=(unsigned int &lhs, const fixed_t rhs) {
+      // angle_t related
       return lhs += rhs.value;
    }
-   friend short operator+=(short &lhs, const fixed_t rhs) {
+   friend short operator+=(short &lhs, const fixed_t rhs) { 
+      // angle_t related
       return lhs += rhs.value;
    }
    friend unsigned int operator-(unsigned int lhs, const fixed_t rhs) {
+      // angle_t related
       return lhs - rhs.value;
-   }
-   friend fixed_t operator&(fixed_t lhs, const int rhs) {
-      return lhs.value & rhs;
-   }
-   friend fixed_t operator&(fixed_t lhs, const unsigned int rhs) {
-      return lhs.value & rhs;
    }
    friend fixed_t operator-(fixed_t lhs, const int rhs) {
       return lhs.value - rhs;

@@ -183,9 +183,9 @@ P_PointOnDivlineSide
     dy = (y - line->y);
 	
     // try to quickly decide by looking at sign bits
-    if ( (line->dy ^ line->dx ^ dx ^ dy)&0x80000000 )
+    if ( (line->dy ^ line->dx ^ dx ^ dy) < 0 )
     {
-	if ( (line->dy ^ dx) & 0x80000000 )
+        if ( (line->dy ^ dx) < 0 )
 	    return 1;		// (left is negative)
 	return 0;
     }
