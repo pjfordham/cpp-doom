@@ -46,19 +46,19 @@ public:
    // Well defined operators
 
    // comparison
-   friend bool operator<(const fixed_t lhs, const fixed_t rhs) {
+   friend bool operator<(fixed_t lhs, fixed_t rhs) {
       return lhs.value < rhs.value;
    }
-   friend bool operator>(const fixed_t lhs, const fixed_t rhs) {
+   friend bool operator>(fixed_t lhs, fixed_t rhs) {
       return lhs.value > rhs.value;
    }
-   friend bool operator==(const fixed_t lhs, const fixed_t rhs) {
+   friend bool operator==(fixed_t lhs, fixed_t rhs) {
       return lhs.value == rhs.value;
    }
-   friend bool operator<=(const fixed_t lhs, const fixed_t rhs) {
+   friend bool operator<=(fixed_t lhs, fixed_t rhs) {
       return lhs.value <= rhs.value;
    }
-   friend bool operator>=(const fixed_t lhs, const fixed_t rhs) {
+   friend bool operator>=(fixed_t lhs, fixed_t rhs) {
       return lhs.value >= rhs.value;
    }
 
@@ -79,33 +79,33 @@ public:
    }
 
    // binary, fixed_t, int => fixed_t
-   friend fixed_t operator<<(fixed_t lhs, const int rhs) {
+   friend fixed_t operator<<(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value << rhs);
    }
-   friend fixed_t operator>>(const fixed_t lhs, const int rhs) {
+   friend fixed_t operator>>(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value >> rhs);
    }
-   friend int operator*(const fixed_t lhs, const int rhs) {
+   friend int operator*(const fixed_t lhs, int rhs) {
       return fixed_t(lhs.value * rhs);
    }
-   friend int operator/(const fixed_t lhs, const int rhs) {
+   friend int operator/(const fixed_t lhs, int rhs) {
       return fixed_t(lhs.value / rhs);
    }
 
    // updating versions of above
-   friend fixed_t operator+=(fixed_t &lhs, const fixed_t rhs) {
+   friend fixed_t operator+=(fixed_t &lhs, fixed_t rhs) {
       return fixed_t(lhs.value += rhs.value);
    }
-   friend fixed_t operator-=(fixed_t &lhs, const fixed_t rhs) {
+   friend fixed_t operator-=(fixed_t &lhs, fixed_t rhs) {
       return fixed_t(lhs.value -= rhs.value);
    }
-   friend fixed_t operator*=(fixed_t &lhs, const int rhs) {
+   friend fixed_t operator*=(fixed_t &lhs, int rhs) {
       return fixed_t(lhs.value *= rhs);
    }
-   friend fixed_t operator>>=(fixed_t &lhs, const int rhs) {
+   friend fixed_t operator>>=(fixed_t &lhs, int rhs) {
       return fixed_t(lhs.value >>= rhs);
    }
-   friend fixed_t operator<<=(fixed_t &lhs, const int rhs) {
+   friend fixed_t operator<<=(fixed_t &lhs, int rhs) {
       return fixed_t(lhs.value <<= rhs);
    }
 
