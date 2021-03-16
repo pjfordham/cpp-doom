@@ -30,7 +30,7 @@
 void P_CreateBlockMap(void)
 {
   int i;
-  fixed_t minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
+  int minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
 
   // First find limits of map
 

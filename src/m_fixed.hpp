@@ -280,10 +280,6 @@ class fracbits_t {
    friend int operator-( fracbits_t b, int a) {
       return 16 - a;
    }
-   // This is definitely dodgy
-   friend fixed_t operator<<( fixed_t a, fracbits_t b) {
-      return fixed_t( (int)a << 16 );
-   }
 };
 
 const fracbits_t FRACBITS;

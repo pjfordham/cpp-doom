@@ -120,12 +120,12 @@ boolean     playerstartsingame[MAXPLAYERS];
 // adapted from prboom-plus/src/p_setup.c:474-482
 fixed_t GetOffset(vertex_t *v1, vertex_t *v2)
 {
-    fixed_t dx, dy;
+    int dx, dy;
     fixed_t r;
 
     dx = (v1->x - v2->x)>>FRACBITS;
     dy = (v1->y - v2->y)>>FRACBITS;
-    r = (fixed_t)(sqrt(dx*dx + dy*dy))<<FRACBITS;
+    r = static_cast<int>(sqrt(dx*dx + dy*dy))<<FRACBITS;
 
     return r;
 }
