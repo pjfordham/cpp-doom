@@ -30,7 +30,7 @@
 
 
 #define MAXHEALTH		100
-#define VIEWHEIGHT		(41*FRACUNIT)
+const fixed_t VIEWHEIGHT = FRACUNIT*41;
 
 // mapblocks are used to check movement
 // against lines and things

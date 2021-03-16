@@ -1419,7 +1419,7 @@ void P_UseLines (player_t*	player)
 //
 mobj_t*		bombsource;
 mobj_t*		bombspot;
-int		bombdamage;
+static fixed_t	bombdamage;
 
 
 //
