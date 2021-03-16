@@ -856,7 +856,7 @@ F_DrawPatchCol
     // step through the posts in a column
     while (column->topdelta != 0xff )
     {
-	int srccol = 0;
+	fixed_t srccol = 0;
 	source = (byte *)column + 3;
 	dest = desttop + ((column->topdelta * dy) >> FRACBITS)*SCREENWIDTH;
 	count = (column->length * dy) >> FRACBITS;
@@ -878,7 +878,7 @@ F_DrawPatchCol
 void F_BunnyScroll (void)
 {
     signed int  scrolled;
-    int		x;
+    fixed_t	x;
     int		stage;
     static int	laststage;
 

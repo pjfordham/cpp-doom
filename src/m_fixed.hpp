@@ -60,9 +60,6 @@ public:
    friend short operator+=(short &lhs, const fixed_t rhs) {
       return lhs += rhs.value;
    }
-   friend int operator+=(int &lhs, const fixed_t rhs) {
-      return lhs += rhs.value;
-   }
    friend fixed_t operator*=(fixed_t &lhs, const int rhs) {
       return lhs.value *= rhs;
    }

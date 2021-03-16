@@ -204,7 +204,7 @@ static fixed_t dx, dxi, dy, dyi;
 void V_DrawPatch(int x, int y, patch_t *patch)
 { 
     int count;
-    int col;
+    fixed_t col;
     column_t *column;
     pixel_t *desttop;
     pixel_t *dest;
@@ -263,7 +263,8 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         // step through the posts in a column
         while (column->topdelta != 0xff)
         {
-            int top, srccol = 0;
+            int top;
+            fixed_t  srccol = 0;
             // [crispy] support for DeePsea tall patches
             if (column->topdelta <= topdelta)
             {
@@ -348,7 +349,7 @@ void V_DrawPatchFullScreen(patch_t *patch, boolean flipped)
 void V_DrawPatchFlipped(int x, int y, patch_t *patch)
 {
     int count;
-    int col; 
+    fixed_t col; 
     column_t *column; 
     pixel_t *desttop;
     pixel_t *dest;
@@ -404,7 +405,8 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
         // step through the posts in a column
         while (column->topdelta != 0xff )
         {
-            int top, srccol = 0;
+            int top;
+            fixed_t srccol = 0;
             // [crispy] support for DeePsea tall patches
             if (column->topdelta <= topdelta)
             {
@@ -470,7 +472,8 @@ void V_DrawPatchDirect(int x, int y, patch_t *patch)
 
 void V_DrawTLPatch(int x, int y, patch_t * patch)
 {
-    int count, col;
+    int count;
+    fixed_t col;
     column_t *column;
     pixel_t *desttop, *dest;
     byte *source;
@@ -499,7 +502,7 @@ void V_DrawTLPatch(int x, int y, patch_t * patch)
 
         while (column->topdelta != 0xff)
         {
-            int srccol = 0;
+            fixed_t srccol = 0;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -523,7 +526,8 @@ void V_DrawTLPatch(int x, int y, patch_t * patch)
 
 void V_DrawXlaPatch(int x, int y, patch_t * patch)
 {
-    int count, col;
+    int count;
+    fixed_t col;
     column_t *column;
     pixel_t *desttop, *dest;
     byte *source;
@@ -550,7 +554,7 @@ void V_DrawXlaPatch(int x, int y, patch_t * patch)
 
         while(column->topdelta != 0xff)
         {
-            int srccol = 0;
+            fixed_t srccol = 0;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -574,7 +578,8 @@ void V_DrawXlaPatch(int x, int y, patch_t * patch)
 
 void V_DrawAltTLPatch(int x, int y, patch_t * patch)
 {
-    int count, col;
+    int count;
+    fixed_t col;
     column_t *column;
     pixel_t *desttop, *dest;
     byte *source;
@@ -603,7 +608,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t * patch)
 
         while (column->topdelta != 0xff)
         {
-            int srccol = 0;
+            fixed_t srccol = 0;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -627,7 +632,8 @@ void V_DrawAltTLPatch(int x, int y, patch_t * patch)
 
 void V_DrawShadowedPatch(int x, int y, patch_t *patch)
 {
-    int count, col;
+    int count;
+    fixed_t col;
     column_t *column;
     pixel_t *desttop, *dest;
     byte *source;
@@ -658,7 +664,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
 
         while (column->topdelta != 0xff)
         {
-            int srccol = 0;
+            fixed_t srccol = 0;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             dest2 = desttop2 + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;

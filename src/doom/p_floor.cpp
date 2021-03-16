@@ -525,7 +525,7 @@ EV_BuildStairs
   stair_e	type )
 {
     int			secnum;
-    int			height;
+    fixed_t		height;
     int			i;
     int			newsecnum;
     int			texture;
