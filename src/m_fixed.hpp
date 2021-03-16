@@ -41,7 +41,7 @@ public:
    explicit operator double() const { return (double)value; }
    explicit operator short() const { return (short)value; }
    explicit operator unsigned char() const { return (unsigned char)value; }
-   operator unsigned int() const { return (unsigned int)value; }
+   explicit operator unsigned int() const { return (unsigned int)value; }
    friend fixed_t operator-(fixed_t lhs) {
       return fixed_t(-lhs.value);
    }
