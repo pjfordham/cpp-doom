@@ -130,10 +130,8 @@ public:
    friend int operator-(int lhs, const fixed_t rhs) {
       return lhs - rhs.value;
    }
-   friend int operator-=(int &lhs, const fixed_t rhs) {
-      return lhs -= rhs.value;
-   }
    friend short operator-=(short &lhs, const fixed_t rhs) {
+      // angle_t related
       return lhs -= rhs.value;
    }
    friend int operator/(const fixed_t lhs, const fixed_t rhs) {
