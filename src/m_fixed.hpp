@@ -81,6 +81,13 @@ public:
       return fixed_t(lhs.value & rhs.value);
    }
 
+   // binary, fixed_t, fixed_t => int
+   friend int operator*(const fixed_t lhs, const fixed_t rhs) {
+      // This is a weird one, logically wrong as you need
+      // to shift the result right by 16/32-bits.....
+      return lhs.value * rhs.value;
+   }
+
    // binary, fixed_t, int => fixed_t
    friend fixed_t operator<<(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value << rhs);
@@ -142,9 +149,6 @@ public:
    }
    friend double operator/(const fixed_t lhs, const double rhs) {
       return lhs.value / rhs;
-   }
-   friend int operator*(const fixed_t lhs, const fixed_t rhs) {
-      return lhs.value * rhs.value;
    }
    friend int operator/(const int lhs, const fixed_t rhs) {
       return lhs / rhs.value;
