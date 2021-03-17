@@ -99,13 +99,14 @@ extern boolean inhelpscreens; // [crispy]
 #define F_PANINC	4
 // how much zoom-in per tic
 // goes to 2x in 1 second
-#define M_ZOOMIN        ((int) (1.02*FRACUNIT))
+const fixed_t M_ZOOMIN = (int) (1.02*FRACUNIT);
 // how much zoom-out per tic
 // pulls out to 0.5x in 1 second
-#define M_ZOOMOUT       ((int) (FRACUNIT/1.02))
+const fixed_t M_ZOOMOUT = (int) (FRACUNIT/1.02);
 // [crispy] zoom faster with the mouse wheel
-#define M2_ZOOMIN       ((int) (1.08*FRACUNIT))
-#define M2_ZOOMOUT      ((int) (FRACUNIT/1.08))
+const fixed_t M2_ZOOMIN = (int) (1.08*FRACUNIT);
+const fixed_t M2_ZOOMOUT = (int)(FRACUNIT / 1.08);
+
 
 // translates between frame-buffer and map distances
 // [crispy] fix int overflow that causes map and grid lines to disappear
