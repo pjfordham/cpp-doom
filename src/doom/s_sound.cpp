@@ -59,7 +59,7 @@ const int S_ATTENUATOR = ((S_CLIPPING_DIST - S_CLOSE_DIST) >> FRACBITS);
 // Stereo separation
 
 const fixed_t S_STEREO_SWING = 96 * FRACUNIT;
-static int stereo_swing;
+static fixed_t stereo_swing;
 
 #define NORM_PRIORITY 64
 #define NORM_SEP 128
