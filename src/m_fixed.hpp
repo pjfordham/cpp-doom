@@ -36,7 +36,7 @@ public:
    fixed_t(int _value) : value{ _value } {
    }
    operator int() const { return value; }
-   operator int64_t() const { return value; }
+   explicit operator int64_t() const { return value; }
    explicit operator bool() const { return value != 0; }
    explicit operator double() const { return (double)value; }
    explicit operator short() const { return (short)value; }
