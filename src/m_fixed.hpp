@@ -171,9 +171,6 @@ public:
    friend fixed_t operator+(const fixed_t lhs, const int rhs) {
       return fixed_t(lhs.value + rhs);
    }
-   friend unsigned int operator+(const unsigned int lhs, const fixed_t rhs) {
-      return lhs + rhs.value;
-   }
    friend fixed_t operator+(const int lhs, const fixed_t rhs) {
       return fixed_t(lhs + rhs.value);
    }
