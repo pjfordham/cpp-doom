@@ -37,7 +37,7 @@ public:
    }
    operator int() const { return value; }
    operator int64_t() const { return value; }
-   operator bool() const { return value != 0; }
+   explicit operator bool() const { return value != 0; }
    explicit operator double() const { return (double)value; }
    explicit operator short() const { return (short)value; }
    explicit operator unsigned char() const { return (unsigned char)value; }
