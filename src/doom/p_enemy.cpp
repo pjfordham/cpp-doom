@@ -234,20 +234,20 @@ boolean P_CheckMissileRange (mobj_t* actor)
     if (!actor->info->meleestate)
 	dist -= 128*FRACUNIT;	// no melee attack, so fire more
 
-    dist = dist >> FRACBITS;
+    int idist = dist >> FRACBITS;
 
     if (actor->type == MT_VILE)
     {
-	if (dist > 14*64)	
+	if (idist > 14*64)	
 	    return false;	// too far away
     }
 	
 
     if (actor->type == MT_UNDEAD)
     {
-	if (dist < 196)	
+	if (idist < 196)	
 	    return false;	// close for fist attack
-	dist >>= 1;
+	idist >>= 1;
     }
 	
 
@@ -255,16 +255,16 @@ boolean P_CheckMissileRange (mobj_t* actor)
 	|| actor->type == MT_SPIDER
 	|| actor->type == MT_SKULL)
     {
-	dist >>= 1;
+	idist >>= 1;
     }
     
-    if (dist > 200)
-	dist = 200;
+    if (idist > 200)
+	idist = 200;
 		
-    if (actor->type == MT_CYBORG && dist > 160)
-	dist = 160;
+    if (actor->type == MT_CYBORG && idist > 160)
+	idist = 160;
 		
-    if (P_Random () < dist)
+    if (P_Random () < idist)
 	return false;
 		
     return true;

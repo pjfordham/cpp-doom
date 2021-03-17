@@ -505,7 +505,7 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     fixed_t	num = FixedMul(projection, finesine[angleb >> ANGLETOFINESHIFT])<<detailshift;
     fixed_t 	scale;
 
-    if (den > (num >> 16))
+    if (den > (num >> FRACBITS))
     {
 	scale = FixedDiv(num, den);
 

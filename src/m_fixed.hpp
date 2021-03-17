@@ -177,14 +177,8 @@ public:
    friend fixed_t operator+(const int lhs, const fixed_t rhs) {
       return fixed_t(lhs + rhs.value);
    }
-   friend bool operator<(const int lhs, const fixed_t rhs) {
-      return lhs < rhs.value;
-   }
    friend bool operator<(const fixed_t lhs, const int rhs) {
       return lhs.value < rhs;
-   }
-   friend bool operator>(const int lhs, const fixed_t rhs) {
-      return lhs > rhs.value;
    }
    friend bool operator>(const fixed_t lhs, const int rhs) {
       return lhs.value > rhs;

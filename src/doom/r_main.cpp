@@ -134,8 +134,8 @@ void (*spanfunc) (void);
 //
 void
 R_AddPointToBox
-( int		x,
-  int		y,
+( fixed_t	x,
+  fixed_t	y,
   fixed_t*	box )
 {
     if (x< box[BOXLEFT])
