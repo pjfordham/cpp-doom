@@ -71,6 +71,9 @@ public:
    friend fixed_t operator+(fixed_t lhs, fixed_t rhs) {
       return fixed_t(lhs.value + rhs.value);
    }
+   friend fixed_t operator-(fixed_t lhs, fixed_t rhs) {
+      return fixed_t(lhs.value - rhs.value);
+   }
    friend fixed_t operator^(fixed_t lhs, fixed_t rhs) {
       return fixed_t(lhs.value ^ rhs.value);
    }
@@ -216,9 +219,6 @@ public:
    }
    friend int64_t operator-(const fixed_t lhs, const int64_t rhs) {
       return lhs.value - rhs;
-   }
-   friend int64_t operator-(const fixed_t lhs, const fixed_t rhs) {
-      return lhs.value - rhs.value;
    }
    friend int64_t operator-(const int64_t lhs, const fixed_t rhs) {
       return lhs - rhs.value;

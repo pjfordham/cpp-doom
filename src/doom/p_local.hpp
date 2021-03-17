@@ -35,7 +35,7 @@ const fixed_t VIEWHEIGHT = FRACUNIT*41;
 // mapblocks are used to check movement
 // against lines and things
 #define MAPBLOCKUNITS	128
-#define MAPBLOCKSIZE	(MAPBLOCKUNITS*FRACUNIT)
+const fixed_t MAPBLOCKSIZE = MAPBLOCKUNITS*FRACUNIT;
 #define MAPBLOCKSHIFT	(FRACBITS+7)
 #define MAPBMASK		(MAPBLOCKSIZE-1)
 #define MAPBTOFRAC		(MAPBLOCKSHIFT-FRACBITS)
