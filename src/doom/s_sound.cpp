@@ -42,7 +42,7 @@
 // when to clip out sounds
 // Does not fit the large outdoor areas.
 
-#define S_CLIPPING_DIST (1200 * FRACUNIT)
+const fixed_t S_CLIPPING_DIST = 1200 * FRACUNIT;
 
 // Distance tp origin when sounds should be maxed out.
 // This should relate to movement clipping resolution
@@ -50,15 +50,15 @@
 // In the source code release: (160*FRACUNIT).  Changed back to the
 // Vanilla value of 200 (why was this changed?)
 
-#define S_CLOSE_DIST (200 * FRACUNIT)
+const fixed_t S_CLOSE_DIST = 200 * FRACUNIT;
 
 // The range over which sound attenuates
 
-#define S_ATTENUATOR ((S_CLIPPING_DIST - S_CLOSE_DIST) >> FRACBITS)
+const int S_ATTENUATOR = ((S_CLIPPING_DIST - S_CLOSE_DIST) >> FRACBITS);
 
 // Stereo separation
 
-#define S_STEREO_SWING (96 * FRACUNIT)
+const fixed_t S_STEREO_SWING = 96 * FRACUNIT;
 static int stereo_swing;
 
 #define NORM_PRIORITY 64

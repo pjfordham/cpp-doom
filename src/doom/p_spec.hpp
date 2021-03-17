@@ -428,7 +428,7 @@ struct ceiling_t
 
 
 
-#define CEILSPEED		FRACUNIT
+const fixed_t CEILSPEED = FRACUNIT;
 #define CEILWAIT		150
 #define MAXCEILINGS		30
 

@@ -1466,7 +1466,7 @@ void A_FatAttack3 (mobj_t*	actor)
 // SkullAttack
 // Fly at the player like a missile.
 //
-#define	SKULLSPEED		(20*FRACUNIT)
+const fixed_t SKULLSPEED = 20*FRACUNIT;
 
 void A_SkullAttack (mobj_t* actor)
 {
