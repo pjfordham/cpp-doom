@@ -26,7 +26,7 @@
 
 #define TOCENTER                -8
 #define AFLAG_JUMP              0x80
-#define FLOATSPEED		(FRACUNIT*4)
+const fixed_t FLOATSPEED = FRACUNIT*4;
 
 
 #define MAXHEALTH		100
@@ -42,19 +42,19 @@ const fixed_t VIEWHEIGHT = FRACUNIT*41;
 
 
 // player radius for movement checking
-#define PLAYERRADIUS	16*FRACUNIT
+const fixed_t PLAYERRADIUS = 16*FRACUNIT;
 
 // MAXRADIUS is for precalculated sector block boxes
 // the spider demon is larger,
 // but we do not have any moving sectors nearby
 #define MAXRADIUS		32*FRACUNIT
 
-#define GRAVITY		FRACUNIT
-#define MAXMOVE		(30*FRACUNIT)
+const fixed_t GRAVITY = FRACUNIT;
+const fixed_t MAXMOVE = 30*FRACUNIT;
 
-#define USERANGE		(64*FRACUNIT)
-#define MELEERANGE		(64*FRACUNIT)
-#define MISSILERANGE	(32*64*FRACUNIT)
+const fixed_t USERANGE = 64*FRACUNIT;
+const fixed_t MELEERANGE = 64*FRACUNIT;
+const fixed_t MISSILERANGE = 32*64*FRACUNIT;
 
 // follow a player exlusively for 3 seconds
 #define	BASETHRESHOLD	 	100

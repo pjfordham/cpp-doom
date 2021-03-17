@@ -303,7 +303,7 @@ struct plat_t
 
 
 #define PLATWAIT		3
-#define PLATSPEED		FRACUNIT
+const fixed_t PLATSPEED = FRACUNIT;
 #define MAXPLATS		30*256
 
 
@@ -360,7 +360,7 @@ struct vldoor_t
 
 
 
-#define VDOORSPEED		FRACUNIT*2
+const fixed_t VDOORSPEED = FRACUNIT*2;
 #define VDOORWAIT		150
 
 void
@@ -513,7 +513,7 @@ struct floormove_t
 
 
 
-#define FLOORSPEED		FRACUNIT
+const fixed_t FLOORSPEED = FRACUNIT;
 
 enum result_e
 {
