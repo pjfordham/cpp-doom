@@ -192,9 +192,6 @@ public:
    friend bool operator==(const fixed_t lhs, const int rhs) {
       return lhs.value == rhs;
    }
-   friend bool operator!=(const fixed_t lhs, const int rhs) {
-      return lhs.value != rhs;
-   }
    friend bool operator<=(const fixed_t lhs, const int rhs) {
       return lhs.value <= rhs;
    }

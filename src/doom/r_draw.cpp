@@ -144,13 +144,13 @@ void R_DrawColumn (void)
   if (dc_texheight & heightmask) // not a power of 2 -- killough
   {
     heightmask++;
-    heightmask = heightmask << FRACBITS;
+    fixed_t fheightmask = heightmask << FRACBITS;
 
     if (frac < 0)
-	while ((frac += heightmask) < 0);
+	while ((frac += fheightmask) < 0);
     else
-	while (frac >= heightmask)
-	    frac -= heightmask;
+	while (frac >= fheightmask)
+	    frac -= fheightmask;
 
     do
     {
@@ -159,8 +159,8 @@ void R_DrawColumn (void)
 	*dest = dc_colormap[dc_brightmap[source]][source];
 
 	dest += SCREENWIDTH;
-	if ((frac += fracstep) >= heightmask)
-	    frac -= heightmask;
+	if ((frac += fracstep) >= fheightmask)
+	    frac -= fheightmask;
     } while (count--);
   }
   else // texture height is a power of 2 -- killough
@@ -280,13 +280,13 @@ void R_DrawColumnLow (void)
   if (dc_texheight & heightmask) // not a power of 2 -- killough
   {
     heightmask++;
-    heightmask = heightmask << FRACBITS;
+    fixed_t fheightmask = heightmask << FRACBITS;
 
     if (frac < 0)
-	while ((frac += heightmask) < 0);
+	while ((frac += fheightmask) < 0);
     else
-	while (frac >= heightmask)
-	    frac -= heightmask;
+	while (frac >= fheightmask)
+	    frac -= fheightmask;
 
     do
     {
@@ -297,8 +297,8 @@ void R_DrawColumnLow (void)
 	dest += SCREENWIDTH;
 	dest2 += SCREENWIDTH;
 
-	if ((frac += fracstep) >= heightmask)
-	    frac -= heightmask;
+	if ((frac += fracstep) >= fheightmask)
+	    frac -= fheightmask;
     } while (count--);
   }
   else // texture height is a power of 2 -- killough
