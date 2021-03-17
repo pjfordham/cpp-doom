@@ -95,10 +95,10 @@ public:
    friend fixed_t operator>>(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value >> rhs);
    }
-   friend int operator*(const fixed_t lhs, int rhs) {
+   friend fixed_t operator*(const fixed_t lhs, int rhs) {
       return fixed_t(lhs.value * rhs);
    }
-   friend int operator/(const fixed_t lhs, int rhs) {
+   friend fixed_t operator/(const fixed_t lhs, int rhs) {
       return fixed_t(lhs.value / rhs);
    }
 
@@ -246,7 +246,9 @@ public:
    fixed_t abs() {
       return value < 0 ? fixed_t(-value) : fixed_t(value);
    }
-};
+   friend struct fmt::formatter<fixed_t>;
+   friend class fracbits_t;
+   };
 
 template <>
 struct fmt::formatter<fixed_t> {
@@ -254,7 +256,7 @@ struct fmt::formatter<fixed_t> {
 
    template <typename FormatContext>
    auto format(const fixed_t& t, FormatContext& ctx) {
-      return format_to(ctx.out(), "{}", (int)t );
+      return format_to(ctx.out(), "{}", t.value );
    }
 };
 
@@ -270,7 +272,7 @@ class fracbits_t {
       return fixed_t( a << 16 );
    }
    friend int operator>>( fixed_t a, fracbits_t b) {
-      return (int)a >> 16;
+      return a.value >> 16;
    }
    // This is definitely dodgy
    friend int64_t operator<<( int64_t a, fracbits_t b) {

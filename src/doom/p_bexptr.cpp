@@ -54,8 +54,8 @@ void A_Mushroom(mobj_t *actor)
   int i, j, n = actor->info->damage;
 
   // Mushroom parameters are part of code pointer's state
-  fixed_t misc1 = actor->state->misc1 ? actor->state->misc1 : FRACUNIT*4;
-  fixed_t misc2 = actor->state->misc2 ? actor->state->misc2 : FRACUNIT/2;
+  fixed_t misc1 = actor->state->misc1 ? (fixed_t)actor->state->misc1 : FRACUNIT*4;
+  fixed_t misc2 = actor->state->misc2 ? (fixed_t)actor->state->misc2 : FRACUNIT/2;
 
   A_Explode(actor);               // make normal explosion
 
@@ -233,8 +233,10 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
 		slope = P_AimLineAttack(mo, an += 1<<26, 16*64*FRACUNIT);//, mask);
 	      if (!linetarget)
 		slope = P_AimLineAttack(mo, an -= 2<<26, 16*64*FRACUNIT);//, mask);
-	      if (!linetarget)
-		slope = (critical->freeaim == FREEAIM_BOTH) ? PLAYER_SLOPE(player) : 0, an = mo->angle;
+	      if (!linetarget) {
+                 slope = (critical->freeaim == FREEAIM_BOTH) ? PLAYER_SLOPE(player) : fixed_t(0);
+                 an = mo->angle;
+              }
 	    }
 	  while (mask && (mask=0, !linetarget));     // killough 8/2/98
 	  an1 += an - mo->angle;

@@ -1922,9 +1922,9 @@ void A_BrainPain (mobj_t*	mo)
 
 void A_BrainScream (mobj_t*	mo)
 {
-    int		x;
-    int		y;
-    int		z;
+    fixed_t	x;
+    fixed_t	y;
+    fixed_t	z;
     mobj_t*	th;
 	
     for (x=mo->x - 196*FRACUNIT ; x< mo->x + 320*FRACUNIT ; x+= FRACUNIT*8)
