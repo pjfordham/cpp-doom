@@ -1492,16 +1492,8 @@ AM_rotate
   int64_t*	y,
   angle_t	a )
 {
-    int64_t tmpx;
-
-    tmpx =
-	FixedMul(*x,finecosine[a>>ANGLETOFINESHIFT])
-	- FixedMul(*y,finesine[a>>ANGLETOFINESHIFT]);
-    
-    *y   =
-	FixedMul(*x,finesine[a>>ANGLETOFINESHIFT])
-	+ FixedMul(*y,finecosine[a>>ANGLETOFINESHIFT]);
-
+    int64_t tmpx = FixedMul(*x,cos(a)) - FixedMul(*y,sin(a));
+    *y   = FixedMul(*x,sin(a)) + FixedMul(*y,cos(a));
     *x = tmpx;
 }
 
@@ -1514,12 +1506,12 @@ static void AM_rotatePoint (mpoint_t *pt)
     pt->x -= mapcenter.x;
     pt->y -= mapcenter.y;
 
-    tmpx = (int64_t)FixedMul(pt->x, finecosine[mapangle>>ANGLETOFINESHIFT])
-         - (int64_t)FixedMul(pt->y, finesine[mapangle>>ANGLETOFINESHIFT])
-         + mapcenter.x;
+    tmpx = (int64_t)FixedMul(pt->x, cos(mapangle))
+       - (int64_t)FixedMul(pt->y, sin(mapangle))
+       + mapcenter.x;
 
-    pt->y = (int64_t)FixedMul(pt->x, finesine[mapangle>>ANGLETOFINESHIFT])
-          + (int64_t)FixedMul(pt->y, finecosine[mapangle>>ANGLETOFINESHIFT])
+    pt->y = (int64_t)FixedMul(pt->x, sin(mapangle))
+       + (int64_t)FixedMul(pt->y, cos(mapangle))
           + mapcenter.y;
 
     pt->x = tmpx;

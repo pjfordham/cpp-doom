@@ -428,7 +428,7 @@ R_PointToDist
 ( fixed_t	x,
   fixed_t	y )
 {
-    int		angle;
+    angle_t	angle;
     fixed_t	dx;
     fixed_t	dy;
     fixed_t	temp;
@@ -456,10 +456,10 @@ R_PointToDist
 	frac = 0;
     }
 	
-    angle = (tantoangle[frac>>DBITS]+ANG90) >> ANGLETOFINESHIFT;
+    angle = (tantoangle[frac>>DBITS]+ANG90);
 
     // use as cosine
-    dist = FixedDiv (dx, finesine[angle] );	
+    dist = FixedDiv (dx, sin(angle) );
 	
     return dist;
 }
@@ -518,9 +518,9 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     fixed_t		sinv;
     fixed_t		cosv;
 	
-    sinv = finesine[(visangle-rw_normalangle)>>ANGLETOFINESHIFT];	
+    sinv = sin(visangle-rw_normalangle);
     dist = FixedDiv (rw_distance, sinv);
-    cosv = finecosine[(viewangle-visangle)>>ANGLETOFINESHIFT];
+    cosv = cos(viewangle-visangle);
     z = abs(FixedMul (dist, cosv));
     scale = FixedDiv(projection, z);
     return scale;
@@ -531,8 +531,8 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     angleb = ANG90 + (visangle-rw_normalangle);
 
     // both sines are allways positive
-    sinea = finesine[anglea>>ANGLETOFINESHIFT];	
-    sineb = finesine[angleb>>ANGLETOFINESHIFT];
+    sinea = sin(anglea);
+    sineb = sin(angleb);
     num = FixedMul(projection,sineb)<<detailshift;
     den = FixedMul(rw_distance,sinea);
 
@@ -888,7 +888,7 @@ void R_ExecuteSetViewSize (void)
 	
     for (i=0 ; i<viewwidth ; i++)
     {
-	cosadj = abs(finecosine[xtoviewangle[i]>>ANGLETOFINESHIFT]);
+        cosadj = abs(cos(xtoviewangle[i]));
 	distscale[i] = FixedDiv (FRACUNIT,cosadj);
     }
     
@@ -1045,8 +1045,8 @@ void R_SetupFrame (player_t* player)
         yslope = yslopes[LOOKDIRMIN + pitch];
     }
     
-    viewsin = finesine[viewangle>>ANGLETOFINESHIFT];
-    viewcos = finecosine[viewangle>>ANGLETOFINESHIFT];
+    viewsin = sin(viewangle);
+    viewcos = cos(viewangle);
 	
     sscount = 0;
 	

@@ -278,7 +278,7 @@ void P_LoadSegs (int lump)
 void P_SegLengths (boolean contrast_only)
 {
     int i;
-    const int rightangle = abs(finesine[(ANG60/2) >> ANGLETOFINESHIFT]);
+    const int rightangle = abs(sin(ANG60/2));
 
     for (i = 0; i < numsegs; i++)
     {
@@ -302,13 +302,13 @@ void P_SegLengths (boolean contrast_only)
 	if (!dy)
 	    li->fakecontrast = -LIGHTBRIGHT;
 	else
-	if (abs(finesine[li->r_angle >> ANGLETOFINESHIFT]) < rightangle)
+           if (abs(sin(li->r_angle)) < rightangle)
 	    li->fakecontrast = -(LIGHTBRIGHT >> 1);
 	else
 	if (!dx)
 	    li->fakecontrast = LIGHTBRIGHT;
 	else
-	if (abs(finecosine[li->r_angle >> ANGLETOFINESHIFT]) < rightangle)
+           if (abs(cos(li->r_angle)) < rightangle)
 	    li->fakecontrast = LIGHTBRIGHT >> 1;
 	else
 	    li->fakecontrast = 0;

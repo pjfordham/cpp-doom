@@ -1283,10 +1283,8 @@ P_SpawnPlayerMissile
 
     th->target = source;
     th->angle = an;
-    th->momx = FixedMul( th->info->speed,
-			 finecosine[an>>ANGLETOFINESHIFT]);
-    th->momy = FixedMul( th->info->speed,
-			 finesine[an>>ANGLETOFINESHIFT]);
+    th->momx = FixedMul( th->info->speed, cos(an));
+    th->momy = FixedMul( th->info->speed, sin(an));
     th->momz = FixedMul( th->info->speed, slope);
     // [crispy] suppress interpolation of player missiles for the first tic
     th->interp = -1;
