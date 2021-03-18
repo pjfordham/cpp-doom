@@ -1316,12 +1316,12 @@ P_LineLaser
     {
 	angle_t an = angle;
 
-	an += 1<<26;
+	an += angle_t(1<<26);
 	lslope = P_AimLineAttack(t1, an, distance);
 
 	if (!linetarget)
 	{
-	    an -= 2<<26;
+            an -= angle_t(2<<26);
 	    lslope = P_AimLineAttack(t1, an, distance);
 
 	    if (!linetarget && critical->freeaim == FREEAIM_BOTH)

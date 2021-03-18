@@ -546,7 +546,7 @@ A_Punch
 	damage *= 10;
 
     angle = player->mo->angle;
-    angle += P_SubRandom() << 18;
+    angle += angle_t(P_SubRandom() << 18);
     slope = P_AimLineAttack (player->mo, angle, MELEERANGE);
     P_LineAttack (player->mo, angle, MELEERANGE, slope, damage);
 
@@ -578,7 +578,7 @@ A_Saw
     if (!player) return; // [crispy] let pspr action pointers get called from mobj states
     damage = 2*(P_Random ()%10+1);
     angle = player->mo->angle;
-    angle += P_SubRandom() << 18;
+    angle += angle_t(P_SubRandom() << 18);
     
     // use meleerange + 1 se the puff doesn't skip the flash
     slope = P_AimLineAttack (player->mo, angle, MELEERANGE+1);
@@ -715,11 +715,11 @@ void P_BulletSlope (mobj_t*	mo)
 
     if (!linetarget)
     {
-	an += 1<<26;
+        an += angle_t(1<<26);
 	bulletslope = P_AimLineAttack (mo, an, 16*64*FRACUNIT);
 	if (!linetarget)
 	{
-	    an -= 2<<26;
+            an -= angle_t(2<<26);
 	    bulletslope = P_AimLineAttack (mo, an, 16*64*FRACUNIT);
 	    if (!linetarget && critical->freeaim == FREEAIM_BOTH)
 	    {
@@ -746,7 +746,7 @@ P_GunShot
     angle = mo->angle;
 
     if (!accurate)
-	angle += P_SubRandom() << 18;
+        angle += angle_t(P_SubRandom() << 18);
 
     P_LineAttack (mo, angle, MISSILERANGE, bulletslope, damage);
 }
@@ -839,7 +839,7 @@ A_FireShotgun2
     {
 	damage = 5*(P_Random ()%3+1);
 	angle = player->mo->angle;
-	angle += P_SubRandom() << ANGLETOFINESHIFT;
+	angle += angle_t(P_SubRandom() << ANGLETOFINESHIFT);
 	P_LineAttack (player->mo,
 		      angle,
 		      MISSILERANGE,

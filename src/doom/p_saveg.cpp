@@ -275,7 +275,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->sprev = static_cast<mobj_t *>(saveg_readp());
 
     // angle_t angle;
-    str->angle = saveg_read32();
+    str->angle = angle_t(saveg_read32());
 
     // spritenum_t sprite;
     str->sprite = static_cast<spritenum_t>(saveg_read_enum());
@@ -439,7 +439,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     saveg_writep(str->sprev);
 
     // angle_t angle;
-    saveg_write32(str->angle);
+    saveg_write32((unsigned int)str->angle);
 
     // spritenum_t sprite;
     saveg_write_enum(str->sprite);

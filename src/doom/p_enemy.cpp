@@ -807,7 +807,7 @@ void A_FaceTarget (mobj_t* actor)
 				    actor->target->y);
     
     if (actor->target->flags & MF_SHADOW)
-	actor->angle += P_SubRandom() << 21;
+        actor->angle += angle_t(P_SubRandom() << 21);
 }
 
 

@@ -230,9 +230,9 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
 	    {
 	      slope = P_AimLineAttack(mo, an, 16*64*FRACUNIT);//, mask);
 	      if (!linetarget)
-		slope = P_AimLineAttack(mo, an += 1<<26, 16*64*FRACUNIT);//, mask);
+                 slope = P_AimLineAttack(mo, an += angle_t(1<<26), 16*64*FRACUNIT);//, mask);
 	      if (!linetarget)
-		slope = P_AimLineAttack(mo, an -= 2<<26, 16*64*FRACUNIT);//, mask);
+                 slope = P_AimLineAttack(mo, an -= angle_t(2<<26), 16*64*FRACUNIT);//, mask);
 	      if (!linetarget) {
                  slope = (critical->freeaim == FREEAIM_BOTH) ? PLAYER_SLOPE(player) : fixed_t(0);
                  an = mo->angle;

@@ -1202,7 +1202,7 @@ P_SpawnMissile
 
     // fuzzy player
     if (dest->flags & MF_SHADOW)
-	an += P_SubRandom() << 20;
+       an += angle_t(P_SubRandom() << 20);
 
     th->angle = an;
     th->momx = FixedMul (th->info->speed, cos(an));
@@ -1252,12 +1252,12 @@ P_SpawnPlayerMissile
     
     if (!linetarget)
     {
-	an += 1<<26;
+        an += angle_t(1<<26);
 	slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
 
 	if (!linetarget)
 	{
-	    an -= 2<<26;
+            an -= angle_t(2<<26);
 	    slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
 	}
 
