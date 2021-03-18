@@ -1095,9 +1095,8 @@ void A_Tracer (mobj_t* actor)
 	}
     }
 	
-    exact = actor->angle>>ANGLETOFINESHIFT;
-    actor->momx = FixedMul (actor->info->speed, finecosine[exact]);
-    actor->momy = FixedMul (actor->info->speed, finesine[exact]);
+    actor->momx = FixedMul (actor->info->speed, cos(actor->angle));
+    actor->momy = FixedMul (actor->info->speed, sin(actor->angle));
     
     // change slope
     dist = P_AproxDistance (dest->x - actor->x,
@@ -1296,8 +1295,7 @@ void A_Fire (mobj_t* actor)
 {
     mobj_t*	dest;
     mobj_t*     target;
-    unsigned	an;
-		
+
     dest = actor->tracer;
     if (!dest)
 	return;
@@ -1308,11 +1306,9 @@ void A_Fire (mobj_t* actor)
     if (!P_CheckSight (target, dest) )
 	return;
 
-    an = dest->angle >> ANGLETOFINESHIFT;
-
     P_UnsetThingPosition (actor);
-    actor->x = dest->x + FixedMul (24*FRACUNIT, finecosine[an]);
-    actor->y = dest->y + FixedMul (24*FRACUNIT, finesine[an]);
+    actor->x = dest->x + FixedMul (24*FRACUNIT, cos( dest->angle));
+    actor->y = dest->y + FixedMul (24*FRACUNIT, sin( dest->angle));
     actor->z = dest->z;
     P_SetThingPosition (actor);
 }
@@ -1354,8 +1350,7 @@ void A_VileTarget (mobj_t*	actor)
 void A_VileAttack (mobj_t* actor)
 {	
     mobj_t*	fire;
-    int		an;
-	
+
     if (!actor->target)
 	return;
     
@@ -1368,16 +1363,14 @@ void A_VileAttack (mobj_t* actor)
     P_DamageMobj (actor->target, actor, actor, 20);
     actor->target->momz = 1000*FRACUNIT/actor->target->info->mass;
 	
-    an = actor->angle >> ANGLETOFINESHIFT;
-
     fire = actor->tracer;
 
     if (!fire)
 	return;
 		
     // move the fire between the vile and the player
-    fire->x = actor->target->x - FixedMul (24*FRACUNIT, finecosine[an]);
-    fire->y = actor->target->y - FixedMul (24*FRACUNIT, finesine[an]);	
+    fire->x = actor->target->x - FixedMul (24*FRACUNIT, cos(actor->angle));
+    fire->y = actor->target->y - FixedMul (24*FRACUNIT, sin(actor->angle));
     P_RadiusAttack (fire, actor, 70 );
 }
 
@@ -1403,7 +1396,6 @@ void A_FatAttack1 (mobj_t* actor)
 {
     mobj_t*	mo;
     mobj_t*     target;
-    int		an;
 
     A_FaceTarget (actor);
 
@@ -1414,16 +1406,14 @@ void A_FatAttack1 (mobj_t* actor)
 
     mo = P_SpawnMissile (actor, target, MT_FATSHOT);
     mo->angle += FATSPREAD;
-    an = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul (mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul (mo->info->speed, finesine[an]);
+    mo->momx = FixedMul (mo->info->speed, cos( mo->angle ));
+    mo->momy = FixedMul (mo->info->speed, sin( mo->angle ));
 }
 
 void A_FatAttack2 (mobj_t* actor)
 {
     mobj_t*	mo;
     mobj_t*     target;
-    int		an;
 
     A_FaceTarget (actor);
     // Now here choose opposite deviation.
@@ -1433,16 +1423,14 @@ void A_FatAttack2 (mobj_t* actor)
 
     mo = P_SpawnMissile (actor, target, MT_FATSHOT);
     mo->angle -= FATSPREAD*2;
-    an = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul (mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul (mo->info->speed, finesine[an]);
+    mo->momx = FixedMul (mo->info->speed, cos( mo->angle ));
+    mo->momy = FixedMul (mo->info->speed, sin( mo->angle ));
 }
 
 void A_FatAttack3 (mobj_t*	actor)
 {
     mobj_t*	mo;
     mobj_t*     target;
-    int		an;
 
     A_FaceTarget (actor);
 
@@ -1450,15 +1438,13 @@ void A_FatAttack3 (mobj_t*	actor)
     
     mo = P_SpawnMissile (actor, target, MT_FATSHOT);
     mo->angle -= FATSPREAD/2;
-    an = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul (mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul (mo->info->speed, finesine[an]);
+    mo->momx = FixedMul (mo->info->speed, cos( mo->angle ));
+    mo->momy = FixedMul (mo->info->speed, sin( mo->angle ));
 
     mo = P_SpawnMissile (actor, target, MT_FATSHOT);
     mo->angle += FATSPREAD/2;
-    an = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul (mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul (mo->info->speed, finesine[an]);
+    mo->momx = FixedMul (mo->info->speed, cos( mo->angle ));
+    mo->momy = FixedMul (mo->info->speed, sin( mo->angle ));
 }
 
 
@@ -1471,7 +1457,6 @@ const fixed_t SKULLSPEED = 20*FRACUNIT;
 void A_SkullAttack (mobj_t* actor)
 {
     mobj_t*		dest;
-    angle_t		an;
     int			dist;
 
     if (!actor->target)
@@ -1482,9 +1467,8 @@ void A_SkullAttack (mobj_t* actor)
 
     S_StartSound (actor, actor->info->attacksound);
     A_FaceTarget (actor);
-    an = actor->angle >> ANGLETOFINESHIFT;
-    actor->momx = FixedMul (SKULLSPEED, finecosine[an]);
-    actor->momy = FixedMul (SKULLSPEED, finesine[an]);
+    actor->momx = FixedMul (SKULLSPEED, cos( actor->angle ));
+    actor->momy = FixedMul (SKULLSPEED, sin( actor->angle ));
     dist = P_AproxDistance (dest->x - actor->x, dest->y - actor->y);
     dist = dist / SKULLSPEED;
     
@@ -1508,7 +1492,6 @@ A_PainShootSkull
     fixed_t	z;
     
     mobj_t*	newmobj;
-    angle_t	an;
     int		prestep;
     int		count;
 
@@ -1529,14 +1512,13 @@ A_PainShootSkull
 
 
     // okay, there's playe for another one
-    an = angle >> ANGLETOFINESHIFT;
     
     prestep =
 	4*FRACUNIT
 	+ 3*(actor->info->radius + mobjinfo[MT_SKULL].radius)/2;
     
-    x = actor->x + FixedMul (prestep, finecosine[an]);
-    y = actor->y + FixedMul (prestep, finesine[an]);
+    x = actor->x + FixedMul (prestep, cos(angle));
+    y = actor->y + FixedMul (prestep, sin(angle));
     z = actor->z + 8*FRACUNIT;
 		
     newmobj = P_SpawnMobj (x , y, z, MT_SKULL);

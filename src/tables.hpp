@@ -107,6 +107,9 @@ inline fixed_t sin(angle_t t) {
 inline fixed_t cos(angle_t t) {
    return finecosine[ t >> ANGLETOFINESHIFT ];
 }
+inline fixed_t tan(angle_t t) {
+   return finetangent[ t >> ANGLETOFINESHIFT ];
+}
 
 #endif
 

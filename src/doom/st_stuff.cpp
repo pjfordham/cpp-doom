@@ -693,7 +693,6 @@ ST_Responder (event_t* ev)
 	mapthing_t mt = {0};
 	if (plyr->playerstate == PST_DEAD)
 	{
-	    signed int an;
 	    extern void P_SpawnPlayer (mapthing_t* mthing);
 
 	    mt.x = plyr->mo->x >> FRACBITS;
@@ -703,8 +702,9 @@ ST_Responder (event_t* ev)
 	    P_SpawnPlayer(&mt);
 
 	    // [crispy] spawn a teleport fog
-	    an = plyr->mo->angle >> ANGLETOFINESHIFT;
-	    P_SpawnMobj(plyr->mo->x+20*finecosine[an], plyr->mo->y+20*finesine[an], plyr->mo->z, MT_TFOG);
+	    P_SpawnMobj(plyr->mo->x+20*cos(plyr->mo->angle),
+                        plyr->mo->y+20*sin(plyr->mo->angle),
+                        plyr->mo->z, MT_TFOG);
 	    S_StartSound(plyr, sfx_slop);
 	}
 

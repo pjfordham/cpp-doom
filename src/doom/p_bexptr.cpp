@@ -254,7 +254,7 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
       th->angle = an1;
       th->momx = cos(an1) * 25;
       th->momy = sin(an1) * 25;
-      th->momz = finetangent[an2>>ANGLETOFINESHIFT] * 25;
+      th->momz = tan(an2) * 25;
       // [crispy] suppress interpolation of player missiles for the first tic
       th->interp = -1;
       P_CheckMissileSpawn(th);

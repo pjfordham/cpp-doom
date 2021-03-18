@@ -378,8 +378,8 @@ void R_RenderSegLoop (void)
 	if (segtextured)
 	{
 	    // calculate texture offset
-	    angle = (rw_centerangle + xtoviewangle[rw_x])>>ANGLETOFINESHIFT;
-	    texturecolumn = rw_offset-FixedMul(finetangent[angle],rw_distance);
+            angle = rw_centerangle + xtoviewangle[rw_x];
+	    texturecolumn = rw_offset-FixedMul(tan(angle),rw_distance);
 	    texturecolumn = texturecolumn >> FRACBITS;
 	    // calculate lighting
 	    index = (unsigned int)(rw_scale>>(LIGHTSCALESHIFT + crispy->hires));

@@ -209,11 +209,11 @@ void R_ClearPlanes (void)
     std::fill(std::begin(cachedheight) , std::end(cachedheight), 0 );
 
     // left to right mapping
-    angle = (viewangle-ANG90)>>ANGLETOFINESHIFT;
+    angle = (viewangle-ANG90);
 	
     // scale will be unit scale at SCREENWIDTH/2 distance
-    basexscale = FixedDiv (finecosine[angle],centerxfrac);
-    baseyscale = -FixedDiv (finesine[angle],centerxfrac);
+    basexscale = FixedDiv (cos(angle),centerxfrac);
+    baseyscale = -FixedDiv (sin(angle),centerxfrac);
 }
 
 

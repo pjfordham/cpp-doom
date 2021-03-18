@@ -1390,20 +1390,17 @@ boolean	PTR_UseTraverse (intercept_t* in)
 //
 void P_UseLines (player_t*	player) 
 {
-    int		angle;
     fixed_t	x1;
     fixed_t	y1;
     fixed_t	x2;
     fixed_t	y2;
 	
     usething = player->mo;
-		
-    angle = player->mo->angle >> ANGLETOFINESHIFT;
 
     x1 = player->mo->x;
     y1 = player->mo->y;
-    x2 = x1 + (USERANGE>>FRACBITS)*finecosine[angle];
-    y2 = y1 + (USERANGE>>FRACBITS)*finesine[angle];
+    x2 = x1 + (USERANGE>>FRACBITS)*cos(player->mo->angle);
+    y2 = y1 + (USERANGE>>FRACBITS)*sin(player->mo->angle);
 	
     P_PathTraverse ( x1, y1, x2, y2, PT_ADDLINES, PTR_UseTraverse );
 }
