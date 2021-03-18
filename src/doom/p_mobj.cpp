@@ -1205,9 +1205,8 @@ P_SpawnMissile
 	an += P_SubRandom() << 20;
 
     th->angle = an;
-    an >>= ANGLETOFINESHIFT;
-    th->momx = FixedMul (th->info->speed, finecosine[an]);
-    th->momy = FixedMul (th->info->speed, finesine[an]);
+    th->momx = FixedMul (th->info->speed, cos(an));
+    th->momy = FixedMul (th->info->speed, sin(an));
 	
     dist = P_AproxDistance (dest->x - source->x, dest->y - source->y);
     dist = dist / th->info->speed;

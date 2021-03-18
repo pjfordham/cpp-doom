@@ -882,9 +882,8 @@ P_DamageMobj
 	    thrust *= 4;
 	}
 		
-	ang >>= ANGLETOFINESHIFT;
-	target->momx += FixedMul (thrust, finecosine[ang]);
-	target->momy += FixedMul (thrust, finesine[ang]);
+	target->momx += FixedMul (thrust, cos(ang));
+	target->momy += FixedMul (thrust, sin(ang));
     }
     
     // player specific

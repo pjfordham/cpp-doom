@@ -60,26 +60,35 @@ extern const byte gammatable[5][256];
 
 // Binary Angle Measument, BAM.
 
-#define ANG45           0x20000000
-#define ANG90           0x40000000
-#define ANG180          0x80000000
-#define ANG270          0xc0000000
-#define ANG_MAX         0xffffffff
+typedef unsigned int angle_t;
 
-#define ANG1            (ANG45 / 45)
-#define ANG60           (ANG180 / 3)
+template <>
+struct fmt::formatter<angle_t> {
+   constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+
+   template <typename FormatContext>
+   auto format(const angle_t& t, FormatContext& ctx) {
+      return format_to(ctx.out(), "{}", t );
+   }
+};
+
+const angle_t ANG45 = 0x20000000;
+const angle_t ANG90 = 0x40000000;
+const angle_t ANG180 = 0x80000000;
+const angle_t ANG270 = 0xc0000000;
+const angle_t ANG_MAX = 0xffffffff;
+
+const angle_t ANG1 = (ANG45 / 45);
+const angle_t ANG60 = (ANG180 / 3);
 
 // Heretic code uses this definition as though it represents one 
 // degree, but it is not!  This is actually ~1.40 degrees.
 
-#define ANG1_X          0x01000000
+const angle_t ANG1_X = 0x01000000;
 
 #define SLOPERANGE		2048
 #define SLOPEBITS		11
 #define DBITS			(FRACBITS-SLOPEBITS)
-
-typedef unsigned int angle_t;
-
 
 // Effective size is 2049;
 // The +1 size is to handle the case when x==y
@@ -92,6 +101,12 @@ extern const angle_t tantoangle[SLOPERANGE+1];
 int SlopeDiv(unsigned int num, unsigned int den);
 int SlopeDivCrispy(unsigned int num, unsigned int den);
 
+inline fixed_t sin(angle_t t) {
+   return finesine[ t >> ANGLETOFINESHIFT ];
+}
+inline fixed_t cos(angle_t t) {
+   return finecosine[ t >> ANGLETOFINESHIFT ];
+}
 
 #endif
 

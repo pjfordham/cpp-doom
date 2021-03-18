@@ -596,10 +596,8 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
        angle = angle + ((angle_t)0xffffffff - listener->angle);
     }
 
-    angle >>= ANGLETOFINESHIFT;
-
     // stereo separation
-    *sep = 128 - (FixedMul(stereo_swing, finesine[angle]) >> FRACBITS);
+    *sep = 128 - (FixedMul(stereo_swing, sin(angle)) >> FRACBITS);
 
     // volume calculation
     if (approx_dist < S_CLOSE_DIST)
