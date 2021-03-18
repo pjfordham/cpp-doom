@@ -159,7 +159,7 @@ extern  int             testcontrols_mousespeed;
 
 // This one is related to the 3-screen display mode.
 // ANG90 = left side, ANG270 = right
-extern  int	viewangleoffset;
+extern  angle_t	viewangleoffset;
 
 // Player taking events, and displaying.
 extern  int	consoleplayer;	

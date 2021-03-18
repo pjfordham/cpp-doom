@@ -47,7 +47,7 @@
 
 
 
-int			viewangleoffset;
+angle_t			viewangleoffset;
 
 // increment every time a check is made
 int			validcount = 1;		

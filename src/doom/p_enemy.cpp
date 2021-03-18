@@ -1081,16 +1081,16 @@ void A_Tracer (mobj_t* actor)
 
     if (exact != actor->angle)
     {
-	if (exact - actor->angle > 0x80000000)
+	if (exact - actor->angle > ANG180)
 	{
 	    actor->angle -= TRACEANGLE;
-	    if (exact - actor->angle < 0x80000000)
+	    if (exact - actor->angle < ANG180)
 		actor->angle = exact;
 	}
 	else
 	{
 	    actor->angle += TRACEANGLE;
-	    if (exact - actor->angle > 0x80000000)
+	    if (exact - actor->angle > ANG180)
 		actor->angle = exact;
 	}
     }

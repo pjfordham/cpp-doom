@@ -593,7 +593,7 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
     }
     else
     {
-        angle = angle + (0xffffffff - listener->angle);
+       angle = angle + ((angle_t)0xffffffff - listener->angle);
     }
 
     angle >>= ANGLETOFINESHIFT;

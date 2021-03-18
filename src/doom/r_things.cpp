@@ -591,7 +591,7 @@ void R_ProjectSprite (mobj_t* thing)
     fixed_t             interpx;
     fixed_t             interpy;
     fixed_t             interpz;
-    fixed_t             interpangle;
+    angle_t             interpangle;
 
     // [AM] Interpolate between current and last position,
     //      if prudent.
@@ -670,12 +670,12 @@ void R_ProjectSprite (mobj_t* thing)
 	// [crispy] support 16 sprite rotations
 	if (sprframe->rotate == 2)
 	{
-	    const unsigned rot2 = (ang-interpangle+(unsigned)(ANG45/4)*17);
+	    const unsigned rot2 = (ang-interpangle+(ANG45/4)*17);
 	    rot = (rot2>>29) + ((rot2>>25)&8);
 	}
 	else
 	{
-	rot = (ang-interpangle+(unsigned)(ANG45/2)*9)>>29;
+	rot = (ang-interpangle+(ANG45/2)*9)>>29;
 	}
 	lump = sprframe->lump[rot];
 	flip = (boolean)sprframe->flip[rot];

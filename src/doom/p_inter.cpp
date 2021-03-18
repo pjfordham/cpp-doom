@@ -834,7 +834,7 @@ P_DamageMobj
   mobj_t*	source,
   int 		damage )
 {
-    unsigned	ang;
+    angle_t	ang;
     int		saved;
     player_t*	player;
     fixed_t	thrust;
