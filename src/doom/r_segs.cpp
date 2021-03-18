@@ -51,7 +51,7 @@ int		midtexture;
 
 angle_t		rw_normalangle;
 // angle to line origin
-int		rw_angle1;	
+angle_t		rw_angle1;	
 
 //
 // regular wall

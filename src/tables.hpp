@@ -72,11 +72,12 @@ struct fmt::formatter<angle_t> {
    }
 };
 
-const angle_t ANG45 = 0x20000000;
-const angle_t ANG90 = 0x40000000;
-const angle_t ANG180 = 0x80000000;
-const angle_t ANG270 = 0xc0000000;
-const angle_t ANG_MAX = 0xffffffff;
+const angle_t ANG0 = angle_t(0x00000000u);
+const angle_t ANG45 = angle_t(0x20000000u);
+const angle_t ANG90 = angle_t(0x40000000u);
+const angle_t ANG180 = angle_t(0x80000000u);
+const angle_t ANG270 = angle_t(0xc0000000u);
+const angle_t ANG_MAX = angle_t(0xffffffffu);
 
 const angle_t ANG1 = (ANG45 / 45);
 const angle_t ANG60 = (ANG180 / 3);
@@ -84,7 +85,7 @@ const angle_t ANG60 = (ANG180 / 3);
 // Heretic code uses this definition as though it represents one 
 // degree, but it is not!  This is actually ~1.40 degrees.
 
-const angle_t ANG1_X = 0x01000000;
+const angle_t ANG1_X = angle_t(0x01000000u);
 
 #define SLOPERANGE		2048
 #define SLOPEBITS		11

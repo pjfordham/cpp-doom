@@ -454,14 +454,14 @@ void R_DrawPlanes (void)
 		{
 		    dc_texturemid = dc_texturemid * (textureheight[texture]>>FRACBITS) / SKYSTRETCH_HEIGHT;
 		}
-		flip = (l->special == 272) ? 0u : ~0u;
+		flip = (l->special == 272) ? ANG0 : ANG_MAX;
 		an += s->textureoffset;
 	    }
 	    else
 	    {
 		texture = skytexture;
 		dc_texturemid = skytexturemid;
-		flip = 0;
+		flip = ANG0;
 	    }
 	    dc_iscale = pspriteiscale>>detailshift;
 	    

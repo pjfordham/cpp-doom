@@ -816,7 +816,7 @@ void A_FaceTarget (mobj_t* actor)
 //
 void A_PosAttack (mobj_t* actor)
 {
-    int		angle;
+    angle_t	angle;
     int		damage;
     int		slope;
 	
@@ -836,8 +836,8 @@ void A_PosAttack (mobj_t* actor)
 void A_SPosAttack (mobj_t* actor)
 {
     int		i;
-    int		angle;
-    int		bangle;
+    angle_t	angle;
+    angle_t	bangle;
     int		damage;
     int		slope;
 	
@@ -859,8 +859,8 @@ void A_SPosAttack (mobj_t* actor)
 
 void A_CPosAttack (mobj_t* actor)
 {
-    int		angle;
-    int		bangle;
+    angle_t	angle;
+    angle_t	bangle;
     int		damage;
     int		slope;
 	
@@ -1041,7 +1041,7 @@ void A_SkelMissile (mobj_t* actor)
     mo->tracer = actor->target;
 }
 
-int	TRACEANGLE = 0xc000000;
+angle_t	TRACEANGLE = angle_t(0xc000000);
 
 void A_Tracer (mobj_t* actor)
 {

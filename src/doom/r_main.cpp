@@ -301,7 +301,7 @@ R_PointToAngleSlope
     y -= viewy;
     
     if ( (!x) && (!y) )
-	return 0;
+	return ANG0;
 
     if (x>= 0)
     {
@@ -318,7 +318,7 @@ R_PointToAngleSlope
 	    else
 	    {
 		// octant 1
-               return ANG90-1-tantoangle[wrapped(slope_div,x,y)];
+               return ANG90-angle_t(1)-tantoangle[wrapped(slope_div,x,y)];
 	    }
 	}
 	else
@@ -349,7 +349,7 @@ R_PointToAngleSlope
 	    if (x>y)
 	    {
 		// octant 3
-               return ANG180-1-tantoangle[wrapped(slope_div,y,x)];
+               return ANG180-angle_t(1)-tantoangle[wrapped(slope_div,y,x)];
 	    }
 	    else
 	    {
@@ -370,11 +370,11 @@ R_PointToAngleSlope
 	    else
 	    {
 		 // octant 5
-               return ANG270-1-tantoangle[wrapped(slope_div,x,y)];
+               return ANG270-angle_t(1)-tantoangle[wrapped(slope_div,x,y)];
 	    }
 	}
     }
-    return 0;
+    return ANG0;
 }
 
 angle_t
