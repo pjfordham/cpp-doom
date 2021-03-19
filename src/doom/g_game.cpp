@@ -408,7 +408,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     // [crispy] add quick 180° reverse
     if (gamekeydown[key_reverse] || mousebuttons[mousebreverse])
     {
-        cmd->angleturn += ANG180 >> FRACBITS;
+        cmd->angleturn += ANG180 >> ANGLETURNBITS;
         gamekeydown[key_reverse] = false;
         mousebuttons[mousebreverse] = false;
     }
@@ -1437,7 +1437,7 @@ G_CheckSpot
         // This calculation overflows in Vanilla Doom, but here we deliberately
         // avoid integer overflow as it is undefined behavior, so the value of
         // 'an' will always be positive.
-        an = ((unsigned int)ANG45 >> ANGLETOFINESHIFT) * ((signed int) mthing->angle / 45);
+        an = (ANG45 >> ANGLETOFINESHIFT) * ((signed int) mthing->angle / 45);
 
         switch (an)
         {

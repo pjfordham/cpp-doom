@@ -697,7 +697,8 @@ ST_Responder (event_t* ev)
 
 	    mt.x = plyr->mo->x >> FRACBITS;
 	    mt.y = plyr->mo->y >> FRACBITS;
-	    mt.angle = (plyr->mo->angle + ANG45/2)*(uint64_t)45/ANG45;
+	    // WTF is this trying to acheive?
+            mt.angle = (uint64_t)(unsigned int)(plyr->mo->angle + ANG45/2)*(uint64_t)45/(unsigned int)ANG45;
 	    mt.type = consoleplayer + 1;
 	    P_SpawnPlayer(&mt);
 

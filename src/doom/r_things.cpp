@@ -670,12 +670,12 @@ void R_ProjectSprite (mobj_t* thing)
 	// [crispy] support 16 sprite rotations
 	if (sprframe->rotate == 2)
 	{
-	    const unsigned rot2 = (ang-interpangle+(ANG45/4)*17);
+           const unsigned rot2 = (unsigned)(ang-interpangle+(ANG45/4)*17);
 	    rot = (rot2>>29) + ((rot2>>25)&8);
 	}
 	else
 	{
-	rot = (ang-interpangle+(ANG45/2)*9)>>29;
+           rot = (unsigned)(ang-interpangle+(ANG45/2)*9)>>29;
 	}
 	lump = sprframe->lump[rot];
 	flip = (boolean)sprframe->flip[rot];

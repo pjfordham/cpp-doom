@@ -1886,7 +1886,7 @@ const fixed_t finesine[10240] =
 
 const fixed_t *finecosine = &finesine[FINEANGLES/4];
 
-const angle_t tantoangle[2049] =
+const unsigned int _tantoangle[2049] =
 {
     0,333772,667544,1001315,1335086,1668857,2002626,2336395,
     2670163,3003929,3337694,3671457,4005219,4338979,4672736,5006492,
@@ -2146,6 +2146,7 @@ const angle_t tantoangle[2049] =
     535533216,535700704,535868128,536035456,536202720,536369888,536536992,536704000,
     536870912
 };
+const angle_t *tantoangle = (angle_t*)_tantoangle;
 
 // Now where did these came from?
 const byte gammatable[5][256] =

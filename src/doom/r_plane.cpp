@@ -442,7 +442,8 @@ void R_DrawPlanes (void)
 	if (pl->picnum == skyflatnum || pl->picnum & PL_SKYFLAT)
 	{
 	    int texture;
-	    angle_t an = viewangle, flip;
+	    angle_t an = viewangle;
+            unsigned int flip;
 	    if (pl->picnum & PL_SKYFLAT)
 	    {
 		const line_t *l = &lines[pl->picnum & ~PL_SKYFLAT];
@@ -454,14 +455,14 @@ void R_DrawPlanes (void)
 		{
 		    dc_texturemid = dc_texturemid * (textureheight[texture]>>FRACBITS) / SKYSTRETCH_HEIGHT;
 		}
-		flip = (l->special == 272) ? ANG0 : ANG_MAX;
-		an += s->textureoffset;
+		flip = (l->special == 272) ? 0 : INT_MAX;
+		an += angle_t(s->textureoffset);
 	    }
 	    else
 	    {
 		texture = skytexture;
 		dc_texturemid = skytexturemid;
-		flip = ANG0;
+		flip = 0;
 	    }
 	    dc_iscale = pspriteiscale>>detailshift;
 	    
@@ -483,7 +484,7 @@ void R_DrawPlanes (void)
 
 		if ((unsigned) dc_yl <= dc_yh) // [crispy] 32-bit integer math
 		{
-		    angle = ((an + xtoviewangle[x])^flip)>>ANGLETOSKYSHIFT;
+                    angle = ((unsigned int)(an + xtoviewangle[x])^flip)>>ANGLETOSKYSHIFT;
 		    dc_x = x;
 		    dc_source = R_GetColumn(texture, angle, false);
 		    colfunc ();

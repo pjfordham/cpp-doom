@@ -41,10 +41,6 @@
 #define FINEANGLES		8192
 #define FINEMASK		(FINEANGLES-1)
 
-
-// 0x100000000 to 0x2000
-#define ANGLETOFINESHIFT	19		
-
 // Effective size is 10240.
 extern const fixed_t finesine[5*FINEANGLES/4];
 
@@ -60,7 +56,110 @@ extern const byte gammatable[5][256];
 
 // Binary Angle Measument, BAM.
 
-typedef unsigned int angle_t;
+class angle_t {
+   unsigned int value;
+public:
+   angle_t() = default;
+   explicit angle_t( unsigned int _value ) : value(_value) {
+   }
+
+   explicit operator unsigned int() const { return value;}
+   explicit operator bool() const { return value != 0; }
+
+   // comparison
+   friend bool operator<(angle_t lhs, angle_t rhs) {
+      return lhs.value < rhs.value;
+   }
+   friend bool operator>(angle_t lhs, angle_t rhs) {
+      return lhs.value > rhs.value;
+   }
+   friend bool operator==(angle_t lhs, angle_t rhs) {
+      return lhs.value == rhs.value;
+   }
+   friend bool operator<=(angle_t lhs, angle_t rhs) {
+      return lhs.value <= rhs.value;
+   }
+   friend bool operator>=(angle_t lhs, angle_t rhs) {
+      return lhs.value >= rhs.value;
+   }
+
+   // unary
+   friend angle_t operator-(angle_t lhs) {
+      return angle_t(-lhs.value);
+   }
+
+   // binary, angle_t, angle_t => angle_t
+   friend angle_t operator+(angle_t lhs, angle_t rhs) {
+      return angle_t(lhs.value + rhs.value);
+   }
+   friend angle_t operator-(angle_t lhs, angle_t rhs) {
+      return angle_t(lhs.value - rhs.value);
+   }
+
+   // updating versions of +/-
+   friend angle_t operator+=(angle_t &lhs, angle_t rhs) {
+      return angle_t(lhs.value += rhs.value);
+   }
+   friend angle_t operator-=(angle_t &lhs, angle_t rhs) {
+      return angle_t(lhs.value -= rhs.value);
+   }
+
+   friend angle_t operator*(angle_t lhs, unsigned int rhs) {
+      return angle_t(lhs.value * rhs);
+   }
+   friend angle_t operator*(unsigned int lhs, angle_t rhs) {
+      return angle_t(lhs * rhs.value);
+   }
+   friend angle_t operator/(angle_t lhs, unsigned int rhs) {
+      return angle_t(lhs.value / rhs);
+   }
+   friend unsigned int operator/(angle_t lhs, angle_t rhs) {
+      return lhs.value / rhs.value;
+   }
+
+   angle_t snap_to_8ths() {
+      return angle_t( value & (0x7 << 29));
+   }
+
+   friend class fineindex_t;
+   friend class angleturn_t;
+   friend class movedir_t;
+   friend struct fmt::formatter<angle_t>;
+
+};
+
+class fineindex_t {
+   friend int operator>>( angle_t a, fineindex_t b) {
+      return a.value >> 19;
+   }
+   friend angle_t operator<<( int a, fineindex_t b) {
+      return angle_t((unsigned)a << 19);
+   }
+};
+
+const fineindex_t ANGLETOFINESHIFT;
+
+class movedir_t {
+   friend int operator>>( angle_t a, movedir_t b) {
+      return a.value >> 29;
+   }
+   friend angle_t operator<<( int a, movedir_t b) {
+      return angle_t((unsigned)a << 29);
+   }
+};
+
+const movedir_t ANGLETOMOVEDIRSHIFT;
+
+class angleturn_t {
+   friend int operator>>( angle_t a, angleturn_t b) {
+      return a.value >> 16;
+   }
+   friend angle_t operator<<( int a, angleturn_t b) {
+      return angle_t((unsigned)a << 16);
+   }
+};
+
+const angleturn_t ANGLETURNBITS;
 
 template <>
 struct fmt::formatter<angle_t> {
@@ -68,7 +167,7 @@ struct fmt::formatter<angle_t> {
 
    template <typename FormatContext>
    auto format(const angle_t& t, FormatContext& ctx) {
-      return format_to(ctx.out(), "{}", t );
+      return format_to(ctx.out(), "{}", t.value >> 24 );
    }
 };
 
@@ -77,7 +176,6 @@ const angle_t ANG45 = angle_t(0x20000000u);
 const angle_t ANG90 = angle_t(0x40000000u);
 const angle_t ANG180 = angle_t(0x80000000u);
 const angle_t ANG270 = angle_t(0xc0000000u);
-const angle_t ANG_MAX = angle_t(0xffffffffu);
 
 const angle_t ANG1 = (ANG45 / 45);
 const angle_t ANG60 = (ANG180 / 3);
@@ -94,7 +192,7 @@ const angle_t ANG1_X = angle_t(0x01000000u);
 // Effective size is 2049;
 // The +1 size is to handle the case when x==y
 //  without additional checking.
-extern const angle_t tantoangle[SLOPERANGE+1];
+extern const angle_t *tantoangle;
 
 
 // Utility function,

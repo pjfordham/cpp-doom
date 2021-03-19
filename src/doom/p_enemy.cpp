@@ -685,8 +685,6 @@ void A_Look (mobj_t* actor)
 //
 void A_Chase (mobj_t*	actor)
 {
-    int		delta;
-
     if (actor->reactiontime)
 	actor->reactiontime--;
 				
@@ -706,13 +704,16 @@ void A_Chase (mobj_t*	actor)
     // turn towards movement direction if not there yet
     if (actor->movedir < 8)
     {
-	actor->angle &= (7<<29);
-	delta = actor->angle - (actor->movedir << 29);
-	
-	if (delta > 0)
-	    actor->angle -= ANG90/2;
-	else if (delta < 0)
-	    actor->angle += ANG90/2;
+        actor->angle = actor->angle.snap_to_8ths();
+	angle_t delta = actor->angle - (actor->movedir << ANGLETOMOVEDIRSHIFT);
+
+	if ( delta == ANG0 ) {
+           ;
+        }else if ( delta < ANG180 )
+           actor->angle -= ANG90/2;
+	else {
+           actor->angle += ANG90/2;
+        }
     }
 
     if (!actor->target

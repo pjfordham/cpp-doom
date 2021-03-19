@@ -151,7 +151,7 @@ void P_MovePlayer (player_t* player)
 	
     cmd = &player->cmd;
 	
-    player->mo->angle += (cmd->angleturn<<FRACBITS);
+    player->mo->angle += (cmd->angleturn<<ANGLETURNBITS);
 
     // Do not let the player control movement
     //  if not onground.
