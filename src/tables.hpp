@@ -131,10 +131,10 @@ public:
 // in a few different ways with different shift. Try to caputre
 // those cases and make them typesafe.
 template <unsigned int shift> class angleshift_t {
-   friend unsigned int operator>>( angle_t a, angleshift_t b) {
+   friend auto operator>>( angle_t a, angleshift_t b) {
       return a.value >> shift;
    }
-   friend angle_t operator<<( unsigned int a, angleshift_t b) {
+   friend auto operator<<( decltype(angle_t::value) a, angleshift_t b) {
       return angle_t(a << shift);
    }
 };
