@@ -457,7 +457,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
           "X={:.10} Y={:.10} A={}",
           (double)player->mo->x/FRACUNIT,
           (double)player->mo->y/FRACUNIT,
-          player->mo->angle >> 24);
+          player->mo->angle );
 
         player->powers[pw_mapcoords]--;
 
@@ -1437,7 +1437,7 @@ G_CheckSpot
         // This calculation overflows in Vanilla Doom, but here we deliberately
         // avoid integer overflow as it is undefined behavior, so the value of
         // 'an' will always be positive.
-        an = (ANG45 >> ANGLETOFINESHIFT) * ((signed int) mthing->angle / 45);
+        an = ((unsigned int)ANG45 >> ANGLETOFINESHIFT) * ((signed int) mthing->angle / 45);
 
         switch (an)
         {

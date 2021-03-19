@@ -598,7 +598,7 @@ A_Saw
 			     linetarget->x, linetarget->y);
     if (angle - player->mo->angle > ANG180)
     {
-	if ((signed int) (angle - player->mo->angle) < -ANG90/20)
+       if ((player->mo->angle -angle) > ANG90/20)
 	    player->mo->angle = angle + ANG90/21;
 	else
 	    player->mo->angle -= ANG90/20;
@@ -1022,7 +1022,9 @@ void P_MovePsprites (player_t* player)
 	if (psp->state->action == A_WeaponReady ||
 	    crispy->centerweapon == CENTERWEAPON_BOB)
 	{
-		angle_t angle = (128 * leveltime) & FINEMASK;
+                // Not  really an angle just winding through the
+                // finesine and fincosine tables
+                int angle = (128 * leveltime) & FINEMASK;
 		psp->sx2 = FRACUNIT + FixedMul(player->bob2, finecosine[angle]);
 		angle &= FINEANGLES / 2 - 1;
 		psp->sy2 = WEAPONTOP + FixedMul(player->bob2, finesine[angle]);
