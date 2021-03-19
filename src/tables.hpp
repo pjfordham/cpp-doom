@@ -121,45 +121,27 @@ public:
       return angle_t( value & (0x7 << 29));
    }
 
-   friend class fineindex_t;
-   friend class angleturn_t;
-   friend class movedir_t;
+   template <unsigned int shift> friend class angleshift_t;
    friend struct fmt::formatter<angle_t>;
 
 };
 
-class fineindex_t {
-   friend int operator>>( angle_t a, fineindex_t b) {
-      return a.value >> 19;
+// Is this a template too far?
+// Angle_t's can be converted back and forward to unsigned ints
+// in a few different ways with different shift. Try to caputre
+// those cases and make them typesafe.
+template <unsigned int shift> class angleshift_t {
+   friend unsigned int operator>>( angle_t a, angleshift_t b) {
+      return a.value >> shift;
    }
-   friend angle_t operator<<( int a, fineindex_t b) {
-      return angle_t((unsigned)a << 19);
-   }
-};
-
-const fineindex_t ANGLETOFINESHIFT;
-
-class movedir_t {
-   friend int operator>>( angle_t a, movedir_t b) {
-      return a.value >> 29;
-   }
-   friend angle_t operator<<( int a, movedir_t b) {
-      return angle_t((unsigned)a << 29);
+   friend angle_t operator<<( unsigned int a, angleshift_t b) {
+      return angle_t(a << shift);
    }
 };
 
-const movedir_t ANGLETOMOVEDIRSHIFT;
-
-class angleturn_t {
-   friend int operator>>( angle_t a, angleturn_t b) {
-      return a.value >> 16;
-   }
-   friend angle_t operator<<( int a, angleturn_t b) {
-      return angle_t((unsigned)a << 16);
-   }
-};
-
-const angleturn_t ANGLETURNBITS;
+const angleshift_t<19> ANGLETOFINESHIFT;
+const angleshift_t<29> ANGLETOMOVEDIRSHIFT;
+const angleshift_t<16> ANGLETURNBITS;
 
 template <>
 struct fmt::formatter<angle_t> {
