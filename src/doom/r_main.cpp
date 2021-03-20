@@ -616,7 +616,7 @@ void R_InitTextureMapping (void)
 {
     int			i;
     int			x;
-    int			t;
+    int 		t;
     fixed_t		focallength;
     fixed_t		focalwidth;
     
@@ -640,8 +640,8 @@ void R_InitTextureMapping (void)
 	    t = viewwidth+1;
 	else
 	{
-	    t = FixedMul (finetangent[i], focallength);
-	    t = (centerxfrac - t+FRACUNIT-1)>>FRACBITS;
+	    fixed_t ft = FixedMul (finetangent[i], focallength);
+	    t = (centerxfrac - ft+FRACUNIT-1_fix)>>FRACBITS;
 
 	    if (t < -1)
 		t = -1;

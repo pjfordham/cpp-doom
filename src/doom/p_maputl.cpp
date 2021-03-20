@@ -931,10 +931,10 @@ P_PathTraverse
     validcount++;
     intercept_p = intercepts.data();
 	
-    if ( ((x1-bmaporgx)&(MAPBLOCKSIZE-1)) == 0_fix)
+    if ( ((x1-bmaporgx)&MAPBMASK) == 0_fix)
 	x1 += FRACUNIT;	// don't side exactly on a line
     
-    if ( ((y1-bmaporgy)&(MAPBLOCKSIZE-1)) == 0_fix)
+    if ( ((y1-bmaporgy)&MAPBMASK) == 0_fix)
 	y1 += FRACUNIT;	// don't side exactly on a line
 
     trace.x = x1;
@@ -955,13 +955,13 @@ P_PathTraverse
     if (xt2 > xt1)
     {
 	mapxstep = 1;
-	partial = FRACUNIT - ((x1>>MAPBTOFRAC)&(FRACUNIT-1));
-	ystep = FixedDiv (y2-y1,abs(x2-x1));
+	partial = FRACUNIT - (x1>>MAPBTOFRAC).fractional_part();
+        ystep = FixedDiv (y2-y1,abs(x2-x1));
     }
     else if (xt2 < xt1)
     {
 	mapxstep = -1;
-	partial = (x1>>MAPBTOFRAC)&(FRACUNIT-1);
+	partial = (x1>>MAPBTOFRAC).fractional_part();
 	ystep = FixedDiv (y2-y1,abs(x2-x1));
     }
     else
@@ -977,14 +977,14 @@ P_PathTraverse
     if (yt2 > yt1)
     {
 	mapystep = 1;
-	partial = FRACUNIT - ((y1>>MAPBTOFRAC)&(FRACUNIT-1));
+	partial = FRACUNIT - (y1>>MAPBTOFRAC).fractional_part();
 	xstep = FixedDiv (x2-x1,abs(y2-y1));
     }
     else if (yt2 < yt1)
     {
 	mapystep = -1;
-	partial = (y1>>MAPBTOFRAC)&(FRACUNIT-1);
-	xstep = FixedDiv (x2-x1,abs(y2-y1));
+	partial = (y1>>MAPBTOFRAC).fractional_part();
+ 	xstep = FixedDiv (x2-x1,abs(y2-y1));
     }
     else
     {

@@ -137,9 +137,7 @@ public:
    friend fixed_t operator+(const int lhs, const fixed_t rhs) {
       return fixed_t(lhs + rhs.value);
    }
-   friend fixed_t operator-(fixed_t lhs, const int rhs) {
-      return lhs.value - rhs;
-   }
+
 
    // 64-bit weirdities, need to better understand
    friend int64_t operator+=(int64_t &lhs, const fixed_t rhs) {
@@ -184,6 +182,9 @@ public:
 
    fixed_t abs() {
       return value < 0 ? fixed_t(-value) : fixed_t(value);
+   }
+   fixed_t fractional_part() { // Come up with something better for this.
+      return fixed_t( value & 0xFFFF);
    }
    friend struct fmt::formatter<fixed_t>;
    friend class fracbits_t;
