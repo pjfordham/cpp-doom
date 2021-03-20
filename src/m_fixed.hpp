@@ -146,9 +146,6 @@ public:
    friend bool operator>(const fixed_t lhs, const int rhs) {
       return lhs.value > rhs;
    }
-   friend bool operator==(const fixed_t lhs, const int rhs) {
-      return lhs.value == rhs;
-   }
    friend bool operator<=(const fixed_t lhs, const int rhs) {
       return lhs.value <= rhs;
    }
@@ -202,7 +199,12 @@ public:
    }
    friend struct fmt::formatter<fixed_t>;
    friend class fracbits_t;
-   };
+
+};
+
+inline fixed_t operator"" _fix ( unsigned long long n ) {
+   return fixed_t{(int)n};
+}
 
 template <>
 struct fmt::formatter<fixed_t> {

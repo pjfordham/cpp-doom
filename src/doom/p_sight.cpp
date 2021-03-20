@@ -147,7 +147,7 @@ P_InterceptVector2
 	
     den = FixedMul (v1->dy>>8,v2->dx) - FixedMul(v1->dx>>8,v2->dy);
 
-    if (den == 0)
+    if (den == 0_fix)
 	return 0;
     //	I_Error ("P_InterceptVector: parallel");
     

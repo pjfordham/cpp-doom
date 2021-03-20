@@ -235,7 +235,7 @@ P_InterceptVector
 	
     den = FixedMul (v1->dy>>8,v2->dx) - FixedMul(v1->dx>>8,v2->dy);
 
-    if (den == 0)
+    if (den == 0_fix)
 	return 0;
     //	I_Error ("P_InterceptVector: parallel");
     
@@ -905,10 +905,10 @@ P_PathTraverse
   int			flags,
   boolean (*trav) (intercept_t *))
 {
-    fixed_t	xt1;
-    fixed_t	yt1;
-    fixed_t	xt2;
-    fixed_t	yt2;
+    int	xt1;
+    int	yt1;
+    int	xt2;
+    int	yt2;
     
     fixed_t	xstep;
     fixed_t	ystep;
@@ -931,10 +931,10 @@ P_PathTraverse
     validcount++;
     intercept_p = intercepts.data();
 	
-    if ( ((x1-bmaporgx)&(MAPBLOCKSIZE-1)) == 0)
+    if ( ((x1-bmaporgx)&(MAPBLOCKSIZE-1)) == 0_fix)
 	x1 += FRACUNIT;	// don't side exactly on a line
     
-    if ( ((y1-bmaporgy)&(MAPBLOCKSIZE-1)) == 0)
+    if ( ((y1-bmaporgy)&(MAPBLOCKSIZE-1)) == 0_fix)
 	y1 += FRACUNIT;	// don't side exactly on a line
 
     trace.x = x1;

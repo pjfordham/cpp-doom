@@ -447,7 +447,7 @@ R_PointToDist
 
     // Fix crashes in udm1.wad
 
-    if (dx != 0)
+    if (dx != 0_fix)
     {
         frac = FixedDiv(dy, dx);
     }

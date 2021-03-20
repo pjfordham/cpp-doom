@@ -1473,7 +1473,7 @@ G_CheckSpot
                          ss->sector->floorheight, MT_TFOG);
     }
 
-    if (players[consoleplayer].viewz != 1) 
+    if (players[consoleplayer].viewz != 1_fix) 
 	S_StartSound (mo, sfx_telept);	// don't start sound on first frame 
  
     return true; 

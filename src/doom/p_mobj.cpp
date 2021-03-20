@@ -422,7 +422,7 @@ void P_ZMovement (mobj_t* mo)
     }
     else if (! (mo->flags & MF_NOGRAVITY) )
     {
-	if (mo->momz == 0)
+	if (mo->momz == 0_fix)
 	    mo->momz = -GRAVITY*2;
 	else
 	    mo->momz -= GRAVITY;

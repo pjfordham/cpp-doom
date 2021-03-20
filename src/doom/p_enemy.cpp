@@ -1247,7 +1247,7 @@ void A_VileChase (mobj_t* actor)
 		    extrakills++;
 
 		    // [crispy] resurrected pools of gore ("ghost monsters") are translucent
-		    if (corpsehit->height == 0 && corpsehit->radius == 0)
+		    if (corpsehit->height == 0_fix && corpsehit->radius == 0_fix)
 		    {
 		        corpsehit->flags |= MF_TRANSLUCENT;
 		        fprintf(stderr, "A_VileChase: Resurrected ghost monster (%d) at (%d/%d)!\n",
