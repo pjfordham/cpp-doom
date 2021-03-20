@@ -503,7 +503,7 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     angle_t	angleb = ANG90 + (visangle - rw_normalangle);
     int		den = FixedMul(rw_distance, sin(anglea));
     fixed_t	num = FixedMul(projection, sin(angleb))<<detailshift;
-    fixed_t 	scale;
+    int 	scale;
 
     if (den > (num >> FRACBITS))
     {

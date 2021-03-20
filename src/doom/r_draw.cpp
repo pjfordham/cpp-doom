@@ -146,8 +146,8 @@ void R_DrawColumn (void)
     heightmask++;
     fixed_t fheightmask = heightmask << FRACBITS;
 
-    if (frac < 0)
-	while ((frac += fheightmask) < 0);
+    if (frac < 0_fix)
+	while ((frac += fheightmask) < 0_fix);
     else
 	while (frac >= fheightmask)
 	    frac -= fheightmask;
@@ -282,8 +282,8 @@ void R_DrawColumnLow (void)
     heightmask++;
     fixed_t fheightmask = heightmask << FRACBITS;
 
-    if (frac < 0)
-	while ((frac += fheightmask) < 0);
+    if (frac < 0_fix)
+	while ((frac += fheightmask) < 0_fix);
     else
 	while (frac >= fheightmask)
 	    frac -= fheightmask;

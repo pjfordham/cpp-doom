@@ -169,25 +169,25 @@ R_PointOnSide
     if (!node->dx)
     {
 	if (x <= node->x)
-	    return node->dy > 0;
+	    return node->dy > 0_fix;
 	
-	return node->dy < 0;
+	return node->dy < 0_fix;
     }
     if (!node->dy)
     {
 	if (y <= node->y)
-	    return node->dx < 0;
+	    return node->dx < 0_fix;
 	
-	return node->dx > 0;
+	return node->dx > 0_fix;
     }
 	
     dx = (x - node->x);
     dy = (y - node->y);
 	
     // Try to quickly decide by looking at sign bits.
-    if ( (node->dy ^ node->dx ^ dx ^ dy) < 0 )
+    if ( (node->dy ^ node->dx ^ dx ^ dy) < 0_fix )
     {
-	if  ( (node->dy ^ dx) < 0 )
+	if  ( (node->dy ^ dx) < 0_fix )
 	{
 	    // (left is negative)
 	    return 1;
@@ -232,25 +232,25 @@ R_PointOnSegSide
     if (!ldx)
     {
 	if (x <= lx)
-	    return ldy > 0;
+	    return ldy > 0_fix;
 	
-	return ldy < 0;
+	return ldy < 0_fix;
     }
     if (!ldy)
     {
 	if (y <= ly)
-	    return ldx < 0;
+	    return ldx < 0_fix;
 	
-	return ldx > 0;
+	return ldx > 0_fix;
     }
 	
     dx = (x - lx);
     dy = (y - ly);
 	
     // Try to quickly decide by looking at sign bits.
-    if ( (ldy ^ ldx ^ dx ^ dy) < 0 )
+    if ( (ldy ^ ldx ^ dx ^ dy) < 0_fix )
     {
-	if  ( (ldy ^ dx) < 0 )
+	if  ( (ldy ^ dx) < 0_fix )
 	{
 	    // (left is negative)
 	    return 1;
@@ -303,10 +303,10 @@ R_PointToAngleSlope
     if ( (!x) && (!y) )
 	return ANG0;
 
-    if (x>= 0)
+    if (x>= 0_fix)
     {
 	// x >=0
-	if (y>= 0)
+	if (y>= 0_fix)
 	{
 	    // y>= 0
 
@@ -343,7 +343,7 @@ R_PointToAngleSlope
 	// x<0
 	x = -x;
 
-	if (y>= 0)
+	if (y>= 0_fix)
 	{
 	    // y>= 0
 	    if (x>y)

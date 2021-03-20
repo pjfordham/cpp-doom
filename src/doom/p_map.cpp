@@ -828,7 +828,7 @@ void P_SlideMove (mobj_t* mo)
 
     
     // trace along the three leading corners
-    if (mo->momx > 0)
+    if (mo->momx > 0_fix)
     {
 	leadx = mo->x + mo->radius;
 	trailx = mo->x - mo->radius;
@@ -839,7 +839,7 @@ void P_SlideMove (mobj_t* mo)
 	trailx = mo->x + mo->radius;
     }
 	
-    if (mo->momy > 0)
+    if (mo->momy > 0_fix)
     {
 	leady = mo->y + mo->radius;
 	traily = mo->y - mo->radius;
@@ -871,7 +871,7 @@ void P_SlideMove (mobj_t* mo)
 
     // fudge a bit to make sure it doesn't hit
     bestslidefrac -= 0x800;	
-    if (bestslidefrac > 0)
+    if (bestslidefrac > 0_fix)
     {
 	newx = FixedMul (mo->momx, bestslidefrac);
 	newy = FixedMul (mo->momy, bestslidefrac);
@@ -887,7 +887,7 @@ void P_SlideMove (mobj_t* mo)
     if (bestslidefrac > FRACUNIT)
 	bestslidefrac = FRACUNIT;
     
-    if (bestslidefrac <= 0)
+    if (bestslidefrac <= 0_fix)
 	return;
     
     tmxmove = FixedMul (mo->momx, bestslidefrac);
@@ -1360,7 +1360,7 @@ boolean	PTR_UseTraverse (intercept_t* in)
     if (!in->d.line->special)
     {
 	P_LineOpening (in->d.line);
-	if (openrange <= 0)
+	if (openrange <= 0_fix)
 	{
 	    S_StartSound (usething, sfx_noway);
 	    
@@ -1440,7 +1440,7 @@ boolean PIT_RadiusAttack (mobj_t* thing)
     dist = dx>dy ? dx : dy;
     dist = (dist - thing->radius) >> FRACBITS;
 
-    if (dist < 0)
+    if (dist < 0_fix)
 	dist = 0;
 
     if (dist >= bombdamage)

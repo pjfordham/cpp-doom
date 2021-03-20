@@ -124,7 +124,7 @@ P_RecursiveSound
 	
 	P_LineOpening (check);
 
-	if (openrange <= 0)
+	if (openrange <= 0_fix)
 	    continue;	// closed door
 	
 	if ( sides[ check->sidenum[0] ].sector == sec)
@@ -409,7 +409,7 @@ void P_NewChaseDir (mobj_t*	actor)
     if (d[1] != DI_NODIR
 	&& d[2] != DI_NODIR)
     {
-	actor->movedir = diags[((deltay<0)<<1)+(deltax>0)];
+	actor->movedir = diags[((deltay<0_fix)<<1)+(deltax>0_fix)];
 	if (actor->movedir != (int) turnaround && P_TryWalk(actor))
 	    return;
     }
@@ -1105,7 +1105,7 @@ void A_Tracer (mobj_t* actor)
     
     dist = dist / actor->info->speed;
 
-    if (dist < 1)
+    if (dist < 1_fix)
 	dist = 1;
     slope = (dest->z+40*FRACUNIT - actor->z) / dist;
 
@@ -1473,7 +1473,7 @@ void A_SkullAttack (mobj_t* actor)
     dist = P_AproxDistance (dest->x - actor->x, dest->y - actor->y);
     dist = dist / SKULLSPEED;
     
-    if (dist < 1)
+    if (dist < 1_fix)
 	dist = 1;
     actor->momz = (dest->z+(dest->height>>1) - actor->z) / dist;
 }

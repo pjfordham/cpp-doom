@@ -140,18 +140,6 @@ public:
    friend fixed_t operator-(fixed_t lhs, const int rhs) {
       return lhs.value - rhs;
    }
-   friend bool operator<(const fixed_t lhs, const int rhs) {
-      return lhs.value < rhs;
-   }
-   friend bool operator>(const fixed_t lhs, const int rhs) {
-      return lhs.value > rhs;
-   }
-   friend bool operator<=(const fixed_t lhs, const int rhs) {
-      return lhs.value <= rhs;
-   }
-   friend bool operator>=(const fixed_t lhs, const int rhs) {
-      return lhs.value >= rhs;
-   }
 
    // 64-bit weirdities, need to better understand
    friend int64_t operator+=(int64_t &lhs, const fixed_t rhs) {

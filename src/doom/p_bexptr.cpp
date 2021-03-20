@@ -241,7 +241,7 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
 	  while (mask && (mask=0, !linetarget));     // killough 8/2/98
 	  an1 += an - mo->angle;
 	  // [crispy] consider negative slope
-	  if (slope < 0)
+	  if (slope < 0_fix)
 	    an2 -= tantoangle[-slope >> DBITS];
 	  else
 	  an2 += tantoangle[slope >> DBITS];

@@ -99,9 +99,9 @@ P_DivlineSide
 	    return 2;
 	
 	if (x <= node->x)
-	    return node->dy > 0;
+	    return node->dy > 0_fix;
 
-	return node->dy < 0;
+	return node->dy < 0_fix;
     }
     
     if (!node->dy)
@@ -110,9 +110,9 @@ P_DivlineSide
 	    return 2;
 
 	if (y <= node->y)
-	    return node->dx < 0;
+	    return node->dx < 0_fix;
 
-	return node->dx > 0;
+	return node->dx > 0_fix;
     }
 	
     dx = (x - node->x);

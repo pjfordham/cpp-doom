@@ -604,7 +604,7 @@ void P_LoadLineDefs (int lump)
 	    ld->slopetype = ST_HORIZONTAL;
 	else
 	{
-	    if (FixedDiv (ld->dy , ld->dx) > 0)
+	    if (FixedDiv (ld->dy , ld->dx) > 0_fix)
 		ld->slopetype = ST_POSITIVE;
 	    else
 		ld->slopetype = ST_NEGATIVE;

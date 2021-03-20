@@ -319,7 +319,7 @@ void EV_DoGoobers (void)
                                   sec->interpceilingheight == (sec->interpfloorheight) ? 0 : 128) * FRACUNIT;
 	// [crispy] the lowest bit determines floor direction (i.e. 1 means "up" for floorheight < 0),
 	// the second-lowest bit determines ceiling direction (e.g. if ceiling height is below its destination height)
-	floor->direction = (sec->floorheight < 0) |
+	floor->direction = (sec->floorheight < 0_fix) |
 	                   (sec->ceilingheight < floor->floordestheight) << 1;
     }
 }

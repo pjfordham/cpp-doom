@@ -72,16 +72,16 @@ P_PointOnLineSide
     if (!line->dx)
     {
 	if (x <= line->v1->x)
-	    return line->dy > 0;
+	    return line->dy > 0_fix;
 	
-	return line->dy < 0;
+	return line->dy < 0_fix;
     }
     if (!line->dy)
     {
 	if (y <= line->v1->y)
-	    return line->dx < 0;
+	    return line->dx < 0_fix;
 	
-	return line->dx > 0;
+	return line->dx > 0_fix;
     }
 	
     dx = (x - line->v1->x);
@@ -115,7 +115,7 @@ P_BoxOnLineSide
       case ST_HORIZONTAL:
 	p1 = tmbox[BOXTOP] > ld->v1->y;
 	p2 = tmbox[BOXBOTTOM] > ld->v1->y;
-	if (ld->dx < 0)
+	if (ld->dx < 0_fix)
 	{
 	    p1 ^= 1;
 	    p2 ^= 1;
@@ -125,7 +125,7 @@ P_BoxOnLineSide
       case ST_VERTICAL:
 	p1 = tmbox[BOXRIGHT] < ld->v1->x;
 	p2 = tmbox[BOXLEFT] < ld->v1->x;
-	if (ld->dy < 0)
+	if (ld->dy < 0_fix)
 	{
 	    p1 ^= 1;
 	    p2 ^= 1;
@@ -167,25 +167,25 @@ P_PointOnDivlineSide
     if (!line->dx)
     {
 	if (x <= line->x)
-	    return line->dy > 0;
+	    return line->dy > 0_fix;
 	
-	return line->dy < 0;
+	return line->dy < 0_fix;
     }
     if (!line->dy)
     {
 	if (y <= line->y)
-	    return line->dx < 0;
+	    return line->dx < 0_fix;
 
-	return line->dx > 0;
+	return line->dx > 0_fix;
     }
 	
     dx = (x - line->x);
     dy = (y - line->y);
 	
     // try to quickly decide by looking at sign bits
-    if ( (line->dy ^ line->dx ^ dx ^ dy) < 0 )
+    if ( (line->dy ^ line->dx ^ dx ^ dy) < 0_fix )
     {
-        if ( (line->dy ^ dx) < 0 )
+        if ( (line->dy ^ dx) < 0_fix )
 	    return 1;		// (left is negative)
 	return 0;
     }
@@ -604,7 +604,7 @@ PIT_AddLineIntercepts (line_t* ld)
     P_MakeDivline (ld, &dl);
     frac = P_InterceptVector (&trace, &dl);
 
-    if (frac < 0)
+    if (frac < 0_fix)
 	return true;	// behind source
 	
     // try to early out the check
@@ -656,7 +656,7 @@ boolean PIT_AddThingIntercepts (mobj_t* thing)
     
     fixed_t		frac;
 	
-    tracepositive = (trace.dx ^ trace.dy)>0;
+    tracepositive = (trace.dx ^ trace.dy)>0_fix;
 		
     // check a corner to corner crossection for hit
     if (tracepositive)
@@ -689,7 +689,7 @@ boolean PIT_AddThingIntercepts (mobj_t* thing)
     
     frac = P_InterceptVector (&trace, &dl);
 
-    if (frac < 0)
+    if (frac < 0_fix)
 	return true;		// behind source
 
     check_intercept(); // [crispy] remove INTERCEPTS limit

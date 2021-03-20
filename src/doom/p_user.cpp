@@ -122,7 +122,7 @@ void P_CalcHeight (player_t* player)
 	if (player->viewheight < VIEWHEIGHT/2)
 	{
 	    player->viewheight = VIEWHEIGHT/2;
-	    if (player->deltaviewheight <= 0)
+	    if (player->deltaviewheight <= 0_fix)
 		player->deltaviewheight = 1;
 	}
 	
@@ -330,11 +330,11 @@ void P_PlayerThink (player_t* player)
     // [crispy] weapon recoil pitch
     if (player->recoilpitch)
     {
-        if (player->recoilpitch > 0)
+        if (player->recoilpitch > 0_fix)
         {
             player->recoilpitch -= 1;
         }
-        else if (player->recoilpitch < 0)
+        else if (player->recoilpitch < 0_fix)
         {
             player->recoilpitch += 1;
         }

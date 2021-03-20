@@ -328,9 +328,9 @@ void P_ZMovement (mobj_t* mo)
 	    
 	    delta =(mo->target->z + (mo->height>>1)) - mo->z;
 
-	    if (delta<0 && dist < -(delta*3) )
+	    if (delta<0_fix && dist < -(delta*3) )
 		mo->z -= FLOATSPEED;
-	    else if (delta>0 && dist < (delta*3) )
+	    else if (delta>0_fix && dist < (delta*3) )
 		mo->z += FLOATSPEED;			
 	}
 	
@@ -372,7 +372,7 @@ void P_ZMovement (mobj_t* mo)
 	    mo->momz = -mo->momz;
 	}
 	
-	if (mo->momz < 0)
+	if (mo->momz < 0_fix)
 	{
 	    // [crispy] delay next jump
 	    if (mo->player)
@@ -431,7 +431,7 @@ void P_ZMovement (mobj_t* mo)
     if (mo->z + mo->height > mo->ceilingz)
     {
 	// hit the ceiling
-	if (mo->momz > 0)
+	if (mo->momz > 0_fix)
 	    mo->momz = 0;
 	{
 	    mo->z = mo->ceilingz - mo->height;
