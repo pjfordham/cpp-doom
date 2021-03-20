@@ -81,10 +81,15 @@ public:
    }
 
    // binary, fixed_t, fixed_t => int
-   friend int operator*(const fixed_t lhs, const fixed_t rhs) {
+   friend int operator*(fixed_t lhs, fixed_t rhs) {
       // This is a weird one, logically wrong as you need
       // to shift the result right by 16/32-bits.....
       return lhs.value * rhs.value;
+   }
+   friend int operator/(fixed_t lhs, fixed_t rhs) {
+      // Also weird but mostly OK, the ration of a fixed
+      // to a fixed is logically an int.
+      return lhs.value / rhs.value;
    }
 
    // binary, fixed_t, int => fixed_t
@@ -94,16 +99,16 @@ public:
    friend fixed_t operator>>(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value >> rhs);
    }
-   friend fixed_t operator*(const fixed_t lhs, int rhs) {
+   friend fixed_t operator*(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value * rhs);
    }
-   friend fixed_t operator/(const fixed_t lhs, int rhs) {
+   friend fixed_t operator/(fixed_t lhs, int rhs) {
       return fixed_t(lhs.value / rhs);
    }
 
    // binary, int, fixed_t => fixed_t
-   friend fixed_t operator*(const int lhs, const fixed_t rhs) {
-      return lhs * rhs.value;
+   friend fixed_t operator*(int lhs, fixed_t rhs) {
+      return fixed_t(lhs * rhs.value);
    }
 
    // updating versions of above
@@ -126,10 +131,6 @@ public:
 
 
    // dodgy operators allowing implicit type conversions, should be factored out.
-   // Allow this
-   friend int operator/(const fixed_t lhs, const fixed_t rhs) {
-      return lhs.value / rhs.value;
-   }
    friend fixed_t operator+(const fixed_t lhs, const int rhs) {
       return fixed_t(lhs.value + rhs);
    }
