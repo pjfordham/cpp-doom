@@ -41,7 +41,6 @@ public:
    explicit operator double() const { return (double)value; }
    explicit operator short() const { return (short)value; }
    explicit operator unsigned char() const { return (unsigned char)value; }
-   explicit operator unsigned int() const { return (unsigned int)value; }
 
    // Well defined operators
 
@@ -127,27 +126,11 @@ public:
 
 
    // dodgy operators allowing implicit type conversions, should be factored out.
-   friend unsigned int operator+=(unsigned int &lhs, const fixed_t rhs) {
-      // angle_t related
-      return lhs += rhs.value;
-   }
-   friend short operator+=(short &lhs, const fixed_t rhs) { 
-      // angle_t related
-      return lhs += rhs.value;
-   }
-   friend unsigned int operator-(unsigned int lhs, const fixed_t rhs) {
-      // angle_t related
-      return lhs - rhs.value;
-   }
    friend fixed_t operator-(fixed_t lhs, const int rhs) {
       return lhs.value - rhs;
    }
    friend int operator-(int lhs, const fixed_t rhs) {
       return lhs - rhs.value;
-   }
-   friend short operator-=(short &lhs, const fixed_t rhs) {
-      // angle_t related
-      return lhs -= rhs.value;
    }
    friend int operator/(const fixed_t lhs, const fixed_t rhs) {
       return lhs.value / rhs.value;
