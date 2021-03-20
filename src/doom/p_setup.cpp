@@ -278,7 +278,7 @@ void P_LoadSegs (int lump)
 void P_SegLengths (boolean contrast_only)
 {
     int i;
-    const int rightangle = abs(sin(ANG60/2));
+    const fixed_t rightangle = abs(sin(ANG60/2));
 
     for (i = 0; i < numsegs; i++)
     {

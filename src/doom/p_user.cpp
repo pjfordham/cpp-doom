@@ -40,7 +40,7 @@
 //
 
 // 16 pixels of bob
-#define MAXBOB	0x100000	
+const fixed_t MAXBOB = 16 << FRACBITS;
 
 // [crispy] variable player view bob
 static const fixed_t crispy_bobfactor[3] = {4, 3, 0};

@@ -156,7 +156,7 @@ void P_ExplodeMissile (mobj_t* mo)
 //
 // P_XYMovement  
 //
-#define STOPSPEED		0x1000
+#define STOPSPEED		fixed_t(0x1000)
 #define FRICTION		0xe800
 
 void P_XYMovement (mobj_t* mo) 

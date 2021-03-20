@@ -380,7 +380,7 @@ P_FindNextHighestFloor
 {
     int         i;
     int         h;
-    int         min;
+    fixed_t     min;
     line_t*     check;
     sector_t*   other;
     fixed_t     height = currentheight;

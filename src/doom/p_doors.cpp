@@ -283,7 +283,7 @@ EV_DoDoor
 	    door->direction = -1;
 	    door->speed = VDOORSPEED * 4;
 	    // [crispy] fix door-closing sound playing, even when door is already closed (repeatable walkover trigger)
-	    if (door->sector->ceilingheight - door->sector->floorheight > 0 || !crispy->soundfix)
+	    if (door->sector->ceilingheight > door->sector->floorheight || !crispy->soundfix)
 	    S_StartSound(&door->sector->soundorg, sfx_bdcls);
 	    break;
 	    
@@ -292,7 +292,7 @@ EV_DoDoor
 	    door->topheight -= 4*FRACUNIT;
 	    door->direction = -1;
 	    // [crispy] fix door-closing sound playing, even when door is already closed (repeatable walkover trigger)
-	    if (door->sector->ceilingheight - door->sector->floorheight > 0 || !crispy->soundfix)
+	    if (door->sector->ceilingheight > door->sector->floorheight || !crispy->soundfix)
 	    S_StartSound(&door->sector->soundorg, sfx_dorcls);
 	    break;
 	    
@@ -300,7 +300,7 @@ EV_DoDoor
 	    door->topheight = sec->ceilingheight;
 	    door->direction = -1;
 	    // [crispy] fix door-closing sound playing, even when door is already closed (repeatable walkover trigger)
-	    if (door->sector->ceilingheight - door->sector->floorheight > 0 || !crispy->soundfix)
+	    if (door->sector->ceilingheight > door->sector->floorheight || !crispy->soundfix)
 	    S_StartSound(&door->sector->soundorg, sfx_dorcls);
 	    break;
 	    

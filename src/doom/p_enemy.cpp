@@ -1154,7 +1154,7 @@ fixed_t		viletryy;
 
 boolean PIT_VileCheck (mobj_t*	thing)
 {
-    int		maxdist;
+    fixed_t	maxdist;
     boolean	check;
 	
     if (!(thing->flags & MF_CORPSE) )
