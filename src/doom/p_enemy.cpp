@@ -1913,7 +1913,7 @@ void A_BrainScream (mobj_t*	mo)
     for (x=mo->x - 196*FRACUNIT ; x< mo->x + 320*FRACUNIT ; x+= FRACUNIT*8)
     {
 	y = mo->y - 320*FRACUNIT;
-	z = 128 + P_Random()*2*FRACUNIT;
+	z = 128_fix + P_Random()*2*FRACUNIT;
 	th = P_SpawnMobj (x,y,z, MT_ROCKET);
 	th->momz = P_Random()*512;
 
@@ -1938,7 +1938,7 @@ void A_BrainExplode (mobj_t* mo)
 	
     x = mo->x +  fixed_t(P_SubRandom() * 2048);
     y = mo->y;
-    z = 128 + P_Random()*2*FRACUNIT;
+    z = 128_fix + P_Random()*2*FRACUNIT;
     th = P_SpawnMobj (x,y,z, MT_ROCKET);
     th->momz = P_Random()*512;
 

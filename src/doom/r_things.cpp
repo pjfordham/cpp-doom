@@ -715,7 +715,7 @@ void R_ProjectSprite (mobj_t* thing)
     // [JN] killough 4/9/98: clip things which are out of view due to height
     gzt = interpz + spritetopoffset[lump];
     if (interpz > viewz + FixedDiv(viewheight << FRACBITS, xscale) ||
-        gzt < viewz - FixedDiv((viewheight << FRACBITS)-viewheight, xscale))
+        gzt < viewz - FixedDiv((viewheight-1) << FRACBITS, xscale))
     {
 	return;
     }
@@ -746,7 +746,7 @@ void R_ProjectSprite (mobj_t* thing)
 
     if (flip)
     {
-	vis->startfrac = spritewidth[lump]-1;
+	vis->startfrac = spritewidth[lump]-1_fix;
 	vis->xiscale = -iscale;
     }
     else
@@ -1036,7 +1036,7 @@ void R_DrawPSprite (pspdef_t* psp, psprnum_t psprnum) // [crispy] differentiate 
     if (flip)
     {
 	vis->xiscale = -pspriteiscale;
-	vis->startfrac = spritewidth[lump]-1;
+	vis->startfrac = spritewidth[lump]-1_fix;
     }
     else
     {

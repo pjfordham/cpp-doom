@@ -850,7 +850,7 @@ void P_SlideMove (mobj_t* mo)
 	traily = mo->y + mo->radius;
     }
 		
-    bestslidefrac = FRACUNIT+1;
+    bestslidefrac = FRACUNIT+1_fix;
 	
     P_PathTraverse ( leadx, leady, leadx+mo->momx, leady+mo->momy,
 		     PT_ADDLINES, PTR_SlideTraverse );
@@ -860,7 +860,7 @@ void P_SlideMove (mobj_t* mo)
 		     PT_ADDLINES, PTR_SlideTraverse );
     
     // move up to the wall
-    if (bestslidefrac == FRACUNIT+1)
+    if (bestslidefrac == FRACUNIT+1_fix)
     {
 	// the move most have hit the middle, so stairstep
       stairstep:
@@ -882,7 +882,7 @@ void P_SlideMove (mobj_t* mo)
     
     // Now continue along the wall.
     // First calculate remainder.
-    bestslidefrac = FRACUNIT-(bestslidefrac+0x800);
+    bestslidefrac = FRACUNIT-(bestslidefrac+0x800_fix);
     
     if (bestslidefrac > FRACUNIT)
 	bestslidefrac = FRACUNIT;

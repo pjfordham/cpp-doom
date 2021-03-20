@@ -581,8 +581,8 @@ A_Saw
     angle += angle_t(P_SubRandom() << 18);
     
     // use meleerange + 1 se the puff doesn't skip the flash
-    slope = P_AimLineAttack (player->mo, angle, MELEERANGE+1);
-    P_LineAttack (player->mo, angle, MELEERANGE+1, slope, damage);
+    slope = P_AimLineAttack (player->mo, angle, MELEERANGE+1_fix);
+    P_LineAttack (player->mo, angle, MELEERANGE+1_fix, slope, damage);
 
     A_Recoil (player);
 
