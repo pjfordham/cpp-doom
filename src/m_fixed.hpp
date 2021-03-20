@@ -126,30 +126,18 @@ public:
 
 
    // dodgy operators allowing implicit type conversions, should be factored out.
-   friend fixed_t operator-(fixed_t lhs, const int rhs) {
-      return lhs.value - rhs;
-   }
    // Allow this
    friend int operator/(const fixed_t lhs, const fixed_t rhs) {
       return lhs.value / rhs.value;
-   }
-   friend double operator/(const fixed_t lhs, const double rhs) {
-      return lhs.value / rhs;
-   }
-   friend double operator*(const double lhs, const fixed_t rhs) {
-      return lhs * rhs.value;
-   }
-   friend double operator/(const double lhs, const fixed_t rhs) {
-      return lhs / rhs.value;
-   }
-   friend double operator+(const double lhs, const fixed_t rhs) {
-      return lhs + rhs.value;
    }
    friend fixed_t operator+(const fixed_t lhs, const int rhs) {
       return fixed_t(lhs.value + rhs);
    }
    friend fixed_t operator+(const int lhs, const fixed_t rhs) {
       return fixed_t(lhs + rhs.value);
+   }
+   friend fixed_t operator-(fixed_t lhs, const int rhs) {
+      return lhs.value - rhs;
    }
    friend bool operator<(const fixed_t lhs, const int rhs) {
       return lhs.value < rhs;
@@ -267,7 +255,7 @@ class fracbits_t {
 const fracbits_t FRACBITS;
 const fixed_t FRACUNIT{1<<FRACBITS};
 inline double FIXED2DOUBLE( fixed_t x ) {
-   return x / static_cast<double>(FRACUNIT);
+   return (double)x / static_cast<double>(FRACUNIT);
 }
 
 #endif

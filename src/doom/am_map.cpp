@@ -93,19 +93,19 @@ extern boolean inhelpscreens; // [crispy]
 #define AM_NUMMARKPOINTS 10
 
 // scale on entry
-#define INITSCALEMTOF (.2*FRACUNIT)
+#define INITSCALEMTOF (.2*(double)FRACUNIT)
 // how much the automap moves window per tic in frame-buffer coordinates
 // moves 140 pixels in 1 second
 #define F_PANINC	4
 // how much zoom-in per tic
 // goes to 2x in 1 second
-const fixed_t M_ZOOMIN = (int) (1.02*FRACUNIT);
+const fixed_t M_ZOOMIN = (int) (1.02*(double)FRACUNIT);
 // how much zoom-out per tic
 // pulls out to 0.5x in 1 second
-const fixed_t M_ZOOMOUT = (int) (FRACUNIT/1.02);
+const fixed_t M_ZOOMOUT = (int) ((double)FRACUNIT/1.02);
 // [crispy] zoom faster with the mouse wheel
-const fixed_t M2_ZOOMIN = (int) (1.08*FRACUNIT);
-const fixed_t M2_ZOOMOUT = (int)(FRACUNIT / 1.08);
+const fixed_t M2_ZOOMIN = (int) (1.08*(double)FRACUNIT);
+const fixed_t M2_ZOOMOUT = (int)((double)FRACUNIT / 1.08);
 
 
 // translates between frame-buffer and map distances
@@ -191,7 +191,7 @@ mline_t cheat_player_arrow[] = {
 };
 #undef R
 
-#define R (FRACUNIT)
+#define R ((double)FRACUNIT)
 mline_t triangle_guy[] = {
     { { (fixed_t)(-.867*R), (fixed_t)(-.5*R) }, { (fixed_t)(.867*R ), (fixed_t)(-.5*R) } },
     { { (fixed_t)(.867*R ), (fixed_t)(-.5*R) }, { (fixed_t)(0      ), (fixed_t)(R    ) } },
@@ -199,12 +199,14 @@ mline_t triangle_guy[] = {
 };
 #undef R
 
-#define R (FRACUNIT)
+#define R ((double)FRACUNIT)
 mline_t thintriangle_guy[] = {
     { { (fixed_t)(-.5*R), (fixed_t)(-.7*R) }, { (fixed_t)(R    ), (fixed_t)(0    ) } },
     { { (fixed_t)(R    ), (fixed_t)(0    ) }, { (fixed_t)(-.5*R), (fixed_t)(.7*R ) } },
     { { (fixed_t)(-.5*R), (fixed_t)(.7*R ) }, { (fixed_t)(-.5*R), (fixed_t)(-.7*R) } }
 };
+#undef R
+#define R (FRACUNIT)
 // [crispy] print keys as crosses
 static mline_t cross_mark[] = {
     { { -R, 0 }, { R, 0 } },
@@ -592,7 +594,7 @@ void AM_LevelInit(void)
     // square map would just fit in (MAP01 is 3376x3648 units)
     a = FixedDiv(f_w, ((max_w>>FRACBITS) < 2048) ? 2*(max_w>>FRACBITS) : 4096);
     b = FixedDiv(f_h, ((max_h>>FRACBITS) < 2048) ? 2*(max_h>>FRACBITS) : 4096);
-    scale_mtof = FixedDiv(a < b ? a : b, (int) (0.7*FRACUNIT));
+    scale_mtof = FixedDiv(a < b ? a : b, (int) (0.7*(double)FRACUNIT));
     if (scale_mtof > max_scale_mtof)
 	scale_mtof = min_scale_mtof;
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);

@@ -213,9 +213,9 @@ static void UpdateClockSync(unsigned int seq,
     error = latency - remote_latency;
     cumul_error += error;
 
-    offsetms = KP * (FRACUNIT * error)
-             - KI * (FRACUNIT * cumul_error)
-             + (KD * FRACUNIT) * (last_error - error);
+    offsetms = KP * ((double)FRACUNIT * error)
+             - KI * ((double)FRACUNIT * cumul_error)
+             + (KD * (double)FRACUNIT) * (last_error - error);
 
     last_error = error;
     last_latency = latency;

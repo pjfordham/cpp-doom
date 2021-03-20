@@ -455,8 +455,8 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     {
        player->message = fmt::format(
           "X={:.10} Y={:.10} A={}",
-          (double)player->mo->x/FRACUNIT,
-          (double)player->mo->y/FRACUNIT,
+          (double)player->mo->x/(double)FRACUNIT,
+          (double)player->mo->y/(double)FRACUNIT,
           player->mo->angle );
 
         player->powers[pw_mapcoords]--;
