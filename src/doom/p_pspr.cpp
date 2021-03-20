@@ -843,7 +843,7 @@ A_FireShotgun2
 	P_LineAttack (player->mo,
 		      angle,
 		      MISSILERANGE,
-		      bulletslope + (P_SubRandom() << 5), damage);
+		      bulletslope + fixed_t(P_SubRandom() << 5), damage);
     }
 
     A_Recoil (player);

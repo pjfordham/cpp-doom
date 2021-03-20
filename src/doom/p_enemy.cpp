@@ -1936,7 +1936,7 @@ void A_BrainExplode (mobj_t* mo)
     int		z;
     mobj_t*	th;
 	
-    x = mo->x +  P_SubRandom() * 2048;
+    x = mo->x +  fixed_t(P_SubRandom() * 2048);
     y = mo->y;
     z = 128 + P_Random()*2*FRACUNIT;
     th = P_SpawnMobj (x,y,z, MT_ROCKET);

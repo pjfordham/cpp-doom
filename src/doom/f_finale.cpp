@@ -902,14 +902,14 @@ void F_BunnyScroll (void)
 	scrolled = ORIGWIDTH;
     if (scrolled < 0)
 	scrolled = 0;
-    scrolled = scrolled << FRACBITS;
+    fixed_t fscrolled = scrolled << FRACBITS;
 		
     for ( x=0 ; x<ORIGWIDTH << FRACBITS; x+=dxi)
     {
-	if (x+scrolled < ORIGWIDTH << FRACBITS)
-	    F_DrawPatchCol (x/dxi, p1, x+scrolled);
+	if (x+fscrolled < ORIGWIDTH << FRACBITS)
+	    F_DrawPatchCol (x/dxi, p1, x+fscrolled);
 	else
-	    F_DrawPatchCol (x/dxi, p2, x+scrolled - (ORIGWIDTH << FRACBITS));
+	    F_DrawPatchCol (x/dxi, p2, x+fscrolled - (ORIGWIDTH << FRACBITS));
     }
 	
     if (finalecount < 1130)

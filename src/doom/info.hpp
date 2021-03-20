@@ -2517,7 +2517,7 @@ typedef struct
     int	xdeathstate;
     int	deathsound;
     int	speed;
-    int	radius;
+    fixed_t radius;
     fixed_t height;
     int	mass;
     int	damage;

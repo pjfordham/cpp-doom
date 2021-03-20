@@ -1025,7 +1025,7 @@ void R_SetupFrame (player_t* player)
         viewangle = player->mo->angle + viewangleoffset;
 
         // [crispy] pitch is actual lookdir and weapon pitch
-        pitch = player->lookdir / MLOOKUNIT + player->recoilpitch;
+        pitch = fixed_t(player->lookdir / MLOOKUNIT) + player->recoilpitch;
     }
 
     extralight = player->extralight;
