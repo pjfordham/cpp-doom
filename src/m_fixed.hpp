@@ -102,6 +102,11 @@ public:
       return fixed_t(lhs.value / rhs);
    }
 
+   // binary, int, fixed_t => fixed_t
+   friend fixed_t operator*(const int lhs, const fixed_t rhs) {
+      return lhs * rhs.value;
+   }
+
    // updating versions of above
    friend fixed_t operator+=(fixed_t &lhs, fixed_t rhs) {
       return fixed_t(lhs.value += rhs.value);
@@ -152,9 +157,6 @@ public:
    }
    friend int operator/(const int lhs, const fixed_t rhs) {
       return lhs / rhs.value;
-   }
-   friend int operator*(const int lhs, const fixed_t rhs) {
-      return lhs * rhs.value;
    }
    friend double operator*(const double lhs, const fixed_t rhs) {
       return lhs * rhs.value;

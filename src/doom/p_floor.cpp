@@ -316,7 +316,7 @@ void EV_DoGoobers (void)
 	// leave destination ceilingheight for untagged closed sectors (i.e. DR-type doors) at 0,
 	// for all others set to 128
 	floor->floordestheight = (!sec->tag &&
-	    sec->interpceilingheight == sec->interpfloorheight) ? 0 : 128 * FRACUNIT;
+                                  sec->interpceilingheight == (sec->interpfloorheight) ? 0 : 128) * FRACUNIT;
 	// [crispy] the lowest bit determines floor direction (i.e. 1 means "up" for floorheight < 0),
 	// the second-lowest bit determines ceiling direction (e.g. if ceiling height is below its destination height)
 	floor->direction = (sec->floorheight < 0) |

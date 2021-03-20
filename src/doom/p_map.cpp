@@ -409,7 +409,7 @@ boolean PIT_CheckThing (mobj_t* thing)
 			fixed_t newfloorz, newceilingz;
 			// [crispy] allow the usual 24 units step-up even across monsters' heads,
 			// only if the current height has not been reached by "low" jumping
-			fixed_t step_up = tmthing->player->jumpTics > 7 ? 0 : 24*FRACUNIT;
+			fixed_t step_up = ( tmthing->player->jumpTics > 7 ? 0 : 24 ) * FRACUNIT;
 
 			if (tmthing->z + step_up >= thing->z + thing->height)
 			{
