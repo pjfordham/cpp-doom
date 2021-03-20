@@ -2518,7 +2518,7 @@ typedef struct
     int	deathsound;
     int	speed;
     int	radius;
-    int	height;
+    fixed_t height;
     int	mass;
     int	damage;
     int	activesound;

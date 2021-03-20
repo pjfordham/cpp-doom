@@ -1458,7 +1458,7 @@ const fixed_t SKULLSPEED = 20*FRACUNIT;
 void A_SkullAttack (mobj_t* actor)
 {
     mobj_t*		dest;
-    int			dist;
+    fixed_t		dist;
 
     if (!actor->target)
 	return;

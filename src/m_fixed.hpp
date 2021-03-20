@@ -129,17 +129,12 @@ public:
    friend fixed_t operator-(fixed_t lhs, const int rhs) {
       return lhs.value - rhs;
    }
-   friend int operator-(int lhs, const fixed_t rhs) {
-      return lhs - rhs.value;
-   }
+   // Allow this
    friend int operator/(const fixed_t lhs, const fixed_t rhs) {
       return lhs.value / rhs.value;
    }
    friend double operator/(const fixed_t lhs, const double rhs) {
       return lhs.value / rhs;
-   }
-   friend int operator/(const int lhs, const fixed_t rhs) {
-      return lhs / rhs.value;
    }
    friend double operator*(const double lhs, const fixed_t rhs) {
       return lhs * rhs.value;
@@ -149,9 +144,6 @@ public:
    }
    friend double operator+(const double lhs, const fixed_t rhs) {
       return lhs + rhs.value;
-   }
-   friend fixed_t operator-(const fixed_t lhs, const unsigned rhs) {
-      return fixed_t(lhs.value - rhs);
    }
    friend fixed_t operator+(const fixed_t lhs, const int rhs) {
       return fixed_t(lhs.value + rhs);
