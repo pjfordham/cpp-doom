@@ -537,7 +537,7 @@ A_Punch
 {
     angle_t	angle;
     int		damage;
-    int		slope;
+    fixed_t	slope;
 	
     if (!player) return; // [crispy] let pspr action pointers get called from mobj states
     damage = (P_Random ()%10+1)<<1;
@@ -573,7 +573,7 @@ A_Saw
 {
     angle_t	angle;
     int		damage;
-    int		slope;
+    fixed_t	slope;
 
     if (!player) return; // [crispy] let pspr action pointers get called from mobj states
     damage = 2*(P_Random ()%10+1);

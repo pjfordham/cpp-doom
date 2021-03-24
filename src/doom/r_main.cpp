@@ -692,8 +692,8 @@ void R_InitLightTables (void)
     int		i;
     int		j;
     int		level;
-    int		startmap; 	
-    int		scale;
+    fixed_t	startmap; 	
+    fixed_t	scale;
     
     if (scalelight)
     {
@@ -993,7 +993,7 @@ void R_SetupFrame (player_t* player)
 {		
     int		i;
     int		tempCentery;
-    int		pitch;
+    int	pitch;
     
     viewplayer = player;
 

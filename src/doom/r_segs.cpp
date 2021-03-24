@@ -67,10 +67,10 @@ fixed_t		rw_midtexturemid;
 fixed_t		rw_toptexturemid;
 fixed_t		rw_bottomtexturemid;
 
-int		worldtop;
-int		worldbottom;
-int		worldhigh;
-int		worldlow;
+fixed_t		worldtop;
+fixed_t		worldbottom;
+fixed_t		worldhigh;
+fixed_t		worldlow;
 
 int64_t		pixhigh; // [crispy] WiggleFix
 int64_t		pixlow; // [crispy] WiggleFix
@@ -130,14 +130,14 @@ int*		maskedtexturecol; // [crispy] 32-bit integer math
 //   possibly, creating a noticable performance penalty.
 //
 
-static int	max_rwscale = 64 * FRACUNIT;
+static fixed_t	max_rwscale = 64 * FRACUNIT;
 static int	heightbits = 12;
 static int	heightunit = (1 << 12);
 static int	invhgtbits = 4;
 
 static const struct
 {
-    int clamp;
+    fixed_t clamp;
     int heightbits;
 } scale_values[8] = {
     {2048 * FRACUNIT, 12},
@@ -501,11 +501,11 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
 {
     angle_t	anglea = ANG90 + (visangle - viewangle);
     angle_t	angleb = ANG90 + (visangle - rw_normalangle);
-    int		den = FixedMul(rw_distance, sin(anglea));
+    fixed_t	den = FixedMul(rw_distance, sin(anglea));
     fixed_t	num = FixedMul(projection, sin(angleb))<<detailshift;
-    int 	scale;
+    fixed_t 	scale;
 
-    if (den > (num >> FRACBITS))
+    if (den > (num >> FRACBITS.size()))
     {
 	scale = FixedDiv(num, den);
 
@@ -513,8 +513,8 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
 	//  and there will be some wiggling.
 	if (scale > max_rwscale)
 	    scale = max_rwscale;
-	else if (scale < 256)
-	    scale = 256;
+	else if (scale < 256_fix)
+	    scale = 256_fix;
     }
     else
 	scale = max_rwscale;

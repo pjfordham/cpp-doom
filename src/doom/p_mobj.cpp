@@ -1188,7 +1188,7 @@ P_SpawnMissile
 {
     mobj_t*	th;
     angle_t	an;
-    int		dist;
+    fixed_t	dist;
 
     th = P_SpawnMobj (source->x,
 		      source->y,
@@ -1211,8 +1211,8 @@ P_SpawnMissile
     dist = P_AproxDistance (dest->x - source->x, dest->y - source->y);
     dist = dist / th->info->speed;
 
-    if (dist < 1)
-	dist = 1;
+    if (dist < 1_fix)
+	dist = 1_fix;
 
     th->momz = (dest->z - source->z) / dist;
     P_CheckMissileSpawn (th);

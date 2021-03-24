@@ -281,7 +281,7 @@ boolean PIT_CheckThing (mobj_t* thing)
     fixed_t		blockdist;
     boolean		solid;
     boolean		unblocking = false;
-    int			damage;
+    fixed_t		damage;
 		
     if (!(thing->flags & (MF_SOLID|MF_SPECIAL|MF_SHOOTABLE) ))
 	return true;

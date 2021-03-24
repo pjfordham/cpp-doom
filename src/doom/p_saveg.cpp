@@ -131,6 +131,11 @@ static void saveg_write32(int value)
     saveg_write8((value >> 24) & 0xff);
 }
 
+static void saveg_write32(fixed_t value)
+{
+   saveg_write32((int)value);
+}
+
 // Pad to 4-byte boundaries
 
 static void saveg_read_pad(void)

@@ -819,7 +819,7 @@ void A_PosAttack (mobj_t* actor)
 {
     angle_t	angle;
     int		damage;
-    int		slope;
+    fixed_t	slope;
 	
     if (!actor->target)
 	return;
@@ -840,7 +840,7 @@ void A_SPosAttack (mobj_t* actor)
     angle_t	angle;
     angle_t	bangle;
     int		damage;
-    int		slope;
+    fixed_t	slope;
 	
     if (!actor->target)
 	return;
@@ -863,7 +863,7 @@ void A_CPosAttack (mobj_t* actor)
     angle_t	angle;
     angle_t	bangle;
     int		damage;
-    int		slope;
+    fixed_t	slope;
 	
     if (!actor->target)
 	return;
@@ -1493,7 +1493,7 @@ A_PainShootSkull
     fixed_t	z;
     
     mobj_t*	newmobj;
-    int		prestep;
+    fixed_t	prestep;
     int		count;
 
     // count total number of skull currently on the level
@@ -1931,9 +1931,9 @@ void A_BrainScream (mobj_t*	mo)
 
 void A_BrainExplode (mobj_t* mo)
 {
-    int		x;
-    int		y;
-    int		z;
+    fixed_t	x;
+    fixed_t	y;
+    fixed_t	z;
     mobj_t*	th;
 	
     x = mo->x +  fixed_t(P_SubRandom() * 2048);
