@@ -129,16 +129,6 @@ public:
    }
 
 
-
-   // dodgy operators allowing implicit type conversions, should be factored out.
-   friend fixed_t operator+(const fixed_t lhs, const int rhs) {
-      return fixed_t(lhs.value + rhs);
-   }
-   friend fixed_t operator+(const int lhs, const fixed_t rhs) {
-      return fixed_t(lhs + rhs.value);
-   }
-
-
    // 64-bit weirdities, need to better understand
    friend int64_t operator+=(int64_t &lhs, const fixed_t rhs) {
       return lhs += rhs.value;
