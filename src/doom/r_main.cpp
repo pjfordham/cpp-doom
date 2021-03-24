@@ -453,7 +453,7 @@ R_PointToDist
     }
     else
     {
-	frac = 0;
+	frac = 0_fix;
     }
 	
     angle = arctan( frac ) + ANG90;

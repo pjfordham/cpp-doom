@@ -373,14 +373,15 @@ void R_RenderSegLoop (void)
 		floorplane->bottom[rw_x] = bottom;
 	    }
 	}
-	
-	// texturecolumn and lighting are independent of wall tiers
+
+        int itexturecolumn = 0;
+        // texturecolumn and lighting are independent of wall tiers
 	if (segtextured)
 	{
 	    // calculate texture offset
             angle = rw_centerangle + xtoviewangle[rw_x];
 	    texturecolumn = rw_offset-FixedMul(tan(angle),rw_distance);
-	    texturecolumn = texturecolumn >> FRACBITS;
+	    itexturecolumn = texturecolumn >> FRACBITS;
 	    // calculate lighting
 	    index = (unsigned int)(rw_scale>>(LIGHTSCALESHIFT + crispy->hires));
 
@@ -393,12 +394,6 @@ void R_RenderSegLoop (void)
 	    dc_x = rw_x;
 	    dc_iscale = 0xffffffffu / (unsigned)rw_scale;
 	}
-        else
-        {
-            // purely to shut up the compiler
-
-            texturecolumn = 0;
-        }
 	
 	// draw the wall tiers
 	if (midtexture)
@@ -407,7 +402,7 @@ void R_RenderSegLoop (void)
 	    dc_yl = yl;
 	    dc_yh = yh;
 	    dc_texturemid = rw_midtexturemid;
-	    dc_source = R_GetColumn(midtexture,texturecolumn,true);
+	    dc_source = R_GetColumn(midtexture,itexturecolumn,true);
 	    dc_texheight = textureheight[midtexture]>>FRACBITS; // [crispy] Tutti-Frutti fix
 	    dc_brightmap = texturebrightmap[midtexture];
 	    colfunc ();
@@ -431,7 +426,7 @@ void R_RenderSegLoop (void)
 		    dc_yl = yl;
 		    dc_yh = mid;
 		    dc_texturemid = rw_toptexturemid;
-		    dc_source = R_GetColumn(toptexture,texturecolumn,true);
+		    dc_source = R_GetColumn(toptexture,itexturecolumn,true);
 		    dc_texheight = textureheight[toptexture]>>FRACBITS; // [crispy] Tutti-Frutti fix
 		    dc_brightmap = texturebrightmap[toptexture];
 		    colfunc ();
@@ -463,7 +458,7 @@ void R_RenderSegLoop (void)
 		    dc_yh = yh;
 		    dc_texturemid = rw_bottomtexturemid;
 		    dc_source = R_GetColumn(bottomtexture,
-					    texturecolumn,true);
+					    itexturecolumn,true);
 		    dc_texheight = textureheight[bottomtexture]>>FRACBITS; // [crispy] Tutti-Frutti fix
 		    dc_brightmap = texturebrightmap[bottomtexture];
 		    colfunc ();
@@ -483,7 +478,7 @@ void R_RenderSegLoop (void)
 	    {
 		// save texturecol
 		//  for backdrawing of masked mid texture
-		maskedtexturecol[rw_x] = texturecolumn;
+		maskedtexturecol[rw_x] = itexturecolumn;
 	    }
 	}
 		
@@ -651,8 +646,8 @@ R_StoreWallRange
 	ds_p->silhouette = SIL_BOTH;
 	ds_p->sprtopclip = screenheightarray;
 	ds_p->sprbottomclip = negonearray;
-	ds_p->bsilheight = INT_MAX;
-	ds_p->tsilheight = INT_MIN;
+	ds_p->bsilheight = fixed_t(INT_MAX);
+	ds_p->tsilheight = fixed_t(INT_MIN);
     }
     else
     {
@@ -682,7 +677,7 @@ R_StoreWallRange
 	else if (backsector->interpfloorheight > viewz)
 	{
 	    ds_p->silhouette = SIL_BOTTOM;
-	    ds_p->bsilheight = INT_MAX;
+	    ds_p->bsilheight = fixed_t(INT_MAX);
 	    // ds_p->sprbottomclip = negonearray;
 	}
 	
@@ -694,21 +689,21 @@ R_StoreWallRange
 	else if (backsector->interpceilingheight < viewz)
 	{
 	    ds_p->silhouette |= SIL_TOP;
-	    ds_p->tsilheight = INT_MIN;
+	    ds_p->tsilheight = fixed_t(INT_MIN);
 	    // ds_p->sprtopclip = screenheightarray;
 	}
 		
 	if (backsector->interpceilingheight <= frontsector->interpfloorheight || doorclosed)
 	{
 	    ds_p->sprbottomclip = negonearray;
-	    ds_p->bsilheight = INT_MAX;
+	    ds_p->bsilheight = fixed_t(INT_MAX);
 	    ds_p->silhouette |= SIL_BOTTOM;
 	}
 	
 	if (backsector->interpfloorheight >= frontsector->interpceilingheight || doorclosed)
 	{
 	    ds_p->sprtopclip = screenheightarray;
-	    ds_p->tsilheight = INT_MIN;
+	    ds_p->tsilheight = fixed_t(INT_MIN);
 	    ds_p->silhouette |= SIL_TOP;
 	}
 	
@@ -916,12 +911,12 @@ R_StoreWallRange
     if (maskedtexture && !(ds_p->silhouette&SIL_TOP))
     {
 	ds_p->silhouette |= SIL_TOP;
-	ds_p->tsilheight = INT_MIN;
+	ds_p->tsilheight = fixed_t(INT_MIN);
     }
     if (maskedtexture && !(ds_p->silhouette&SIL_BOTTOM))
     {
 	ds_p->silhouette |= SIL_BOTTOM;
-	ds_p->bsilheight = INT_MAX;
+	ds_p->bsilheight = fixed_t(INT_MAX);
     }
     ds_p++;
 }

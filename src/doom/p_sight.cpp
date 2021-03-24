@@ -90,8 +90,6 @@ P_DivlineSide
 {
     fixed_t	dx;
     fixed_t	dy;
-    fixed_t	left;
-    fixed_t	right;
 
     if (!node->dx)
     {
@@ -118,8 +116,8 @@ P_DivlineSide
     dx = (x - node->x);
     dy = (y - node->y);
 
-    left =  (node->dy>>FRACBITS) * (dx>>FRACBITS);
-    right = (dy>>FRACBITS) * (node->dx>>FRACBITS);
+    int left =  (node->dy>>FRACBITS) * (dx>>FRACBITS);
+    int right = (dy>>FRACBITS) * (node->dx>>FRACBITS);
 	
     if (right < left)
 	return 0;	// front side
@@ -148,7 +146,7 @@ P_InterceptVector2
     den = FixedMul (v1->dy>>8,v2->dx) - FixedMul(v1->dx>>8,v2->dy);
 
     if (den == 0_fix)
-	return 0;
+	return 0_fix;
     //	I_Error ("P_InterceptVector: parallel");
     
     num = FixedMul ( (v1->x - v2->x)>>8 ,v1->dy) + 

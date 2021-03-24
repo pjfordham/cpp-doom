@@ -1105,7 +1105,7 @@ void S_UpdateStereoSeparation (void)
 	// [crispy] play all sound effects in mono
 	if (crispy->soundmono)
 	{
-		stereo_swing = 0;
+		stereo_swing = 0_fix;
 	}
 	else
 	if (crispy->fliplevels)

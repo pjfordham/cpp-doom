@@ -276,8 +276,8 @@ boolean P_CheckMissileRange (mobj_t* actor)
 // Move in the current direction,
 // returns false if the move is blocked.
 //
-fixed_t	xspeed[8] = {FRACUNIT,47000,0,-47000,-FRACUNIT,-47000,0,47000};
-fixed_t yspeed[8] = {0,47000,FRACUNIT,47000,0,-47000,-FRACUNIT,-47000};
+fixed_t	xspeed[8] = {FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix,0_fix,47000_fix};
+fixed_t yspeed[8] = {0_fix,47000_fix,FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix};
 
 boolean P_Move (mobj_t*	actor)
 {
@@ -966,7 +966,7 @@ void A_SargAttack (mobj_t* actor)
     damage = ((P_Random()%10)+1)*4;
 
     if (gameversion <= exe_doom_1_2)
-        P_LineAttack(actor, actor->angle, MELEERANGE, 0, damage);
+        P_LineAttack(actor, actor->angle, MELEERANGE, 0_fix, damage);
     else
         P_DamageMobj (actor->target, actor, actor, damage);
 }
@@ -1106,7 +1106,7 @@ void A_Tracer (mobj_t* actor)
     dist = dist / actor->info->speed;
 
     if (dist < 1_fix)
-	dist = 1;
+	dist = 1_fix;
     slope = (dest->z+40*FRACUNIT - actor->z) / dist;
 
     if (slope < actor->momz)
@@ -1173,7 +1173,7 @@ boolean PIT_VileCheck (mobj_t*	thing)
 	return true;		// not actually touching
 		
     corpsehit = thing;
-    corpsehit->momx = corpsehit->momy = 0;
+    corpsehit->momx = corpsehit->momy = 0_fix;
     corpsehit->height <<= 2;
     check = P_CheckPosition (corpsehit, corpsehit->x, corpsehit->y);
     corpsehit->height >>= 2;
@@ -1372,7 +1372,7 @@ void A_VileAttack (mobj_t* actor)
     // move the fire between the vile and the player
     fire->x = actor->target->x - FixedMul (24*FRACUNIT, cos(actor->angle));
     fire->y = actor->target->y - FixedMul (24*FRACUNIT, sin(actor->angle));
-    P_RadiusAttack (fire, actor, 70 );
+    P_RadiusAttack (fire, actor, 70_fix );
 }
 
 
@@ -1634,7 +1634,7 @@ void A_Fall (mobj_t *actor)
 //
 void A_Explode (mobj_t* thingy)
 {
-    P_RadiusAttack(thingy, thingy->target, 128);
+    P_RadiusAttack(thingy, thingy->target, 128_fix);
 }
 
 // Check whether the death of the specified monster type is allowed
@@ -1940,7 +1940,7 @@ void A_BrainExplode (mobj_t* mo)
     y = mo->y;
     z = 128_fix + P_Random()*2*FRACUNIT;
     th = P_SpawnMobj (x,y,z, MT_ROCKET);
-    th->momz = P_Random()*512;
+    th->momz = fixed_t(P_Random()*512);
 
     P_SetMobjState (th, S_BRAINEXPLODE1);
 

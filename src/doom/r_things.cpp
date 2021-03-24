@@ -751,7 +751,7 @@ void R_ProjectSprite (mobj_t* thing)
     }
     else
     {
-	vis->startfrac = 0;
+	vis->startfrac = 0_fix;
 	vis->xiscale = iscale;
     }
 
@@ -1041,7 +1041,7 @@ void R_DrawPSprite (pspdef_t* psp, psprnum_t psprnum) // [crispy] differentiate 
     else
     {
 	vis->xiscale = pspriteiscale;
-	vis->startfrac = 0;
+	vis->startfrac = 0_fix;
     }
     
     // [crispy] free look

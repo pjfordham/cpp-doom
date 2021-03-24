@@ -1055,7 +1055,7 @@ void P_MovePsprites (player_t* player)
 
 		if (psp->dy == 0_fix)
 		{
-			player->psp_dy_max = 0;
+			player->psp_dy_max = 0_fix;
 		}
 	}
 

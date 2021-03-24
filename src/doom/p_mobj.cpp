@@ -128,7 +128,7 @@ static statenum_t P_LatestSafeState(statenum_t state)
 //
 static void P_ExplodeMissileSafe (mobj_t* mo, boolean safe)
 {
-    mo->momx = mo->momy = mo->momz = 0;
+    mo->momx = mo->momy = mo->momz = 0_fix;
 
     P_SetMobjState (mo, static_cast<statenum_t>(
                            safe ? P_LatestSafeState(static_cast<statenum_t>(
@@ -156,8 +156,8 @@ void P_ExplodeMissile (mobj_t* mo)
 //
 // P_XYMovement  
 //
-#define STOPSPEED		fixed_t(0x1000)
-#define FRICTION		0xe800
+const fixed_t STOPSPEED = 0x1000_fix;
+const fixed_t FRICTION = 0xe800_fix;
 
 void P_XYMovement (mobj_t* mo) 
 { 	
@@ -173,7 +173,7 @@ void P_XYMovement (mobj_t* mo)
 	{
 	    // the skull slammed into something
 	    mo->flags &= ~MF_SKULLFLY;
-	    mo->momx = mo->momy = mo->momz = 0;
+	    mo->momx = mo->momy = mo->momz = 0_fix;
 
 	    P_SetMobjState (mo, static_cast<statenum_t>(mo->info->spawnstate));
 	}
@@ -208,7 +208,7 @@ void P_XYMovement (mobj_t* mo)
 	{
 	    ptryx = mo->x + xmove;
 	    ptryy = mo->y + ymove;
-	    xmove = ymove = 0;
+	    xmove = ymove = 0_fix;
 	}
 		
 	if (!P_TryMove (mo, ptryx, ptryy))
@@ -242,7 +242,7 @@ void P_XYMovement (mobj_t* mo)
 		P_ExplodeMissileSafe (mo, safe);
 	    }
 	    else
-		mo->momx = mo->momy = 0;
+		mo->momx = mo->momy = 0_fix;
 	}
     } while (xmove || ymove);
     
@@ -250,7 +250,7 @@ void P_XYMovement (mobj_t* mo)
     if (player && player->cheats & CF_NOMOMENTUM)
     {
 	// debug option for no sliding at all
-	mo->momx = mo->momy = 0;
+	mo->momx = mo->momy = 0_fix;
 	return;
     }
 
@@ -286,8 +286,8 @@ void P_XYMovement (mobj_t* mo)
 	if ( player&&(unsigned)((player->mo->state - states)- S_PLAY_RUN1) < 4)
 	    P_SetMobjState (player->mo, S_PLAY);
 	
-	mo->momx = 0;
-	mo->momy = 0;
+	mo->momx = 0_fix;
+	mo->momy = 0_fix;
     }
     else
     {
@@ -399,7 +399,7 @@ void P_ZMovement (mobj_t* mo)
 		S_StartSound (mo, sfx_oof);
 		}
 	    }
-	    mo->momz = 0;
+	    mo->momz = 0_fix;
 	}
 	mo->z = mo->floorz;
 
@@ -432,7 +432,7 @@ void P_ZMovement (mobj_t* mo)
     {
 	// hit the ceiling
 	if (mo->momz > 0_fix)
-	    mo->momz = 0;
+	    mo->momz = 0_fix;
 	{
 	    mo->z = mo->ceilingz - mo->height;
 	}
@@ -1081,7 +1081,7 @@ P_SpawnPuffSafe
 {
     mobj_t*	th;
 	
-    z += safe ? (Crispy_SubRandom() << 10) : (P_SubRandom() << 10);
+    z += fixed_t(safe ? (Crispy_SubRandom() << 10) : (P_SubRandom() << 10));
 
     th = P_SpawnMobjSafe (x,y,z, MT_PUFF, safe);
     th->momz = FRACUNIT;
@@ -1110,7 +1110,7 @@ P_SpawnBlood
 {
     mobj_t*	th;
 	
-    z += (P_SubRandom() << 10);
+    z += fixed_t(P_SubRandom() << 10);
     th = P_SpawnMobj (x,y,z, MT_BLOOD);
     th->momz = FRACUNIT*2;
     th->tics -= P_Random()&3;
@@ -1166,9 +1166,9 @@ mobj_t *P_SubstNullMobj(mobj_t *mobj)
     {
         static mobj_t dummy_mobj;
 
-        dummy_mobj.x = 0;
-        dummy_mobj.y = 0;
-        dummy_mobj.z = 0;
+        dummy_mobj.x = 0_fix;
+        dummy_mobj.y = 0_fix;
+        dummy_mobj.z = 0_fix;
         dummy_mobj.flags = 0;
 
         mobj = &dummy_mobj;
@@ -1267,7 +1267,7 @@ P_SpawnPlayerMissile
 	    if (critical->freeaim == FREEAIM_BOTH)
                slope = PLAYER_SLOPE(source->player);
 	    else
-	    slope = 0;
+	    slope = 0_fix;
 	}
     }
     }

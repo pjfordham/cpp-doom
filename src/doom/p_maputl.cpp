@@ -236,7 +236,7 @@ P_InterceptVector
     den = FixedMul (v1->dy>>8,v2->dx) - FixedMul(v1->dx>>8,v2->dy);
 
     if (den == 0_fix)
-	return 0;
+	return 0_fix;
     //	I_Error ("P_InterceptVector: parallel");
     
     num =
@@ -301,7 +301,7 @@ void P_LineOpening (line_t* linedef)
     if (linedef->sidenum[1] == NO_INDEX) // [crispy] extended nodes
     {
 	// single sided line
-	openrange = 0;
+	openrange = 0_fix;
 	return;
     }
 	 
@@ -732,7 +732,7 @@ P_TraverseIntercepts
 	
     while (count--)
     {
-	dist = INT_MAX;
+       dist = fixed_t(INT_MAX);
 	for (scan = intercepts.data() ; scan<intercept_p ; scan++)
 	{
 	    if (scan->frac < dist)
@@ -760,7 +760,7 @@ P_TraverseIntercepts
         if ( !func (in) )
 	    return false;	// don't bother going farther
 
-	in->frac = INT_MAX;
+	in->frac = fixed_t(INT_MAX);
     }
 	
     return true;		// everything was traversed

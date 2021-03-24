@@ -43,7 +43,7 @@
 const fixed_t MAXBOB = 16 << FRACBITS;
 
 // [crispy] variable player view bob
-static const fixed_t crispy_bobfactor[3] = {4, 3, 0};
+static const int crispy_bobfactor[3] = {4, 3, 0};
 
 boolean		onground;
 
@@ -116,21 +116,21 @@ void P_CalcHeight (player_t* player)
 	if (player->viewheight > VIEWHEIGHT)
 	{
 	    player->viewheight = VIEWHEIGHT;
-	    player->deltaviewheight = 0;
+	    player->deltaviewheight = 0_fix;
 	}
 
 	if (player->viewheight < VIEWHEIGHT/2)
 	{
 	    player->viewheight = VIEWHEIGHT/2;
 	    if (player->deltaviewheight <= 0_fix)
-		player->deltaviewheight = 1;
+		player->deltaviewheight = 1_fix;
 	}
 	
 	if (player->deltaviewheight)	
 	{
 	    player->deltaviewheight += FRACUNIT/4;
 	    if (!player->deltaviewheight)
-		player->deltaviewheight = 1;
+		player->deltaviewheight = 1_fix;
 	}
     }
     player->viewz = player->mo->z + player->viewheight + bob;
@@ -227,7 +227,7 @@ void P_DeathThink (player_t* player)
     if (player->viewheight < 6*FRACUNIT)
 	player->viewheight = 6*FRACUNIT;
 
-    player->deltaviewheight = 0;
+    player->deltaviewheight = 0_fix;
     onground = (player->mo->z <= player->mo->floorz);
     P_CalcHeight (player);
 	
@@ -332,11 +332,11 @@ void P_PlayerThink (player_t* player)
     {
         if (player->recoilpitch > 0_fix)
         {
-            player->recoilpitch -= 1;
+            player->recoilpitch -= 1_fix;
         }
         else if (player->recoilpitch < 0_fix)
         {
-            player->recoilpitch += 1;
+            player->recoilpitch += 1_fix;
         }
     }
 

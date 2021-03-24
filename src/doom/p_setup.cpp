@@ -1113,7 +1113,7 @@ P_SetupLevel
 
     // Initial height of PointOfView
     // will be set by player think.
-    players[consoleplayer].viewz = 1; 
+    players[consoleplayer].viewz = 1_fix; 
 
     // [crispy] stop demo warp mode now
     if (crispy->demowarp == map)

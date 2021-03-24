@@ -256,7 +256,7 @@ R_FindPlane
     // [crispy] add support for MBF sky tranfers
     if (picnum == skyflatnum || picnum & PL_SKYFLAT)
     {
-	height = 0;			// all skys map together
+	height = 0_fix;			// all skys map together
 	lightlevel = 0;
     }
 	

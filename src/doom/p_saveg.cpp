@@ -265,13 +265,13 @@ static void saveg_read_mobj_t(mobj_t *str)
     saveg_read_think_t();
 
     // fixed_t x;
-    str->x = saveg_read32();
+    str->x = fixed_t(saveg_read32());
 
     // fixed_t y;
-    str->y = saveg_read32();
+    str->y = fixed_t(saveg_read32());
 
     // fixed_t z;
-    str->z = saveg_read32();
+    str->z = fixed_t(saveg_read32());
 
     // struct mobj_s* snext;
     str->snext = static_cast<mobj_t *>(saveg_readp());
@@ -298,25 +298,25 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->subsector = static_cast<subsector_s *>(saveg_readp());
 
     // fixed_t floorz;
-    str->floorz = saveg_read32();
+    str->floorz = fixed_t(saveg_read32());
 
     // fixed_t ceilingz;
-    str->ceilingz = saveg_read32();
+    str->ceilingz = fixed_t(saveg_read32());
 
     // fixed_t radius;
-    str->radius = saveg_read32();
+    str->radius = fixed_t(saveg_read32());
 
     // fixed_t height;
-    str->height = saveg_read32();
+    str->height = fixed_t(saveg_read32());
 
     // fixed_t momx;
-    str->momx = saveg_read32();
+    str->momx = fixed_t(saveg_read32());
 
     // fixed_t momy;
-    str->momy = saveg_read32();
+    str->momy = fixed_t(saveg_read32());
 
     // fixed_t momz;
-    str->momz = saveg_read32();
+    str->momz = fixed_t(saveg_read32());
 
     // int validcount;
     str->validcount = saveg_read32();
@@ -615,13 +615,13 @@ static void saveg_read_pspdef_t(pspdef_t *str)
     str->tics = saveg_read32();
 
     // fixed_t sx;
-    str->sx = saveg_read32();
+    str->sx = fixed_t(saveg_read32());
 
     // fixed_t sy;
-    str->sy = saveg_read32();
+    str->sy = fixed_t(saveg_read32());
 
     // [crispy] variable weapon sprite bob
-    str->dy = 0;
+    str->dy = 0_fix;
     str->sx2 = str->sx;
     str->sy2 = str->sy;
 }
@@ -666,16 +666,16 @@ static void saveg_read_player_t(player_t *str)
     saveg_read_ticcmd_t(&str->cmd);
 
     // fixed_t viewz;
-    str->viewz = saveg_read32();
+    str->viewz = fixed_t(saveg_read32());
 
     // fixed_t viewheight;
-    str->viewheight = saveg_read32();
+    str->viewheight = fixed_t(saveg_read32());
 
     // fixed_t deltaviewheight;
-    str->deltaviewheight = saveg_read32();
+    str->deltaviewheight = fixed_t(saveg_read32());
 
     // fixed_t bob;
-    str->bob = saveg_read32();
+    str->bob = fixed_t(saveg_read32());
     // [crispy] variable player view bob
     str->bob2 = str->bob;
 
@@ -942,13 +942,13 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     str->sector = &sectors[sector];
 
     // fixed_t bottomheight;
-    str->bottomheight = saveg_read32();
+    str->bottomheight = fixed_t(saveg_read32());
 
     // fixed_t topheight;
-    str->topheight = saveg_read32();
+    str->topheight = fixed_t(saveg_read32());
 
     // fixed_t speed;
-    str->speed = saveg_read32();
+    str->speed = fixed_t(saveg_read32());
 
     // boolean crush;
     str->crush = saveg_read32();
@@ -1015,13 +1015,13 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     str->sector = &sectors[sector];
 
     // fixed_t topheight;
-    str->topheight = saveg_read32();
+    str->topheight = fixed_t(saveg_read32());
 
     // fixed_t speed;
-    str->speed = saveg_read32();
+    str->speed = fixed_t(saveg_read32());
 
     // int direction;
-    str->direction = saveg_read32();
+    str->direction = fixed_t(saveg_read32());
 
     // int topwait;
     str->topwait = saveg_read32();
@@ -1088,10 +1088,10 @@ static void saveg_read_floormove_t(floormove_t *str)
     str->texture = saveg_read16();
 
     // fixed_t floordestheight;
-    str->floordestheight = saveg_read32();
+    str->floordestheight = fixed_t(saveg_read32());
 
     // fixed_t speed;
-    str->speed = saveg_read32();
+    str->speed = fixed_t(saveg_read32());
 }
 
 static void saveg_write_floormove_t(floormove_t *str)
@@ -1140,13 +1140,13 @@ static void saveg_read_plat_t(plat_t *str)
     str->sector = &sectors[sector];
 
     // fixed_t speed;
-    str->speed = saveg_read32();
+    str->speed = fixed_t(saveg_read32());
 
     // fixed_t low;
-    str->low = saveg_read32();
+    str->low = fixed_t(saveg_read32());
 
     // fixed_t high;
-    str->high = saveg_read32();
+    str->high = fixed_t(saveg_read32());
 
     // int wait;
     str->wait = saveg_read32();
