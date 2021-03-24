@@ -86,9 +86,9 @@ static int      totallines;
 // by spatial subdivision in 2D.
 //
 // Blockmap size.
-int		bmapwidth;
-int		bmapheight;	// size in mapblocks
-int32_t*	blockmap;	// int for larger maps // [crispy] BLOCKMAP limit
+map_block_t	bmapwidth;
+map_block_t	bmapheight;	// size in mapblocks
+map_block_t*	blockmap;	// int for larger maps // [crispy] BLOCKMAP limit
 // offsets in blockmap are from here
 int32_t*	blockmaplump; // [crispy] BLOCKMAP limit
 // origin of block map
@@ -733,19 +733,19 @@ boolean P_LoadBlockMap (int lump)
     wadblockmaplump = Z_New<short>(PU_LEVEL, lumplen/ sizeof(short));
     W_ReadLump(lump, wadblockmaplump);
     blockmaplump = Z_New<int32_t>(PU_LEVEL, count );
-    blockmap = blockmaplump + 4;
+    blockmap = (map_block_t*)blockmaplump + 4;
 
     blockmaplump[0] = SHORT(wadblockmaplump[0]);
     blockmaplump[1] = SHORT(wadblockmaplump[1]);
-    blockmaplump[2] = (int32_t)(SHORT(wadblockmaplump[2])) & 0xffff;
-    blockmaplump[3] = (int32_t)(SHORT(wadblockmaplump[3])) & 0xffff;
+    blockmaplump[2] = (int32_t)((SHORT(wadblockmaplump[2])) & 0xffff);
+    blockmaplump[3] = (int32_t)((SHORT(wadblockmaplump[3])) & 0xffff);
 
     // Swap all short integers to native byte ordering.
   
     for (i=4; i<count; i++)
     {
 	short t = SHORT(wadblockmaplump[i]);
-	blockmaplump[i] = (t == -1) ? -1l : (int32_t) t & 0xffff;
+	blockmaplump[i] = (t == -1) ? -1l :  t & 0xffff;
     }
 
     Z_Delete(wadblockmaplump);
@@ -754,13 +754,13 @@ boolean P_LoadBlockMap (int lump)
 
     bmaporgx = blockmaplump[0]<<FRACBITS;
     bmaporgy = blockmaplump[1]<<FRACBITS;
-    bmapwidth = blockmaplump[2];
-    bmapheight = blockmaplump[3];
+    bmapwidth = (map_block_t)blockmaplump[2];
+    bmapheight = (map_block_t)blockmaplump[3];
 	
     // Clear out mobj chains
 
-    blocklinks = Z_New<mobj_t*>(PU_LEVEL, bmapwidth * bmapheight);
-    std::fill( blocklinks, blocklinks + bmapwidth * bmapheight, nullptr );
+    blocklinks = Z_New<mobj_t*>(PU_LEVEL, (bmapwidth * bmapheight).get());
+    std::fill( blocklinks, blocklinks + (bmapwidth * bmapheight).get(), nullptr );
 
     // [crispy] (re-)create BLOCKMAP if necessary
     fprintf(stderr, ")\n");
@@ -784,7 +784,7 @@ void P_GroupLines (void)
     subsector_t*	ss;
     seg_t*		seg;
     fixed_t		bbox[4];
-    int			block;
+    map_block_t		block;
 	
     // look up sector number for each subsector
     ss = subsectors;
@@ -869,19 +869,19 @@ void P_GroupLines (void)
 		
 	// adjust bounding box to map blocks
 	block = (bbox[BOXTOP]-bmaporgy+MAXRADIUS)>>MAPBLOCKSHIFT;
-	block = block >= bmapheight ? bmapheight-1 : block;
+	block = block >= bmapheight ? bmapheight-map_block_t(1) : block;
 	sector->blockbox[BOXTOP]=block;
 
 	block = (bbox[BOXBOTTOM]-bmaporgy-MAXRADIUS)>>MAPBLOCKSHIFT;
-	block = block < 0 ? 0 : block;
+	block = block < map_block_t(0) ? map_block_t(0) : block;
 	sector->blockbox[BOXBOTTOM]=block;
 
 	block = (bbox[BOXRIGHT]-bmaporgx+MAXRADIUS)>>MAPBLOCKSHIFT;
-	block = block >= bmapwidth ? bmapwidth-1 : block;
+	block = block >= bmapwidth ? bmapwidth-map_block_t(1) : block;
 	sector->blockbox[BOXRIGHT]=block;
 
 	block = (bbox[BOXLEFT]-bmaporgx-MAXRADIUS)>>MAPBLOCKSHIFT;
-	block = block < 0 ? 0 : block;
+	block = block < map_block_t(0) ? map_block_t(0) : block;
 	sector->blockbox[BOXLEFT]=block;
     }
 	

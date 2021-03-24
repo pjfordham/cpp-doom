@@ -1192,13 +1192,13 @@ boolean PIT_VileCheck (mobj_t*	thing)
 //
 void A_VileChase (mobj_t* actor)
 {
-    int			xl;
-    int			xh;
-    int			yl;
-    int			yh;
+    map_block_t		xl;
+    map_block_t		xh;
+    map_block_t		yl;
+    map_block_t		yh;
     
-    int			bx;
-    int			by;
+    map_block_t		bx;
+    map_block_t 	by;
 
     mobjinfo_t*		info;
     mobj_t*		temp;

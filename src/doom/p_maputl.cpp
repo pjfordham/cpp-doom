@@ -342,8 +342,7 @@ void P_LineOpening (line_t* linedef)
 //
 void P_UnsetThingPosition (mobj_t* thing)
 {
-    int		blockx;
-    int		blocky;
+    map_block_t blockx, blocky;
 
     if ( ! (thing->flags & MF_NOSECTOR) )
     {
@@ -372,10 +371,10 @@ void P_UnsetThingPosition (mobj_t* thing)
 	    blockx = (thing->x - bmaporgx)>>MAPBLOCKSHIFT;
 	    blocky = (thing->y - bmaporgy)>>MAPBLOCKSHIFT;
 
-	    if (blockx>=0 && blockx < bmapwidth
-		&& blocky>=0 && blocky <bmapheight)
+	    if (blockx>=map_block_t(0) && blockx < bmapwidth
+                && blocky>=map_block_t(0) && blocky <bmapheight)
 	    {
-		blocklinks[blocky*bmapwidth+blockx] = thing->bnext;
+               blocklinks[(blocky*bmapwidth+blockx).get()] = thing->bnext;
 	    }
 	}
     }
@@ -393,8 +392,8 @@ P_SetThingPosition (mobj_t* thing)
 {
     subsector_t*	ss;
     sector_t*		sec;
-    int			blockx;
-    int			blocky;
+    map_block_t		blockx;
+    map_block_t		blocky;
     mobj_t**		link;
 
     
@@ -424,12 +423,12 @@ P_SetThingPosition (mobj_t* thing)
 	blockx = (thing->x - bmaporgx)>>MAPBLOCKSHIFT;
 	blocky = (thing->y - bmaporgy)>>MAPBLOCKSHIFT;
 
-	if (blockx>=0
+	if (blockx>=map_block_t(0)
 	    && blockx < bmapwidth
-	    && blocky>=0
+	    && blocky>=map_block_t(0)
 	    && blocky < bmapheight)
 	{
-	    link = &blocklinks[blocky*bmapwidth+blockx];
+           link = &blocklinks[(blocky*bmapwidth+blockx).get()];
 	    thing->bprev = NULL;
 	    thing->bnext = *link;
 	    if (*link)
@@ -466,27 +465,27 @@ P_SetThingPosition (mobj_t* thing)
 //
 boolean
 P_BlockLinesIterator
-( int			x,
-  int			y,
+( map_block_t		x,
+  map_block_t		y,
   boolean(*func)(line_t*) )
 {
-    int			offset;
-    int32_t*		list; // [crispy] BLOCKMAP limit
+    map_block_t		offset;
+   int32_t*		list; // [crispy] BLOCKMAP limit
     line_t*		ld;
 	
-    if (x<0
-	|| y<0
+    if (x<map_block_t(0)
+	|| y<map_block_t(0)
 	|| x>=bmapwidth
 	|| y>=bmapheight)
     {
 	return true;
     }
     
-    offset = y*bmapwidth+x;
+    map_block_t mp = y*bmapwidth+x;
 	
-    offset = *(blockmap+offset);
+    offset = *(blockmap+mp.get());
 
-    for ( list = blockmaplump+offset ; *list != -1 ; list++)
+    for ( list = blockmaplump+offset.get() ; *list != -1 ; list++)
     {
 	ld = &lines[*list];
 
@@ -507,14 +506,14 @@ P_BlockLinesIterator
 //
 boolean
 P_BlockThingsIterator
-( int			x,
-  int			y,
+( map_block_t		x,
+  map_block_t		y,
   boolean(*func)(mobj_t*) )
 {
     mobj_t*		mobj;
 	
-    if ( x<0
-	 || y<0
+    if ( x<map_block_t(0)
+         || y<map_block_t(0)
 	 || x>=bmapwidth
 	 || y>=bmapheight)
     {
@@ -522,7 +521,7 @@ P_BlockThingsIterator
     }
     
 
-    for (mobj = blocklinks[y*bmapwidth+x] ;
+    for (mobj = blocklinks[(y*bmapwidth+x).get()] ;
 	 mobj ;
 	 mobj = mobj->bnext)
     {
@@ -905,10 +904,10 @@ P_PathTraverse
   int			flags,
   boolean (*trav) (intercept_t *))
 {
-    int	xt1;
-    int	yt1;
-    int	xt2;
-    int	yt2;
+    map_block_t	xt1;
+    map_block_t	yt1;
+    map_block_t	xt2;
+    map_block_t	yt2;
     
     fixed_t	xstep;
     fixed_t	ystep;
@@ -918,11 +917,11 @@ P_PathTraverse
     fixed_t	xintercept;
     fixed_t	yintercept;
     
-    int		mapx;
-    int		mapy;
+    map_block_t	mapx;
+    map_block_t	mapy;
     
-    int		mapxstep;
-    int		mapystep;
+    map_block_t	mapxstep;
+    map_block_t	mapystep;
 
     int		count;
 		
@@ -954,19 +953,19 @@ P_PathTraverse
 
     if (xt2 > xt1)
     {
-	mapxstep = 1;
+        mapxstep = map_block_t(1);
 	partial = FRACUNIT - (x1>>MAPBTOFRAC).fractional_part();
         ystep = FixedDiv (y2-y1,abs(x2-x1));
     }
     else if (xt2 < xt1)
     {
-	mapxstep = -1;
+        mapxstep = map_block_t(-1);
 	partial = (x1>>MAPBTOFRAC).fractional_part();
 	ystep = FixedDiv (y2-y1,abs(x2-x1));
     }
     else
     {
-	mapxstep = 0;
+        mapxstep = map_block_t(0);
 	partial = FRACUNIT;
 	ystep = 256*FRACUNIT;
     }	
@@ -976,19 +975,19 @@ P_PathTraverse
 	
     if (yt2 > yt1)
     {
-	mapystep = 1;
+        mapystep = map_block_t(1);
 	partial = FRACUNIT - (y1>>MAPBTOFRAC).fractional_part();
 	xstep = FixedDiv (x2-x1,abs(y2-y1));
     }
     else if (yt2 < yt1)
     {
-	mapystep = -1;
+        mapystep = map_block_t(-1);
 	partial = (y1>>MAPBTOFRAC).fractional_part();
  	xstep = FixedDiv (x2-x1,abs(y2-y1));
     }
     else
     {
-	mapystep = 0;
+        mapystep = map_block_t(0);
 	partial = FRACUNIT;
 	xstep = 256*FRACUNIT;
     }	
@@ -1020,12 +1019,12 @@ P_PathTraverse
 	    break;
 	}
 	
-	if ( (yintercept >> FRACBITS) == mapy)
+	if ( (yintercept >> FRACBITS) == mapy.get())
 	{
 	    yintercept += ystep;
 	    mapx += mapxstep;
 	}
-	else if ( (xintercept >> FRACBITS) == mapx)
+	else if ( (xintercept >> FRACBITS) == mapx.get())
 	{
 	    xintercept += xstep;
 	    mapy += mapystep;

@@ -41,7 +41,6 @@
 
 
 
-
 // Silhouette, needed for clipping Segs (mainly)
 // and sprites representing things.
 #define SIL_NONE		0
@@ -53,6 +52,88 @@
 
 
 
+class map_block_t {
+   int value;
+public:
+   map_block_t() = default;
+   explicit operator bool() { return value != 0; }
+   explicit map_block_t( int _value ) : value(_value) {
+   }
+   int get() { return value; }
+   friend map_block_t& operator++( map_block_t &a, int ) { // Postfix increment
+      a.value++;
+      return a;
+   }
+   friend map_block_t operator+=(map_block_t &lhs, map_block_t rhs) {
+      return map_block_t(lhs.value += rhs.value);
+   }
+   friend bool operator<=( map_block_t a, map_block_t b ) {
+      return a.value <= b.value;
+   }
+   friend bool operator<( map_block_t a, map_block_t b ) {
+      return a.value < b.value;
+   }
+   friend bool operator>( map_block_t a, map_block_t b ) {
+      return a.value > b.value;
+   }
+    friend bool operator>=( map_block_t a, map_block_t b ) {
+      return a.value >= b.value;
+   }
+   friend bool operator==( map_block_t a, map_block_t b ) {
+      return a.value == b.value;
+   }
+    friend map_block_t operator+( map_block_t a, map_block_t b ) {
+      return map_block_t(a.value + b.value);
+   }
+    friend map_block_t operator-( map_block_t a, map_block_t b ) {
+      return map_block_t(a.value - b.value);
+   }
+   friend map_block_t operator*( map_block_t a, map_block_t b ) {
+      return map_block_t(a.value * b.value);
+   }
+   friend class map_block_fixed_shift_t;
+   friend class map_block_int_shift_t;
+};
+
+
+class map_block_fixed_shift_t {
+public:
+   friend map_block_t operator>> (fixed_t a, map_block_fixed_shift_t){
+      return map_block_t( a >> (FRACBITS + 7) );
+   }
+   friend fixed_t operator<< (map_block_t a, map_block_fixed_shift_t){
+      return fixed_t( a.value << (FRACBITS + 7) );
+   }
+};
+
+// class fixed_map_block_t{
+//    int value;
+// public:
+//    fixed_map_block_t( int _value ) : value( _value ) {}
+//    fixed_t fractional_part() { return value & 0xFFFF; }
+// };
+
+class map_block_int_shift_t {
+public:
+   friend map_block_t operator>> (int a, map_block_int_shift_t){
+      return map_block_t( a >> 7 );
+   }
+   friend fixed_t operator>> (fixed_t a, map_block_int_shift_t){
+      return fixed_t( a >> 7 );
+   }
+   friend int operator<< (map_block_t a, map_block_int_shift_t){
+      return a.value << 7;
+   }
+};
+
+inline map_block_fixed_shift_t MAPBLOCKSHIFT;
+inline map_block_int_shift_t MAPBTOFRAC;
+
+// mapblocks are used to check movement
+// against lines and things
+#define MAPBLOCKUNITS	128
+const fixed_t MAPBLOCKSIZE = MAPBLOCKUNITS*FRACUNIT;
+#define MAPBMASK		(MAPBLOCKSIZE-1_fix) // FIXME
 
 
 //
@@ -119,7 +200,7 @@ typedef	struct
     mobj_t*	soundtarget;
 
     // mapblock bounding box for height changes
-    int		blockbox[4];
+    map_block_t	blockbox[4];
 
     // origin for any sounds played by the sector
     degenmobj_t	soundorg;

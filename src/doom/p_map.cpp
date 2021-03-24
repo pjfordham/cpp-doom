@@ -133,12 +133,9 @@ P_TeleportMove
   fixed_t	x,
   fixed_t	y )
 {
-    int			xl;
-    int			xh;
-    int			yl;
-    int			yh;
-    int			bx;
-    int			by;
+    map_block_t xl, xh;
+    map_block_t yl, yh;
+    map_block_t bx, by;
     
     subsector_t*	newsubsec;
     
@@ -497,12 +494,9 @@ P_CheckPosition
   fixed_t	x,
   fixed_t	y )
 {
-    int			xl;
-    int			xh;
-    int			yl;
-    int			yh;
-    int			bx;
-    int			by;
+    map_block_t xl, xh;
+    map_block_t yl, yh;
+    map_block_t bx, by;
     subsector_t*	newsubsec;
 
     tmthing = thing;
@@ -1466,14 +1460,10 @@ P_RadiusAttack
   mobj_t*	source,
   int		damage )
 {
-    int		x;
-    int		y;
-    
-    int		xl;
-    int		xh;
-    int		yl;
-    int		yh;
-    
+    map_block_t	x, y;
+    map_block_t xl, xh;
+    map_block_t yl, yh;
+   
     fixed_t	dist;
 	
     dist = (damage+MAXRADIUS)<<FRACBITS;
@@ -1595,15 +1585,12 @@ P_ChangeSector
 ( sector_t*	sector,
   boolean	crunch )
 {
-    int		x;
-    int		y;
-	
     nofit = false;
     crushchange = crunch;
 	
     // re-check heights for all things near the moving sector
-    for (x=sector->blockbox[BOXLEFT] ; x<= sector->blockbox[BOXRIGHT] ; x++)
-	for (y=sector->blockbox[BOXBOTTOM];y<= sector->blockbox[BOXTOP] ; y++)
+    for (map_block_t x=sector->blockbox[BOXLEFT] ; x<= sector->blockbox[BOXRIGHT] ; x++)
+	for (map_block_t y=sector->blockbox[BOXBOTTOM];y<= sector->blockbox[BOXTOP] ; y++)
 	    P_BlockThingsIterator (x, y, PIT_ChangeSector);
 	
 	

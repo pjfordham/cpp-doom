@@ -32,14 +32,6 @@ const fixed_t FLOATSPEED = FRACUNIT*4;
 #define MAXHEALTH		100
 const fixed_t VIEWHEIGHT = FRACUNIT*41;
 
-// mapblocks are used to check movement
-// against lines and things
-#define MAPBLOCKUNITS	128
-const fixed_t MAPBLOCKSIZE = MAPBLOCKUNITS*FRACUNIT;
-#define MAPBLOCKSHIFT	(FRACBITS+7)
-#define MAPBMASK		(MAPBLOCKSIZE-1_fix) // FIXME
-#define MAPBTOFRAC		(MAPBLOCKSHIFT-FRACBITS)
-
 
 // player radius for movement checking
 const fixed_t PLAYERRADIUS = 16*FRACUNIT;
@@ -47,7 +39,7 @@ const fixed_t PLAYERRADIUS = 16*FRACUNIT;
 // MAXRADIUS is for precalculated sector block boxes
 // the spider demon is larger,
 // but we do not have any moving sectors nearby
-#define MAXRADIUS		32*FRACUNIT
+const fixed_t MAXRADIUS = 32*FRACUNIT;
 
 const fixed_t GRAVITY = FRACUNIT;
 const fixed_t MAXMOVE = 30*FRACUNIT;
@@ -227,8 +219,8 @@ extern fixed_t		lowfloor;
 
 void 	P_LineOpening (line_t* linedef);
 
-boolean P_BlockLinesIterator (int x, int y, boolean(*func)(line_t*) );
-boolean P_BlockThingsIterator (int x, int y, boolean(*func)(mobj_t*) );
+boolean P_BlockLinesIterator (map_block_t x, map_block_t y, boolean(*func)(line_t*) );
+boolean P_BlockThingsIterator (map_block_t x, map_block_t y, boolean(*func)(mobj_t*) );
 
 #define PT_ADDLINES		1
 #define PT_ADDTHINGS	2
@@ -314,9 +306,9 @@ P_RadiusAttack
 //
 extern byte*		rejectmatrix;	// for fast sight rejection
 extern int32_t*	blockmaplump;	// offsets in blockmap are from here // [crispy] BLOCKMAP limit
-extern int32_t*	blockmap; // [crispy] BLOCKMAP limit
-extern int		bmapwidth;
-extern int		bmapheight;	// in mapblocks
+extern map_block_t*	blockmap; // [crispy] BLOCKMAP limit
+extern map_block_t	bmapwidth;
+extern map_block_t	bmapheight;	// in mapblocks
 extern fixed_t		bmaporgx;
 extern fixed_t		bmaporgy;	// origin of block map
 extern mobj_t**		blocklinks;	// for thing chains
