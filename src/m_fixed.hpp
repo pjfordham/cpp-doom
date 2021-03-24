@@ -203,34 +203,20 @@ fixed_t FixedMul	(fixed_t a, fixed_t b);
 fixed_t FixedDiv	(fixed_t a, fixed_t b);
 
 class fracbits_t {
+public:
+   static int size() { return 16; }
    friend fixed_t operator<<( int a, fracbits_t b) {
-      return fixed_t( a << 16 );
+      return fixed_t( a << b.size());
    }
    friend int operator>>( fixed_t a, fracbits_t b) {
-      return a.value >> 16;
+      return a.value >> b.size();
    }
    // This is definitely dodgy
    friend int64_t operator<<( int64_t a, fracbits_t b) {
-      return a << 16;
+      return a << b.size();
    }
    friend int64_t operator>>( int64_t a, fracbits_t b) {
-      return a >> 16;
-   }
-   // these should be factored out
-   friend int operator+( int a, fracbits_t b) {
-      return a + 16;
-   }
-   friend int operator+( fracbits_t b, int a) {
-      return a + 16;
-   }
-   friend int operator*( fracbits_t b, int a) {
-      return a * 16;
-   }
-   friend int operator-( int a, fracbits_t b) {
-      return a - 16;
-   }
-   friend int operator-( fracbits_t b, int a) {
-      return 16 - a;
+      return a >> b.size();
    }
 };
 

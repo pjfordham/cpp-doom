@@ -99,10 +99,10 @@ public:
 class map_block_fixed_shift_t {
 public:
    friend map_block_t operator>> (fixed_t a, map_block_fixed_shift_t){
-      return map_block_t( a >> (FRACBITS + 7) );
+      return map_block_t( ( a >> FRACBITS ) >> 7 );
    }
    friend fixed_t operator<< (map_block_t a, map_block_fixed_shift_t){
-      return fixed_t( a.value << (FRACBITS + 7) );
+      return fixed_t( ( a.value << FRACBITS ) << 7 );
    }
 };
 

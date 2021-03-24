@@ -169,7 +169,7 @@ const angle_t ANG1_X = angle_t(0x01000000u);
 
 #define SLOPERANGE		2048
 #define SLOPEBITS		11
-#define DBITS			(FRACBITS-SLOPEBITS)
+#define DBITS			(FRACBITS.size()-SLOPEBITS)
 
 // Effective size is 2049;
 // The +1 size is to handle the case when x==y
@@ -190,6 +190,10 @@ inline fixed_t cos(angle_t t) {
 }
 inline fixed_t tan(angle_t t) {
    return finetangent[ t >> ANGLETOFINESHIFT ];
+}
+
+inline angle_t arctan(fixed_t t) {
+   return tantoangle[t >> DBITS];
 }
 
 #endif

@@ -456,7 +456,7 @@ R_PointToDist
 	frac = 0;
     }
 	
-    angle = (tantoangle[frac>>DBITS]+ANG90);
+    angle = arctan( frac ) + ANG90;
 
     // use as cosine
     dist = FixedDiv (dx, sin(angle) );

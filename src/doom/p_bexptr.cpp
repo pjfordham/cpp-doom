@@ -242,9 +242,9 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
 	  an1 += an - mo->angle;
 	  // [crispy] consider negative slope
 	  if (slope < 0_fix)
-	    an2 -= tantoangle[-slope >> DBITS];
+             an2 -= arctan(-slope);
 	  else
-	  an2 += tantoangle[slope >> DBITS];
+             an2 += arctan(slope);
 	}
 
       th = P_SpawnMobj(mo->x, mo->y,

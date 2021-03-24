@@ -180,7 +180,7 @@ void R_FixWiggle (sector_t *sector)
 	max_rwscale = scale_values[sector->scaleindex].clamp;
 	heightbits = scale_values[sector->scaleindex].heightbits;
 	heightunit = (1 << heightbits);
-	invhgtbits = FRACBITS - heightbits;
+	invhgtbits = FRACBITS.size() - heightbits;
     }
 }
 
@@ -284,7 +284,7 @@ R_RenderMaskedSegRange
 		             (int64_t) dc_texturemid * spryscale;
 
 		if (t + (int64_t) textureheight[texnum] * spryscale < 0 ||
-		    t > (int64_t) SCREENHEIGHT << FRACBITS*2)
+		    t > (int64_t) SCREENHEIGHT << FRACBITS.size()*2)
 		{
 			spryscale += rw_scalestep; // [crispy] MBF had this in the for-loop iterator
 			continue; // skip if the texture is out of screen's range
