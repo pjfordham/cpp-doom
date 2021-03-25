@@ -163,8 +163,6 @@ R_PointOnSide
 {
     fixed_t	dx;
     fixed_t	dy;
-    fixed_t	left;
-    fixed_t	right;
 	
     if (!node->dx)
     {
@@ -195,8 +193,8 @@ R_PointOnSide
 	return 0;
     }
 
-    left = FixedMul ( node->dy>>FRACBITS , dx );
-    right = FixedMul ( dy , node->dx>>FRACBITS );
+    int left = FixedMul ( node->dy>>FRACBITS , dx );
+    int right = FixedMul ( dy , node->dx>>FRACBITS );
 	
     if (right < left)
     {
@@ -220,8 +218,6 @@ R_PointOnSegSide
     fixed_t	ldy;
     fixed_t	dx;
     fixed_t	dy;
-    fixed_t	left;
-    fixed_t	right;
 	
     lx = line->v1->x;
     ly = line->v1->y;
@@ -258,8 +254,8 @@ R_PointOnSegSide
 	return 0;
     }
 
-    left = FixedMul ( ldy>>FRACBITS , dx );
-    right = FixedMul ( dy , ldx>>FRACBITS );
+    int left = FixedMul ( ldy>>FRACBITS , dx );
+    int right = FixedMul ( dy , ldx>>FRACBITS );
 
     if (right < left)
     {

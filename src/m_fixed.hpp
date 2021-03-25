@@ -33,8 +33,8 @@ class fixed_t {
    int value;
 public:
    fixed_t() = default;
-   fixed_t(int _value) : value{ _value } {
-   }
+   fixed_t(int _value) : value{ _value } {   }
+
    operator int() const { return value; }
    explicit operator int64_t() const { return value; }
    explicit operator bool() const { return value != 0; }
@@ -205,6 +205,14 @@ inline fixed_t abs(fixed_t a) {
 
 fixed_t FixedMul	(fixed_t a, fixed_t b);
 fixed_t FixedDiv	(fixed_t a, fixed_t b);
+
+inline int FixedMul	(int a, fixed_t b) {
+   return (int)FixedMul(fixed_t(a),b);
+}
+
+inline int FixedMul	(fixed_t a, int b) {
+   return (int)FixedMul(a,fixed_t(b));
+}
 
 class fracbits_t {
 public:
