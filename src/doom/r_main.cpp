@@ -260,7 +260,7 @@ R_PointOnSegSide
 
     left = FixedMul ( ldy>>FRACBITS , dx );
     right = FixedMul ( dy , ldx>>FRACBITS );
-	
+
     if (right < left)
     {
 	// front side

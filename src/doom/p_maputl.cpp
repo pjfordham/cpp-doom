@@ -53,6 +53,18 @@ P_AproxDistance
     return dx+dy-(dy>>1);
 }
 
+int
+P_AproxDistance
+( int	dx,
+  int	dy )
+{
+    dx = abs(dx);
+    dy = abs(dy);
+    if (dx < dy)
+	return dx+dy-(dx>>1);
+    return dx+dy-(dy>>1);
+}
+
 
 //
 // P_PointOnLineSide

@@ -456,7 +456,7 @@ void R_DrawPlanes (void)
 		    dc_texturemid = dc_texturemid * (textureheight[texture]>>FRACBITS) / SKYSTRETCH_HEIGHT;
 		}
 		flip = (l->special == 272) ? 0 : INT_MAX;
-		an += angle_t(s->textureoffset);
+		an += angle_t((int)s->textureoffset);
 	    }
 	    else
 	    {

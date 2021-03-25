@@ -205,7 +205,9 @@ extern intercept_t*	intercept_p;
 
 typedef boolean (*traverser_t) (intercept_t *in);
 
+// could be a template
 fixed_t P_AproxDistance (fixed_t dx, fixed_t dy);
+int P_AproxDistance (int dx, int dy);
 int 	P_PointOnLineSide (fixed_t x, fixed_t y, line_t* line);
 int 	P_PointOnDivlineSide (fixed_t x, fixed_t y, divline_t* line);
 void 	P_MakeDivline (line_t* li, divline_t* dl);
@@ -297,7 +299,7 @@ void
 P_RadiusAttack
 ( mobj_t*	spot,
   mobj_t*	source,
-  fixed_t	damage );
+  int	damage );
 
 
 

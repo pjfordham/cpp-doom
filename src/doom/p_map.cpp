@@ -281,7 +281,7 @@ boolean PIT_CheckThing (mobj_t* thing)
     fixed_t		blockdist;
     boolean		solid;
     boolean		unblocking = false;
-    fixed_t		damage;
+    int		damage;
 		
     if (!(thing->flags & (MF_SOLID|MF_SPECIAL|MF_SHOOTABLE) ))
 	return true;
@@ -1458,7 +1458,7 @@ void
 P_RadiusAttack
 ( mobj_t*	spot,
   mobj_t*	source,
-  fixed_t	damage )
+  int	damage )
 {
     map_block_t	x, y;
     map_block_t xl, xh;
@@ -1466,7 +1466,7 @@ P_RadiusAttack
    
     fixed_t	dist;
 	
-    dist = (damage+MAXRADIUS)<<FRACBITS;
+    dist = (damage+(int)MAXRADIUS)<<FRACBITS;
     yh = (spot->y + dist - bmaporgy)>>MAPBLOCKSHIFT;
     yl = (spot->y - dist - bmaporgy)>>MAPBLOCKSHIFT;
     xh = (spot->x + dist - bmaporgx)>>MAPBLOCKSHIFT;

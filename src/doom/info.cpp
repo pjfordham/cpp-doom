@@ -88,7 +88,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_DROPOFF|MF_PICKUP|MF_NOTDMATCH|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -114,7 +114,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_posact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_POSS_RAISE1		// raisestate
@@ -140,7 +140,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_posact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_SPOS_RAISE1		// raisestate
@@ -166,7 +166,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	500,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_vilact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -192,7 +192,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -218,7 +218,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	500,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_skeact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_SKEL_RAISE1		// raisestate
@@ -244,7 +244,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	11*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	10_fix,		// damage
+	10,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -270,7 +270,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -296,7 +296,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	48*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_posact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_FATT_RAISE1		// raisestate
@@ -322,7 +322,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	8_fix,		// damage
+	8,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -348,7 +348,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_posact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_CPOS_RAISE1		// raisestate
@@ -374,7 +374,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_bgact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_TROO_RAISE1		// raisestate
@@ -400,7 +400,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	30*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_SARG_RAISE1		// raisestate
@@ -426,7 +426,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	30*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_SHADOW|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_SARG_RAISE1		// raisestate
@@ -452,7 +452,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	31*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_FLOAT|MF_NOGRAVITY|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_HEAD_RAISE1		// raisestate
@@ -478,7 +478,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	24*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_BOSS_RAISE1		// raisestate
@@ -504,7 +504,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	8_fix,		// damage
+	8,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -530,7 +530,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	24*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_BOS2_RAISE1		// raisestate
@@ -556,7 +556,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	50,		// mass
-	3_fix,		// damage
+	3,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_FLOAT|MF_NOGRAVITY|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -582,7 +582,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	128*FRACUNIT,		// radius
 	100*FRACUNIT,		// height
 	1000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -608,7 +608,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	64*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	600,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_bspact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_BSPI_RAISE1		// raisestate
@@ -634,7 +634,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	40*FRACUNIT,		// radius
 	110*FRACUNIT,		// height
 	1000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL,		// flags
 	S_NULL		// raisestate
@@ -660,7 +660,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	31*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dmact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_FLOAT|MF_NOGRAVITY|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_PAIN_RAISE1		// raisestate
@@ -686,7 +686,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_posact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_SSWV_RAISE1		// raisestate
@@ -712,7 +712,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	72*FRACUNIT,		// height
 	10000000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -738,7 +738,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	10000000,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SHOOTABLE,		// flags
 	S_NULL		// raisestate
@@ -764,7 +764,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	32*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOSECTOR,		// flags
 	S_NULL		// raisestate
@@ -790,7 +790,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	32*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOSECTOR,		// flags
 	S_NULL		// raisestate
@@ -816,7 +816,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	32*FRACUNIT,		// height
 	100,		// mass
-	3_fix,		// damage
+	3,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_NOCLIP,		// flags
 	S_NULL		// raisestate
@@ -842,7 +842,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -868,7 +868,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	10*FRACUNIT,		// radius
 	42*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_NOBLOOD,		// flags
 	S_NULL		// raisestate
@@ -894,7 +894,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	3_fix,		// damage
+	3,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -920,7 +920,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	5_fix,		// damage
+	5,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -946,7 +946,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	11*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	20_fix,		// damage
+	20,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -972,7 +972,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	13*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	5_fix,		// damage
+	5,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -998,7 +998,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	13*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	100_fix,		// damage
+	100,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1024,7 +1024,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	13*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	5_fix,		// damage
+	5,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1050,7 +1050,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_FLIPPABLE|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1076,7 +1076,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -1102,7 +1102,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1128,7 +1128,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1154,7 +1154,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOSECTOR,		// flags
 	S_NULL		// raisestate
@@ -1180,7 +1180,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_NOGRAVITY|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1206,7 +1206,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1232,7 +1232,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1258,7 +1258,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -1284,7 +1284,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -1310,7 +1310,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1336,7 +1336,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1362,7 +1362,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1388,7 +1388,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1414,7 +1414,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1440,7 +1440,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_NOTDMATCH,		// flags
 	S_NULL		// raisestate
@@ -1466,7 +1466,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1492,7 +1492,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1518,7 +1518,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1544,7 +1544,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1570,7 +1570,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -1596,7 +1596,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1622,7 +1622,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1648,7 +1648,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -1674,7 +1674,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -1700,7 +1700,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM|MF_TRANSLUCENT,		// flags
 	S_NULL		// raisestate
@@ -1726,7 +1726,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1752,7 +1752,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1778,7 +1778,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1804,7 +1804,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1830,7 +1830,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1856,7 +1856,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1882,7 +1882,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1908,7 +1908,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1934,7 +1934,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1960,7 +1960,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -1986,7 +1986,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2012,7 +2012,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2038,7 +2038,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2064,7 +2064,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2090,7 +2090,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2116,7 +2116,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL,		// flags
 	S_NULL		// raisestate
@@ -2142,7 +2142,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2168,7 +2168,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2194,7 +2194,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2220,7 +2220,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2246,7 +2246,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2272,7 +2272,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2298,7 +2298,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2324,7 +2324,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2350,7 +2350,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2376,7 +2376,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2402,7 +2402,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2428,7 +2428,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2454,7 +2454,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2480,7 +2480,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2506,7 +2506,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2532,7 +2532,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2558,7 +2558,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2584,7 +2584,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2610,7 +2610,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2636,7 +2636,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2662,7 +2662,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0,		// flags
 	S_NULL		// raisestate
@@ -2688,7 +2688,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -2714,7 +2714,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	68*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2740,7 +2740,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	84*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2766,7 +2766,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	84*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2792,7 +2792,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	68*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2818,7 +2818,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	52*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2844,7 +2844,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	84*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2870,7 +2870,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	68*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2896,7 +2896,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	52*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2922,7 +2922,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	52*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2948,7 +2948,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	68*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -2974,7 +2974,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3000,7 +3000,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3026,7 +3026,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3052,7 +3052,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3078,7 +3078,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3104,7 +3104,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3130,7 +3130,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3156,7 +3156,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3182,7 +3182,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0|MF_FLIPPABLE,		// flags
 	S_NULL		// raisestate
@@ -3208,7 +3208,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3234,7 +3234,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	0,		// flags
 	S_NULL		// raisestate
@@ -3260,7 +3260,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3286,7 +3286,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3312,7 +3312,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3338,7 +3338,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3364,7 +3364,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	32*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3390,7 +3390,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID,		// flags
 	S_NULL		// raisestate
@@ -3416,7 +3416,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	88*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3442,7 +3442,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	88*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3468,7 +3468,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3494,7 +3494,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3520,7 +3520,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3546,7 +3546,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,		// flags
 	S_NULL		// raisestate
@@ -3572,7 +3572,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate
@@ -3598,7 +3598,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate
@@ -3624,7 +3624,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate
@@ -3651,7 +3651,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	8_fix,		// radius
 	8_fix,		// height
 	10,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate
@@ -3677,7 +3677,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	8_fix,		// radius
 	8_fix,		// height
 	10,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate
@@ -3703,7 +3703,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	12*FRACUNIT,		// radius
 	28*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_dgact,		// activesound
 	MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_FLIPPABLE,		// flags
 	S_DOGS_RAISE1		// raisestate
@@ -3729,7 +3729,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	13*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	4_fix,		// damage
+	4,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY /* |MF_BOUNCES */,
 	S_NULL		// raisestate
@@ -3755,7 +3755,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	6*FRACUNIT,		// radius
 	8*FRACUNIT,		// height
 	100,		// mass
-	4_fix,		// damage
+	4,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY /* |MF_BOUNCES */,
 	S_NULL		// raisestate
@@ -3781,7 +3781,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	10*FRACUNIT,		// radius
 	16*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -3807,7 +3807,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	20*FRACUNIT,		// radius
 	10*FRACUNIT,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_SPECIAL|MF_COUNTITEM,		// flags
 	S_NULL		// raisestate
@@ -3834,7 +3834,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	16_fix,		// radius
 	16_fix,		// height
 	100,		// mass
-	0_fix,		// damage
+	0,		// damage
 	sfx_None,		// activesound
 	MF_NOBLOCKMAP,		// flags
 	S_NULL		// raisestate

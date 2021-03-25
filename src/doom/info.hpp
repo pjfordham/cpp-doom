@@ -2520,7 +2520,7 @@ typedef struct
     fixed_t radius;
     fixed_t height;
     int	mass;
-    fixed_t damage;
+    int damage;
     int	activesound;
     unsigned int flags;
     int	raisestate;

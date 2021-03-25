@@ -1372,7 +1372,7 @@ void A_VileAttack (mobj_t* actor)
     // move the fire between the vile and the player
     fire->x = actor->target->x - FixedMul (24*FRACUNIT, cos(actor->angle));
     fire->y = actor->target->y - FixedMul (24*FRACUNIT, sin(actor->angle));
-    P_RadiusAttack (fire, actor, 70_fix );
+    P_RadiusAttack (fire, actor, 70 );
 }
 
 
@@ -1634,7 +1634,7 @@ void A_Fall (mobj_t *actor)
 //
 void A_Explode (mobj_t* thingy)
 {
-    P_RadiusAttack(thingy, thingy->target, 128_fix);
+    P_RadiusAttack(thingy, thingy->target, 128);
 }
 
 // Check whether the death of the specified monster type is allowed
