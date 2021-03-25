@@ -1643,7 +1643,7 @@ static void SpechitOverrun(line_t *ld)
         case 10:
         case 11:
         case 12:
-            tmbbox[numspechit-9] = addr;
+            tmbbox[numspechit-9] = fixed_t(addr);
             break;
         case 13: 
             crushchange = addr; 

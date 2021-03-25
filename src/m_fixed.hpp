@@ -176,6 +176,10 @@ public:
    fixed_t fractional_part() { // Come up with something better for this.
       return fixed_t( value & 0xFFFF);
    }
+   fixed_t inverse() {
+      return fixed_t( 0xffffffffu / (unsigned)value );
+   }
+
    friend struct fmt::formatter<fixed_t>;
    friend class fracbits_t;
 

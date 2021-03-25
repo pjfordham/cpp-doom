@@ -293,7 +293,7 @@ R_RenderMaskedSegRange
 		sprtopscreen = (int64_t)(t >> FRACBITS); // [crispy] WiggleFix
 	    }
 
-	    dc_iscale = 0xffffffffu / (unsigned)spryscale;
+	    dc_iscale = spryscale.inverse();
 	    
 	    // draw the texture
 	    col = (column_t *)( 
@@ -392,7 +392,7 @@ void R_RenderSegLoop (void)
 	    dc_colormap[0] = walllights[index];
 	    dc_colormap[1] = (!fixedcolormap && (crispy->brightmaps & BRIGHTMAPS_TEXTURES)) ? scalelight[LIGHTLEVELS-1][MAXLIGHTSCALE-1] : dc_colormap[0];
 	    dc_x = rw_x;
-	    dc_iscale = 0xffffffffu / (unsigned)rw_scale;
+	    dc_iscale = rw_scale.inverse();
 	}
 	
 	// draw the wall tiers

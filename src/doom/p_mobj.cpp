@@ -1209,12 +1209,12 @@ P_SpawnMissile
     th->momy = FixedMul (th->info->speed, sin(an));
 	
     dist = P_AproxDistance (dest->x - source->x, dest->y - source->y);
-    dist = dist / th->info->speed;
+    int idist = dist / th->info->speed;
 
-    if (dist < 1_fix)
-	dist = 1_fix;
+    if (idist < 1)
+	idist = 1;
 
-    th->momz = (dest->z - source->z) / dist;
+    th->momz = (dest->z - source->z) / idist;
     P_CheckMissileSpawn (th);
 	
     return th;

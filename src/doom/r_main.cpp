@@ -691,9 +691,6 @@ void R_InitLightTables (void)
 {
     int		i;
     int		j;
-    int		level;
-    fixed_t	startmap; 	
-    fixed_t	scale;
     
     if (scalelight)
     {
@@ -750,12 +747,12 @@ void R_InitLightTables (void)
     {
         zlight[i] = new lighttable_t*[MAXLIGHTZ];
 
-	startmap = ((LIGHTLEVELS-LIGHTBRIGHT-i)*2)*NUMCOLORMAPS/LIGHTLEVELS;
+        int startmap = ((LIGHTLEVELS-LIGHTBRIGHT-i)*2)*NUMCOLORMAPS/LIGHTLEVELS;
 	for (j=0 ; j<MAXLIGHTZ ; j++)
 	{
-	    scale = FixedDiv ((ORIGWIDTH/2*FRACUNIT), (j+1)<<LIGHTZSHIFT);
-	    scale >>= LIGHTSCALESHIFT;
-	    level = startmap - scale/DISTMAP;
+           fixed_t scale = FixedDiv ((ORIGWIDTH/2*FRACUNIT), fixed_t((j+1)<<LIGHTZSHIFT));
+           int iscale = scale >> LIGHTSCALESHIFT;
+           int level = startmap - iscale/DISTMAP;
 	    
 	    if (level < 0)
 		level = 0;
