@@ -81,7 +81,7 @@ void A_Mushroom(mobj_t *actor)
 
 void A_BetaSkullAttack(mobj_t *actor)
 {
-  fixed_t damage;
+  int damage;
   if (!actor->target || actor->target->type == MT_SKULL)
     return;
   S_StartSound(actor, actor->info->attacksound);

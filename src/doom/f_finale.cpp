@@ -842,7 +842,7 @@ void
 F_DrawPatchCol
 ( int		x,
   patch_t*	patch,
-  int		col )
+  fixed_t	col )
 {
     column_t*	column;
     byte*	source;

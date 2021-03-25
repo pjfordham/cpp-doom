@@ -330,13 +330,13 @@ void P_PlayerThink (player_t* player)
     // [crispy] weapon recoil pitch
     if (player->recoilpitch)
     {
-        if (player->recoilpitch > 0_fix)
+        if (player->recoilpitch > 0)
         {
-            player->recoilpitch -= 1_fix;
+            player->recoilpitch -= 1;
         }
-        else if (player->recoilpitch < 0_fix)
+        else if (player->recoilpitch < 0)
         {
-            player->recoilpitch += 1_fix;
+            player->recoilpitch += 1;
         }
     }
 

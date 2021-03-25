@@ -264,7 +264,7 @@ void T_MoveGoobers (floormove_t *floor)
 
     // [crispy] one thinker for the floors ...
     res1 = T_MovePlane(floor->sector, 2 * FLOORSPEED, 0_fix,
-                       true, 0_fix, (floor->direction &  1) * 2 - 1);
+                       true, 0, (floor->direction &  1) * 2 - 1);
     // [crispy] ... and one for the ceilings
     // * floordestheight is actually the ceiling destination height (either 0 or 128)
     // * the 5th argument is "floorOrCeiling"

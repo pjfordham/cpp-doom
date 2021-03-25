@@ -276,8 +276,8 @@ boolean P_CheckMissileRange (mobj_t* actor)
 // Move in the current direction,
 // returns false if the move is blocked.
 //
-int xspeed[8] = {FRACUNIT,47000,0,-47000,-FRACUNIT,-47000,0,47000};
-int yspeed[8] = {0,47000,FRACUNIT,47000,0,-47000,-FRACUNIT,-47000};
+int xspeed[8] = {(int)FRACUNIT,47000,0,-47000,-(int)FRACUNIT,-47000,0,47000};
+int yspeed[8] = {0,47000,(int)FRACUNIT,47000,0,-47000,-(int)FRACUNIT,-47000};
 
 boolean P_Move (mobj_t*	actor)
 {

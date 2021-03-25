@@ -1021,7 +1021,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     str->speed = fixed_t(saveg_read32());
 
     // int direction;
-    str->direction = fixed_t(saveg_read32());
+    str->direction = saveg_read32();
 
     // int topwait;
     str->topwait = saveg_read32();

@@ -285,7 +285,7 @@ R_PointOnSegSide
 
 
 static int wrapped( int (*slope_div) (unsigned int num, unsigned int den), fixed_t x, fixed_t y) {
-   return slope_div( (unsigned int)x, (unsigned int)y );
+   return slope_div( (int)x, (int)y );
 }
 
 // [crispy] turned into a general R_PointToAngle() flavor
@@ -751,7 +751,7 @@ void R_InitLightTables (void)
 	for (j=0 ; j<MAXLIGHTZ ; j++)
 	{
            fixed_t scale = FixedDiv ((ORIGWIDTH/2*FRACUNIT), fixed_t((j+1)<<LIGHTZSHIFT));
-           int iscale = scale >> LIGHTSCALESHIFT;
+           int iscale = (int)scale >> LIGHTSCALESHIFT;
            int level = startmap - iscale/DISTMAP;
 	    
 	    if (level < 0)
@@ -1011,8 +1011,9 @@ void R_SetupFrame (player_t* player)
         viewz = player->oldviewz + FixedMul(player->viewz - player->oldviewz, fractionaltic);
         viewangle = R_InterpolateAngle(player->mo->oldangle, player->mo->angle, fractionaltic) + viewangleoffset;
 
-        pitch = fixed_t((player->oldlookdir + (player->lookdir - player->oldlookdir) * FIXED2DOUBLE(fractionaltic)) / MLOOKUNIT )
-                + (player->oldrecoilpitch + FixedMul(player->recoilpitch - player->oldrecoilpitch, fractionaltic));
+        // FIXME this seems very wrong
+        pitch = ((player->oldlookdir + (player->lookdir - player->oldlookdir) * FIXED2DOUBLE(fractionaltic)) / MLOOKUNIT )
+           + (player->oldrecoilpitch + (int)FixedMul(fixed_t(player->recoilpitch - player->oldrecoilpitch), fractionaltic));
     }
     else
     {
@@ -1022,7 +1023,7 @@ void R_SetupFrame (player_t* player)
         viewangle = player->mo->angle + viewangleoffset;
 
         // [crispy] pitch is actual lookdir and weapon pitch
-        pitch = fixed_t(player->lookdir / MLOOKUNIT) + player->recoilpitch;
+        pitch = player->lookdir / MLOOKUNIT + player->recoilpitch;
     }
 
     extralight = player->extralight;

@@ -177,7 +177,7 @@ struct player_t
     unsigned int	jumpTics;
 
     // [crispy] weapon recoil pitch
-    fixed_t	recoilpitch, oldrecoilpitch;
+    int	recoilpitch, oldrecoilpitch;
 
     // [crispy] weapon sound source
     mobj_t	*so;

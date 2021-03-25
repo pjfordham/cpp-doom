@@ -882,7 +882,7 @@ static void InterceptsOverrun(int num_intercepts, intercept_t *intercept)
     // address translated into the correct address value for 
     // Vanilla Doom.
 
-    InterceptsMemoryOverrun(location, intercept->frac);
+    InterceptsMemoryOverrun(location, (intptr_t)intercept->frac);
     InterceptsMemoryOverrun(location + 4, intercept->isaline);
     InterceptsMemoryOverrun(location + 8, (intptr_t) intercept->d.thing);
 }

@@ -841,8 +841,8 @@ void R_DrawSpan (void)
 	byte source;
 	// Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
-        ytemp = ((unsigned int)ds_yfrac >> 10) & 0x0fc0;
-        xtemp = ((unsigned int)ds_xfrac >> 16) & 0x3f;
+        ytemp = ((unsigned int)(int)ds_yfrac >> 10) & 0x0fc0;
+        xtemp = ((unsigned int)(int)ds_xfrac >> 16) & 0x3f;
         spot = xtemp | ytemp;
 
 	// Lookup pixel from flat texture tile,
@@ -976,8 +976,8 @@ void R_DrawSpanLow (void)
 	byte source;
 	// Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
-        ytemp = ((unsigned int)ds_yfrac >> 10) & 0x0fc0;
-        xtemp = ((unsigned int)ds_xfrac >> 16) & 0x3f;
+        ytemp = ((unsigned int)(int)ds_yfrac >> 10) & 0x0fc0;
+        xtemp = ((unsigned int)(int)ds_xfrac >> 16) & 0x3f;
         spot = xtemp | ytemp;
 
 	// Lowres/blocky mode does it twice,
