@@ -32,7 +32,7 @@
 #define SKYSTRETCH_HEIGHT 228
 
 extern  int		skytexture;
-extern int		skytexturemid;
+extern fixed_t		skytexturemid;
 
 // Called whenever the view size changes.
 void R_InitSkyMap (void);

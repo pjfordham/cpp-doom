@@ -43,16 +43,16 @@ const fixed_t WEAPONTOP = 32*FRACUNIT;
 
 // [crispy] weapon recoil {thrust, pitch} values
 // thrust values from prboom-plus/src/p_pspr.c:73-83
-static const int recoil_values[][2] = {
-  {10,   0}, // wp_fist
-  {10,   4}, // wp_pistol
-  {30,   8}, // wp_shotgun
-  {10,   4}, // wp_chaingun
-  {100, 16}, // wp_missile
-  {20,   4}, // wp_plasma
-  {100, 20}, // wp_bfg
-  {0,   -2}, // wp_chainsaw
-  {80,  16}, // wp_supershotgun
+static const fixed_t recoil_values[][2] = {
+  {10_fix,   0_fix}, // wp_fist
+  {10_fix,   4_fix}, // wp_pistol
+  {30_fix,   8_fix}, // wp_shotgun
+  {10_fix,   4_fix}, // wp_chaingun
+  {100_fix, 16_fix}, // wp_missile
+  {20_fix,   4_fix}, // wp_plasma
+  {100_fix, 20_fix}, // wp_bfg
+  {0_fix,   -2_fix}, // wp_chainsaw
+  {80_fix,  16_fix}, // wp_supershotgun
 };
 
 // [crispy] add weapon recoil
@@ -188,7 +188,7 @@ void P_BringUpWeapon (player_t* player)
     player->pendingweapon = wp_nochange;
     player->psprites[ps_weapon].sy = WEAPONBOTTOM;
     // [crispy] squat down weapon sprite
-    player->psprites[ps_weapon].dy = 0;
+    player->psprites[ps_weapon].dy = 0_fix;
 
     P_SetPsprite (player, ps_weapon, newstate);
 }

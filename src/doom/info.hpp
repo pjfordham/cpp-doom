@@ -2516,7 +2516,7 @@ typedef struct
     int	deathstate;
     int	xdeathstate;
     int	deathsound;
-    int speed;
+    fixed_t speed;
     fixed_t radius;
     fixed_t height;
     int	mass;
@@ -2527,7 +2527,8 @@ typedef struct
     // [crispy] height of the spawnstate's first sprite in pixels
     fixed_t actualheight;
 
-} mobjinfo_t;
+}
+   mobjinfo_t;
 
 extern mobjinfo_t mobjinfo[NUMMOBJTYPES];
 

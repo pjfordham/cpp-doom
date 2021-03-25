@@ -36,7 +36,7 @@
 //
 int			skyflatnum;
 int			skytexture = -1; // [crispy] initialize
-int			skytexturemid;
+fixed_t			skytexturemid;
 
 
 
