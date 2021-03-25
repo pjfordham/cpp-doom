@@ -523,7 +523,7 @@ R_DrawVisSprite
     dc_texturemid = vis->texturemid;
     frac = vis->startfrac;
     spryscale = vis->scale;
-    sprtopscreen = centeryfrac - FixedMul(dc_texturemid,spryscale);
+    sprtopscreen = (int)centeryfrac - FixedMul(dc_texturemid,spryscale);
 	
     for (dc_x=vis->x1 ; dc_x<=vis->x2 ; dc_x++, frac += vis->xiscale)
     {

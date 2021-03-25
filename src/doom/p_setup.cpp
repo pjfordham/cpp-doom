@@ -285,8 +285,8 @@ void P_SegLengths (boolean contrast_only)
 	seg_t *const li = &segs[i];
 	int64_t dx, dy;
 
-	dx = li->v2->r_x - li->v1->r_x;
-	dy = li->v2->r_y - li->v1->r_y;
+	dx = (int64_t)li->v2->r_x - li->v1->r_x;
+	dy = (int64_t)li->v2->r_y - li->v1->r_y;
 
 	if (!contrast_only)
 	{
@@ -853,14 +853,14 @@ void P_GroupLines (void)
     sector = sectors;
     for (i=0 ; i<numsectors ; i++, sector++)
     {
-	M_ClearBox (bbox);
+       M_ClearBox ((int*)bbox);
 
 	for (j=0 ; j<sector->linecount; j++)
 	{
             li = sector->lines[j];
 
-            M_AddToBox (bbox, li->v1->x, li->v1->y);
-            M_AddToBox (bbox, li->v2->x, li->v2->y);
+            M_AddToBox ((int*)bbox, (int)li->v1->x, (int)li->v1->y);
+            M_AddToBox ((int*)bbox, (int)li->v2->x, (int)li->v2->y);
 	}
 
 	// set the degenmobj_t to the middle of the bounding box

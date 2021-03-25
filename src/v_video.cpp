@@ -89,8 +89,8 @@ void V_MarkRect(int x, int y, int width, int height)
 
     if (dest_screen == I_VideoBuffer)
     {
-       M_AddToBox ((fixed_t*)dirtybox, x, y); 
-       M_AddToBox ((fixed_t*)dirtybox, x + width-1, y + height-1); 
+       M_AddToBox (dirtybox, x, y); 
+       M_AddToBox (dirtybox, x + width-1, y + height-1); 
     }
 } 
  
@@ -237,7 +237,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
 
     V_MarkRect(x, y, SHORT(patch->width), SHORT(patch->height));
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
     w = SHORT(patch->width);
@@ -264,7 +264,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         while (column->topdelta != 0xff)
         {
             int top;
-            fixed_t  srccol = 0;
+            fixed_t  srccol = 0_fix;
             // [crispy] support for DeePsea tall patches
             if (column->topdelta <= topdelta)
             {
@@ -379,7 +379,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
 
     V_MarkRect (x, y, SHORT(patch->width), SHORT(patch->height));
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
     w = SHORT(patch->width);
@@ -406,7 +406,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
         while (column->topdelta != 0xff )
         {
             int top;
-            fixed_t srccol = 0;
+            fixed_t srccol = 0_fix;
             // [crispy] support for DeePsea tall patches
             if (column->topdelta <= topdelta)
             {
@@ -490,7 +490,7 @@ void V_DrawTLPatch(int x, int y, patch_t * patch)
         I_Error("Bad V_DrawTLPatch");
     }
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
     w = SHORT(patch->width);
@@ -502,7 +502,7 @@ void V_DrawTLPatch(int x, int y, patch_t * patch)
 
         while (column->topdelta != 0xff)
         {
-            fixed_t srccol = 0;
+            fixed_t srccol = 0_fix;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -542,7 +542,7 @@ void V_DrawXlaPatch(int x, int y, patch_t * patch)
             return;
     }
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
     w = SHORT(patch->width);
@@ -554,7 +554,7 @@ void V_DrawXlaPatch(int x, int y, patch_t * patch)
 
         while(column->topdelta != 0xff)
         {
-            fixed_t srccol = 0;
+            fixed_t srccol = 0_fix;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -596,7 +596,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t * patch)
         I_Error("Bad V_DrawAltTLPatch");
     }
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
     w = SHORT(patch->width);
@@ -608,7 +608,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t * patch)
 
         while (column->topdelta != 0xff)
         {
-            fixed_t srccol = 0;
+            fixed_t srccol = 0_fix;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count = (column->length * dy) >> FRACBITS;
@@ -651,7 +651,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
         I_Error("Bad V_DrawShadowedPatch");
     }
 
-    col = 0;
+    col = 0_fix;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
     desttop2 = dest_screen + (((y + 2) * dy) >> FRACBITS) * SCREENWIDTH + (((x + 2) * dx) >> FRACBITS);
 
@@ -664,7 +664,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
 
         while (column->topdelta != 0xff)
         {
-            fixed_t srccol = 0;
+            fixed_t srccol = 0_fix;
             source = (byte *) column + 3;
             dest = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             dest2 = desttop2 + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;

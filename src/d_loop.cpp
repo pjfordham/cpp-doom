@@ -345,7 +345,7 @@ void D_StartNetGame(net_gamesettings_t *settings,
 {
     int i;
 
-    offsetms = 0;
+    offsetms = 0_fix;
     recvtic = 0;
 
     settings->consoleplayer = 0;

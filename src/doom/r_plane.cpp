@@ -206,7 +206,7 @@ void R_ClearPlanes (void)
     lastopening = openings;
     
     // texture calculation
-    std::fill(std::begin(cachedheight) , std::end(cachedheight), 0 );
+    std::fill(std::begin(cachedheight) , std::end(cachedheight), 0_fix );
 
     // left to right mapping
     angle = (viewangle-ANG90);

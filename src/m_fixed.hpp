@@ -33,9 +33,9 @@ class fixed_t {
    int value;
 public:
    fixed_t() = default;
-   fixed_t(int _value) : value{ _value } {   }
+   explicit fixed_t(int _value) : value{ _value } {   }
 
-   operator int() const { return value; }
+   explicit operator int() const { return value; }
    explicit operator int64_t() const { return value; }
    explicit operator bool() const { return value != 0; }
    explicit operator double() const { return (double)value; }

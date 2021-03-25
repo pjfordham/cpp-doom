@@ -23,6 +23,7 @@
 #define __V_VIDEO__
 
 #include "doomtype.hpp"
+#include "m_fixed.hpp"
 
 // Needed because we are refering to patches.
 #include "v_patch.hpp"

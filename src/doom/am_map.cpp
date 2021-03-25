@@ -158,7 +158,7 @@ typedef enum
 //  A line drawing of the player pointing right,
 //   starting from the middle.
 //
-#define R ((8*PLAYERRADIUS)/7)
+#define R int64_t(((8*PLAYERRADIUS)/7))
 mline_t player_arrow[] = {
     { { -R+R/8, 0 }, { R, 0 } }, // -----
     { { R, 0 }, { R-R/2, R/4 } },  // ----->
@@ -170,7 +170,7 @@ mline_t player_arrow[] = {
 };
 #undef R
 
-#define R ((8*PLAYERRADIUS)/7)
+#define R int64_t(((8*PLAYERRADIUS)/7))
 mline_t cheat_player_arrow[] = {
     { { -R+R/8, 0 }, { R, 0 } }, // -----
     { { R, 0 }, { R-R/2, R/6 } },  // ----->
@@ -193,20 +193,20 @@ mline_t cheat_player_arrow[] = {
 
 #define R ((double)FRACUNIT)
 mline_t triangle_guy[] = {
-    { { (fixed_t)(-.867*R), (fixed_t)(-.5*R) }, { (fixed_t)(.867*R ), (fixed_t)(-.5*R) } },
-    { { (fixed_t)(.867*R ), (fixed_t)(-.5*R) }, { (fixed_t)(0      ), (fixed_t)(R    ) } },
-    { { (fixed_t)(0      ), (fixed_t)(R    ) }, { (fixed_t)(-.867*R), (fixed_t)(-.5*R) } }
+    { { (int64_t)(-.867*R), (int64_t)(-.5*R) }, { (int64_t)(.867*R ), (int64_t)(-.5*R) } },
+    { { (int64_t)(.867*R ), (int64_t)(-.5*R) }, { (int64_t)(0      ), (int64_t)(R    ) } },
+    { { (int64_t)(0      ), (int64_t)(R    ) }, { (int64_t)(-.867*R), (int64_t)(-.5*R) } }
 };
 #undef R
 
 #define R ((double)FRACUNIT)
 mline_t thintriangle_guy[] = {
-    { { (fixed_t)(-.5*R), (fixed_t)(-.7*R) }, { (fixed_t)(R    ), (fixed_t)(0    ) } },
-    { { (fixed_t)(R    ), (fixed_t)(0    ) }, { (fixed_t)(-.5*R), (fixed_t)(.7*R ) } },
-    { { (fixed_t)(-.5*R), (fixed_t)(.7*R ) }, { (fixed_t)(-.5*R), (fixed_t)(-.7*R) } }
+    { { (int64_t)(-.5*R), (int64_t)(-.7*R) }, { (int64_t)(R    ), (int64_t)(0    ) } },
+    { { (int64_t)(R    ), (int64_t)(0    ) }, { (int64_t)(-.5*R), (int64_t)(.7*R ) } },
+    { { (int64_t)(-.5*R), (int64_t)(.7*R ) }, { (int64_t)(-.5*R), (int64_t)(-.7*R) } }
 };
 #undef R
-#define R (FRACUNIT)
+#define R int64_t(FRACUNIT)
 // [crispy] print keys as crosses
 static mline_t cross_mark[] = {
     { { -R, 0 }, { R, 0 } },
@@ -314,10 +314,10 @@ AM_getIslope
 ( mline_t*	ml,
   islope_t*	is )
 {
-    int dx, dy;
+    fixed_t dx, dy;
 
-    dy = ml->a.y - ml->b.y;
-    dx = ml->b.x - ml->a.x;
+    dy = fixed_t(ml->a.y - ml->b.y);
+    dx = fixed_t(ml->b.x - ml->a.x);
     if (!dy) is->islp = (dx<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
     else is->islp = FixedDiv(dx, dy);
     if (!dx) is->slp = (dy<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
@@ -371,7 +371,7 @@ void AM_restoreScaleAndLoc(void)
     m_y2 = m_y + m_h;
 
     // Change the scaling multipliers
-    scale_mtof = FixedDiv(f_w<<FRACBITS, m_w);
+    scale_mtof = FixedDiv(f_w<<FRACBITS, fixed_t(m_w));
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
 }
 
@@ -389,8 +389,8 @@ void AM_addMark(void)
     }
     else
     {
-	markpoints[markpointnum].x = plr->mo->x;
-	markpoints[markpointnum].y = plr->mo->y;
+        markpoints[markpointnum].x = int64_t(plr->mo->x);
+	markpoints[markpointnum].y = int64_t(plr->mo->y);
     }
     markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS;
 
@@ -592,8 +592,9 @@ void AM_LevelInit(void)
     AM_findMinMaxBoundaries();
     // [crispy] initialize zoomlevel on all maps so that a 4096 units
     // square map would just fit in (MAP01 is 3376x3648 units)
-    a = FixedDiv(f_w, ((max_w>>FRACBITS) < 2048) ? 2*(max_w>>FRACBITS) : 4096);
-    b = FixedDiv(f_h, ((max_h>>FRACBITS) < 2048) ? 2*(max_h>>FRACBITS) : 4096);
+    // FIXME: ALL this casting is madness
+    a = FixedDiv(fixed_t(f_w), fixed_t(((max_w>>FRACBITS) < 2048) ? 2*(max_w>>FRACBITS) : 4096));
+    b = FixedDiv(fixed_t(f_h), fixed_t(((max_h>>FRACBITS) < 2048) ? 2*(max_h>>FRACBITS) : 4096));
     scale_mtof = FixedDiv(a < b ? a : b, fixed_t(0.7*(double)FRACUNIT));
     if (scale_mtof > max_scale_mtof)
 	scale_mtof = min_scale_mtof;
@@ -930,8 +931,8 @@ void AM_doFollowPlayer(void)
 	m_y = FTOM(MTOF(plr->mo->y)) - m_h/2;
 	m_x2 = m_x + m_w;
 	m_y2 = m_y + m_h;
-	f_oldloc.x = plr->mo->x;
-	f_oldloc.y = plr->mo->y;
+	f_oldloc.x = (int64_t)plr->mo->x;
+	f_oldloc.y = (int64_t)plr->mo->y;
 
 	//  m_x = FTOM(MTOF(plr->mo->x - m_w/2));
 	//  m_y = FTOM(MTOF(plr->mo->y - m_h/2));
@@ -1366,10 +1367,10 @@ void AM_drawWalls(void)
 
     for (i=0;i<numlines;i++)
     {
-	l.a.x = lines[i].v1->x;
-	l.a.y = lines[i].v1->y;
-	l.b.x = lines[i].v2->x;
-	l.b.y = lines[i].v2->y;
+	l.a.x = (int64_t)lines[i].v1->x;
+	l.a.y = (int64_t)lines[i].v1->y;
+	l.b.x = (int64_t)lines[i].v2->x;
+	l.b.y = (int64_t)lines[i].v2->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&l.a);
@@ -1584,8 +1585,8 @@ void AM_drawPlayers(void)
 
     if (!netgame)
     {
-	pt.x = plr->mo->x;
-	pt.y = plr->mo->y;
+	pt.x = (int64_t)plr->mo->x;
+	pt.y = (int64_t)plr->mo->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&pt);
@@ -1593,12 +1594,12 @@ void AM_drawPlayers(void)
 
 	if (cheating)
 	    AM_drawLineCharacter
-		(cheat_player_arrow, arrlen(cheat_player_arrow), 0,
-		 plr->mo->angle, WHITE, pt.x, pt.y);
+		(cheat_player_arrow, arrlen(cheat_player_arrow), 0_fix,
+		 plr->mo->angle, WHITE, fixed_t(pt.x), fixed_t(pt.y));
 	else
 	    AM_drawLineCharacter
-		(player_arrow, arrlen(player_arrow), 0, plr->mo->angle,
-		 WHITE, pt.x, pt.y);
+		(player_arrow, arrlen(player_arrow), 0_fix, plr->mo->angle,
+		 WHITE, fixed_t(pt.x), fixed_t(pt.y));
 	return;
     }
 
@@ -1618,16 +1619,16 @@ void AM_drawPlayers(void)
 	else
 	    color = their_colors[their_color];
 	
-	pt.x = p->mo->x;
-	pt.y = p->mo->y;
+	pt.x = (int64_t)p->mo->x;
+	pt.y = (int64_t)p->mo->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&pt);
 	}
 
 	AM_drawLineCharacter
-	    (player_arrow, arrlen(player_arrow), 0, p->mo->angle,
-	     color, pt.x, pt.y);
+	    (player_arrow, arrlen(player_arrow), 0_fix, p->mo->angle,
+	     color, fixed_t(pt.x), fixed_t(pt.y));
     }
 
 }
@@ -1654,8 +1655,8 @@ AM_drawThings
 		continue;
 	    }
 
-	    pt.x = t->x;
-	    pt.y = t->y;
+	    pt.x = (int64_t)t->x;
+	    pt.y = (int64_t)t->y;
 	    if (crispy->automaprotate)
 	    {
 		AM_rotatePoint(&pt);
@@ -1693,7 +1694,7 @@ AM_drawThings
 		 (key == yellow_key) ? YELLOWS :
 		 (key == blue_key) ? BLUES :
 		 colors+lightlev,
-		 pt.x, pt.y);
+		 fixed_t(pt.x), fixed_t(pt.y));
 	    }
 	    else
 	    // [crispy] draw blood splats and puffs as small squares
@@ -1703,7 +1704,7 @@ AM_drawThings
 		(square_mark, arrlen(square_mark),
 		 t->radius >> 2, t->angle,
 		 (t->type == MT_BLOOD) ? REDS : GRAYS,
-		 pt.x, pt.y);
+		 fixed_t(pt.x), fixed_t(pt.y));
 	    }
 	    else
 	    {
@@ -1722,7 +1723,7 @@ AM_drawThings
 		// [crispy] ... and countable items in yellow
 		 (t->flags & MF_COUNTITEM) ? YELLOWS :
 		 colors+lightlev,
-		 pt.x, pt.y);
+		 fixed_t(pt.x), fixed_t(pt.y));
 	    }
 	  }
 	  else
