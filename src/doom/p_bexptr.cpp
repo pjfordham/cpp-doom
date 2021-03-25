@@ -92,7 +92,7 @@ void A_BetaSkullAttack(mobj_t *actor)
 
 void A_Stop(mobj_t *actor)
 {
-  actor->momx = actor->momy = actor->momz = 0;
+  actor->momx = actor->momy = actor->momz = 0_fix;
 }
 
 //
@@ -204,7 +204,7 @@ void A_FireOldBFG(mobj_t *mobj, player_t *player, pspdef_t *psp)
 
   if (crispy->recoil && !(player->mo->flags & MF_NOCLIP))
     P_Thrust(player, ANG180 + player->mo->angle,
-	     512*20);//recoil_values[wp_plasma][0]);
+	     512*20_fix);//recoil_values[wp_plasma][0]);
 
   player->ammo[weaponinfo[player->readyweapon].ammo]--;
 

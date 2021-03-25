@@ -848,7 +848,7 @@ P_DamageMobj
 
     if ( target->flags & MF_SKULLFLY )
     {
-	target->momx = target->momy = target->momz = 0;
+	target->momx = target->momy = target->momz = 0_fix;
     }
 	
     player = target->player;

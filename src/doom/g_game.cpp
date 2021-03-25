@@ -164,7 +164,7 @@ byte		consistancy[MAXPLAYERS][BACKUPTICS];
 
 int             forwardmove[2] = {0x19, 0x32}; 
 int             sidemove[2] = {0x18, 0x28}; 
-fixed_t         angleturn[3] = {640, 1280, 320};    // + slow turn 
+int            angleturn[3] = {640, 1280, 320};    // + slow turn 
 
 static int *weapon_keys[] = {
     &key_weapon1,
@@ -1323,7 +1323,7 @@ void G_PlayerFinishLevel (int player)
     p->lookdir = p->oldlookdir = 0;
     p->centering = false;
     p->jumpTics = 0;
-    p->recoilpitch = p->oldrecoilpitch = p->psp_dy_max = 0;
+    p->recoilpitch = p->oldrecoilpitch = p->psp_dy_max = 0_fix;
 } 
  
 
@@ -1466,7 +1466,7 @@ G_CheckSpot
                 break;
             default:
                 I_Error("G_CheckSpot: unexpected angle %d\n", an);
-                xa = ya = 0;
+                xa = ya = 0_fix;
                 break;
         }
         mo = P_SpawnMobj(x + 20 * xa, y + 20 * ya,

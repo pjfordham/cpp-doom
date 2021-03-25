@@ -99,13 +99,13 @@ extern boolean inhelpscreens; // [crispy]
 #define F_PANINC	4
 // how much zoom-in per tic
 // goes to 2x in 1 second
-const fixed_t M_ZOOMIN = (int) (1.02*(double)FRACUNIT);
+const fixed_t M_ZOOMIN = fixed_t(1.02*(double)FRACUNIT);
 // how much zoom-out per tic
 // pulls out to 0.5x in 1 second
-const fixed_t M_ZOOMOUT = (int) ((double)FRACUNIT/1.02);
+const fixed_t M_ZOOMOUT = fixed_t((double)FRACUNIT/1.02);
 // [crispy] zoom faster with the mouse wheel
-const fixed_t M2_ZOOMIN = (int) (1.08*(double)FRACUNIT);
-const fixed_t M2_ZOOMOUT = (int)((double)FRACUNIT / 1.08);
+const fixed_t M2_ZOOMIN = fixed_t(1.08*(double)FRACUNIT);
+const fixed_t M2_ZOOMOUT = fixed_t((double)FRACUNIT / 1.08);
 
 
 // translates between frame-buffer and map distances
@@ -318,9 +318,9 @@ AM_getIslope
 
     dy = ml->a.y - ml->b.y;
     dx = ml->b.x - ml->a.x;
-    if (!dy) is->islp = (dx<0?-INT_MAX:INT_MAX);
+    if (!dy) is->islp = (dx<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
     else is->islp = FixedDiv(dx, dy);
-    if (!dx) is->slp = (dy<0?-INT_MAX:INT_MAX);
+    if (!dx) is->slp = (dy<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
     else is->slp = FixedDiv(dy, dx);
 
 }
@@ -406,8 +406,8 @@ void AM_findMinMaxBoundaries(void)
     fixed_t a;
     fixed_t b;
 
-    min_x = min_y =  INT_MAX;
-    max_x = max_y = -INT_MAX;
+    min_x = min_y =  fixed_t(INT_MAX);
+    max_x = max_y = -fixed_t(INT_MAX);
   
     for (i=0;i<numvertexes;i++)
     {

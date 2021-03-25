@@ -1103,11 +1103,11 @@ void A_Tracer (mobj_t* actor)
     dist = P_AproxDistance (dest->x - actor->x,
 			    dest->y - actor->y);
     
-    dist = dist / actor->info->speed;
+    int idist = dist / actor->info->speed;
 
-    if (dist < 1_fix)
-	dist = 1_fix;
-    slope = (dest->z+40*FRACUNIT - actor->z) / dist;
+    if (idist < 1)
+	idist = 1;
+    slope = (dest->z+40*FRACUNIT - actor->z) / idist;
 
     if (slope < actor->momz)
 	actor->momz -= FRACUNIT/8;
@@ -1471,11 +1471,11 @@ void A_SkullAttack (mobj_t* actor)
     actor->momx = FixedMul (SKULLSPEED, cos( actor->angle ));
     actor->momy = FixedMul (SKULLSPEED, sin( actor->angle ));
     dist = P_AproxDistance (dest->x - actor->x, dest->y - actor->y);
-    dist = dist / SKULLSPEED;
+    int idist = dist / SKULLSPEED;
     
-    if (dist < 1_fix)
-	dist = 1;
-    actor->momz = (dest->z+(dest->height>>1) - actor->z) / dist;
+    if (idist < 1)
+	idist = 1;
+    actor->momz = (dest->z+(dest->height>>1) - actor->z) / idist;
 }
 
 
@@ -1915,7 +1915,7 @@ void A_BrainScream (mobj_t*	mo)
 	y = mo->y - 320*FRACUNIT;
 	z = 128_fix + P_Random()*2*FRACUNIT;
 	th = P_SpawnMobj (x,y,z, MT_ROCKET);
-	th->momz = P_Random()*512;
+	th->momz = fixed_t(P_Random()*512);
 
 	P_SetMobjState (th, S_BRAINEXPLODE1);
 

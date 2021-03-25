@@ -316,7 +316,7 @@ boolean PIT_CheckThing (mobj_t* thing)
 	P_DamageMobj (thing, tmthing, tmthing, damage);
 	
 	tmthing->flags &= ~MF_SKULLFLY;
-	tmthing->momx = tmthing->momy = tmthing->momz = 0;
+	tmthing->momx = tmthing->momy = tmthing->momz = 0_fix;
 	
 	P_SetMobjState (tmthing,
                        static_cast<statenum_t>(tmthing->info->spawnstate));
@@ -709,24 +709,24 @@ void P_HitSlideLine (line_t* ld)
 	
     if (ld->slopetype == ST_HORIZONTAL)
     {
-	tmymove = 0;
+	tmymove = 0_fix;
 	return;
     }
     
     if (ld->slopetype == ST_VERTICAL)
     {
-	tmxmove = 0;
+	tmxmove = 0_fix;
 	return;
     }
 	
     side = P_PointOnLineSide (slidemo->x, slidemo->y, ld);
 	
-    lineangle = R_PointToAngle2 (0,0, ld->dx, ld->dy);
+    lineangle = R_PointToAngle2 (0_fix,0_fix, ld->dx, ld->dy);
 
     if (side == 1)
 	lineangle += ANG180;
 
-    moveangle = R_PointToAngle2 (0,0, tmxmove, tmymove);
+    moveangle = R_PointToAngle2 (0_fix,0_fix, tmxmove, tmymove);
     deltaangle = moveangle-lineangle;
 
     if (deltaangle > ANG180)
@@ -864,7 +864,7 @@ void P_SlideMove (mobj_t* mo)
     }
 
     // fudge a bit to make sure it doesn't hit
-    bestslidefrac -= 0x800;	
+    bestslidefrac -= 0x800_fix;	
     if (bestslidefrac > 0_fix)
     {
 	newx = FixedMul (mo->momx, bestslidefrac);
@@ -1240,7 +1240,7 @@ P_AimLineAttack
     if (linetarget)
 	return aimslope;
 
-    return 0;
+    return 0_fix;
 }
  
 
@@ -1405,7 +1405,7 @@ void P_UseLines (player_t*	player)
 //
 mobj_t*		bombsource;
 mobj_t*		bombspot;
-static fixed_t	bombdamage;
+static int	bombdamage;
 
 
 //
@@ -1432,18 +1432,18 @@ boolean PIT_RadiusAttack (mobj_t* thing)
     dy = abs(thing->y - bombspot->y);
     
     dist = dx>dy ? dx : dy;
-    dist = (dist - thing->radius) >> FRACBITS;
+    int idist = (dist - thing->radius) >> FRACBITS;
 
-    if (dist < 0_fix)
-	dist = 0;
+    if (idist < 0)
+	idist = 0;
 
-    if (dist >= bombdamage)
+    if (idist >= bombdamage)
 	return true;	// out of range
 
     if ( P_CheckSight (thing, bombspot) )
     {
 	// must be in direct path
-	P_DamageMobj (thing, bombspot, bombsource, bombdamage - dist);
+	P_DamageMobj (thing, bombspot, bombsource, bombdamage - idist);
     }
     
     return true;
@@ -1523,8 +1523,8 @@ boolean PIT_ChangeSector (mobj_t*	thing)
 
     if (gameversion > exe_doom_1_2)
 	    thing->flags &= ~MF_SOLID;
-	thing->height = 0;
-	thing->radius = 0;
+	thing->height = 0_fix;
+	thing->radius = 0_fix;
 
 	// [crispy] connect giblet object with the crushed monster
 	thing->target = thing;
@@ -1560,8 +1560,8 @@ boolean PIT_ChangeSector (mobj_t*	thing)
 			  // [crispy] Lost Souls and Barrels bleed Puffs
 			  thing->z + thing->height/2, (thing->flags & MF_NOBLOOD) ? MT_PUFF : MT_BLOOD);
 	
-	mo->momx = P_SubRandom() << 12;
-	mo->momy = P_SubRandom() << 12;
+	mo->momx = fixed_t(P_SubRandom() << 12);
+	mo->momy = fixed_t(P_SubRandom() << 12);
 
 	// [crispy] connect blood object with the monster that bleeds it
 	mo->target = thing;
