@@ -130,43 +130,43 @@ public:
 
 
    // 64-bit weirdities, need to better understand
-   friend int64_t operator+=(int64_t &lhs, const fixed_t rhs) {
+   friend int64_t operator+=(int64_t &lhs, fixed_t rhs) {
       return lhs += rhs.value;
    }
-   friend int64_t operator+(fixed_t lhs, const int64_t rhs) {
+   friend int64_t operator+(fixed_t lhs, int64_t rhs) {
       return (int64_t)lhs.value + rhs;
    }
-   friend int64_t operator/(const int64_t lhs, const fixed_t rhs) {
+   friend int64_t operator/(int64_t lhs, fixed_t rhs) {
       return lhs / rhs.value;
    }
-   friend int64_t operator%(const int64_t lhs, const fixed_t rhs) {
+   friend int64_t operator%(int64_t lhs, fixed_t rhs) {
       return lhs % rhs.value;
    }
-   friend int64_t operator*(const int64_t lhs, const fixed_t rhs) {
+   friend int64_t operator*(int64_t lhs, fixed_t rhs) {
       return lhs * rhs.value;
    }
-   friend int64_t operator+(const int64_t lhs, const fixed_t rhs) {
+   friend int64_t operator+(int64_t lhs, fixed_t rhs) {
       return lhs + rhs.value;
    }
-   friend int64_t operator-(const fixed_t lhs, const int64_t rhs) {
+   friend int64_t operator-(fixed_t lhs, int64_t rhs) {
       return lhs.value - rhs;
    }
-   friend int64_t operator-(const int64_t lhs, const fixed_t rhs) {
+   friend int64_t operator-(int64_t lhs, fixed_t rhs) {
       return lhs - rhs.value;
    }
    friend bool operator<(const fixed_t lhs, int64_t rhs) {
       return lhs.value < rhs;
    }
-   friend bool operator<(const int64_t lhs, const fixed_t rhs) {
+   friend bool operator<(const int64_t lhs, fixed_t rhs) {
       return lhs < rhs.value;
    }
-   friend bool operator>(const int64_t lhs, const fixed_t rhs) {
+   friend bool operator>(const int64_t lhs, fixed_t rhs) {
       return lhs > rhs.value;
    }
-   friend bool operator!=(const int64_t lhs, const fixed_t rhs) {
+   friend bool operator!=(const int64_t lhs, fixed_t rhs) {
       return lhs != rhs.value;
    }
-   friend bool operator>=(const int64_t lhs, const fixed_t rhs) {
+   friend bool operator>=(const int64_t lhs, fixed_t rhs) {
       return lhs >= rhs.value;
    }
 
