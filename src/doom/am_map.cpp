@@ -280,7 +280,8 @@ static int64_t old_m_w, old_m_h;
 static int64_t old_m_x, old_m_y;
 
 // old location used by the Follower routine
-static mpoint_t f_oldloc;
+static fixed_t f_oldloc_x;
+static fixed_t f_oldloc_y;
 
 // used by MTOF to scale from map-to-frame-buffer coords
 static fixed_t scale_mtof = (fixed_t)INITSCALEMTOF;
@@ -448,7 +449,7 @@ void AM_changeWindowLoc(void)
     if (m_paninc.x || m_paninc.y)
     {
 	followplayer = 0;
-	f_oldloc.x = INT_MAX;
+	f_oldloc_x = fixed_t(INT_MAX);
     }
 
     incx = m_paninc.x;
@@ -474,7 +475,7 @@ void AM_changeWindowLoc(void)
     m_y2 = m_y + m_h;
 
     // [crispy] reset after moving with the mouse
-    if (f_oldloc.y == INT_MAX)
+    if (f_oldloc_y == fixed_t(INT_MAX))
     {
 	m_paninc.x = 0;
 	m_paninc.y = 0;
@@ -493,7 +494,7 @@ void AM_initVariables(void)
     automapactive = true;
 //  fb = I_VideoBuffer; // [crispy] simplify
 
-    f_oldloc.x = INT_MAX;
+    f_oldloc_x = fixed_t(INT_MAX);
     amclock = 0;
     lightlev = 0;
 
@@ -744,7 +745,7 @@ AM_Responder
 		// [crispy] mouse sensitivity for strafe
 		m_paninc.x = FTOM(ev->data2*(mouseSensitivity_x2+5)/80);
 		m_paninc.y = FTOM(ev->data3*(mouseSensitivity_x2+5)/80);
-		f_oldloc.y = INT_MAX;
+		f_oldloc_y = fixed_t(INT_MAX);
 		rc = true;
 	}
     }
@@ -804,7 +805,7 @@ AM_Responder
         else if (key == key_map_follow)
         {
             followplayer = !followplayer;
-            f_oldloc.x = INT_MAX;
+            f_oldloc_x = fixed_t(INT_MAX);
             if (followplayer)
                 plr->message = DEH_String(AMSTR_FOLLOWON);
             else
@@ -925,14 +926,14 @@ void AM_changeWindowScale(void)
 void AM_doFollowPlayer(void)
 {
 
-    if (f_oldloc.x != plr->mo->x || f_oldloc.y != plr->mo->y)
+    if (f_oldloc_x != plr->mo->x || f_oldloc_y != plr->mo->y)
     {
 	m_x = FTOM(MTOF(plr->mo->x)) - m_w/2;
 	m_y = FTOM(MTOF(plr->mo->y)) - m_h/2;
 	m_x2 = m_x + m_w;
 	m_y2 = m_y + m_h;
-	f_oldloc.x = (int64_t)plr->mo->x;
-	f_oldloc.y = (int64_t)plr->mo->y;
+	f_oldloc_x = plr->mo->x;
+	f_oldloc_y = plr->mo->y;
 
 	//  m_x = FTOM(MTOF(plr->mo->x - m_w/2));
 	//  m_y = FTOM(MTOF(plr->mo->y - m_h/2));
