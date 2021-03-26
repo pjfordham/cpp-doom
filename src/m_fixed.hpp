@@ -160,9 +160,6 @@ public:
    friend bool operator>(const int64_t lhs, fixed_t rhs) {
       return lhs > rhs.value;
    }
-   friend bool operator>=(const int64_t lhs, fixed_t rhs) {
-      return lhs >= rhs.value;
-   }
 
    fixed_t abs() {
       return value < 0 ? fixed_t(-value) : fixed_t(value);
