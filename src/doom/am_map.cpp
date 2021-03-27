@@ -108,10 +108,22 @@ const fixed_t M2_ZOOMIN = fixed_t(1.08*(double)FRACUNIT);
 const fixed_t M2_ZOOMOUT = fixed_t((double)FRACUNIT / 1.08);
 
 
+// used by MTOF to scale from map-to-frame-buffer coords
+static fixed_t scale_mtof = (fixed_t)INITSCALEMTOF;
+// used by FTOM to scale from frame-buffer-to-map coords (=1/scale_mtof)
+static fixed_t scale_ftom;
+
 // translates between frame-buffer and map distances
 // [crispy] fix int overflow that causes map and grid lines to disappear
-#define FTOM(x) (((int64_t)((x)<<FRACBITS) * scale_ftom) >> FRACBITS)
-#define MTOF(x) ((((int64_t)(x) * scale_mtof) >> FRACBITS)>>FRACBITS)
+
+fixed64_t FTOM( int64_t x ) {
+   return FixedMul(x << FRACBITS, (fixed64_t)scale_ftom);
+}
+
+int64_t MTOF( fixed64_t x ) {
+   return FixedMul(x , (fixed64_t) scale_mtof) >> FRACBITS;
+}
+
 // translates between frame-buffer and map coordinates
 #define CXMTOF(x)  (f_x + MTOF((x)-m_x))
 #define CYMTOF(y)  (f_y + (f_h - MTOF((y)-m_y)))
@@ -131,7 +143,7 @@ typedef struct
 
 typedef struct
 {
-    int64_t		x,y;
+    fixed64_t		x,y;
 } mpoint_t;
 
 typedef struct
@@ -158,33 +170,33 @@ typedef enum
 //  A line drawing of the player pointing right,
 //   starting from the middle.
 //
-#define R int64_t(((8*PLAYERRADIUS)/7))
+#define R fixed64_t(((8*PLAYERRADIUS)/7))
 mline_t player_arrow[] = {
-    { { -R+R/8, 0 }, { R, 0 } }, // -----
-    { { R, 0 }, { R-R/2, R/4 } },  // ----->
-    { { R, 0 }, { R-R/2, -R/4 } },
-    { { -R+R/8, 0 }, { -R-R/8, R/4 } }, // >---->
-    { { -R+R/8, 0 }, { -R-R/8, -R/4 } },
-    { { -R+3*R/8, 0 }, { -R+R/8, R/4 } }, // >>--->
-    { { -R+3*R/8, 0 }, { -R+R/8, -R/4 } }
+    { { -R+R/8, 0_fix }, { R, 0_fix } }, // -----
+    { { R, 0_fix }, { R-R/2, R/4 } },  // ----->
+    { { R, 0_fix }, { R-R/2, -R/4 } },
+    { { -R+R/8, 0_fix }, { -R-R/8, R/4 } }, // >---->
+    { { -R+R/8, 0_fix }, { -R-R/8, -R/4 } },
+    { { -R+3*R/8, 0_fix }, { -R+R/8, R/4 } }, // >>--->
+    { { -R+3*R/8, 0_fix }, { -R+R/8, -R/4 } }
 };
 #undef R
 
-#define R int64_t(((8*PLAYERRADIUS)/7))
+#define R fixed64_t(((8*PLAYERRADIUS)/7))
 mline_t cheat_player_arrow[] = {
-    { { -R+R/8, 0 }, { R, 0 } }, // -----
-    { { R, 0 }, { R-R/2, R/6 } },  // ----->
-    { { R, 0 }, { R-R/2, -R/6 } },
-    { { -R+R/8, 0 }, { -R-R/8, R/6 } }, // >----->
-    { { -R+R/8, 0 }, { -R-R/8, -R/6 } },
-    { { -R+3*R/8, 0 }, { -R+R/8, R/6 } }, // >>----->
-    { { -R+3*R/8, 0 }, { -R+R/8, -R/6 } },
-    { { -R/2, 0 }, { -R/2, -R/6 } }, // >>-d--->
+    { { -R+R/8, 0_fix }, { R, 0_fix } }, // -----
+    { { R, 0_fix }, { R-R/2, R/6 } },  // ----->
+    { { R, 0_fix }, { R-R/2, -R/6 } },
+    { { -R+R/8, 0_fix }, { -R-R/8, R/6 } }, // >----->
+    { { -R+R/8, 0_fix }, { -R-R/8, -R/6 } },
+    { { -R+3*R/8, 0_fix }, { -R+R/8, R/6 } }, // >>----->
+    { { -R+3*R/8, 0_fix }, { -R+R/8, -R/6 } },
+    { { -R/2, 0_fix }, { -R/2, -R/6 } }, // >>-d--->
     { { -R/2, -R/6 }, { -R/2+R/6, -R/6 } },
     { { -R/2+R/6, -R/6 }, { -R/2+R/6, R/4 } },
-    { { -R/6, 0 }, { -R/6, -R/6 } }, // >>-dd-->
-    { { -R/6, -R/6 }, { 0, -R/6 } },
-    { { 0, -R/6 }, { 0, R/4 } },
+    { { -R/6, 0_fix }, { -R/6, -R/6 } }, // >>-dd-->
+    { { -R/6, -R/6 }, { 0_fix, -R/6 } },
+    { { 0_fix, -R/6 }, { 0_fix, R/4 } },
     { { R/6, R/4 }, { R/6, -R/7 } }, // >>-ddt->
     { { R/6, -R/7 }, { R/6+R/32, -R/7-R/32 } },
     { { R/6+R/32, -R/7-R/32 }, { R/6+R/10, -R/7 } }
@@ -193,30 +205,30 @@ mline_t cheat_player_arrow[] = {
 
 #define R ((double)FRACUNIT)
 mline_t triangle_guy[] = {
-    { { (int64_t)(-.867*R), (int64_t)(-.5*R) }, { (int64_t)(.867*R ), (int64_t)(-.5*R) } },
-    { { (int64_t)(.867*R ), (int64_t)(-.5*R) }, { (int64_t)(0      ), (int64_t)(R    ) } },
-    { { (int64_t)(0      ), (int64_t)(R    ) }, { (int64_t)(-.867*R), (int64_t)(-.5*R) } }
+    { { (fixed64_t)(-.867*R), (fixed64_t)(-.5*R) }, { (fixed64_t)(.867*R ), (fixed64_t)(-.5*R) } },
+    { { (fixed64_t)(.867*R ), (fixed64_t)(-.5*R) }, { (fixed64_t)(0      ), (fixed64_t)(R    ) } },
+    { { (fixed64_t)(0      ), (fixed64_t)(R    ) }, { (fixed64_t)(-.867*R), (fixed64_t)(-.5*R) } }
 };
 #undef R
 
 #define R ((double)FRACUNIT)
 mline_t thintriangle_guy[] = {
-    { { (int64_t)(-.5*R), (int64_t)(-.7*R) }, { (int64_t)(R    ), (int64_t)(0    ) } },
-    { { (int64_t)(R    ), (int64_t)(0    ) }, { (int64_t)(-.5*R), (int64_t)(.7*R ) } },
-    { { (int64_t)(-.5*R), (int64_t)(.7*R ) }, { (int64_t)(-.5*R), (int64_t)(-.7*R) } }
+    { { (fixed64_t)(-.5*R), (fixed64_t)(-.7*R) }, { (fixed64_t)(R    ), (fixed64_t)(0    ) } },
+    { { (fixed64_t)(R    ), (fixed64_t)(0    ) }, { (fixed64_t)(-.5*R), (fixed64_t)(.7*R ) } },
+    { { (fixed64_t)(-.5*R), (fixed64_t)(.7*R ) }, { (fixed64_t)(-.5*R), (fixed64_t)(-.7*R) } }
 };
 #undef R
-#define R int64_t(FRACUNIT)
+#define R fixed64_t(FRACUNIT)
 // [crispy] print keys as crosses
 static mline_t cross_mark[] = {
-    { { -R, 0 }, { R, 0 } },
-    { { 0, -R }, { 0, R } },
+    { { -R, 0_fix }, { R, 0_fix } },
+    { { 0_fix, -R }, { 0_fix, R } },
 };
 static mline_t square_mark[] = {
-    { { -R,  0 }, {  0,  R } },
-    { {  0,  R }, {  R,  0 } },
-    { {  R,  0 }, {  0, -R } },
-    { {  0, -R }, { -R,  0 } },
+    { { -R,  0_fix }, {  0_fix,  R } },
+    { {  0_fix,  R }, {  R,  0_fix } },
+    { {  R,  0_fix }, {  0_fix, -R } },
+    { {  0_fix, -R }, { -R,  0_fix } },
 };
 #undef R
 
@@ -249,14 +261,14 @@ static mpoint_t m_paninc; // how far the window pans each tic (map coords)
 static fixed_t 	mtof_zoommul; // how far the window zooms in each tic (map coords)
 static fixed_t 	ftom_zoommul; // how far the window zooms in each tic (fb coords)
 
-static int64_t 	m_x, m_y;   // LL x,y where the window is on the map (map coords)
-static int64_t 	m_x2, m_y2; // UR x,y where the window is on the map (map coords)
+static fixed64_t 	m_x, m_y;   // LL x,y where the window is on the map (map coords)
+static fixed64_t 	m_x2, m_y2; // UR x,y where the window is on the map (map coords)
 
 //
 // width/height of window on map (map coords)
 //
-static int64_t 	m_w;
-static int64_t 	m_h;
+static fixed64_t 	m_w;
+static fixed64_t 	m_h;
 
 // based on level size
 static fixed_t 	min_x;
@@ -276,17 +288,12 @@ static fixed_t 	min_scale_mtof; // used to tell when to stop zooming out
 static fixed_t 	max_scale_mtof; // used to tell when to stop zooming in
 
 // old stuff for recovery later
-static int64_t old_m_w, old_m_h;
-static int64_t old_m_x, old_m_y;
+static fixed64_t old_m_w, old_m_h;
+static fixed64_t old_m_x, old_m_y;
 
 // old location used by the Follower routine
 static fixed_t f_oldloc_x;
 static fixed_t f_oldloc_y;
-
-// used by MTOF to scale from map-to-frame-buffer coords
-static fixed_t scale_mtof = (fixed_t)INITSCALEMTOF;
-// used by FTOM to scale from frame-buffer-to-map coords (=1/scale_mtof)
-static fixed_t scale_ftom;
 
 static player_t *plr; // the player represented by an arrow
 
@@ -301,7 +308,7 @@ cheatseq_t cheat_amap = CHEAT("iddt", 0);
 static boolean stopped = true;
 
 // [crispy] automap rotate mode needs these early on
-void AM_rotate (int64_t *x, int64_t *y, angle_t a);
+void AM_rotate (fixed64_t *x, fixed64_t *y, angle_t a);
 static void AM_rotatePoint (mpoint_t *pt);
 static mpoint_t mapcenter;
 static angle_t mapangle;
@@ -319,9 +326,9 @@ AM_getIslope
 
     dy = fixed_t(ml->a.y - ml->b.y);
     dx = fixed_t(ml->b.x - ml->a.x);
-    if (!dy) is->islp = (dx<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
+    if (!dy) is->islp = (dx<0_fix?-fixed_t(INT_MAX):fixed_t(INT_MAX));
     else is->islp = FixedDiv(dx, dy);
-    if (!dx) is->slp = (dy<0?-fixed_t(INT_MAX):fixed_t(INT_MAX));
+    if (!dx) is->slp = (dy<0_fix?-fixed_t(INT_MAX):fixed_t(INT_MAX));
     else is->slp = FixedDiv(dy, dx);
 
 }
@@ -390,8 +397,8 @@ void AM_addMark(void)
     }
     else
     {
-        markpoints[markpointnum].x = int64_t(plr->mo->x);
-	markpoints[markpointnum].y = int64_t(plr->mo->y);
+        markpoints[markpointnum].x = plr->mo->x;
+	markpoints[markpointnum].y = plr->mo->y;
     }
     markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS;
 
@@ -444,7 +451,7 @@ void AM_findMinMaxBoundaries(void)
 //
 void AM_changeWindowLoc(void)
 {
-    int64_t incx, incy;
+    fixed64_t incx, incy;
 
     if (m_paninc.x || m_paninc.y)
     {
@@ -477,8 +484,8 @@ void AM_changeWindowLoc(void)
     // [crispy] reset after moving with the mouse
     if (f_oldloc_y == fixed_t(INT_MAX))
     {
-	m_paninc.x = 0;
-	m_paninc.y = 0;
+	m_paninc.x = 0_fix;
+	m_paninc.y = 0_fix;
     }
 }
 
@@ -498,7 +505,7 @@ void AM_initVariables(void)
     amclock = 0;
     lightlev = 0;
 
-    m_paninc.x = m_paninc.y = 0;
+    m_paninc.x = m_paninc.y = 0_fix;
     ftom_zoommul = FRACUNIT;
     mtof_zoommul = FRACUNIT;
 
@@ -566,7 +573,7 @@ void AM_clearMarks(void)
     int i;
 
     for (i=0;i<AM_NUMMARKPOINTS;i++)
-	markpoints[i].x = -1; // means empty
+	markpoints[i].x = -1_fix; // means empty
     markpointnum = 0;
 }
 
@@ -868,19 +875,19 @@ AM_Responder
 
         if (key == key_map_east)
         {
-            if (!followplayer) m_paninc.x = 0;
+            if (!followplayer) m_paninc.x = 0_fix;
         }
         else if (key == key_map_west)
         {
-            if (!followplayer) m_paninc.x = 0;
+            if (!followplayer) m_paninc.x = 0_fix;
         }
         else if (key == key_map_north)
         {
-            if (!followplayer) m_paninc.y = 0;
+            if (!followplayer) m_paninc.y = 0_fix;
         }
         else if (key == key_map_south)
         {
-            if (!followplayer) m_paninc.y = 0;
+            if (!followplayer) m_paninc.y = 0_fix;
         }
         else if (key == key_map_zoomout || key == key_map_zoomin)
         {
@@ -1255,8 +1262,8 @@ AM_drawMline
 //
 void AM_drawGrid(int color)
 {
-    int64_t x, y;
-    int64_t start, end;
+    fixed64_t x, y;
+    fixed64_t start, end;
     mline_t ml;
 
     // Figure out start of vertical gridlines
@@ -1368,10 +1375,10 @@ void AM_drawWalls(void)
 
     for (i=0;i<numlines;i++)
     {
-	l.a.x = (int64_t)lines[i].v1->x;
-	l.a.y = (int64_t)lines[i].v1->y;
-	l.b.x = (int64_t)lines[i].v2->x;
-	l.b.y = (int64_t)lines[i].v2->y;
+	l.a.x = lines[i].v1->x;
+	l.a.y = lines[i].v1->y;
+	l.b.x = lines[i].v2->x;
+	l.b.y = lines[i].v2->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&l.a);
@@ -1492,11 +1499,11 @@ void AM_drawWalls(void)
 //
 void
 AM_rotate
-( int64_t*	x,
-  int64_t*	y,
+( fixed64_t*	x,
+  fixed64_t*	y,
   angle_t	a )
 {
-    int64_t tmpx = FixedMul(*x,cos(a)) - FixedMul(*y,sin(a));
+    fixed64_t tmpx = FixedMul(*x,cos(a)) - FixedMul(*y,sin(a));
     *y   = FixedMul(*x,sin(a)) + FixedMul(*y,cos(a));
     *x = tmpx;
 }
@@ -1505,17 +1512,17 @@ AM_rotate
 // adapted from prboom-plus/src/am_map.c:898-920
 static void AM_rotatePoint (mpoint_t *pt)
 {
-    int64_t tmpx;
+    fixed64_t tmpx;
 
     pt->x -= mapcenter.x;
     pt->y -= mapcenter.y;
 
-    tmpx = (int64_t)FixedMul(pt->x, cos(mapangle))
-       - (int64_t)FixedMul(pt->y, sin(mapangle))
+    tmpx = FixedMul(pt->x, cos(mapangle))
+       - FixedMul(pt->y, sin(mapangle))
        + mapcenter.x;
 
-    pt->y = (int64_t)FixedMul(pt->x, sin(mapangle))
-       + (int64_t)FixedMul(pt->y, cos(mapangle))
+    pt->y = FixedMul(pt->x, sin(mapangle))
+       + FixedMul(pt->y, cos(mapangle))
           + mapcenter.y;
 
     pt->x = tmpx;
@@ -1586,8 +1593,8 @@ void AM_drawPlayers(void)
 
     if (!netgame)
     {
-	pt.x = (int64_t)plr->mo->x;
-	pt.y = (int64_t)plr->mo->y;
+	pt.x = plr->mo->x;
+	pt.y = plr->mo->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&pt);
@@ -1620,8 +1627,8 @@ void AM_drawPlayers(void)
 	else
 	    color = their_colors[their_color];
 	
-	pt.x = (int64_t)p->mo->x;
-	pt.y = (int64_t)p->mo->y;
+	pt.x = p->mo->x;
+	pt.y = p->mo->y;
 	if (crispy->automaprotate)
 	{
 	    AM_rotatePoint(&pt);
@@ -1656,8 +1663,8 @@ AM_drawThings
 		continue;
 	    }
 
-	    pt.x = (int64_t)t->x;
-	    pt.y = (int64_t)t->y;
+	    pt.x = t->x;
+	    pt.y = t->y;
 	    if (crispy->automaprotate)
 	    {
 		AM_rotatePoint(&pt);
@@ -1745,7 +1752,7 @@ void AM_drawMarks(void)
 
     for (i=0;i<AM_NUMMARKPOINTS;i++)
     {
-	if (markpoints[i].x != -1)
+	if (markpoints[i].x != -1_fix)
 	{
 	    //      w = SHORT(marknums[i]->width);
 	    //      h = SHORT(marknums[i]->height);
@@ -1831,7 +1838,7 @@ void AM_GetMarkPoints (int *n, long *p)
 		for (i = 0; i < AM_NUMMARKPOINTS; i++)
 		{
 			*p++ = (long)markpoints[i].x;
-			*p++ = (markpoints[i].x == -1) ? 0L : (long)markpoints[i].y;
+			*p++ = (markpoints[i].x == -1_fix) ? 0L : (long)markpoints[i].y;
 		}
 	}
 }
@@ -1848,7 +1855,7 @@ void AM_SetMarkPoints (int n, long *p)
 
 	for (i = 0; i < AM_NUMMARKPOINTS; i++)
 	{
-		markpoints[i].x = (int64_t)*p++;
-		markpoints[i].y = (int64_t)*p++;
+           markpoints[i].x = (fixed64_t)*p++;
+           markpoints[i].y = (fixed64_t)*p++;
 	}
 }

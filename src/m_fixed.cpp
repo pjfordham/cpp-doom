@@ -54,7 +54,7 @@ fixed_t FixedDiv(fixed_t a, fixed_t b)
     {
 	int64_t result;
 
-	result = ((int64_t) a << FRACBITS) / (int64_t)b;
+	result = ((int64_t) a << FRACBITS.size()) / (int64_t)b;
 
 	return (fixed_t) result;
     }

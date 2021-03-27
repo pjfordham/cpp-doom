@@ -389,12 +389,12 @@ R_PointToAngleCrispy
   fixed_t	y )
 {
     // [crispy] fix overflows for very long distances
-    int64_t y_viewy = (int64_t)y - viewy;
-    int64_t x_viewx = (int64_t)x - viewx;
+    fixed64_t y_viewy = (fixed64_t)y - viewy;
+    fixed64_t x_viewx = (fixed64_t)x - viewx;
 
     // [crispy] the worst that could happen is e.g. INT_MIN-INT_MAX = 2*INT_MIN
-    if (x_viewx < INT_MIN || x_viewx > INT_MAX ||
-        y_viewy < INT_MIN || y_viewy > INT_MAX)
+    if (x_viewx < fixed_t(INT_MIN) || x_viewx > fixed_t(INT_MAX) ||
+        y_viewy < fixed_t(INT_MIN) || y_viewy > fixed_t(INT_MAX) )
     {
 	// [crispy] preserving the angle by halfing the distance in both directions
         x = fixed_t(x_viewx / 2 + viewx);

@@ -130,33 +130,24 @@ public:
 
 
    // 64-bit weirdities, need to better understand
-   friend int64_t operator+=(int64_t &lhs, fixed_t rhs) {
+   friend int64_t operator+=(int64_t &lhs, fixed_t rhs){
       return lhs += rhs.value;
-   }
-   friend int64_t operator%(int64_t lhs, fixed_t rhs) {
-      return lhs % rhs.value;
-   }
+      }
    friend int64_t operator*(int64_t lhs, fixed_t rhs) {
       return lhs * rhs.value;
    }
    friend int64_t operator+(int64_t lhs, fixed_t rhs) {
       return lhs + rhs.value;
-   }
-   friend int64_t operator-(fixed_t lhs, int64_t rhs){
-      return lhs.value - rhs;
-   }
-   friend int64_t operator-(int64_t lhs, fixed_t rhs) {
+      }
+    friend int64_t operator-(int64_t lhs, fixed_t rhs) {
       return lhs - rhs.value;
-   }
-   friend bool operator<(const fixed_t lhs, int64_t rhs) {
-      return lhs.value < rhs;
-   }
-   friend bool operator<(const int64_t lhs, fixed_t rhs) {
-      return lhs < rhs.value;
-   }
-   friend bool operator>(const int64_t lhs, fixed_t rhs){
-      return lhs > rhs.value;
-   }
+      }
+
+   friend int64_t operator-(fixed_t lhs, int64_t rhs) = delete ;
+   friend bool operator<(const fixed_t lhs, int64_t rhs) = delete;
+   friend bool operator<(const int64_t lhs, fixed_t rhs) = delete;
+   friend bool operator>(const int64_t lhs, fixed_t rhs) = delete;
+   friend int64_t operator%(int64_t lhs, fixed_t rhs) = delete;
 
    fixed_t abs() {
       return value < 0 ? fixed_t(-value) : fixed_t(value);
@@ -171,6 +162,112 @@ public:
    friend struct fmt::formatter<fixed_t>;
    friend class fracbits_t;
 
+};
+
+class fixed64_t {
+   int64_t value;
+public:
+   fixed64_t() = default;
+   explicit fixed64_t(int64_t _value) : value{ _value } {   }
+   fixed64_t(fixed_t _value) : value{ (int) _value } {   }
+
+   explicit operator bool() const { return value != 0; }
+   explicit operator fixed_t() const { return fixed_t(value); }
+   explicit operator long() const { return value; }
+
+   // Well defined operators
+
+   // comparison
+   friend bool operator<(fixed64_t lhs, fixed64_t rhs) {
+      return lhs.value < rhs.value;
+   }
+   friend bool operator>(fixed64_t lhs, fixed64_t rhs) {
+      return lhs.value > rhs.value;
+   }
+   friend bool operator==(fixed64_t lhs, fixed64_t rhs) {
+      return lhs.value == rhs.value;
+   }
+   friend bool operator<=(fixed64_t lhs, fixed64_t rhs) {
+      return lhs.value <= rhs.value;
+   }
+   friend bool operator>=(fixed64_t lhs, fixed64_t rhs) {
+      return lhs.value >= rhs.value;
+   }
+
+   // unary
+   friend fixed64_t operator-(fixed64_t lhs) {
+      return fixed64_t(-lhs.value);
+   }
+
+   // binary, fixed64_t, fixed64_t => fixed64_t
+   friend fixed64_t operator+(fixed64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value + rhs.value);
+   }
+   friend fixed64_t operator-(fixed64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value - rhs.value);
+   }
+   friend fixed64_t operator^(fixed64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value ^ rhs.value);
+   }
+   friend fixed64_t operator&(fixed64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value & rhs.value);
+   }
+
+   // binary, fixed64_t, fixed64_t => int
+   friend int64_t operator*(fixed64_t lhs, fixed64_t rhs) {
+      // This is a weird one, logically wrong as you need
+      // to shift the result right by 16/32-bits.....
+      return lhs.value * rhs.value;
+   }
+   friend int64_t operator/(fixed64_t lhs, fixed64_t rhs) {
+      // Also weird but mostly OK, the ration of a fixed
+      // to a fixed is logically an int.
+      return lhs.value / rhs.value;
+   }
+
+   // binary, fixed64_t, int64_t => fixed64_t
+   friend fixed64_t operator<<(fixed64_t lhs, int64_t rhs) {
+      return fixed64_t(lhs.value << rhs);
+   }
+   friend fixed64_t operator>>(fixed64_t lhs, int64_t rhs) {
+      return fixed64_t(lhs.value >> rhs);
+   }
+   friend fixed64_t operator*(fixed64_t lhs, int64_t rhs) {
+      return fixed64_t(lhs.value * rhs);
+   }
+   friend fixed64_t operator/(fixed64_t lhs, int64_t rhs) {
+      return fixed64_t(lhs.value / rhs);
+   }
+   // REVIEW THIS
+   friend fixed64_t operator%(fixed64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value % rhs.value);
+   }
+
+   // binary, int, fixed64_t => fixed64_t
+   friend fixed64_t operator*(int64_t lhs, fixed64_t rhs) {
+      return fixed64_t(lhs * rhs.value);
+   }
+
+   // updating versions of above
+   friend fixed64_t operator+=(fixed64_t &lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value += rhs.value);
+   }
+   friend fixed64_t operator-=(fixed64_t &lhs, fixed64_t rhs) {
+      return fixed64_t(lhs.value -= rhs.value);
+   }
+   friend fixed64_t operator*=(fixed64_t &lhs, int64_t rhs) {
+      return fixed64_t(lhs.value *= rhs);
+   }
+   friend fixed64_t operator>>=(fixed64_t &lhs, int64_t rhs) {
+      return fixed64_t(lhs.value >>= rhs);
+   }
+   friend fixed64_t operator<<=(fixed64_t &lhs, int64_t rhs) {
+      return fixed64_t(lhs.value <<= rhs);
+   }
+
+   friend struct fmt::formatter<fixed64_t>;
+   friend class fracbits_t;
+   friend fixed64_t FixedMul( fixed64_t	a,  fixed64_t	b );
 };
 
 inline fixed_t operator"" _fix ( unsigned long long n ) {
@@ -194,6 +291,7 @@ inline fixed_t abs(fixed_t a) {
 fixed_t FixedMul	(fixed_t a, fixed_t b);
 fixed_t FixedDiv	(fixed_t a, fixed_t b);
 
+
 inline int FixedMul	(int a, fixed_t b) {
    return (int)FixedMul(fixed_t(a),b);
 }
@@ -211,19 +309,31 @@ public:
    friend int operator>>( fixed_t a, fracbits_t b) {
       return a.value >> b.size();
    }
-   // This is definitely dodgy
-   friend int64_t operator<<( int64_t a, fracbits_t b) {
-      return a << b.size();
+   friend fixed64_t operator<<( int64_t a, fracbits_t b) {
+      return fixed64_t( a << b.size());
    }
+   friend int64_t operator>>( fixed64_t a, fracbits_t b) {
+      return a.value >> b.size();
+   }
+   // This is definitely dodgy
    friend int64_t operator>>( int64_t a, fracbits_t b) {
       return a >> b.size();
-   }
+      }
 };
 
 const fracbits_t FRACBITS;
 const fixed_t FRACUNIT{1<<FRACBITS};
 inline double FIXED2DOUBLE( fixed_t x ) {
    return (double)x / static_cast<double>(FRACUNIT);
+}
+
+inline fixed64_t
+FixedMul
+( fixed64_t	a,
+  fixed64_t	b )
+{
+  // Why is the other one ok without the .size?
+   return fixed64_t( ( a.value * b.value ) >> FRACBITS.size());
 }
 
 #endif

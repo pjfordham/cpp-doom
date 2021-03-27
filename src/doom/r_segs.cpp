@@ -280,7 +280,8 @@ R_RenderMaskedSegRange
 	    // mapping to screen coordinates is totally out of range:
 
 	    {
-		int64_t t = ((int64_t) centeryfrac << FRACBITS) -
+               // The units of t are an int << 16
+               int64_t t = ((int64_t)centeryfrac << FRACBITS.size()) -
 		             (int64_t) dc_texturemid * spryscale;
 
 		if (t + (int64_t) textureheight[texnum] * spryscale < 0 ||
@@ -290,7 +291,8 @@ R_RenderMaskedSegRange
 			continue; // skip if the texture is out of screen's range
 		}
 
-		sprtopscreen = (int64_t)(t >> FRACBITS); // [crispy] WiggleFix
+		// Restore units to unshifted int
+                sprtopscreen = (int64_t)(t >> FRACBITS.size()); // [crispy] WiggleFix
 	    }
 
 	    dc_iscale = spryscale.inverse();
