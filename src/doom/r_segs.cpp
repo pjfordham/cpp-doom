@@ -72,8 +72,8 @@ fixed_t		worldbottom;
 fixed_t		worldhigh;
 fixed_t		worldlow;
 
-int64_t		pixhigh; // [crispy] WiggleFix
-int64_t		pixlow; // [crispy] WiggleFix
+int64_t	pixhigh; // [crispy] WiggleFix
+int64_t	pixlow; // [crispy] WiggleFix
 fixed_t		pixhighstep;
 fixed_t		pixlowstep;
 
@@ -282,9 +282,9 @@ R_RenderMaskedSegRange
 	    {
                // The units of t are an int << 16
                int64_t t = ((int64_t)centeryfrac << FRACBITS.size()) -
-		             (int64_t) dc_texturemid * spryscale;
+                  (int64_t) dc_texturemid * (int64_t)spryscale;
 
-		if (t + (int64_t) textureheight[texnum] * spryscale < 0 ||
+               if (t + (int64_t) textureheight[texnum] * (int64_t)spryscale < 0 ||
 		    t > (int64_t) SCREENHEIGHT << FRACBITS.size()*2)
 		{
 			spryscale += rw_scalestep; // [crispy] MBF had this in the for-loop iterator
@@ -861,10 +861,10 @@ R_StoreWallRange
     worldbottom >>= invhgtbits;
 	
     topstep = -FixedMul (rw_scalestep, worldtop);
-    topfrac = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldtop * rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
+    topfrac = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldtop * (int64_t)rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
 
     bottomstep = -FixedMul (rw_scalestep,worldbottom);
-    bottomfrac = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldbottom * rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
+    bottomfrac = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldbottom * (int64_t)rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
 	
     if (backsector)
     {	
@@ -873,13 +873,13 @@ R_StoreWallRange
 
 	if (worldhigh < worldtop)
 	{
-           pixhigh = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldhigh * rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
+           pixhigh = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldhigh * (int64_t)rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
 	    pixhighstep = -FixedMul (rw_scalestep,worldhigh);
 	}
 	
 	if (worldlow > worldbottom)
 	{
-           pixlow = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldlow * rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
+           pixlow = ((int64_t)centeryfrac>>invhgtbits) - (((int64_t)worldlow * (int64_t)rw_scale)>>FRACBITS.size()); // [crispy] WiggleFix
 	    pixlowstep = -FixedMul (rw_scalestep,worldlow);
 	}
     }
