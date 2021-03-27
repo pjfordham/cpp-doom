@@ -315,10 +315,6 @@ public:
    friend int64_t operator>>( fixed64_t a, fracbits_t b) {
       return a.value >> b.size();
    }
-   // This is definitely dodgy
-   friend int64_t operator>>( int64_t a, fracbits_t b) {
-      return a >> b.size();
-      }
 };
 
 const fracbits_t FRACBITS;

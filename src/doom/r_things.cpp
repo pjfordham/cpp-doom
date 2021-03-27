@@ -439,8 +439,8 @@ void R_DrawMaskedColumn (column_t* column)
 	topscreen = sprtopscreen + spryscale*top;
 	bottomscreen = topscreen + spryscale*column->length;
 
-	dc_yl = (int)((topscreen+FRACUNIT-1)>>FRACBITS); // [crispy] WiggleFix
-	dc_yh = (int)((bottomscreen-1)>>FRACBITS); // [crispy] WiggleFix
+	dc_yl = (int)((topscreen+FRACUNIT-1)>>FRACBITS.size()); // [crispy] WiggleFix
+	dc_yh = (int)((bottomscreen-1)>>FRACBITS.size()); // [crispy] WiggleFix
 		
 	if (dc_yh >= mfloorclip[dc_x])
 	    dc_yh = mfloorclip[dc_x]-1;
