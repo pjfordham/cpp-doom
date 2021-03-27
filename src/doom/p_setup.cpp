@@ -283,14 +283,14 @@ void P_SegLengths (boolean contrast_only)
     for (i = 0; i < numsegs; i++)
     {
 	seg_t *const li = &segs[i];
-	int64_t dx, dy;
+	fixed64_t dx, dy;
 
-	dx = (int64_t)li->v2->r_x - li->v1->r_x;
-	dy = (int64_t)li->v2->r_y - li->v1->r_y;
+	dx = (fixed64_t)li->v2->r_x - li->v1->r_x;
+	dy = (fixed64_t)li->v2->r_y - li->v1->r_y;
 
 	if (!contrast_only)
 	{
-		li->length = (uint32_t)(sqrt((double)dx*dx + (double)dy*dy)/2);
+           li->length = (uint32_t)(sqrt((double)dx*(double)dx + (double)dy*(double)dy)/2);
 
 		// [crispy] re-calculate angle used for rendering
 		viewx = li->v1->r_x;

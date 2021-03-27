@@ -138,11 +138,9 @@ public:
    }
    friend int64_t operator+(int64_t lhs, fixed_t rhs) {
       return lhs + rhs.value;
-      }
-    friend int64_t operator-(int64_t lhs, fixed_t rhs) {
-      return lhs - rhs.value;
-      }
+   }
 
+   friend int64_t operator-(int64_t lhs, fixed_t rhs) = delete;
    friend int64_t operator-(fixed_t lhs, int64_t rhs) = delete ;
    friend bool operator<(const fixed_t lhs, int64_t rhs) = delete;
    friend bool operator<(const int64_t lhs, fixed_t rhs) = delete;
@@ -174,6 +172,7 @@ public:
    explicit operator bool() const { return value != 0; }
    explicit operator fixed_t() const { return fixed_t(value); }
    explicit operator long() const { return value; }
+   explicit operator double() const { return (double)value; }
 
    // Well defined operators
 

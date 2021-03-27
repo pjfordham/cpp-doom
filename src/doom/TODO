@@ -62,4 +62,5 @@ haven't verified crispy will load our saves
 angle_t is a real type with no implicit cast to int
 
 fixed_t is a real type with an implicit cast to int, for now
-fixed64_t still maybe necessary
+fixed64_t inplace
+any use of FRACBITS.size() is discarding type info and should be fixed."
