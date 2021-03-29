@@ -292,7 +292,7 @@ R_RenderMaskedSegRange
 		}
 
 		// Restore units to unshifted int
-                sprtopscreen = (int64_t)(t >> FRACBITS.size()); // [crispy] WiggleFix
+               sprtopscreen = (fixed64_t)t >> FRACBITS.size(); // [crispy] WiggleFix
 	    }
 
 	    dc_iscale = spryscale.inverse();

@@ -33,7 +33,7 @@ extern int		screenheightarray[MAXWIDTH]; // [crispy] 32-bit integer math
 extern int*		mfloorclip; // [crispy] 32-bit integer math
 extern int*		mceilingclip; // [crispy] 32-bit integer math
 extern fixed_t		spryscale;
-extern int64_t		sprtopscreen; // [crispy] WiggleFix
+extern fixed64_t		sprtopscreen; // [crispy] WiggleFix
 
 extern fixed_t		pspritescale;
 extern fixed_t		pspriteiscale;

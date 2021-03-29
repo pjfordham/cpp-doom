@@ -411,12 +411,12 @@ int*		mfloorclip; // [crispy] 32-bit integer math
 int*		mceilingclip; // [crispy] 32-bit integer math
 
 fixed_t		spryscale;
-int64_t		sprtopscreen; // [crispy] WiggleFix
+fixed64_t		sprtopscreen; // [crispy] WiggleFix
 
 void R_DrawMaskedColumn (column_t* column)
 {
-    int64_t	topscreen; // [crispy] WiggleFix
-    int64_t 	bottomscreen; // [crispy] WiggleFix
+    fixed64_t	topscreen; // [crispy] WiggleFix
+    fixed64_t 	bottomscreen; // [crispy] WiggleFix
     fixed_t	basetexturemid;
     int		top = -1;
 	
@@ -439,8 +439,8 @@ void R_DrawMaskedColumn (column_t* column)
 	topscreen = sprtopscreen + spryscale*top;
 	bottomscreen = topscreen + spryscale*column->length;
 
-	dc_yl = (int)((topscreen+FRACUNIT-1)>>FRACBITS.size()); // [crispy] WiggleFix
-	dc_yh = (int)((bottomscreen-1)>>FRACBITS.size()); // [crispy] WiggleFix
+	dc_yl = (topscreen+FRACUNIT-1_fix)>>FRACBITS; // [crispy] WiggleFix
+	dc_yh = (bottomscreen-1_fix)>>FRACBITS; // [crispy] WiggleFix
 		
 	if (dc_yh >= mfloorclip[dc_x])
 	    dc_yh = mfloorclip[dc_x]-1;
@@ -523,7 +523,7 @@ R_DrawVisSprite
     dc_texturemid = vis->texturemid;
     frac = vis->startfrac;
     spryscale = vis->scale;
-    sprtopscreen = (int)(centeryfrac - FixedMul(dc_texturemid,spryscale));
+    sprtopscreen = (centeryfrac - FixedMul(dc_texturemid,spryscale));
 	
     for (dc_x=vis->x1 ; dc_x<=vis->x2 ; dc_x++, frac += vis->xiscale)
     {
