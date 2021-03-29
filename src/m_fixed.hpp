@@ -129,11 +129,9 @@ public:
    }
 
 
-   // 64-bit weirdities, need to better understand
-   friend int64_t operator+=(int64_t &lhs, fixed_t rhs) {
-      return lhs += rhs.value;
-   }
-
+   // Expliciity delete a bunch of int64_t operators to avoid narrowing
+   // issues. Maybe do this properly with a template.
+   friend int64_t operator+=(int64_t &lhs, fixed_t rhs) = delete;
    friend int64_t operator+(int64_t lhs, fixed_t rhs) = delete;
    friend int64_t operator*(int64_t lhs, fixed_t rhs)  = delete;
    friend int64_t operator-(int64_t lhs, fixed_t rhs) = delete;
