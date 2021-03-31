@@ -176,6 +176,9 @@ public:
     friend shint64_t operator/(shint64_t lhs, int rhs) {
       return shint64_t(lhs.value / rhs);
    }
+   friend fixed_t operator/(shint64_t lhs, fixed_t rhs) {
+      return fixed_t(lhs.value / (int)rhs);
+   }
    friend shint64_t operator*(shint64_t lhs, int rhs) {
       return shint64_t(lhs.value * rhs);
    }
