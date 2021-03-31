@@ -47,6 +47,8 @@ export CC=/usr/bin/clang-10
 export CXX=/usr/bin/clang++-10
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g" -DCMAKE_C_FLAGS="-fsanitize=address  -fsanitize=leak -g" -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address  -fsanitize=leak" -DCMAKE_MODULE_LINKER_FLAGS="-fsanitize=address  -fsanitize=leak"
 
+( cd ~/github/cpp-doom/release/ ; make c++-doom -j 4 )
+( cd ~/github/cpp-doom/release/ ; ~/github/cpp-doom/debug/src/c++-doom -timedemo demo1 -nogui )
 
 ( cd ~/github/cpp-doom/debug/ ; make c++-doom -j 4 )
 ( cd ~/github/cpp-doom/debug/ ; gdb ~/github/cpp-doom/debug/src/c++-doom )

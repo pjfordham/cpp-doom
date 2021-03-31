@@ -281,18 +281,18 @@ R_RenderMaskedSegRange
 
 	    {
                // The units of t are an int << 16
-               int64_t t = ((int64_t)centeryfrac << FRACBITS.size()) -
-                  (int64_t) dc_texturemid * (int64_t)spryscale;
+               shint64_t t = ((fixed64_t)centeryfrac << FRACBITS) -
+                  (fixed64_t)dc_texturemid * (fixed64_t)spryscale;
 
-               if (t + (int64_t) textureheight[texnum] * (int64_t)spryscale < 0 ||
-		    t > (int64_t) SCREENHEIGHT << FRACBITS.size()*2)
+               if (t + (fixed64_t)textureheight[texnum] * (fixed64_t)spryscale < shint64_t(0) ||
+                   t > ((fixed64_t)(SCREENHEIGHT << FRACBITS) << FRACBITS))
 		{
 			spryscale += rw_scalestep; // [crispy] MBF had this in the for-loop iterator
 			continue; // skip if the texture is out of screen's range
 		}
 
 		// Restore units to unshifted int
-               sprtopscreen = (fixed64_t)t >> FRACBITS.size(); // [crispy] WiggleFix
+               sprtopscreen = t >> FRACBITS; // [crispy] WiggleFix
 	    }
 
 	    dc_iscale = spryscale.inverse();
@@ -573,7 +573,7 @@ R_StoreWallRange
     dy = ((fixed64_t)curline->v2->r_y - curline->v1->r_y) >> 1;
     dx1 = ((fixed64_t)viewx - curline->v1->r_x) >> 1;
     dy1 = ((fixed64_t)viewy - curline->v1->r_y) >> 1;
-    dist = ((dy * dx1 - dx * dy1) / len) << 1;
+    dist = (int64_t)((dy * dx1 - dx * dy1) / len) << 1;
     rw_distance = (fixed_t)BETWEEN(INT_MIN, INT_MAX, dist);
 		
 	
@@ -805,7 +805,7 @@ R_StoreWallRange
     {
 	
 	// [crispy] fix long wall wobble
-	rw_offset = (fixed_t)(((dx*dx1 + dy*dy1) / len) << 1);
+        rw_offset = (fixed_t)(int64_t)(((dx*dx1 + dy*dy1) / len) << 1);
 	rw_offset += sidedef->textureoffset + curline->offset;
 	rw_centerangle = ANG90 + viewangle - rw_normalangle;
 	

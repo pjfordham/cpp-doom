@@ -35,7 +35,7 @@ FixedMul
 ( fixed_t	a,
   fixed_t	b )
 {
-   return fixed_t( ((int64_t) a * (int64_t) b) >> FRACBITS.size());
+   return fixed_t( ((fixed64_t) a * (fixed64_t) b) >> FRACBITS);
 }
 
 

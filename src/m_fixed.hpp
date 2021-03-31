@@ -156,6 +156,40 @@ public:
 
 };
 
+class shint64_t {
+   int64_t value;
+public:
+   explicit operator int64_t() const { return value; }
+   explicit shint64_t( int64_t _value ) : value(_value) {}
+   friend shint64_t operator-(shint64_t lhs, shint64_t rhs) {
+      return shint64_t(lhs.value - rhs.value);
+   }
+   friend shint64_t operator+(shint64_t lhs, shint64_t rhs) {
+      return shint64_t(lhs.value + rhs.value);
+   }
+   friend bool operator<(shint64_t lhs, shint64_t rhs) {
+      return lhs.value < rhs.value;
+   }
+   friend bool operator>(shint64_t lhs, shint64_t rhs) {
+      return lhs.value > rhs.value;
+   }
+    friend shint64_t operator/(shint64_t lhs, int rhs) {
+      return shint64_t(lhs.value / rhs);
+   }
+   friend shint64_t operator*(shint64_t lhs, int rhs) {
+      return shint64_t(lhs.value * rhs);
+   }
+   friend shint64_t operator<<(shint64_t lhs, int rhs) {
+      return shint64_t(lhs.value << rhs);
+   }
+   friend shint64_t operator>>(shint64_t lhs, int rhs) {
+      return shint64_t(lhs.value >> rhs);
+   }
+ 
+  
+  friend class fracbits_t;
+};
+
 class fixed64_t {
    int64_t value;
 public:
@@ -207,10 +241,10 @@ public:
    }
 
    // binary, fixed64_t, fixed64_t => int
-   friend int64_t operator*(fixed64_t lhs, fixed64_t rhs) {
+   friend shint64_t operator*(fixed64_t lhs, fixed64_t rhs) {
       // This is a weird one, logically wrong as you need
       // to shift the result right by 16/32-bits.....
-      return lhs.value * rhs.value;
+      return shint64_t(lhs.value * rhs.value);
    }
    friend int64_t operator/(fixed64_t lhs, fixed64_t rhs) {
       // Also weird but mostly OK, the ration of a fixed
@@ -293,6 +327,7 @@ inline int FixedMul	(fixed_t a, int b) {
    return (int)FixedMul(a,fixed_t(b));
 }
 
+
 class fracbits_t {
 public:
    static int size() { return 16; }
@@ -308,6 +343,12 @@ public:
    friend int64_t operator>>( fixed64_t a, fracbits_t b) {
       return a.value >> b.size();
    }
+   friend shint64_t operator<<( fixed64_t a, fracbits_t b) {
+      return shint64_t( a.value << b.size());
+   }
+   friend fixed64_t operator>>( shint64_t a, fracbits_t b) {
+      return fixed64_t(a.value >> b.size());
+   }
 };
 
 const fracbits_t FRACBITS;
@@ -321,8 +362,7 @@ FixedMul
 ( fixed64_t	a,
   fixed64_t	b )
 {
-  // Why is the other one ok without the .size?
-   return fixed64_t( ( a.value * b.value ) >> FRACBITS.size());
+   return  ( a * b ) >> FRACBITS;
 }
 
 #endif
