@@ -395,7 +395,7 @@ EV_DoFloor
 	    if (floor->floordestheight > sec->ceilingheight)
 		floor->floordestheight = sec->ceilingheight;
 	    floor->floordestheight -= (8*FRACUNIT)*
-		(floortype == raiseFloorCrush);
+               (int)(floortype == raiseFloorCrush);
 	    break;
 
 	  case raiseFloorTurbo:

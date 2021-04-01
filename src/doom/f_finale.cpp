@@ -878,7 +878,6 @@ F_DrawPatchCol
 void F_BunnyScroll (void)
 {
     signed int  scrolled;
-    fixed_t	x;
     int		stage;
     static int	laststage;
 
@@ -904,10 +903,10 @@ void F_BunnyScroll (void)
 	scrolled = 0;
     fixed_t fscrolled = scrolled << FRACBITS;
 		
-    for ( x=0_fix ; x<ORIGWIDTH << FRACBITS; x+=dxi)
+    for ( fixed_t x=0_fix ; x<ORIGWIDTH << FRACBITS; x+=dxi)
     {
 	if (x+fscrolled < ORIGWIDTH << FRACBITS)
-	    F_DrawPatchCol (x/dxi, p1, x+fscrolled);
+           F_DrawPatchCol ((x/dxi), p1, x+fscrolled);
 	else
 	    F_DrawPatchCol (x/dxi, p2, x+fscrolled - (ORIGWIDTH << FRACBITS));
     }

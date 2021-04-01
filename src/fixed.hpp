@@ -1,0 +1,172 @@
+//
+// Fixed point, 32bit as 16.16.
+//
+
+// #include <fmt/core.h>
+#include <type_traits>
+
+
+template <typename Integer, int Precision>
+class ffixed_t {
+public:
+   Integer value;
+   int precision() const { return  Precision; }
+   explicit operator bool() const { return value != 0; }
+   ffixed_t() = default;
+   explicit ffixed_t(Integer _value) : value{ _value } {   }
+   explicit operator Integer() const { return value; }
+
+   ffixed_t abs() {
+      return value < 0 ? ffixed_t(-value) : ffixed_t(value);
+   }
+};
+
+template <typename Integer>
+class ffixed_t<Integer, 0> {
+public:
+   Integer value;
+   int precision() const { return 0; }
+   ffixed_t() = default;
+   explicit operator bool() const { return value != 0; }
+   
+   ffixed_t(Integer _value) : value{ _value } {   }
+   operator Integer() const { return value; }
+
+   ffixed_t abs() {
+      return value < 0 ? ffixed_t(-value) : ffixed_t(value);
+   }
+};
+
+// template <typename Integer, int Precision>
+// struct fmt::formatter<ffixed_t<Integer,Precision>> {
+//    constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+
+//    template <typename FormatContext>
+//    auto format(const ffixed_t<Integer,Precision>& t, FormatContext& ctx) {
+//       return format_to(ctx.out(), "{} {}", t.value, t.precision );
+//    }
+// };
+
+// Well defined operators
+
+// comparison
+template <typename Integer, typename Integer2, int Precision>
+bool operator<(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return lhs.value < rhs.value;
+}
+template <typename Integer, typename Integer2, int Precision>
+bool operator>(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return lhs.value > rhs.value;
+}
+template <typename Integer, typename Integer2,int Precision>
+bool operator==(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return lhs.value == rhs.value;
+}
+template <typename Integer,  typename Integer2, int Precision>
+bool operator<=(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return lhs.value <= rhs.value;
+}
+template <typename Integer, typename Integer2, int Precision>
+bool operator>=(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return lhs.value >= rhs.value;
+}
+
+// unary
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator-(ffixed_t<Integer,Precision> lhs) {
+   return ffixed_t<Integer,Precision>(-lhs.value);
+}
+
+// binary, fixed_t, fixed_t => fixed_t
+template <typename Integer, typename Integer2, int Precision>
+auto operator+(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<decltype(lhs.value + rhs.value), Precision>(lhs.value + rhs.value);
+}
+template <typename Integer,typename Integer2, int Precision>
+auto operator-(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<decltype(lhs.value - rhs.value), Precision>(lhs.value - rhs.value);
+}
+template <typename Integer, typename Integer2, int Precision>
+auto operator^(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<decltype(lhs.value ^ rhs.value), Precision>(lhs.value ^ rhs.value);
+}
+template <typename Integer, typename Integer2, int Precision>
+auto operator&(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<decltype(lhs.value & rhs.value), Precision>(lhs.value & rhs.value);
+}
+
+
+// binary, fixed_t, int => fixed_t
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator<<(ffixed_t<Integer,Precision> lhs, int rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value << rhs);
+}
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator>>(ffixed_t<Integer,Precision> lhs, int rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value >> rhs);
+}
+
+// updating versions of above
+template <typename Integer, typename Integer2, int Precision>
+ffixed_t<Integer,Precision> operator+=(ffixed_t<Integer,Precision> &lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value += rhs.value);
+}
+template <typename Integer, typename Integer2,int Precision>
+ffixed_t<Integer,Precision> operator-=(ffixed_t<Integer,Precision> &lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value -= rhs.value);
+}
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator*=(ffixed_t<Integer,Precision> &lhs, int rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value *= rhs);
+}
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator>>=(ffixed_t<Integer,Precision> &lhs, int rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value >>= rhs);
+}
+template <typename Integer, int Precision>
+ffixed_t<Integer,Precision> operator<<=(ffixed_t<Integer,Precision> &lhs, int rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value <<= rhs);
+}
+
+// binary, fixed_t, fixed_t => int
+template<typename Integer, int LHS_Precision, int RHS_Precision>
+ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
+   return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
+}
+
+template<typename Integer, int LHS_Precision, int RHS_Precision>
+ffixed_t<Integer, LHS_Precision-RHS_Precision> operator/(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
+   return ffixed_t<Integer, LHS_Precision-RHS_Precision>(lhs.value / rhs.value);
+}
+
+// binary, fixed_t, fixed_t => int
+template<typename Integer, int LHS_Precision>
+ffixed_t<Integer, LHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, Integer rhs) {
+   return ffixed_t<Integer, LHS_Precision>(lhs.value * rhs);
+}
+template<typename Integer, int RHS_Precision>
+ffixed_t<Integer, RHS_Precision> operator*(Integer lhs, ffixed_t<Integer,RHS_Precision> rhs) {
+   return ffixed_t<Integer, RHS_Precision>(lhs * rhs.value);
+}
+
+template<typename Integer, int LHS_Precision,  typename Integer2>
+auto operator/(ffixed_t<Integer,LHS_Precision> lhs, Integer2 rhs) {
+   return ffixed_t<decltype(lhs.value / rhs), LHS_Precision>(lhs.value / rhs);
+}
+
+// // binary, fixed_t, fixed_t => int
+// template<typename LHS,
+//          typename RHS,
+//          typename Integer,
+//          int LHS_Precision,
+//          int RHS_Precision,
+//          typename = std::enable_if_t<!std::is_base_of_v<ffixed_t<Integer,LHS_Precision>,LHS> >,
+//          typename = std::enable_if_t<!std::is_base_of_v<ffixed_t<Integer,RHS_Precision>,RHS> > >
+// ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(LHS lhs, RHS rhs) {
+//    return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
+// }
+
+template<typename Integer, typename Integer2, int Precision>
+auto operator%(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
+   return ffixed_t<Integer,Precision>(lhs.value % rhs.value);
+}
