@@ -149,7 +149,9 @@ ffixed_t<Integer, RHS_Precision> operator*(Integer lhs, ffixed_t<Integer,RHS_Pre
    return ffixed_t<Integer, RHS_Precision>(lhs * rhs.value);
 }
 
-template<typename Integer, int LHS_Precision,  typename Integer2>
+template<typename Integer, int LHS_Precision,  typename Integer2,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 auto operator/(ffixed_t<Integer,LHS_Precision> lhs, Integer2 rhs) {
    return ffixed_t<decltype(lhs.value / rhs), LHS_Precision>(lhs.value / rhs);
 }
@@ -166,7 +168,10 @@ auto operator/(ffixed_t<Integer,LHS_Precision> lhs, Integer2 rhs) {
 //    return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
 // }
 
-template<typename Integer, typename Integer2, int Precision>
+template<typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+         typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>
+         >
 auto operator%(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<Integer,Precision>(lhs.value % rhs.value);
 }
