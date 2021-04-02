@@ -437,7 +437,7 @@ void R_DrawMaskedColumn (column_t* column)
 	// calculate unclipped screen coordinates
 	//  for post
 	topscreen = sprtopscreen + spryscale*top;
-	bottomscreen = topscreen + spryscale*column->length;
+	bottomscreen = topscreen + spryscale*(int)column->length;
 
 	dc_yl = (topscreen+FRACUNIT-1_fix)>>FRACBITS; // [crispy] WiggleFix
 	dc_yh = (bottomscreen-1_fix)>>FRACBITS; // [crispy] WiggleFix
