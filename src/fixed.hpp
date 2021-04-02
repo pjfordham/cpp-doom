@@ -6,7 +6,8 @@
 #include <type_traits>
 
 
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
 class ffixed_t {
 public:
    Integer value;
@@ -28,7 +29,7 @@ public:
    int precision() const { return 0; }
    ffixed_t() = default;
    explicit operator bool() const { return value != 0; }
-   
+
    ffixed_t(Integer _value) : value{ _value } {   }
    operator Integer() const { return value; }
 
@@ -50,91 +51,126 @@ public:
 // Well defined operators
 
 // comparison
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 bool operator<(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return lhs.value < rhs.value;
 }
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 bool operator>(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return lhs.value > rhs.value;
 }
-template <typename Integer, typename Integer2,int Precision>
+template <typename Integer, typename Integer2,int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 bool operator==(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return lhs.value == rhs.value;
 }
-template <typename Integer,  typename Integer2, int Precision>
+template <typename Integer,  typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 bool operator<=(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return lhs.value <= rhs.value;
 }
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 bool operator>=(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return lhs.value >= rhs.value;
 }
 
 // unary
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
 ffixed_t<Integer,Precision> operator-(ffixed_t<Integer,Precision> lhs) {
    return ffixed_t<Integer,Precision>(-lhs.value);
 }
 
 // binary, fixed_t, fixed_t => fixed_t
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 auto operator+(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<decltype(lhs.value + rhs.value), Precision>(lhs.value + rhs.value);
 }
-template <typename Integer,typename Integer2, int Precision>
+template <typename Integer,typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 auto operator-(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<decltype(lhs.value - rhs.value), Precision>(lhs.value - rhs.value);
 }
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 auto operator^(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<decltype(lhs.value ^ rhs.value), Precision>(lhs.value ^ rhs.value);
 }
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 auto operator&(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<decltype(lhs.value & rhs.value), Precision>(lhs.value & rhs.value);
 }
 
 
 // binary, fixed_t, int => fixed_t
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
 ffixed_t<Integer,Precision> operator<<(ffixed_t<Integer,Precision> lhs, int rhs) {
    return ffixed_t<Integer,Precision>(lhs.value << rhs);
 }
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
 ffixed_t<Integer,Precision> operator>>(ffixed_t<Integer,Precision> lhs, int rhs) {
    return ffixed_t<Integer,Precision>(lhs.value >> rhs);
 }
 
 // updating versions of above
-template <typename Integer, typename Integer2, int Precision>
+template <typename Integer, typename Integer2, int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 ffixed_t<Integer,Precision> operator+=(ffixed_t<Integer,Precision> &lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<Integer,Precision>(lhs.value += rhs.value);
 }
-template <typename Integer, typename Integer2,int Precision>
+template <typename Integer, typename Integer2,int Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>>
 ffixed_t<Integer,Precision> operator-=(ffixed_t<Integer,Precision> &lhs, ffixed_t<Integer2,Precision> rhs) {
    return ffixed_t<Integer,Precision>(lhs.value -= rhs.value);
 }
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+        typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer,Precision> operator*=(ffixed_t<Integer,Precision> &lhs, int rhs) {
    return ffixed_t<Integer,Precision>(lhs.value *= rhs);
 }
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+        typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer,Precision> operator>>=(ffixed_t<Integer,Precision> &lhs, int rhs) {
    return ffixed_t<Integer,Precision>(lhs.value >>= rhs);
 }
-template <typename Integer, int Precision>
+template <typename Integer, int Precision,
+        typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer,Precision> operator<<=(ffixed_t<Integer,Precision> &lhs, int rhs) {
    return ffixed_t<Integer,Precision>(lhs.value <<= rhs);
 }
 
 // binary, fixed_t, fixed_t => int
-template<typename Integer, int LHS_Precision, int RHS_Precision>
+template<typename Integer, int LHS_Precision, int RHS_Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
    return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
 }
 
-template<typename Integer, int LHS_Precision, int RHS_Precision>
+template<typename Integer, int LHS_Precision, int RHS_Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer, LHS_Precision-RHS_Precision> operator/(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
    return ffixed_t<Integer, LHS_Precision-RHS_Precision>(lhs.value / rhs.value);
 }
