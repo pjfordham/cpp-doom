@@ -140,11 +140,16 @@ ffixed_t<Integer, LHS_Precision-RHS_Precision> operator/(ffixed_t<Integer,LHS_Pr
 }
 
 // binary, fixed_t, fixed_t => int
-template<typename Integer, int LHS_Precision>
+template<typename Integer, int LHS_Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer, LHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, Integer rhs) {
    return ffixed_t<Integer, LHS_Precision>(lhs.value * rhs);
 }
-template<typename Integer, int RHS_Precision>
+
+template<typename Integer, int RHS_Precision,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+         >
 ffixed_t<Integer, RHS_Precision> operator*(Integer lhs, ffixed_t<Integer,RHS_Precision> rhs) {
    return ffixed_t<Integer, RHS_Precision>(lhs * rhs.value);
 }
