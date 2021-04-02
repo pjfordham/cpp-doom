@@ -82,12 +82,6 @@ public:
 inline fixed64_t operator*(int64_t lhs, fixed64_t rhs) {
    return fixed64_t(lhs * rhs.value);
 }
-inline auto operator/(fixed_t lhs, fixed_t  rhs) {
-   return lhs.value / rhs.value;
-}
-inline auto operator/(ffixed_t<int,16> lhs, fixed_t  rhs) {
-   return lhs.value / rhs.value;
-}
 inline auto operator/(ffixed_t<int64_t,32> lhs, fixed_t  rhs) {
    return fixed_t(lhs.value / rhs.value);
 }
