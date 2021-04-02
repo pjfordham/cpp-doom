@@ -85,9 +85,6 @@ inline fixed64_t operator/(fixed64_t lhs, int rhs) {
 inline fixed64_t operator*(fixed64_t lhs, int rhs) {
    return fixed64_t(lhs.value * rhs);
 }
-inline fixed64_t operator*(fixed64_t lhs, int64_t rhs) {
-   return fixed64_t(lhs.value * rhs);
-}
 inline fixed64_t operator*(int lhs, fixed64_t rhs) {
    return fixed64_t(lhs * rhs.value);
 }
