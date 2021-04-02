@@ -174,11 +174,12 @@ template <typename Integer, int LHS_Precision, int RHS_Precision,
 ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
    return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
 }
-template <typename Integer, int LHS_Precision, int RHS_Precision,
-          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+template <typename Integer, typename Integer2, int LHS_Precision, int RHS_Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>
           >
-ffixed_t<Integer, LHS_Precision-RHS_Precision> operator/(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
-   return ffixed_t<Integer, LHS_Precision-RHS_Precision>(lhs.value / rhs.value);
+auto operator/(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer2,RHS_Precision> rhs) {
+   return ffixed_t<decltype(lhs.value / rhs.value), LHS_Precision-RHS_Precision>(lhs.value / rhs.value);
 }
 
 // binary, multiple and divide by int

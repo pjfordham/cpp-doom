@@ -82,9 +82,6 @@ public:
 inline fixed64_t operator*(int64_t lhs, fixed64_t rhs) {
    return fixed64_t(lhs * rhs.value);
 }
-inline auto operator/(shint64_t lhs, fixed_t  rhs) {
-   return fixed_t(lhs.value / rhs.value);
-}
 
 inline fixed_t operator"" _fix ( unsigned long long n ) {
    return fixed_t{(int)n};
