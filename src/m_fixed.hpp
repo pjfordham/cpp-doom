@@ -46,17 +46,6 @@ public:
    friend struct fmt::formatter<fixed_t>;
 };
 
-
-class shint64_t : public ffixed_t<int64_t,32>{
-public:
-   shint64_t() = default;
-
-   explicit shint64_t( int64_t _value ) : ffixed_t<int64_t,32>(_value) {}
-   shint64_t(ffixed_t<int64_t,32> _value) : ffixed_t<int64_t,32>( _value ) {   }
-
-   friend struct fmt::formatter<shint64_t>;
-};
-
 class fixed64_t : public ffixed_t<int64_t,16> {
 public:
    fixed64_t() = default;
