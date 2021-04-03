@@ -169,7 +169,7 @@ const angle_t ANG1_X = angle_t(0x01000000u);
 
 #define SLOPERANGE		2048
 #define SLOPEBITS		11
-#define DBITS			(FRACBITS.size()-SLOPEBITS)
+#define DBITS			(FRACBITS.size-SLOPEBITS)
 
 // Effective size is 2049;
 // The +1 size is to handle the case when x==y

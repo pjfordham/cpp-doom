@@ -65,4 +65,15 @@ angle_t is a real type with no implicit cast to int
 
 fixed_t is a real type with an implicit cast to int, for now
 fixed64_t inplace
-any use of FRACBITS.size() is discarding type info and should be fixed."
+any use of FRACBITS.size is discarding type info and should be fixed."
+
+
+wikipedia
+Non-equivalence of arithmetic right shift and division[edit]
+However, arithmetic right shifts are major traps for the unwary, specifically in treating rounding of negative integers. For example, in the usual two's complement representation of negative integers, −1 is represented as all 1's. For an 8-bit signed integer this is 1111 1111. An arithmetic right-shift by 1 (or 2, 3, ..., 7) yields 1111 1111 again, which is still −1. This corresponds to rounding down (towards negative infinity), but is not the usual convention for division.
+
+It is frequently stated that arithmetic right shifts are equivalent to division by a (positive, integral) power of the radix (e.g., a division by a power of 2 for binary numbers), and hence that division by a power of the radix can be optimized by implementing it as an arithmetic right shift. (A shifter is much simpler than a divider. On most processors, shift instructions will execute faster than division instructions.) Large number of 1960s and 1970s programming handbooks, manuals, and other specifications from companies and institutions such as DEC, IBM, Data General, and ANSI make such incorrect statements [8][page needed].
+
+Logical right shifts are equivalent to division by a power of the radix (usually 2) only for positive or unsigned numbers. Arithmetic right shifts are equivalent to logical right shifts for positive signed numbers. Arithmetic right shifts for negative numbers in N−1's complement (usually two's complement) is roughly equivalent to division by a power of the radix (usually 2), where for odd numbers rounding downwards is applied (not towards 0 as usually expected).
+
+Arithmetic right shifts for negative numbers are equivalent to division using rounding towards 0 in one's complement representation of signed numbers as was used by some historic computers, but this is no longer in general use.

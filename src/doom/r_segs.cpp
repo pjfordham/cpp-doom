@@ -180,7 +180,7 @@ void R_FixWiggle (sector_t *sector)
 	max_rwscale = scale_values[sector->scaleindex].clamp;
 	heightbits = scale_values[sector->scaleindex].heightbits;
 	heightunit = (1 << heightbits);
-	invhgtbits = FRACBITS.size() - heightbits;
+	invhgtbits = FRACBITS.size - heightbits;
     }
 }
 
@@ -499,7 +499,7 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     fixed_t	num = FixedMul(projection, sin(angleb))<<detailshift;
     fixed_t 	scale;
 
-    if (den > (num >> FRACBITS.size()))
+    if (den > (num >> FRACBITS.size))
     {
 	scale = FixedDiv(num, den);
 

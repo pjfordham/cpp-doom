@@ -11,7 +11,7 @@ template <typename Integer, int Precision,
 class ffixed_t {
 public:
    Integer value;
-   int precision() const { return  Precision; }
+   static int precision() { return Precision; }
    explicit operator bool() const { return value != 0; }
    ffixed_t() = default;
    explicit ffixed_t(Integer _value) : value{ _value } {   }
@@ -26,7 +26,7 @@ template <typename Integer>
 class ffixed_t<Integer, 0> {
 public:
    Integer value;
-   int precision() const { return 0; }
+   static int precision() { return 0; }
    ffixed_t() = default;
    explicit operator bool() const { return value != 0; }
 
