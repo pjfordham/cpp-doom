@@ -280,11 +280,10 @@ R_RenderMaskedSegRange
 	    // mapping to screen coordinates is totally out of range:
 
 	    {
-               // The units of t are an int << 16
                shint64_t t = ((fixed64_t)centeryfrac << FRACBITS) -
                   (fixed64_t)dc_texturemid * (fixed64_t)spryscale;
 
-               if (t + (fixed64_t)textureheight[texnum] * (fixed64_t)spryscale < shint64_t(0) ||
+               if (t + (fixed64_t)textureheight[texnum] * (fixed64_t)spryscale < decltype(t)(0) ||
                    t > ((fixed64_t)(SCREENHEIGHT << FRACBITS) << FRACBITS))
 		{
 			spryscale += rw_scalestep; // [crispy] MBF had this in the for-loop iterator

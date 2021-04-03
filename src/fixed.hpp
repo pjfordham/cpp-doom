@@ -168,11 +168,12 @@ ffixed_t<Integer,Precision> operator<<=(ffixed_t<Integer,Precision> &lhs, int rh
 }
 
 // binary, fixed_t, fixed_t => other fixed_t muliplt and divide with scaled precision but same base type 
-template <typename Integer, int LHS_Precision, int RHS_Precision,
-          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+template <typename Integer, typename Integer2, int LHS_Precision, int RHS_Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>
           >
-ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer,RHS_Precision> rhs) {
-   return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
+auto operator*(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer2,RHS_Precision> rhs) {
+   return ffixed_t<decltype(lhs.value * rhs.value), LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
 }
 template <typename Integer, typename Integer2, int LHS_Precision, int RHS_Precision,
           typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
@@ -183,18 +184,20 @@ auto operator/(ffixed_t<Integer,LHS_Precision> lhs, ffixed_t<Integer2,RHS_Precis
 }
 
 // binary, multiple and divide by int
-template <typename Integer, int LHS_Precision,
-          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+template <typename Integer, typename Integer2, int LHS_Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>
           >
-ffixed_t<Integer, LHS_Precision> operator*(ffixed_t<Integer,LHS_Precision> lhs, Integer rhs) {
-   return ffixed_t<Integer, LHS_Precision>(lhs.value * rhs);
+auto operator*(ffixed_t<Integer,LHS_Precision> lhs, Integer2 rhs) {
+   return ffixed_t<decltype(lhs.value * rhs), LHS_Precision>(lhs.value * rhs);
 }
 
-template <typename Integer, int RHS_Precision,
-          typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
+template <typename Integer, typename Integer2, int RHS_Precision,
+          typename = std::enable_if_t<std::is_integral_v<Integer2>, bool>,
+         typename = std::enable_if_t<std::is_integral_v<Integer>, bool>
           >
-ffixed_t<Integer, RHS_Precision> operator*(Integer lhs, ffixed_t<Integer,RHS_Precision> rhs) {
-   return ffixed_t<Integer, RHS_Precision>(lhs * rhs.value);
+auto operator*(Integer lhs, ffixed_t<Integer2,RHS_Precision> rhs) {
+   return ffixed_t<decltype(lhs * rhs.value), RHS_Precision>(lhs * rhs.value);
 }
 
 template <typename Integer, int LHS_Precision,  typename Integer2,
@@ -203,16 +206,3 @@ template <typename Integer, int LHS_Precision,  typename Integer2,
 auto operator/(ffixed_t<Integer,LHS_Precision> lhs, Integer2 rhs) {
    return ffixed_t<decltype(lhs.value / rhs), LHS_Precision>(lhs.value / rhs);
 }
-
-// // binary, fixed_t, fixed_t => int
-// template <typename LHS,
-//          typename RHS,
-//          typename Integer,
-//          int LHS_Precision,
-//          int RHS_Precision,
-//          typename = std::enable_if_t<!std::is_base_of_v<ffixed_t<Integer,LHS_Precision>,LHS> >,
-//          typename = std::enable_if_t<!std::is_base_of_v<ffixed_t<Integer,RHS_Precision>,RHS> > >
-// ffixed_t<Integer, LHS_Precision+RHS_Precision> operator*(LHS lhs, RHS rhs) {
-//    return ffixed_t<Integer, LHS_Precision+RHS_Precision>(lhs.value * rhs.value);
-// }
-

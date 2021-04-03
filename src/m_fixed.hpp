@@ -79,10 +79,6 @@ public:
    friend class fracbits_t;
 };
 
-inline fixed64_t operator*(int64_t lhs, fixed64_t rhs) {
-   return fixed64_t(lhs * rhs.value);
-}
-
 inline fixed_t operator"" _fix ( unsigned long long n ) {
    return fixed_t{(int)n};
 }
