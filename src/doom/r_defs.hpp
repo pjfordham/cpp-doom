@@ -369,7 +369,7 @@ typedef struct
     sector_t*	frontsector;
     sector_t*	backsector;
     
-    uint32_t	length; // [crispy] fix long wall wobble
+   ffixed_t<uint32_t,16>	length; // [crispy] fix long wall wobble
     angle_t	r_angle; // [crispy] re-calculated angle used for rendering
     int	fakecontrast;
 } seg_t;

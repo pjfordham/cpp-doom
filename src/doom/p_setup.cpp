@@ -290,7 +290,7 @@ void P_SegLengths (boolean contrast_only)
 
 	if (!contrast_only)
 	{
-           li->length = (uint32_t)(sqrt((double)dx*(double)dx + (double)dy*(double)dy)/2);
+           li->length = ffixed_t<uint32_t,16>(sqrt((double)dx*(double)dx + (double)dy*(double)dy)/2);
 
 		// [crispy] re-calculate angle used for rendering
 		viewx = li->v1->r_x;
