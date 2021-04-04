@@ -77,3 +77,7 @@ It is frequently stated that arithmetic right shifts are equivalent to division 
 Logical right shifts are equivalent to division by a power of the radix (usually 2) only for positive or unsigned numbers. Arithmetic right shifts are equivalent to logical right shifts for positive signed numbers. Arithmetic right shifts for negative numbers in N−1's complement (usually two's complement) is roughly equivalent to division by a power of the radix (usually 2), where for odd numbers rounding downwards is applied (not towards 0 as usually expected).
 
 Arithmetic right shifts for negative numbers are equivalent to division using rounding towards 0 in one's complement representation of signed numbers as was used by some historic computers, but this is no longer in general use.
+
+Line drawing algo
+
+binary angle encoding
