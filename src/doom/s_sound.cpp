@@ -70,7 +70,7 @@ typedef struct
     sfxinfo_t *sfxinfo;
 
     // origin of sound
-    mobj_t *origin;
+    degenmobj_t *origin;
 
     // handle of the sound being played
     int handle;
@@ -449,7 +449,7 @@ void S_Start(void)
     S_ChangeMusic(mnum, true);
 }
 
-void S_StopSound(mobj_t *origin)
+void S_StopSound(degenmobj_t *origin)
 {
     int cnum;
 
@@ -470,7 +470,7 @@ void S_StopSound(mobj_t *origin)
 // the corresponding map object has already disappeared.
 // Thanks to jeff-d and kb1 for discussing this feature and the former for the
 // original implementation idea: https://www.doomworld.com/vb/post/1585325
-void S_UnlinkSound(mobj_t *origin)
+void S_UnlinkSound(degenmobj_t *origin)
 {
     int cnum;
 
@@ -484,7 +484,7 @@ void S_UnlinkSound(mobj_t *origin)
                 sobj->x = origin->x;
                 sobj->y = origin->y;
                 sobj->z = origin->z;
-                channels[cnum].origin = (mobj_t *) sobj;
+                channels[cnum].origin = sobj;
                 break;
             }
         }
@@ -496,7 +496,7 @@ void S_UnlinkSound(mobj_t *origin)
 //   If none available, return -1.  Otherwise channel #.
 //
 
-static int S_GetChannel(mobj_t *origin, sfxinfo_t *sfxinfo)
+static int S_GetChannel(degenmobj_t *origin, sfxinfo_t *sfxinfo)
 {
     // channel number to use
     int                cnum;
@@ -557,7 +557,7 @@ static int S_GetChannel(mobj_t *origin, sfxinfo_t *sfxinfo)
 // Otherwise, modifies parameters and returns 1.
 //
 
-static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
+static int S_AdjustSoundParams(mobj_t *listener, degenmobj_t *source,
                                int *vol, int *sep)
 {
     fixed_t        approx_dist;
@@ -641,17 +641,15 @@ static int Clamp(int x)
     return x;
 }
 
-void S_StartSound(void *origin_p, int sfx_id)
+void S_StartSound(degenmobj_t *origin, int sfx_id)
 {
     sfxinfo_t *sfx;
-    mobj_t *origin;
     int rc;
     int sep;
     int pitch;
     int cnum;
     int volume;
 
-    origin = (mobj_t *) origin_p;
     volume = snd_SfxVolume;
 
     // [crispy] make non-fatal, consider zero volume
@@ -751,7 +749,7 @@ void S_StartSound(void *origin_p, int sfx_id)
     channels[cnum].handle = I_StartSound(sfx, cnum, volume, sep, channels[cnum].pitch);
 }
 
-void S_StartSoundOnce (void *origin_p, int sfx_id)
+void S_StartSoundOnce (degenmobj_t *origin, int sfx_id)
 {
     int cnum;
     const sfxinfo_t *const sfx = &S_sfx[sfx_id];
@@ -759,13 +757,13 @@ void S_StartSoundOnce (void *origin_p, int sfx_id)
     for (cnum = 0; cnum < snd_channels; cnum++)
     {
         if (channels[cnum].sfxinfo == sfx &&
-            channels[cnum].origin == origin_p)
+            channels[cnum].origin == origin)
         {
             return;
         }
     }
 
-    S_StartSound(origin_p, sfx_id);
+    S_StartSound(origin, sfx_id);
 }
 
 //

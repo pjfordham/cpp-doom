@@ -705,7 +705,7 @@ ST_Responder (event_t* ev)
 	    P_SpawnMobj(plyr->mo->x+20*cos(plyr->mo->angle),
                         plyr->mo->y+20*sin(plyr->mo->angle),
                         plyr->mo->z, MT_TFOG);
-	    S_StartSound(plyr, sfx_slop);
+	    S_StartSound(plyr->mo, sfx_slop);
 	}
 
 	plyr->cheats ^= CF_GODMODE;

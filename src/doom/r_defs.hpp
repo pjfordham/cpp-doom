@@ -164,20 +164,13 @@ typedef struct
 // Forward of LineDefs, for Sectors.
 struct line_s;
 
-// Each sector has a degenmobj_t in its center
-//  for sound origin purposes.
-// I suppose this does not handle sound from
-//  moving objects (doppler), because
-//  position is prolly just buffered, not
-//  updated.
-typedef struct
+struct laserspot_t
 {
-    int                 thinker;
-    fixed_t		x;
-    fixed_t		y;
-    fixed_t		z;
-
-} degenmobj_t;
+   int thinker;
+   fixed_t		x;
+   fixed_t		y;
+   fixed_t		z;
+};
 
 //
 // The SECTORS record, at runtime.

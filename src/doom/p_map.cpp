@@ -918,7 +918,7 @@ fixed_t		aimslope;
 extern fixed_t	topslope;
 extern fixed_t	bottomslope;	
 
-extern degenmobj_t *laserspot;
+extern laserspot_t *laserspot;
 
 //
 // PTR_AimTraverse

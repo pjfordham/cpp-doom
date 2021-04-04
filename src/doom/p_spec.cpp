@@ -1316,7 +1316,7 @@ void P_UpdateSpecials (void)
 		}
 		else
 		{
-		S_StartSoundOnce(&buttonlist[i].soundorg,sfx_swtchn);
+                   S_StartSoundOnce(buttonlist[i].soundorg,sfx_swtchn);
 		}
 		buttonlist[i] = button_t{};
 	    }

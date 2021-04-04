@@ -203,14 +203,22 @@ typedef enum
 } mobjflag_t;
 
 
-// Map Object definition.
-struct mobj_t
+// Each sector has a degenmobj_t in its center
+//  for sound origin purposes.
+// I suppose this does not handle sound from
+//  moving objects (doppler), because
+//  position is prolly just buffered, not
+//  updated.
+struct degenmobj_t
 {
-    // Info for drawing: position.
     fixed_t		x;
     fixed_t		y;
     fixed_t		z;
+};
 
+// Map Object definition.
+struct mobj_t : public degenmobj_t
+{
     // More list: links in sector (if needed)
     mobj_t*	snext;
     mobj_t*	sprev;

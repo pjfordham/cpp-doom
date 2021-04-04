@@ -180,7 +180,7 @@ struct player_t
     int	recoilpitch, oldrecoilpitch;
 
     // [crispy] weapon sound source
-    mobj_t	*so;
+    degenmobj_t	*so;
 
     // [crispy] squat down weapon sprite
     fixed_t	psp_dy_max;

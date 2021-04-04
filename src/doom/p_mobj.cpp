@@ -815,9 +815,9 @@ void P_RespawnSpecials (void)
 // [crispy] weapon sound sources
 degenmobj_t muzzles[MAXPLAYERS];
 
-mobj_t *Crispy_PlayerSO (int p)
+degenmobj_t *Crispy_PlayerSO (int p)
 {
-	return crispy->soundfull ? (mobj_t *) &muzzles[p] : players[p].mo;
+	return crispy->soundfull ? &muzzles[p] : players[p].mo;
 }
 
 //
