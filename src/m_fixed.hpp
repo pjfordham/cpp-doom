@@ -32,15 +32,15 @@ public:
    explicit fixed_t(ffixed_t<int64_t,16> _value) : ffixed_t<int,16>( _value.value ) {   }
 
    explicit operator int64_t() const { return value; }
-   explicit operator double() const { return (double)value; }
-   explicit operator short() const { return (short)value; }
-   explicit operator unsigned char() const { return (unsigned char)value; }
+   explicit operator double() const { return static_cast<double>(value); }
+   explicit operator short() const { return static_cast<short>(value); }
+   explicit operator unsigned char() const { return static_cast<unsigned char>(value); }
 
    fixed_t fractional_part() { // Come up with something better for this.
       return fixed_t( value & 0xFFFF);
    }
    fixed_t inverse() {
-      return fixed_t( 0xffffffffu / (unsigned)value );
+      return fixed_t( 0xffffffffu / static_cast<unsigned>(value) );
    }
 
    friend struct fmt::formatter<fixed_t>;
@@ -51,7 +51,7 @@ public:
    fixed64_t() = default;
 
    explicit fixed64_t(int64_t _value) : ffixed_t<int64_t,16>{ _value } {   }
-   fixed64_t(fixed_t _value) : ffixed_t<int64_t,16>{ (int) _value } {   }
+   fixed64_t(fixed_t _value) : ffixed_t<int64_t,16>{ static_cast<int>(_value) } {   }
    fixed64_t(ffixed_t<int64_t,16> _value) : ffixed_t<int64_t,16>( _value ) {   }
 
    fixed64_t& operator=(fixed_t other) {
@@ -60,13 +60,13 @@ public:
    }
 
    explicit operator fixed_t() const { return fixed_t(value); }
-   explicit operator double() const { return (double)value; }
+   explicit operator double() const { return static_cast<double>(value); }
 
    friend struct fmt::formatter<fixed64_t>;
 };
 
 inline fixed_t operator"" _fix ( unsigned long long n ) {
-   return fixed_t{(int)n};
+   return fixed_t{static_cast<int>(n)};
 }
 
 template <>
@@ -88,11 +88,11 @@ fixed_t FixedDiv	(fixed_t a, fixed_t b);
 
 
 inline int FixedMul	(int a, fixed_t b) {
-   return (int)FixedMul(fixed_t(a),b);
+   return static_cast<int>(FixedMul(fixed_t(a),b));
 }
 
 inline int FixedMul	(fixed_t a, int b) {
-   return (int)FixedMul(a,fixed_t(b));
+   return static_cast<int>(FixedMul(a,fixed_t(b)));
 }
 
 
@@ -118,7 +118,7 @@ public:
    friend auto operator<<( ffixed_t<Integer,Precision> a, fracbits_t b) {
       return ffixed_t<Integer,Precision + size>( a.value << size);
    }
-   
+
    template <typename Integer, int Precision,
              typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
    friend auto operator>>( ffixed_t<Integer,Precision> a, fracbits_t b) {
@@ -129,7 +129,7 @@ public:
 const fracbits_t<16> FRACBITS;
 const fixed_t FRACUNIT{1<<FRACBITS};
 inline double FIXED2DOUBLE( fixed_t x ) {
-   return (double)x / static_cast<double>(FRACUNIT);
+   return static_cast<double>(x) / static_cast<double>(FRACUNIT);
 }
 
 inline fixed64_t

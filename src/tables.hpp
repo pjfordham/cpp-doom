@@ -193,7 +193,7 @@ inline fixed_t tan(angle_t t) {
 }
 
 inline angle_t arctan(fixed_t t) {
-   return tantoangle[ (int)(t >> DBITS) ];
+   return tantoangle[ static_cast<int>(t >> DBITS) ];
 }
 
 #endif

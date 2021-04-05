@@ -93,35 +93,36 @@ extern boolean inhelpscreens; // [crispy]
 #define AM_NUMMARKPOINTS 10
 
 // scale on entry
-#define INITSCALEMTOF (.2*(double)FRACUNIT)
+#define INITSCALEMTOF 
 // how much the automap moves window per tic in frame-buffer coordinates
 // moves 140 pixels in 1 second
 #define F_PANINC	4
+
 // how much zoom-in per tic
 // goes to 2x in 1 second
-const fixed_t M_ZOOMIN = fixed_t(1.02*(double)FRACUNIT);
+const fixed_t M_ZOOMIN = FRACUNIT * 102 / 100;
 // how much zoom-out per tic
 // pulls out to 0.5x in 1 second
-const fixed_t M_ZOOMOUT = fixed_t((double)FRACUNIT/1.02);
+const fixed_t M_ZOOMOUT = FRACUNIT * 100 / 102;
 // [crispy] zoom faster with the mouse wheel
-const fixed_t M2_ZOOMIN = fixed_t(1.08*(double)FRACUNIT);
-const fixed_t M2_ZOOMOUT = fixed_t((double)FRACUNIT / 1.08);
+const fixed_t M2_ZOOMIN = FRACUNIT * 108 / 100;
+const fixed_t M2_ZOOMOUT = FRACUNIT * 100 / 108; 
 
 
 // used by MTOF to scale from map-to-frame-buffer coords
-static fixed_t scale_mtof = (fixed_t)INITSCALEMTOF;
+static fixed_t scale_mtof = FRACUNIT * 2 / 10;
 // used by FTOM to scale from frame-buffer-to-map coords (=1/scale_mtof)
-static fixed_t scale_ftom;
+static fixed_t scale_ftom = FRACUNIT * 10 / 2;
 
 // translates between frame-buffer and map distances
 // [crispy] fix int overflow that causes map and grid lines to disappear
 
 fixed64_t FTOM( int64_t x ) {
-   return FixedMul(x << FRACBITS, (fixed64_t)scale_ftom);
+   return FixedMul(x << FRACBITS, static_cast<fixed64_t>(scale_ftom));
 }
 
 int64_t MTOF( fixed64_t x ) {
-   return FixedMul(x , (fixed64_t) scale_mtof) >> FRACBITS;
+   return FixedMul(x , static_cast<fixed64_t>(scale_mtof)) >> FRACBITS;
 }
 
 // translates between frame-buffer and map coordinates
@@ -203,34 +204,34 @@ mline_t cheat_player_arrow[] = {
 };
 #undef R
 
-#define R ((double)FRACUNIT)
-mline_t triangle_guy[] = {
-    { { (fixed64_t)(-.867*R), (fixed64_t)(-.5*R) }, { (fixed64_t)(.867*R ), (fixed64_t)(-.5*R) } },
-    { { (fixed64_t)(.867*R ), (fixed64_t)(-.5*R) }, { (fixed64_t)(0      ), (fixed64_t)(R    ) } },
-    { { (fixed64_t)(0      ), (fixed64_t)(R    ) }, { (fixed64_t)(-.867*R), (fixed64_t)(-.5*R) } }
-};
-#undef R
+const auto R = fixed64_t(FRACUNIT);
+const auto X = R * 13 / 15; // 0.867 * R
+const auto Y = R * 7 / 10; // 0.7 * R
+const auto Z = fixed64_t(0_fix);
 
-#define R ((double)FRACUNIT)
-mline_t thintriangle_guy[] = {
-    { { (fixed64_t)(-.5*R), (fixed64_t)(-.7*R) }, { (fixed64_t)(R    ), (fixed64_t)(0    ) } },
-    { { (fixed64_t)(R    ), (fixed64_t)(0    ) }, { (fixed64_t)(-.5*R), (fixed64_t)(.7*R ) } },
-    { { (fixed64_t)(-.5*R), (fixed64_t)(.7*R ) }, { (fixed64_t)(-.5*R), (fixed64_t)(-.7*R) } }
+mline_t triangle_guy[] = {
+   { { -X, -R/2 }, {  X, -R/2 } } ,
+   { {  X, -R/2 }, {  Z,  R   } },
+   { {  Z,  R   }, { -X, -R/2 } },
 };
-#undef R
-#define R fixed64_t(FRACUNIT)
+
+mline_t thintriangle_guy[] = {
+   { { -R/2, -Y }, {  R,    Z } },
+   { {  R  ,  Z }, { -R/2, -Y } },
+   { { -R/2,  Y }, { -R/2, -Y } }
+};
+
 // [crispy] print keys as crosses
 static mline_t cross_mark[] = {
-    { { -R, 0_fix }, { R, 0_fix } },
-    { { 0_fix, -R }, { 0_fix, R } },
+    { { -R, Z }, { R, Z } },
+    { { Z, -R }, { Z, R } },
 };
 static mline_t square_mark[] = {
-    { { -R,  0_fix }, {  0_fix,  R } },
-    { {  0_fix,  R }, {  R,  0_fix } },
-    { {  R,  0_fix }, {  0_fix, -R } },
-    { {  0_fix, -R }, { -R,  0_fix } },
+    { { -R,  Z }, {  Z,  R } },
+    { {  Z,  R }, {  R,  Z } },
+    { {  R,  Z }, {  Z, -R } },
+    { {  Z, -R }, { -R,  Z } },
 };
-#undef R
 
 
 
@@ -253,8 +254,10 @@ static int 	f_w;
 static int	f_h;
 
 static int 	lightlev; 		// used for funky strobing effect
-#define fb I_VideoBuffer // [crispy] simplify
-//static pixel_t*	fb; 			// pseudo-frame buffer
+
+// [crispy] simplify
+const auto fb = I_VideoBuffer;
+
 static int 	amclock;
 
 static mpoint_t m_paninc; // how far the window pans each tic (map coords)
@@ -603,7 +606,7 @@ void AM_LevelInit(void)
     // FIXME: ALL this casting is madness
     a = FixedDiv(fixed_t(f_w), fixed_t(((max_w>>FRACBITS) < 2048) ? 2*(max_w>>FRACBITS) : 4096));
     b = FixedDiv(fixed_t(f_h), fixed_t(((max_h>>FRACBITS) < 2048) ? 2*(max_h>>FRACBITS) : 4096));
-    scale_mtof = FixedDiv(a < b ? a : b, fixed_t(0.7*(double)FRACUNIT));
+    scale_mtof = FixedDiv(a < b ? a : b, FRACUNIT * 7 / 10);
     if (scale_mtof > max_scale_mtof)
 	scale_mtof = min_scale_mtof;
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
@@ -1837,8 +1840,8 @@ void AM_GetMarkPoints (int *n, long *p)
 	{
 		for (i = 0; i < AM_NUMMARKPOINTS; i++)
 		{
-			*p++ = (long)markpoints[i].x;
-			*p++ = (markpoints[i].x == -1_fix) ? 0L : (long)markpoints[i].y;
+                   *p++ = static_cast<long>(markpoints[i].x);
+                   *p++ = static_cast<long>((markpoints[i].x == -1_fix) ? 0_fix : markpoints[i].y);
 		}
 	}
 }
@@ -1855,7 +1858,7 @@ void AM_SetMarkPoints (int n, long *p)
 
 	for (i = 0; i < AM_NUMMARKPOINTS; i++)
 	{
-           markpoints[i].x = (fixed64_t)*p++;
-           markpoints[i].y = (fixed64_t)*p++;
+           markpoints[i].x = static_cast<fixed64_t>(*p++);
+           markpoints[i].y = static_cast<fixed64_t>(*p++);
 	}
 }
