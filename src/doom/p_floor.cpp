@@ -394,8 +394,8 @@ EV_DoFloor
 		P_FindLowestCeilingSurrounding(sec);
 	    if (floor->floordestheight > sec->ceilingheight)
 		floor->floordestheight = sec->ceilingheight;
-	    floor->floordestheight -= (8*FRACUNIT)*
-               (int)(floortype == raiseFloorCrush);
+	    floor->floordestheight -= 
+               (floortype == raiseFloorCrush ? 8*FRACUNIT : 0_fix);
 	    break;
 
 	  case raiseFloorTurbo:

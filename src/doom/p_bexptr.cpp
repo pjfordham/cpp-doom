@@ -54,8 +54,8 @@ void A_Mushroom(mobj_t *actor)
   int i, j, n = actor->info->damage;
 
   // Mushroom parameters are part of code pointer's state
-  fixed_t misc1 = actor->state->misc1 ? (fixed_t)actor->state->misc1 : FRACUNIT*4;
-  fixed_t misc2 = actor->state->misc2 ? (fixed_t)actor->state->misc2 : FRACUNIT/2;
+  fixed_t misc1 = actor->state->misc1 ? fixed_t(actor->state->misc1) : FRACUNIT*4;
+  fixed_t misc2 = actor->state->misc2 ? fixed_t(actor->state->misc2) : FRACUNIT/2;
 
   A_Explode(actor);               // make normal explosion
 
@@ -117,12 +117,12 @@ void A_Spawn(mobj_t *mo)
 
 void A_Turn(mobj_t *mo)
 {
-  mo->angle += (angle_t)(((uint64_t) mo->state->misc1 << 32) / 360);
+   mo->angle += angle_t((static_cast<uint64_t>(mo->state->misc1) << 32) / 360);
 }
 
 void A_Face(mobj_t *mo)
 {
-  mo->angle = (angle_t)(((uint64_t) mo->state->misc1 << 32) / 360);
+   mo->angle = angle_t((static_cast<uint64_t>(mo->state->misc1) << 32) / 360);
 }
 
 void A_Scratch(mobj_t *mo)

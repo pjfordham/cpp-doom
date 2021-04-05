@@ -2047,7 +2047,7 @@ M_WriteText
 	    if (*ch >= '0' && *ch <= '0' + CRMAX - 1)
 	    {
 		c = *ch++;
-		dp_translation = cr[(int) (c - '0')];
+		dp_translation = cr[static_cast<int>(c - '0')];
 		continue;
 	    }
 	}

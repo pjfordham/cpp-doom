@@ -160,14 +160,14 @@ void P_MovePlayer (player_t* player)
     onground |= (player->mo->flags & MF_NOCLIP);
 	
     if (cmd->forwardmove && onground)
-       P_Thrust (player, player->mo->angle, (fixed_t)(cmd->forwardmove*2048_fix));
+       P_Thrust (player, player->mo->angle, cmd->forwardmove*2048_fix);
     else
     // [crispy] in-air movement is only possible with jumping enabled
     if (cmd->forwardmove && critical->jump)
         P_Thrust (player, player->mo->angle, FRACUNIT >> 8);
     
     if (cmd->sidemove && onground)
-       P_Thrust (player, player->mo->angle-ANG90, (fixed_t)(cmd->sidemove*2048_fix));
+       P_Thrust (player, player->mo->angle-ANG90, cmd->sidemove*2048_fix);
     else
     // [crispy] in-air movement is only possible with jumping enabled
     if (cmd->sidemove && critical->jump)

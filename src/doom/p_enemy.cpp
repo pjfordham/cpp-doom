@@ -829,7 +829,7 @@ void A_PosAttack (mobj_t* actor)
     slope = P_AimLineAttack (actor, angle, MISSILERANGE);
 
     S_StartSound (actor, sfx_pistol);
-    angle += (angle_t)(P_SubRandom() << 20);
+    angle += angle_t(P_SubRandom() << 20);
     damage = ((P_Random()%5)+1)*3;
     P_LineAttack (actor, angle, MISSILERANGE, slope, damage);
 }
