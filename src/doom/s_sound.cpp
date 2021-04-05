@@ -593,7 +593,7 @@ static int S_AdjustSoundParams(mobj_t *listener, degenmobj_t *source,
     }
     else
     {
-       angle = angle + ((angle_t)0xffffffff - listener->angle);
+       angle = angle + (angle_t(0xffffffff) - listener->angle);
     }
 
     // stereo separation
@@ -942,7 +942,7 @@ void S_ChangeMusic(int musicnum, int looping)
         musicnum >= NUMMUSIC || (gamemode != commercial && musicnum >= mus_runnin) ||
         S_music[musicnum].lumpnum == -1)
     {
-        const unsigned int umusicnum = (unsigned int) musicnum;
+        const unsigned int umusicnum = static_cast<unsigned int>(musicnum);
 
         if (gamemode == commercial)
         {

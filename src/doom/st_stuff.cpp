@@ -2337,7 +2337,7 @@ void ST_DrawDemoTimer (const int time)
 {
 	char buffer[16];
 	const int mins = time / (60 * TICRATE);
-	const float secs = (float)(time % (60 * TICRATE)) / TICRATE;
+	const float secs = static_cast<float>(time % (60 * TICRATE)) / TICRATE;
 	const int w = shortnum[0]->width;
 	int n, x;
 

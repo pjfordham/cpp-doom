@@ -280,11 +280,11 @@ R_RenderMaskedSegRange
 	    // mapping to screen coordinates is totally out of range:
 
 	    {
-               auto t = ((fixed64_t)centeryfrac << FRACBITS) -
-                  (fixed64_t)dc_texturemid * (fixed64_t)spryscale;
+               auto t = (centeryfrac.to_64() << FRACBITS) -
+                  dc_texturemid.to_64() * spryscale.to_64();
 
-               if (t + (fixed64_t)textureheight[texnum] * (fixed64_t)spryscale < decltype(t)(0) ||
-                   t > (((int64_t)SCREENHEIGHT << FRACBITS) << FRACBITS))
+               if (t + textureheight[texnum].to_64() * spryscale.to_64() < decltype(t)(0) ||
+                   t > ((static_cast<int64_t>(SCREENHEIGHT) << FRACBITS) << FRACBITS))
 		{
 			spryscale += rw_scalestep; // [crispy] MBF had this in the for-loop iterator
 			continue; // skip if the texture is out of screen's range
@@ -568,14 +568,13 @@ R_StoreWallRange
     // thank you very much Linguica, e6y and kb1
     // http://www.doomworld.com/vb/post/1340718
     // shift right to avoid possibility of int64 overflow in rw_distance calculation
-    dx = ((fixed64_t)curline->v2->r_x - curline->v1->r_x) >> 1;
-    dy = ((fixed64_t)curline->v2->r_y - curline->v1->r_y) >> 1;
-    dx1 = ((fixed64_t)viewx - curline->v1->r_x) >> 1;
-    dy1 = ((fixed64_t)viewy - curline->v1->r_y) >> 1;
+    dx = (curline->v2->r_x.to_64() - curline->v1->r_x) >> 1;
+    dy = (curline->v2->r_y.to_64() - curline->v1->r_y) >> 1;
+    dx1 = (viewx.to_64() - curline->v1->r_x) >> 1;
+    dy1 = (viewy.to_64() - curline->v1->r_y) >> 1;
     dist = ((dy * dx1 - dx * dy1) / len) << 1;
-    rw_distance = (fixed_t)BETWEEN(fixed_t(INT_MIN), fixed_t(INT_MAX), dist);
-		
-	
+    rw_distance = fixed_t( BETWEEN(fixed_t(INT_MIN), fixed_t(INT_MAX), dist) );
+
     ds_p->x1 = rw_x = start;
     ds_p->x2 = stop;
     ds_p->curline = curline;
@@ -858,10 +857,10 @@ R_StoreWallRange
     worldbottom >>= invhgtbits;
 	
     topstep = -FixedMul (rw_scalestep, worldtop);
-    topfrac = (centeryfrac>>invhgtbits) - FixedMul((fixed64_t)worldtop, rw_scale); // [crispy] WiggleFix
+    topfrac = (centeryfrac>>invhgtbits) - FixedMul(worldtop.to_64(), rw_scale); // [crispy] WiggleFix
 
     bottomstep = -FixedMul (rw_scalestep,worldbottom);
-    bottomfrac = (centeryfrac>>invhgtbits) - FixedMul((fixed64_t)worldbottom, rw_scale); // [crispy] WiggleFix
+    bottomfrac = (centeryfrac>>invhgtbits) - FixedMul(worldbottom.to_64(), rw_scale); // [crispy] WiggleFix
 	
     if (backsector)
     {	
@@ -870,13 +869,13 @@ R_StoreWallRange
 
 	if (worldhigh < worldtop)
 	{
-            pixhigh = (centeryfrac>>invhgtbits) - FixedMul((fixed64_t)worldhigh, rw_scale); // [crispy] WiggleFix
+            pixhigh = (centeryfrac>>invhgtbits) - FixedMul(worldhigh.to_64(), rw_scale); // [crispy] WiggleFix
 	    pixhighstep = -FixedMul (rw_scalestep,worldhigh);
 	}
 	
 	if (worldlow > worldbottom)
 	{
-           pixlow = (centeryfrac>>invhgtbits) - FixedMul((fixed64_t)worldlow, rw_scale); // [crispy] WiggleFix
+            pixlow = (centeryfrac>>invhgtbits) - FixedMul(worldlow.to_64(), rw_scale); // [crispy] WiggleFix
 	    pixlowstep = -FixedMul (rw_scalestep,worldlow);
 	}
     }

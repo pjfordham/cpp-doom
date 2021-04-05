@@ -36,6 +36,10 @@ public:
    explicit operator short() const { return static_cast<short>(value); }
    explicit operator unsigned char() const { return static_cast<unsigned char>(value); }
 
+   ffixed_t<int64_t,16> to_64() const {
+      return ffixed_t<int64_t,16>(value);
+   }
+
    fixed_t fractional_part() { // Come up with something better for this.
       return fixed_t( value & 0xFFFF);
    }

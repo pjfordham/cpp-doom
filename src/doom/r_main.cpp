@@ -389,8 +389,8 @@ R_PointToAngleCrispy
   fixed_t	y )
 {
     // [crispy] fix overflows for very long distances
-    fixed64_t y_viewy = (fixed64_t)y - viewy;
-    fixed64_t x_viewx = (fixed64_t)x - viewx;
+    fixed64_t y_viewy = y.to_64() - viewy;
+    fixed64_t x_viewx = x.to_64() - viewx;
 
     // [crispy] the worst that could happen is e.g. INT_MIN-INT_MAX = 2*INT_MIN
     if (x_viewx < fixed_t(INT_MIN) || x_viewx > fixed_t(INT_MAX) ||
@@ -557,16 +557,16 @@ angle_t R_InterpolateAngle(angle_t oangle, angle_t nangle, fixed_t scale)
     else if (nangle > oangle)
     {
         if (nangle - oangle < ANG270)
-            return oangle + (angle_t)((nangle - oangle) * FIXED2DOUBLE(scale));
+            return oangle + ((nangle - oangle) * FIXED2DOUBLE(scale));
         else // Wrapped around
-            return oangle - (angle_t)((oangle - nangle) * FIXED2DOUBLE(scale));
+            return oangle - ((oangle - nangle) * FIXED2DOUBLE(scale));
     }
     else // nangle < oangle
     {
         if (oangle - nangle < ANG270)
-            return oangle - (angle_t)((oangle - nangle) * FIXED2DOUBLE(scale));
+            return oangle - ((oangle - nangle) * FIXED2DOUBLE(scale));
         else // Wrapped around
-            return oangle + (angle_t)((nangle - oangle) * FIXED2DOUBLE(scale));
+            return oangle + ((nangle - oangle) * FIXED2DOUBLE(scale));
     }
 }
 
@@ -1009,7 +1009,7 @@ void R_SetupFrame (player_t* player)
 
         // FIXME this seems very wrong
         pitch = ((player->oldlookdir + (player->lookdir - player->oldlookdir) * FIXED2DOUBLE(fractionaltic)) / MLOOKUNIT )
-           + (player->oldrecoilpitch + (int)FixedMul(fixed_t(player->recoilpitch - player->oldrecoilpitch), fractionaltic));
+           + (player->oldrecoilpitch + FixedMul(player->recoilpitch - player->oldrecoilpitch, fractionaltic));
     }
     else
     {
