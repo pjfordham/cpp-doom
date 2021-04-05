@@ -1645,7 +1645,7 @@ void ST_doPaletteStuff(void)
     {
 	st_palette = palette;
 #ifndef CRISPY_TRUECOLOR
-	pal = (byte *) W_CacheLumpNum (lu_palette, PU_CACHE)+palette*768;
+	pal = cache_lump_num<byte *>(lu_palette, PU_CACHE)+palette*768;
 	I_SetPalette (pal);
 #else
 	I_SetPalette (palette);
@@ -2294,7 +2294,7 @@ void ST_Start (void)
     if (netgame && consoleplayer)
     {
 	auto namebuf = DEH_sprintf("STFB%d", consoleplayer);
-	faceback = static_cast<patch_t *>(W_CacheLumpName(namebuf, PU_STATIC));
+	faceback = cache_lump_name<patch_t *>(namebuf, PU_STATIC);
     }
 }
 

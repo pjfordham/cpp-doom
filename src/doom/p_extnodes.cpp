@@ -99,7 +99,7 @@ void P_LoadSegs_DeePBSP (int lump)
 
     numsegs = W_LumpLength(lump) / sizeof(mapseg_deepbsp_t);
     segs = Z_New<seg_t>(PU_LEVEL, numsegs );
-    data = (mapseg_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
+    data = cache_lump_num<mapseg_deepbsp_t *>(lump, PU_STATIC);
 
     for (i = 0; i < numsegs; i++)
     {
@@ -164,7 +164,7 @@ void P_LoadSubsectors_DeePBSP (int lump)
 
     numsubsectors = W_LumpLength(lump) / sizeof(mapsubsector_deepbsp_t);
     subsectors = Z_New<subsector_t>(PU_LEVEL, numsubsectors);
-    data = (mapsubsector_deepbsp_t *)W_CacheLumpNum(lump, PU_STATIC);
+    data = cache_lump_num<mapsubsector_deepbsp_t *>(lump, PU_STATIC);
 
     // [crispy] fail on missing subsectors
     if (!data || !numsubsectors)

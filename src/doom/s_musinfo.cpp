@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "../../utils/lump.hpp"
 #include "doomstat.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
@@ -105,7 +106,7 @@ static void OpenScript(const char *name, int type)
     if (type == LUMP_SCRIPT)
     {                           // Lump script
         ScriptLumpNum = W_GetNumForName(name);
-        ScriptBuffer = (char *) W_CacheLumpNum(ScriptLumpNum, PU_STATIC);
+        ScriptBuffer = cache_lump_num<char *>(ScriptLumpNum, PU_STATIC);
         ScriptSize = W_LumpLength(ScriptLumpNum);
         M_StringCopy(ScriptName, name, sizeof(ScriptName));
     }

@@ -70,11 +70,11 @@ int SlopeDivCrispy(unsigned int num, unsigned int den)
     }
     else
     {
-	uint64_t ans = ((uint64_t) num << 3) / (den >> 8);
+       uint64_t ans = (static_cast<uint64_t>(num) << 3) / (den >> 8);
 
 	if (ans <= SLOPERANGE)
 	{
-	    return (int) ans;
+           return static_cast<int>(ans);
 	}
 	else
 	{
@@ -2146,7 +2146,7 @@ const unsigned int _tantoangle[2049] =
     535533216,535700704,535868128,536035456,536202720,536369888,536536992,536704000,
     536870912
 };
-const angle_t *tantoangle = (angle_t*)_tantoangle;
+const angle_t *tantoangle = reinterpret_cast<const angle_t*>(_tantoangle);
 
 // Now where did these came from?
 const byte gammatable[5][256] =

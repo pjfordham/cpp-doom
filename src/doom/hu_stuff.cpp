@@ -20,6 +20,7 @@
 
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
+#include "../../utils/lump.hpp"
 
 #include "z_zone.hpp"
 
@@ -438,7 +439,7 @@ void HU_Init(void)
     for (i=0;i<HU_FONTSIZE;i++)
     {
 	auto buffer = DEH_sprintf("STCFN%.3d", j++);
-	hu_font[i] = (patch_t *) W_CacheLumpName(buffer, PU_STATIC);
+	hu_font[i] = cache_lump_name<patch_t *>(buffer, PU_STATIC);
     }
 
     if (gameversion == exe_chex)
