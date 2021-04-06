@@ -138,11 +138,6 @@ fixed_t GetOffset(vertex_t *v1, vertex_t *v2)
 //
 void P_LoadVertexes (int lump)
 {
-    byte*		data;
-    int			i;
-    mapvertex_t*	ml;
-    vertex_t*		li;
-
     // Determine number of lumps:
     //  total lump length / vertex record length.
     numvertexes = W_LumpLength (lump) / sizeof(mapvertex_t);
@@ -151,14 +146,13 @@ void P_LoadVertexes (int lump)
     vertexes = Z_New<vertex_t>(PU_LEVEL, numvertexes);
 
     // Load data into cache.
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
-	
-    ml = (mapvertex_t *)data;
-    li = vertexes;
+    auto ml = cache_lump_num<mapvertex_t *>(lump, PU_STATIC);
+
+    vertex_t *li = vertexes;
 
     // Copy and convert vertex coordinates,
     // internal representation as fixed.
-    for (i=0 ; i<numvertexes ; i++, li++, ml++)
+    for (int i=0 ; i<numvertexes ; i++, li++, ml++)
     {
 	li->x = SHORT(ml->x)<<FRACBITS;
 	li->y = SHORT(ml->y)<<FRACBITS;
@@ -196,9 +190,6 @@ sector_t* GetSectorAtNullAddress(void)
 //
 void P_LoadSegs (int lump)
 {
-    byte*		data;
-    int			i;
-    mapseg_t*		ml;
     seg_t*		li;
     line_t*		ldef;
     int			linedef;
@@ -209,11 +200,9 @@ void P_LoadSegs (int lump)
     segs = Z_New<seg_t> (PU_LEVEL,numsegs);
     // FIXME I don't think we really need this.
     std::fill( segs, segs + numsegs, seg_t{} );
-    data = cache_lump_num<byte*>(lump,PU_STATIC);
-	
-    ml = (mapseg_t *)data;
+    auto *ml = cache_lump_num<mapseg_t*>(lump,PU_STATIC);
     li = segs;
-    for (i=0 ; i<numsegs ; i++, li++, ml++)
+    for (int i=0 ; i<numsegs ; i++, li++, ml++)
     {
 	li->v1 = &vertexes[(unsigned short)SHORT(ml->v1)]; // [crispy] extended nodes
 	li->v2 = &vertexes[(unsigned short)SHORT(ml->v2)]; // [crispy] extended nodes
@@ -321,24 +310,19 @@ void P_SegLengths (boolean contrast_only)
 //
 void P_LoadSubsectors (int lump)
 {
-    byte*		data;
-    int			i;
-    mapsubsector_t*	ms;
-    subsector_t*	ss;
-	
     numsubsectors = W_LumpLength (lump) / sizeof(mapsubsector_t);
     subsectors = Z_New<subsector_t>(PU_LEVEL,numsubsectors);
     std::fill( subsectors, subsectors + numsubsectors, subsector_t{} );
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-	
+
+    auto ms = cache_lump_num<mapsubsector_t *>(lump,PU_STATIC);
+
     // [crispy] fail on missing subsectors
-    if (!data || !numsubsectors)
+    if (!ms || !numsubsectors)
 	I_Error("P_LoadSubsectors: No subsectors in map!");
 
-    ms = (mapsubsector_t *)data;
-    ss = subsectors;
+    subsector_t* ss = subsectors;
     
-    for (i=0 ; i<numsubsectors ; i++, ss++, ms++)
+    for (int i=0 ; i<numsubsectors ; i++, ss++, ms++)
     {
 	ss->numlines = (unsigned short)SHORT(ms->numsegs); // [crispy] extended nodes
 	ss->firstline = (unsigned short)SHORT(ms->firstseg); // [crispy] extended nodes
@@ -354,11 +338,6 @@ void P_LoadSubsectors (int lump)
 //
 void P_LoadSectors (int lump)
 {
-    byte*		data;
-    int			i;
-    mapsector_t*	ms;
-    sector_t*		ss;
-	
     // [crispy] fail on missing sectors
     if (lump >= numlumps)
 	I_Error("P_LoadSectors: No sectors in map!");
@@ -366,15 +345,14 @@ void P_LoadSectors (int lump)
     numsectors = W_LumpLength (lump) / sizeof(mapsector_t);
     sectors = Z_New<sector_t>(PU_LEVEL,numsectors);
     std::fill( sectors, sectors + numsectors, sector_t{} );
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-	
+    auto ms = cache_lump_num<mapsector_t *>(lump,PU_STATIC);
+
     // [crispy] fail on missing sectors
-    if (!data || !numsectors)
+    if (!ms || !numsectors)
 	I_Error("P_LoadSectors: No sectors in map!");
 
-    ms = (mapsector_t *)data;
-    ss = sectors;
-    for (i=0 ; i<numsectors ; i++, ss++, ms++)
+    sector_t *ss = sectors;
+    for (int i=0 ; i<numsectors ; i++, ss++, ms++)
     {
 	ss->floorheight = SHORT(ms->floorheight)<<FRACBITS;
 	ss->ceilingheight = SHORT(ms->ceilingheight)<<FRACBITS;
@@ -406,19 +384,12 @@ void P_LoadSectors (int lump)
 //
 void P_LoadNodes (int lump)
 {
-    byte*	data;
-    int		i;
-    int		j;
-    int		k;
-    mapnode_t*	mn;
-    node_t*	no;
-	
     numnodes = W_LumpLength (lump) / sizeof(mapnode_t);
     nodes = Z_New<node_t>(PU_LEVEL,numnodes);
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-	
+    auto mn = cache_lump_num<mapnode_t *>(lump,PU_STATIC);
+
     // [crispy] warn about missing nodes
-    if (!data || !numnodes)
+    if (!mn || !numnodes)
     {
 	if (numsubsectors == 1)
 	    fprintf(stderr, "P_LoadNodes: No nodes in map, but only one subsector.\n");
@@ -426,16 +397,15 @@ void P_LoadNodes (int lump)
 	    I_Error("P_LoadNodes: No nodes in map!");
     }
 
-    mn = (mapnode_t *)data;
-    no = nodes;
-    
-    for (i=0 ; i<numnodes ; i++, no++, mn++)
+    node_t* no = nodes;
+
+    for (int i=0 ; i<numnodes ; i++, no++, mn++)
     {
 	no->x = SHORT(mn->x)<<FRACBITS;
 	no->y = SHORT(mn->y)<<FRACBITS;
 	no->dx = SHORT(mn->dx)<<FRACBITS;
 	no->dy = SHORT(mn->dy)<<FRACBITS;
-	for (j=0 ; j<2 ; j++)
+	for (int j=0 ; j<2 ; j++)
 	{
 	    no->children[j] = (unsigned short)SHORT(mn->children[j]); // [crispy] extended nodes
 
@@ -454,7 +424,7 @@ void P_LoadNodes (int lump)
 		no->children[j] |= NF_SUBSECTOR;
 	    }
 
-	    for (k=0 ; k<4 ; k++)
+	    for (int k=0 ; k<4 ; k++)
 		no->bbox[j][k] = SHORT(mn->bbox[j][k])<<FRACBITS;
 	}
     }
@@ -468,20 +438,12 @@ void P_LoadNodes (int lump)
 //
 void P_LoadThings (int lump)
 {
-    byte               *data;
-    int			i;
-    mapthing_t         *mt;
-    mapthing_t          spawnthing;
-    int			numthings;
-    boolean		spawn;
+    auto mt = cache_lump_num<mapthing_t *>(lump,PU_STATIC);
+    int numthings = W_LumpLength (lump) / sizeof(mapthing_t);
 
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-    numthings = W_LumpLength (lump) / sizeof(mapthing_t);
-	
-    mt = (mapthing_t *)data;
-    for (i=0 ; i<numthings ; i++, mt++)
+    for (int i=0 ; i<numthings ; i++, mt++)
     {
-	spawn = true;
+	boolean spawn = true;
 
 	// Do not spawn cool, new monsters if !commercial
 	if (gamemode != commercial)
@@ -505,6 +467,7 @@ void P_LoadThings (int lump)
 	if (spawn == false)
 	    break;
 
+        mapthing_t spawnthing;
 	// Do spawn all other stuff. 
 	spawnthing.x = SHORT(mt->x);
 	spawnthing.y = SHORT(mt->y);
@@ -517,7 +480,7 @@ void P_LoadThings (int lump)
 
     if (!deathmatch)
     {
-        for (i = 0; i < MAXPLAYERS; i++)
+        for (int i = 0; i < MAXPLAYERS; i++)
         {
             if (playeringame[i] && !playerstartsingame[i])
             {
@@ -537,23 +500,16 @@ void P_LoadThings (int lump)
 //
 void P_LoadLineDefs (int lump)
 {
-    byte*		data;
-    int			i;
-    maplinedef_t*	mld;
-    line_t*		ld;
-    vertex_t*		v1;
-    vertex_t*		v2;
     int warn, warn2; // [crispy] warn about invalid linedefs
-	
+
     numlines = W_LumpLength (lump) / sizeof(maplinedef_t);
     lines = Z_New<line_t>(PU_LEVEL,numlines);
     std::fill( lines, lines + numlines, line_t{} );
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-	
-    mld = (maplinedef_t *)data;
-    ld = lines;
+
+    auto mld = cache_lump_num<maplinedef_t*>(lump,PU_STATIC);
+    line_t *ld = lines;
     warn = warn2 = 0; // [crispy] warn about invalid linedefs
-    for (i=0 ; i<numlines ; i++, mld++, ld++)
+    for (int i=0 ; i<numlines ; i++, mld++, ld++)
     {
 	ld->flags = (unsigned short)SHORT(mld->flags); // [crispy] extended nodes
 	ld->special = SHORT(mld->special);
@@ -594,8 +550,8 @@ void P_LoadLineDefs (int lump)
 		    break;
 	    }
 	}
-	v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)]; // [crispy] extended nodes
-	v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)]; // [crispy] extended nodes
+	vertex_t *v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)]; // [crispy] extended nodes
+	vertex_t *v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)]; // [crispy] extended nodes
 	ld->dx = v2->x - v1->x;
 	ld->dy = v2->y - v1->y;
 	
@@ -682,19 +638,13 @@ void P_LoadLineDefs (int lump)
 //
 void P_LoadSideDefs (int lump)
 {
-    byte*		data;
-    int			i;
-    mapsidedef_t*	msd;
-    side_t*		sd;
-	
     numsides = W_LumpLength (lump) / sizeof(mapsidedef_t);
     sides = Z_New<side_t>(PU_LEVEL,numsides);
     std::fill( sides, sides + numsides, side_t{} );
-    data = cache_lump_num<byte *>(lump,PU_STATIC);
-	
-    msd = (mapsidedef_t *)data;
-    sd = sides;
-    for (i=0 ; i<numsides ; i++, msd++, sd++)
+
+    auto msd = cache_lump_num<mapsidedef_t*>(lump,PU_STATIC);
+    side_t *sd = sides;
+    for (int i=0 ; i<numsides ; i++, msd++, sd++)
     {
 	sd->textureoffset = SHORT(msd->textureoffset)<<FRACBITS;
 	sd->rowoffset = SHORT(msd->rowoffset)<<FRACBITS;
@@ -923,8 +873,10 @@ static void P_RemoveSlimeTrails(void)
 			int64_t s = dx2 + dy2;
 
 			// [crispy] MBF actually overrides v->x and v->y here
-			v->r_x = (fixed_t)((dx2 * (fixed64_t)v->x + dy2 * (fixed64_t)l->v1->x + dxy * (fixed64_t)(v->y - l->v1->y)) / s);
-			v->r_y = (fixed_t)((dy2 * (fixed64_t)v->y + dx2 * (fixed64_t)l->v1->y + dxy * (fixed64_t)(v->x - l->v1->x)) / s);
+			v->r_x = fixed_t((dx2 * v->x.to_64() + dy2 * l->v1->x.to_64() +
+                                          dxy * (v->y.to_64() - l->v1->y)) / s);
+			v->r_y = fixed_t((dy2 * v->y.to_64() + dx2 * l->v1->y.to_64() +
+                                          dxy * (v->x.to_64() - l->v1->x)) / s);
 
 			// [crispy] wait a minute... moved more than 8 map units?
 			// maybe that's a linguortal then, back to the original coordinates
@@ -979,8 +931,8 @@ static void PadRejectArray(byte *array, unsigned int len)
 
     if (len > sizeof(rejectpad))
     {
-        fprintf(stderr, "PadRejectArray: REJECT lump too short to pad! (%u > %i)\n",
-                        len, (int) sizeof(rejectpad));
+        fmt::print(stderr,"PadRejectArray: REJECT lump too short to pad! ({} > {})\n",
+                   len, sizeof(rejectpad));
 
         // Pad remaining space with 0 (or 0xff, if specified on command line).
 
