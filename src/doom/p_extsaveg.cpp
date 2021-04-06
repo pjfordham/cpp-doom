@@ -121,10 +121,10 @@ static void P_WriteFireFlicker (const char *key)
    P_VisitThinkers<fireflicker_t>( [key]( fireflicker_t *flick ) {
         fmt::print( save_stream, "{} {} {} {} {}\n",
                     key,
-                    (int)(flick->sector - sectors),
-                    (int)flick->count,
-                    (int)flick->maxlight,
-                    (int)flick->minlight);
+                    flick->sector - sectors,
+                    flick->count,
+                    flick->maxlight,
+                    flick->minlight);
          return false;
       } );
 }
@@ -229,10 +229,10 @@ static void P_WriteButton (const char *key)
 		{
                    fmt::print( save_stream, "{} {} {} {} {}\n",
                                key,
-                               (int)(button->line - lines),
-                               (int)button->where,
-                               (int)button->btexture,
-                               (int)button->btimer);
+                               button->line - lines,
+                               button->where,
+                               button->btexture,
+                               button->btimer);
 		}
 	}
 }
@@ -475,7 +475,7 @@ void P_ReadExtendedSaveGameData (int pass)
 	if (fread(&episode, 1, 1, save_stream) == 1 &&
 	    fread(&map, 1, 1, save_stream) == 1)
 	{
-		lumpnum = P_GetNumForMap ((int) episode, (int) map, false);
+		lumpnum = P_GetNumForMap ( episode, map, false);
 	}
 
 	if (lumpnum >= 0)
