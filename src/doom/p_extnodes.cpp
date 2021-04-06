@@ -114,7 +114,7 @@ void P_LoadSegs_DeePBSP (int lump)
 	li->angle = (angle_t)((SHORT(ml->angle))<<16);
 
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
-	linedef = (unsigned short)SHORT(ml->linedef);
+	linedef = USHORT(ml->linedef);
 	ldef = &lines[linedef];
 	li->linedef = ldef;
 	side = SHORT(ml->side);
@@ -396,7 +396,7 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 	li->v1 = &vertexes[ml->v1];
 	li->v2 = &vertexes[ml->v2];
 
-	linedef = (unsigned short)SHORT(ml->linedef);
+	linedef = USHORT(ml->linedef);
 	ldef = &lines[linedef];
 	li->linedef = ldef;
 	side = ml->side;
@@ -527,7 +527,7 @@ void P_LoadLineDefs_Hexen (int lump)
     warn = 0; // [crispy] warn about unknown linedef types
     for (i = 0; i < numlines; i++, mld++, ld++)
     {
-	ld->flags = (unsigned short)SHORT(mld->flags);
+	ld->flags = USHORT(mld->flags);
 
 	ld->special = mld->special;
 //	ld->arg1 = mld->arg1;
@@ -543,8 +543,8 @@ void P_LoadLineDefs_Hexen (int lump)
 	    warn++;
 	}
 
-	v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)];
-	v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)];
+	v1 = ld->v1 = &vertexes[USHORT(mld->v1)];
+	v2 = ld->v2 = &vertexes[USHORT(mld->v2)];
 
 	ld->dx = v2->x - v1->x;
 	ld->dy = v2->y - v1->y;

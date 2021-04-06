@@ -31,6 +31,7 @@
 // of the macros in the original source and some code relies on it.
 
 #define SHORT(x)  static_cast<signed short>( SDL_SwapLE16(x) )
+#define USHORT(x) static_cast<unsigned short>( SDL_SwapLE16(x) )
 #define LONG(x)   static_cast<signed int>( SDL_SwapLE32(x) )
 
 // Defines for checking the endianness of the system.

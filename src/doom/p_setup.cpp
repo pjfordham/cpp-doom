@@ -204,12 +204,12 @@ void P_LoadSegs (int lump)
     li = segs;
     for (int i=0 ; i<numsegs ; i++, li++, ml++)
     {
-	li->v1 = &vertexes[(unsigned short)SHORT(ml->v1)]; // [crispy] extended nodes
-	li->v2 = &vertexes[(unsigned short)SHORT(ml->v2)]; // [crispy] extended nodes
+	li->v1 = &vertexes[USHORT(ml->v1)]; // [crispy] extended nodes
+	li->v2 = &vertexes[USHORT(ml->v2)]; // [crispy] extended nodes
 
 	li->angle = (angle_t)((SHORT(ml->angle))<<16);  // was only coincidnetally FRACBITS
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
-	linedef = (unsigned short)SHORT(ml->linedef); // [crispy] extended nodes
+	linedef = USHORT(ml->linedef); // [crispy] extended nodes
 	ldef = &lines[linedef];
 	li->linedef = ldef;
 	side = SHORT(ml->side);
@@ -324,8 +324,8 @@ void P_LoadSubsectors (int lump)
     
     for (int i=0 ; i<numsubsectors ; i++, ss++, ms++)
     {
-	ss->numlines = (unsigned short)SHORT(ms->numsegs); // [crispy] extended nodes
-	ss->firstline = (unsigned short)SHORT(ms->firstseg); // [crispy] extended nodes
+	ss->numlines = USHORT(ms->numsegs); // [crispy] extended nodes
+	ss->firstline = USHORT(ms->firstseg); // [crispy] extended nodes
     }
 	
     W_ReleaseLumpNum(lump);
@@ -407,7 +407,7 @@ void P_LoadNodes (int lump)
 	no->dy = SHORT(mn->dy)<<FRACBITS;
 	for (int j=0 ; j<2 ; j++)
 	{
-	    no->children[j] = (unsigned short)SHORT(mn->children[j]); // [crispy] extended nodes
+	    no->children[j] = USHORT(mn->children[j]); // [crispy] extended nodes
 
 	    // [crispy] add support for extended nodes
 	    // from prboom-plus/src/p_setup.c:937-957
@@ -511,7 +511,7 @@ void P_LoadLineDefs (int lump)
     warn = warn2 = 0; // [crispy] warn about invalid linedefs
     for (int i=0 ; i<numlines ; i++, mld++, ld++)
     {
-	ld->flags = (unsigned short)SHORT(mld->flags); // [crispy] extended nodes
+	ld->flags = USHORT(mld->flags); // [crispy] extended nodes
 	ld->special = SHORT(mld->special);
 	// [crispy] warn about unknown linedef types
 	if ((unsigned short) ld->special > 141)
@@ -550,8 +550,8 @@ void P_LoadLineDefs (int lump)
 		    break;
 	    }
 	}
-	vertex_t *v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)]; // [crispy] extended nodes
-	vertex_t *v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)]; // [crispy] extended nodes
+	vertex_t *v1 = ld->v1 = &vertexes[USHORT(mld->v1)]; // [crispy] extended nodes
+	vertex_t *v2 = ld->v2 = &vertexes[USHORT(mld->v2)]; // [crispy] extended nodes
 	ld->dx = v2->x - v1->x;
 	ld->dy = v2->y - v1->y;
 	
