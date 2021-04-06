@@ -82,11 +82,12 @@ boolean PTR_SightTraverse(intercept_t *in)
 // P_DivlineSide
 // Returns side 0 (front), 1 (back), or 2 (on).
 //
+template <typename T>
 int
 P_DivlineSide
 ( fixed_t	x,
   fixed_t	y,
-  divline_t*	node )
+  T*	node )
 {
     fixed_t	dx;
     fixed_t	dy;
@@ -307,7 +308,7 @@ boolean P_CrossBSPNode (int bspnum)
     bsp = &nodes[bspnum];
     
     // decide which side the start point is on
-    side = P_DivlineSide (strace.x, strace.y, (divline_t *)bsp);
+    side = P_DivlineSide (strace.x, strace.y, bsp);
     if (side == 2)
 	side = 0;	// an "on" should cross both sides
 
@@ -316,7 +317,7 @@ boolean P_CrossBSPNode (int bspnum)
 	return false;
 	
     // the partition plane is crossed here
-    if (side == P_DivlineSide (t2x, t2y,(divline_t *)bsp))
+    if (side == P_DivlineSide (t2x, t2y,bsp))
     {
 	// the line doesn't touch the other side
 	return true;
