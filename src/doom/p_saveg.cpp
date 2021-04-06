@@ -133,7 +133,7 @@ static void saveg_write32(int value)
 
 static void saveg_write32(fixed_t value)
 {
-   saveg_write32((int)value);
+   saveg_write32(static_cast<int>(value));
 }
 
 // Pad to 4-byte boundaries
@@ -247,9 +247,15 @@ static void saveg_write_think_t()
 {
    // Write dummies for old prev, next and think pointers
    // new save games might not work.
-   saveg_writep( (void*)0x1 );
-   saveg_writep( (void*)0x1 );
-   saveg_writep( (void*)0x1 );
+
+   // std::bitcast
+   void *dummy;
+   int x = 1;
+   memcpy(&dummy, &x, sizeof( dummy ));
+
+   saveg_writep( dummy );
+   saveg_writep( dummy );
+   saveg_writep( dummy );
 }
 
 
@@ -444,7 +450,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     saveg_writep(str->sprev);
 
     // angle_t angle;
-    saveg_write32((unsigned int)str->angle);
+    saveg_write32(static_cast<unsigned int>(str->angle));
 
     // spritenum_t sprite;
     saveg_write_enum(str->sprite);

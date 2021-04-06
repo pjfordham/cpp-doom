@@ -168,7 +168,7 @@ static void DEH_BEXPtrParseLine(deh_context_t *context, char *line, void *tag)
 	return;
     }
 
-    state = (state_t *) &states[frame_number];
+    state = reinterpret_cast<state_t *>(&states[frame_number]);
 
     for (i = 0; i < arrlen(bex_codeptrtable); i++)
     {

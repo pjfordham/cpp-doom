@@ -171,12 +171,12 @@ void A_LineEffect(mobj_t *mo)
 //if (!(mo->intflags & MIF_LINEDONE))                // Unless already used up
     {
       line_t junk = *lines;                          // Fake linedef set to 1st
-      if ((junk.special = (short)mo->state->misc1))  // Linedef type
+      if ((junk.special = static_cast<short>(mo->state->misc1)))  // Linedef type
 	{
 	  player_t player, *oldplayer = mo->player;  // Remember player status
 	  mo->player = &player;                      // Fake player
 	  player.health = 100;                       // Alive player
-	  junk.tag = (short)mo->state->misc2;        // Sector tag for linedef
+	  junk.tag = static_cast<short>(mo->state->misc2);        // Sector tag for linedef
 	  if (!P_UseSpecialLine(mo, &junk, 0))       // Try using it
 	    P_CrossSpecialLinePtr(&junk, 0, mo);     // Try crossing it
 //	  if (!junk.special)                         // If type cleared,

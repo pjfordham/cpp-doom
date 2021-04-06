@@ -852,13 +852,13 @@ static void InterceptsMemoryOverrun(int location, int value)
                 if (intercepts_overrun[i].int16_array)
                 {
                     index = (location - offset) / 2;
-                    ((short *) addr)[index] = value & 0xffff;
-                    ((short *) addr)[index + 1] = (value >> 16) & 0xffff;
+                    reinterpret_cast<short *>(addr)[index] = value & 0xffff;
+                    reinterpret_cast<short *>(addr)[index + 1] = (value >> 16) & 0xffff;
                 }
                 else
                 {
                     index = (location - offset) / 4;
-                    ((int *) addr)[index] = value;
+                    reinterpret_cast<int *>(addr)[index] = value;
                 }
             }
 
@@ -892,7 +892,7 @@ static void InterceptsOverrun(int num_intercepts, intercept_t *intercept)
     // address translated into the correct address value for 
     // Vanilla Doom.
 
-    InterceptsMemoryOverrun(location, (intptr_t)intercept->frac);
+    InterceptsMemoryOverrun(location, static_cast<intptr_t>(intercept->frac));
     InterceptsMemoryOverrun(location + 4, intercept->isaline);
     InterceptsMemoryOverrun(location + 8, (intptr_t) intercept->d.thing);
 }

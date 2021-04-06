@@ -95,7 +95,7 @@ static void DEH_PointerParseLine(deh_context_t *context, char *line, void *tag)
     if (tag == NULL)
        return;
 
-    state = (state_t *) tag;
+    state = reinterpret_cast<state_t *>(tag);
 
     // Parse the assignment
 

@@ -2451,8 +2451,8 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
 	return;
     }
 
-    cmd->forwardmove = ((signed char)*demo_p++); 
-    cmd->sidemove = ((signed char)*demo_p++); 
+    cmd->forwardmove = static_cast<signed char>(*demo_p++);
+    cmd->sidemove = static_cast<signed char>(*demo_p++);
 
     // If this is a longtics demo, read back in higher resolution
 
@@ -2463,10 +2463,10 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
     }
     else
     {
-        cmd->angleturn = ((unsigned char) *demo_p++)<<8; 
+       cmd->angleturn = static_cast<unsigned char>(*demo_p++)<<8;
     }
 
-    cmd->buttons = (unsigned char)*demo_p++; 
+    cmd->buttons = static_cast<unsigned char>(*demo_p++);
 
     // [crispy] increase demo tics counter
     // applies to both recording and playback,

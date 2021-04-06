@@ -63,7 +63,7 @@ P_SetMobjState
     {
 	if (state == S_NULL)
 	{
-	    mobj->state = (state_t *) S_NULL;
+            mobj->state = nullptr;
 	    P_RemoveMobj (mobj);
 	    return false;
 	}

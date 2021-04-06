@@ -115,7 +115,7 @@ HUlib_drawTextLine
 		if (l->l[i+1] >= '0' && l->l[i+1] <= '0' + CRMAX - 1)
 		{
 		    i++;
-		    dp_translation = (crispy->coloredhud & COLOREDHUD_TEXT) ? cr[(int) (l->l[i] - '0')] : NULL;
+		    dp_translation = (crispy->coloredhud & COLOREDHUD_TEXT) ? cr[(l->l[i] - '0')] : NULL;
 		}
 	}
 	else
@@ -362,7 +362,7 @@ HUlib_keyInIText
     ch = toupper(ch);
 
     if (ch >= ' ' && ch <= '_') 
-  	HUlib_addCharToTextLine(&it->l, (char) ch);
+  	HUlib_addCharToTextLine(&it->l, ch);
     else 
 	if (ch == KEY_BACKSPACE) 
 	    HUlib_delCharFromIText(it);
