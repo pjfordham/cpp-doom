@@ -455,8 +455,8 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     {
        player->message = fmt::format(
           "X={:.10} Y={:.10} A={}",
-          (double)player->mo->x/(double)FRACUNIT,
-          (double)player->mo->y/(double)FRACUNIT,
+          static_cast<double>(player->mo->x)/static_cast<double>(FRACUNIT),
+          static_cast<double>(player->mo->y)/static_cast<double>(FRACUNIT),
           player->mo->angle );
 
         player->powers[pw_mapcoords]--;
@@ -2920,7 +2920,7 @@ boolean G_CheckDemoStatus (void)
 
 	endtime = I_GetTime (); 
         realtics = endtime - starttime;
-        fps = ((float) gametic * TICRATE) / realtics;
+        fps = ( 1.0 * gametic * TICRATE) / realtics;
 
         // Prevent recursive calls
         timingdemo = false;
