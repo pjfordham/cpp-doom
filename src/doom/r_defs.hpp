@@ -519,7 +519,7 @@ typedef struct
     short	lump[16]; // [crispy] support 16 sprite rotations
 
     // Flip bit (1 = flip) to use for view angles 0-7.
-    byte	flip[16]; // [crispy] support 16 sprite rotations
+    boolean	flip[16]; // [crispy] support 16 sprite rotations
     
 } spriteframe_t;
 

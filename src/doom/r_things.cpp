@@ -155,7 +155,7 @@ R_InstallSpriteLump
 	  if (sprtemp[frame].lump[r] == -1)
 	  {
 	    sprtemp[frame].lump[r] = lump - firstspritelump;
-	    sprtemp[frame].flip[r] = (byte)flipped;
+	    sprtemp[frame].flip[r] = flipped;
 	    // [crispy] ... here
 	    sprtemp[frame].rotate = false;
 	  }
@@ -184,7 +184,7 @@ R_InstallSpriteLump
     }
 		
     sprtemp[frame].lump[rotation] = lump - firstspritelump;
-    sprtemp[frame].flip[rotation] = (byte)flipped;
+    sprtemp[frame].flip[rotation] = flipped;
     // [crispy] ... here
     sprtemp[frame].rotate = true;
 }
@@ -678,13 +678,13 @@ void R_ProjectSprite (mobj_t* thing)
            rot = (unsigned)(ang-interpangle+(ANG45/2)*9)>>29;
 	}
 	lump = sprframe->lump[rot];
-	flip = (boolean)sprframe->flip[rot];
+	flip = sprframe->flip[rot];
     }
     else
     {
 	// use single rotation for all views
 	lump = sprframe->lump[0];
-	flip = (boolean)sprframe->flip[0];
+	flip = sprframe->flip[0];
     }
 
     // [crispy] randomly flip corpse, blood and death animation sprites
@@ -1003,7 +1003,7 @@ void R_DrawPSprite (pspdef_t* psp, psprnum_t psprnum) // [crispy] differentiate 
     sprframe = &sprdef->spriteframes[ psp->state->frame & FF_FRAMEMASK ];
 
     lump = sprframe->lump[0];
-    flip = (boolean)sprframe->flip[0] ^ crispy->flipweapons;
+    flip = sprframe->flip[0] ^ crispy->flipweapons;
     
     // calculate edges of the shape
     tx = psp->sx2-(ORIGWIDTH/2)*FRACUNIT;

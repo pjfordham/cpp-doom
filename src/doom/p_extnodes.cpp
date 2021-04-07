@@ -111,7 +111,7 @@ void P_LoadSegs_DeePBSP (int lump)
 	li->v1 = &vertexes[ml->v1];
 	li->v2 = &vertexes[ml->v2];
 
-	li->angle = (angle_t)((SHORT(ml->angle))<<16);
+	li->angle = angle_t((SHORT(ml->angle))<<16);
 
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
 	linedef = USHORT(ml->linedef);
@@ -172,8 +172,8 @@ void P_LoadSubsectors_DeePBSP (int lump)
 
     for (i = 0; i < numsubsectors; i++)
     {
-	subsectors[i].numlines = (int)data[i].numsegs;
-	subsectors[i].firstline = (int)data[i].firstseg;
+	subsectors[i].numlines = data[i].numsegs;
+	subsectors[i].firstline = data[i].firstseg;
     }
 
     W_ReleaseLumpNum(lump);
@@ -476,16 +476,12 @@ void P_LoadNodes_ZDBSP (int lump, boolean compressed)
 // adapted from chocolate-doom/src/hexen/p_setup.c:348-400
 void P_LoadThings_Hexen (int lump)
 {
-    mapthing_t spawnthing;
-    mapthing_hexen_t *mt;
-    int numthings;
+    auto mt = cache_lump_num<mapthing_hexen_t *>(lump, PU_STATIC);
+    int numthings = W_LumpLength(lump) / sizeof(mapthing_hexen_t);
 
-    auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
-    numthings = W_LumpLength(lump) / sizeof(mapthing_hexen_t);
-
-    mt = (mapthing_hexen_t *) data;
     for (int i = 0; i < numthings; i++, mt++)
     {
+        mapthing_t spawnthing;
 //	spawnthing.tid = SHORT(mt->tid);
 	spawnthing.x = SHORT(mt->x);
 	spawnthing.y = SHORT(mt->y);
@@ -511,21 +507,15 @@ void P_LoadThings_Hexen (int lump)
 // adapted from chocolate-doom/src/hexen/p_setup.c:410-490
 void P_LoadLineDefs_Hexen (int lump)
 {
-    int i;
-    maplinedef_hexen_t *mld;
-    line_t *ld;
-    vertex_t *v1, *v2;
-    int warn; // [crispy] warn about unknown linedef types
-
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
     lines = Z_New<line_t>(PU_LEVEL, numlines);
     std::fill( lines, lines + numlines, line_t{} );
-    auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
+    auto mld = cache_lump_num<maplinedef_hexen_t *>(lump, PU_STATIC);
 
-    mld = (maplinedef_hexen_t *) data;
-    ld = lines;
-    warn = 0; // [crispy] warn about unknown linedef types
-    for (i = 0; i < numlines; i++, mld++, ld++)
+    line_t *ld = lines;
+    int warn = 0; // [crispy] warn about unknown linedef types
+    
+    for (int i = 0; i < numlines; i++, mld++, ld++)
     {
 	ld->flags = USHORT(mld->flags);
 
@@ -543,8 +533,8 @@ void P_LoadLineDefs_Hexen (int lump)
 	    warn++;
 	}
 
-	v1 = ld->v1 = &vertexes[USHORT(mld->v1)];
-	v2 = ld->v2 = &vertexes[USHORT(mld->v2)];
+	vertex_t *v1 = ld->v1 = &vertexes[USHORT(mld->v1)];
+	vertex_t *v2 = ld->v2 = &vertexes[USHORT(mld->v2)];
 
 	ld->dx = v2->x - v1->x;
 	ld->dy = v2->y - v1->y;

@@ -29,6 +29,7 @@
 #include "w_wad.hpp"
 
 #include "r_local.hpp"
+#include <string_view>
 
 // Needs access to LFB (guess what).
 #include "v_video.hpp"
@@ -95,6 +96,15 @@ byte*			dc_source;
 // just for profiling 
 int			dccount;
 
+void CHECKRANGE(const char *name, int x, int yl, int yh) {
+#ifdef RANGECHECK
+   if ( x >= SCREENWIDTH || x < 0 
+        || yl < 0
+        || yh >= SCREENHEIGHT)
+      I_Error ("%s: %i to %i at %i", name, yl, yh, x);
+#endif 
+}
+
 //
 // A column is a vertical slice/span from a wall texture that,
 //  given the DOOM style restrictions on the view orientation,
@@ -117,14 +127,9 @@ void R_DrawColumn (void)
 
     // Zero length, column does not exceed a pixel.
     if (count < 0) 
-	return; 
-				 
-#ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT) 
-	I_Error ("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x); 
-#endif 
+	return;
+
+    CHECKRANGE("R_DrawColumn", dc_x, dc_yl, dc_yl);
 
     // Framebuffer destination address.
     // Use ylookup LUT to avoid multiply with ScreenWidth.
@@ -256,17 +261,10 @@ void R_DrawColumnLow (void)
     // Zero length.
     if (count < 0) 
 	return; 
-				 
-#ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT)
-    {
-	
-	I_Error ("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
-    }
-    //	dccount++; 
-#endif 
+
+    CHECKRANGE("R_DrawColumnLow", dc_x, dc_yl, dc_yl);
+    //	dccount++;
+
     // Blocky mode, need to multiply by 2.
     x = dc_x << 1;
     
@@ -388,15 +386,8 @@ void R_DrawFuzzColumn (void)
     if (count < 0) 
 	return; 
 
-#ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-	|| dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ("R_DrawFuzzColumn: %i to %i at %i",
-		 dc_yl, dc_yh, dc_x);
-    }
-#endif
-    
+    CHECKRANGE("R_DrawFuzzColumn", dc_x, dc_yl, dc_yl);
+
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[dc_x]];
 
     // Looks familiar.
@@ -471,16 +462,9 @@ void R_DrawFuzzColumnLow (void)
     // low detail mode, need to multiply by 2
     
     x = dc_x << 1;
-    
-#ifdef RANGECHECK 
-    if ((unsigned)x >= SCREENWIDTH
-	|| dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ("R_DrawFuzzColumn: %i to %i at %i",
-		 dc_yl, dc_yh, dc_x);
-    }
-#endif
-    
+
+    CHECKRANGE("R_DrawFuzzColumnLow", dc_x, dc_yl, dc_yl);
+
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[x]];
     dest2 = ylookup[dc_yl] + columnofs[flipviewwidth[x+1]];
 
@@ -555,18 +539,8 @@ void R_DrawTranslatedColumn (void)
     count = dc_yh - dc_yl; 
     if (count < 0) 
 	return; 
-				 
-#ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ( "R_DrawColumn: %i to %i at %i",
-		  dc_yl, dc_yh, dc_x);
-    }
-    
-#endif 
 
+    CHECKRANGE("R_DrawTranslatedColumn", dc_x, dc_yl, dc_yl);
 
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[dc_x]];
 
@@ -604,18 +578,8 @@ void R_DrawTranslatedColumnLow (void)
 
     // low detail, need to scale by 2
     x = dc_x << 1;
-				 
-#ifdef RANGECHECK 
-    if ((unsigned)x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ( "R_DrawColumn: %i to %i at %i",
-		  dc_yl, dc_yh, x);
-    }
-    
-#endif 
 
+    CHECKRANGE("R_DrawTranslatedColumnLow", dc_x, dc_yl, dc_yl);
 
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[x]];
     dest2 = ylookup[dc_yl] + columnofs[flipviewwidth[x+1]];
@@ -652,15 +616,7 @@ void R_DrawTLColumn (void)
     if (count < 0)
 	return;
 
-#ifdef RANGECHECK
-    if ((unsigned)dc_x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ( "R_DrawColumn: %i to %i at %i",
-		  dc_yl, dc_yh, dc_x);
-    }
-#endif
+    CHECKRANGE("R_DrawTLColumn", dc_x, dc_yl, dc_yl);
 
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[dc_x]];
 
@@ -698,15 +654,7 @@ void R_DrawTLColumnLow (void)
 
     x = dc_x << 1;
 
-#ifdef RANGECHECK
-    if ((unsigned)x >= SCREENWIDTH
-	|| dc_yl < 0
-	|| dc_yh >= SCREENHEIGHT)
-    {
-	I_Error ( "R_DrawColumn: %i to %i at %i",
-		  dc_yl, dc_yh, x);
-    }
-#endif
+    CHECKRANGE("R_DrawTLColumnLow", dc_x, dc_yl, dc_yl);
 
     dest = ylookup[dc_yl] + columnofs[flipviewwidth[x]];
     dest2 = ylookup[dc_yl] + columnofs[flipviewwidth[x+1]];
@@ -804,14 +752,12 @@ void R_DrawSpan (void)
 //  unsigned int position, step;
     pixel_t *dest;
     int count;
-    int spot;
-    unsigned int xtemp, ytemp;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
 	|| ds_x1<0
 	|| ds_x2>=SCREENWIDTH
-	|| (unsigned)ds_y>SCREENHEIGHT)
+	|| ds_y>SCREENHEIGHT || ds_y<0 )
     {
 	I_Error( "R_DrawSpan: %i to %i at %i",
 		 ds_x1,ds_x2,ds_y);
@@ -841,9 +787,9 @@ void R_DrawSpan (void)
 	byte source;
 	// Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
-        ytemp = ((unsigned int)(int)ds_yfrac >> 10) & 0x0fc0;
-        xtemp = ((unsigned int)(int)ds_xfrac >> 16) & 0x3f;
-        spot = xtemp | ytemp;
+        int ytemp = (static_cast<int>(ds_yfrac) >> 10) & 0x0fc0;
+        int xtemp = (static_cast<int>(ds_xfrac) >> 16) & 0x3f;
+        int spot = xtemp | ytemp;
 
 	// Lookup pixel from flat texture tile,
 	//  re-index using light/colormap.
@@ -939,16 +885,14 @@ void R_DrawSpan (void)
 void R_DrawSpanLow (void)
 {
 //  unsigned int position, step;
-    unsigned int xtemp, ytemp;
     pixel_t *dest;
     int count;
-    int spot;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
 	|| ds_x1<0
 	|| ds_x2>=SCREENWIDTH
-	|| (unsigned)ds_y>SCREENHEIGHT)
+	|| ds_y>SCREENHEIGHT || ds_y < 0 )
     {
 	I_Error( "R_DrawSpan: %i to %i at %i",
 		 ds_x1,ds_x2,ds_y);
@@ -976,9 +920,9 @@ void R_DrawSpanLow (void)
 	byte source;
 	// Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
-        ytemp = ((unsigned int)(int)ds_yfrac >> 10) & 0x0fc0;
-        xtemp = ((unsigned int)(int)ds_xfrac >> 16) & 0x3f;
-        spot = xtemp | ytemp;
+        int ytemp = (static_cast<int>(ds_yfrac) >> 10) & 0x0fc0;
+        int xtemp = (static_cast<int>(ds_xfrac) >> 16) & 0x3f;
+        int spot = xtemp | ytemp;
 
 	// Lowres/blocky mode does it twice,
 	//  while scale is adjusted appropriately.

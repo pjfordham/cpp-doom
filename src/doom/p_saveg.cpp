@@ -518,7 +518,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* target;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->target field
-    saveg_writep((void *)(uintptr_t) P_MobjThinkerToIndex(str->target));
+    saveg_write32(P_MobjThinkerToIndex(str->target));
 
     // int reactiontime;
     saveg_write32(str->reactiontime);
@@ -545,7 +545,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* tracer;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->tracers field
-    saveg_writep((void *)(uintptr_t) P_MobjThinkerToIndex(str->tracer));
+    saveg_write32(P_MobjThinkerToIndex(str->tracer));
 }
 
 
