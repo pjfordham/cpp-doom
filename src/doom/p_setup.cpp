@@ -215,10 +215,10 @@ void P_LoadSegs (int lump)
 	side = SHORT(ml->side);
 
         // e6y: check for wrong indexes
-        if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
+        if (0 > ldef->sidenum[side] || ldef->sidenum[side] >= numsides)
         {
             I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
-                    linedef, i, (unsigned)ldef->sidenum[side]);
+                    linedef, i, ldef->sidenum[side]);
         }
 
 	li->sidedef = &sides[ldef->sidenum[side]];
@@ -688,8 +688,8 @@ boolean P_LoadBlockMap (int lump)
 
     blockmaplump[0] = SHORT(wadblockmaplump[0]);
     blockmaplump[1] = SHORT(wadblockmaplump[1]);
-    blockmaplump[2] = (int32_t)((SHORT(wadblockmaplump[2])) & 0xffff);
-    blockmaplump[3] = (int32_t)((SHORT(wadblockmaplump[3])) & 0xffff);
+    blockmaplump[2] = (SHORT(wadblockmaplump[2])) & 0xffff;
+    blockmaplump[3] = (SHORT(wadblockmaplump[3])) & 0xffff;
 
     // Swap all short integers to native byte ordering.
   
@@ -804,14 +804,14 @@ void P_GroupLines (void)
     sector = sectors;
     for (i=0 ; i<numsectors ; i++, sector++)
     {
-       M_ClearBox ((int*)bbox);
+       M_ClearBox (bbox);
 
 	for (j=0 ; j<sector->linecount; j++)
 	{
             li = sector->lines[j];
 
-            M_AddToBox ((int*)bbox, (int)li->v1->x, (int)li->v1->y);
-            M_AddToBox ((int*)bbox, (int)li->v2->x, (int)li->v2->y);
+            M_AddToBox (bbox, li->v1->x, li->v1->y);
+            M_AddToBox (bbox, li->v2->x, li->v2->y);
 	}
 
 	// set the degenmobj_t to the middle of the bounding box

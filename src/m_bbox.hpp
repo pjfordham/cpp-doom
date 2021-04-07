@@ -35,13 +35,31 @@ enum
 };	// bbox coordinates
 
 // Bounding box functions.
-void M_ClearBox (int*	box);
 
+template <typename T>
+void M_ClearBox (T *box)
+{
+   box[BOXTOP] = box[BOXRIGHT] = T(INT_MIN);
+   box[BOXBOTTOM] = box[BOXLEFT] = T(INT_MAX);
+}
+
+template <typename T>
 void
 M_AddToBox
-( int*	box,
-  int	x,
-  int	y );
+( T*	box,
+  T	x,
+  T	y )
+{
+   if (x<box[BOXLEFT])
+      box[BOXLEFT] = x;
+   else if (x>box[BOXRIGHT])
+      box[BOXRIGHT] = x;
+   if (y<box[BOXBOTTOM])
+      box[BOXBOTTOM] = y;
+   else if (y>box[BOXTOP])
+      box[BOXTOP] = y;
+}
+
 
 
 #endif
