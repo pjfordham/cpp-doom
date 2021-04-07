@@ -70,9 +70,9 @@ static boolean sc_Crossed;
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 static char ScriptName[16];
-static char *ScriptBuffer;
-static char *ScriptPtr;
-static char *ScriptEndPtr;
+static byte *ScriptBuffer;
+static byte *ScriptPtr;
+static byte *ScriptEndPtr;
 static char StringBuffer[MAX_STRING_SIZE];
 static int ScriptLumpNum;
 static boolean ScriptOpen = false;
@@ -106,14 +106,14 @@ static void OpenScript(const char *name, int type)
     if (type == LUMP_SCRIPT)
     {                           // Lump script
         ScriptLumpNum = W_GetNumForName(name);
-        ScriptBuffer = cache_lump_num<char *>(ScriptLumpNum, PU_STATIC);
+        ScriptBuffer = cache_lump_num<byte *>(ScriptLumpNum, PU_STATIC);
         ScriptSize = W_LumpLength(ScriptLumpNum);
         M_StringCopy(ScriptName, name, sizeof(ScriptName));
     }
     else if (type == FILE_ZONE_SCRIPT)
     {                           // File script - zone
         ScriptLumpNum = -1;
-        ScriptSize = M_ReadFile(name, (byte **) & ScriptBuffer);
+        ScriptSize = M_ReadFile(name, &ScriptBuffer);
         auto lumpname = M_ExtractFileBase(name);
         M_StringCopy(ScriptName, lumpname.to_string(), 8);
     }

@@ -207,7 +207,7 @@ void P_LoadSegs (int lump)
 	li->v1 = &vertexes[USHORT(ml->v1)]; // [crispy] extended nodes
 	li->v2 = &vertexes[USHORT(ml->v2)]; // [crispy] extended nodes
 
-	li->angle = (angle_t)((SHORT(ml->angle))<<16);  // was only coincidnetally FRACBITS
+	li->angle = angle_t((SHORT(ml->angle))<<16);  // was only coincidnetally FRACBITS
 //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
 	linedef = USHORT(ml->linedef); // [crispy] extended nodes
 	ldef = &lines[linedef];
@@ -514,7 +514,7 @@ void P_LoadLineDefs (int lump)
 	ld->flags = USHORT(mld->flags); // [crispy] extended nodes
 	ld->special = SHORT(mld->special);
 	// [crispy] warn about unknown linedef types
-	if ((unsigned short) ld->special > 141)
+	if (ld->special > 141 || ld->special < 0)
 	{
 	    fprintf(stderr, "P_LoadLineDefs: Unknown special %d at line %d.\n", ld->special, i);
 	    warn++;
@@ -705,9 +705,9 @@ boolean P_LoadBlockMap (int lump)
 
     bmaporgx = blockmaplump[0]<<FRACBITS;
     bmaporgy = blockmaplump[1]<<FRACBITS;
-    bmapwidth = (map_block_t)blockmaplump[2];
-    bmapheight = (map_block_t)blockmaplump[3];
-	
+    bmapwidth = map_block_t(blockmaplump[2]);
+    bmapheight = map_block_t(blockmaplump[3]);
+
     // Clear out mobj chains
 
     blocklinks = Z_New<mobj_t*>(PU_LEVEL, (bmapwidth * bmapheight).get());
