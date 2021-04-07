@@ -55,6 +55,9 @@ cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom -timedemo demo1 -nogui )
 ( cd ~/github/cpp-doom/debug/ ; ~/github/cpp-doom/debug/src/c++-doom -loadgame 4 )
 
+( cd ~/github/cpp-doom/debug/src/doom ; make p_extnodes.cpp.s ) ; mv ~/github/cpp-doom/debug/src/doom/CMakeFiles/doom.dir/p_extnodes.cpp.s .
+
+
 crispy physical menu is broken // not to do with libfmt in menu
 
 load and save is mostly working, save names are garbled.
