@@ -37,52 +37,42 @@ struct mobj_t;
 struct player_t;
 struct pspdef_t;
 
-typedef void (*actionf_m1)(mobj_t *mo);
-typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp);
-
 struct actionf_t {
+  typedef void (*m1)(mobj_t *mo);
+  typedef void (*p3)(mobj_t *mo, player_t *player, pspdef_t *psp);
+
   constexpr actionf_t() = default;
 
-  explicit constexpr actionf_t(const actionf_p3 p)
+  explicit constexpr actionf_t(const p3 p)
   {
-    std::get<actionf_p3>(data) = p;
+    std::get<p3>(data) = p;
   }
 
-  explicit constexpr actionf_t(const actionf_m1 p)
+  explicit constexpr actionf_t(const m1 p)
   {
-    std::get<actionf_m1>(data) = p;
+    std::get<m1>(data) = p;
   }
 
-  constexpr actionf_t &operator=(actionf_p3 p) {
+  constexpr actionf_t &operator=(p3 p) {
     data = actionf_t{p}.data;
     return *this;
   }
 
-  constexpr actionf_t &operator=(actionf_m1 p) {
+  constexpr actionf_t &operator=(m1 p) {
     data = actionf_t{p}.data;
     return *this;
   }
 
-  constexpr actionf_t &operator=(const void *p) {
-    data = actionf_t{}.data;
-    std::get<const void *>(data) = p;
-    return *this;
-  }
-
-  [[nodiscard]] constexpr explicit operator const void *() {
-    return std::get<const void *>(data);
-  }
-
-  [[nodiscard]] constexpr bool operator==(actionf_p3 p) const {
+  [[nodiscard]] constexpr bool operator==(p3 p) const {
     return std::get<decltype(p)>(data) == p;
   }
 
-  [[nodiscard]] constexpr bool operator==(actionf_m1 p) const {
+  [[nodiscard]] constexpr bool operator==(m1 p) const {
     return std::get<decltype(p)>(data) == p;
   }
 
   constexpr bool call_if( mobj_t *mo, player_t *player, pspdef_t *psp ){
-    const auto func = std::get<actionf_p3>(data);
+    const auto func = std::get<p3>(data);
     if (func) {
        func(mo,player,psp);
       return true;
@@ -93,7 +83,7 @@ struct actionf_t {
   }
 
    constexpr bool call_if(mobj_t *mo) {
-    const auto func = std::get<actionf_m1>(data);
+    const auto func = std::get<m1>(data);
     if (func) {
       func(mo);
       return true;
@@ -110,10 +100,7 @@ struct actionf_t {
   constexpr bool operator==(const actionf_t &) const = default;
 
 private:
-   std::tuple<const void *,
-              actionf_m1,
-              actionf_p3>
-      data{};
+   std::tuple<m1, p3> data{};
 };
 
 #endif
