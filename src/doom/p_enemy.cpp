@@ -276,31 +276,23 @@ boolean P_CheckMissileRange (mobj_t* actor)
 // Move in the current direction,
 // returns false if the move is blocked.
 //
-int xspeed[8] = {(int)FRACUNIT,47000,0,-47000,-(int)FRACUNIT,-47000,0,47000};
-int yspeed[8] = {0,47000,(int)FRACUNIT,47000,0,-47000,-(int)FRACUNIT,-47000};
+fixed_t xspeed[8] = {FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix,0_fix,47000_fix};
+fixed_t yspeed[8] = {0_fix,47000_fix,FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix};
 
-boolean P_Move (mobj_t*	actor)
+static boolean P_Move (mobj_t*	actor)
 {
-    fixed_t	tryx;
-    fixed_t	tryy;
-    
-    line_t*	ld;
-    
     // warning: 'catch', 'throw', and 'try'
     // are all C++ reserved words
-    boolean	try_ok;
-    boolean	good;
-		
     if (actor->movedir == DI_NODIR)
 	return false;
-		
-    if ((unsigned)actor->movedir >= 8)
-	I_Error ("Weird actor->movedir!");
-		
-    tryx = actor->x + actor->info->speed*xspeed[actor->movedir];
-    tryy = actor->y + actor->info->speed*yspeed[actor->movedir];
 
-    try_ok = P_TryMove (actor, tryx, tryy);
+    if (0 > actor->movedir || actor->movedir > 7)
+	I_Error ("Weird actor->movedir!");
+
+    fixed_t tryx = actor->x + FixedMul(actor->info->speed,xspeed[actor->movedir]);
+    fixed_t tryy = actor->y + FixedMul(actor->info->speed,yspeed[actor->movedir]);
+
+    bool try_ok = P_TryMove (actor, tryx, tryy);
 
     if (!try_ok)
     {
@@ -321,10 +313,10 @@ boolean P_Move (mobj_t*	actor)
 	    return false;
 			
 	actor->movedir = DI_NODIR;
-	good = false;
+	bool good = false;
 	while (numspechit--)
 	{
-	    ld = spechit[numspechit];
+	    line_t* ld = spechit[numspechit];
 	    // if the special is not a door
 	    // that can be opened,
 	    // return false
@@ -1207,9 +1199,9 @@ void A_VileChase (mobj_t* actor)
     {
 	// check for corpses to raise
 	viletryx =
-	    actor->x + actor->info->speed*xspeed[actor->movedir];
+           actor->x + FixedMul(actor->info->speed,xspeed[actor->movedir]);
 	viletryy =
-	    actor->y + actor->info->speed*yspeed[actor->movedir];
+           actor->y + FixedMul(actor->info->speed,yspeed[actor->movedir]);
 
 	xl = (viletryx - bmaporgx - MAXRADIUS*2)>>MAPBLOCKSHIFT;
 	xh = (viletryx - bmaporgx + MAXRADIUS*2)>>MAPBLOCKSHIFT;

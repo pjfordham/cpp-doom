@@ -110,7 +110,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_POSS_DIE1,		// deathstate
 	S_POSS_XDIE1,		// xdeathstate
 	sfx_podth1,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
@@ -136,7 +136,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SPOS_DIE1,		// deathstate
 	S_SPOS_XDIE1,		// xdeathstate
 	sfx_podth2,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
@@ -162,7 +162,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_VILE_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_vildth,		// deathsound
-	15_fix,		// speed
+	15*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	500,		// mass
@@ -214,7 +214,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SKEL_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_skedth,		// deathsound
-	10_fix,		// speed
+	10*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	500,		// mass
@@ -292,7 +292,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_FATT_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_mandth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	48*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
@@ -344,7 +344,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_CPOS_DIE1,		// deathstate
 	S_CPOS_XDIE1,		// xdeathstate
 	sfx_podth2,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
@@ -370,7 +370,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_TROO_DIE1,		// deathstate
 	S_TROO_XDIE1,		// xdeathstate
 	sfx_bgdth1,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
@@ -396,7 +396,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SARG_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_sgtdth,		// deathsound
-	10_fix,		// speed
+	10*FRACUNIT,		// speed
 	30*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
@@ -422,7 +422,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SARG_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_sgtdth,		// deathsound
-	10_fix,		// speed
+	10*FRACUNIT,		// speed
 	30*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
@@ -448,7 +448,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_HEAD_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_cacdth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	31*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
@@ -474,7 +474,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_BOSS_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_brsdth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	24*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
@@ -526,7 +526,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_BOS2_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_kntdth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	24*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	1000,		// mass
@@ -552,7 +552,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SKULL_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_firxpl,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	16*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	50,		// mass
@@ -578,7 +578,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SPID_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_spidth,		// deathsound
-	12_fix,		// speed
+	12*FRACUNIT,		// speed
 	128*FRACUNIT,		// radius
 	100*FRACUNIT,		// height
 	1000,		// mass
@@ -604,7 +604,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_BSPI_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_bspdth,		// deathsound
-	12_fix,		// speed
+	12*FRACUNIT,		// speed
 	64*FRACUNIT,		// radius
 	64*FRACUNIT,		// height
 	600,		// mass
@@ -630,7 +630,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_CYBER_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_cybdth,		// deathsound
-	16_fix,		// speed
+	16*FRACUNIT,		// speed
 	40*FRACUNIT,		// radius
 	110*FRACUNIT,		// height
 	1000,		// mass
@@ -656,7 +656,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_PAIN_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_pedth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	31*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	400,		// mass
@@ -682,7 +682,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_SSWV_DIE1,		// deathstate
 	S_SSWV_XDIE1,		// xdeathstate
 	sfx_ssdth,		// deathsound
-	8_fix,		// speed
+	8*FRACUNIT,		// speed
 	20*FRACUNIT,		// radius
 	56*FRACUNIT,		// height
 	100,		// mass
@@ -3699,7 +3699,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
 	S_DOGS_DIE1,		// deathstate
 	S_NULL,		// xdeathstate
 	sfx_dgdth,		// deathsound
-	10_fix,		// speed
+	10*FRACUNIT,		// speed
 	12*FRACUNIT,		// radius
 	28*FRACUNIT,		// height
 	100,		// mass
