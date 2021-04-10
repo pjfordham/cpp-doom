@@ -203,6 +203,56 @@ typedef enum
 } mobjflag_t;
 
 
+class dirtype_t {
+   int dir;
+public:
+   dirtype_t() : dir( 0 ) {}
+   explicit dirtype_t(int a) : dir( a ) {}
+
+   explicit operator int() const { return dir; }
+
+   angle_t to_angle_t() const { return dir << ANGLETOMOVEDIRSHIFT; }
+
+   static const dirtype_t _NODIR()    { return dirtype_t(-1); }
+   static const dirtype_t EAST()      { return dirtype_t( 0); }
+   static const dirtype_t NORTHEAST() { return dirtype_t( 1); }
+   static const dirtype_t NORTH()     { return dirtype_t( 2); }
+   static const dirtype_t NORTHWEST() { return dirtype_t( 3); }
+   static const dirtype_t WEST()      { return dirtype_t( 4); }
+   static const dirtype_t SOUTHWEST() { return dirtype_t( 5); }
+   static const dirtype_t SOUTH()     { return dirtype_t( 6); }
+   static const dirtype_t SOUTHEAST() { return dirtype_t( 7); }
+   static const dirtype_t NODIR()     { return dirtype_t( 8); }
+
+   dirtype_t &operator--() { dir--; return *this; }
+   dirtype_t &operator++() { dir++; return *this; }
+
+   fixed_t x() const{
+      const fixed_t x[8] = {  FRACUNIT,  47000_fix, 0_fix, -47000_fix,
+                             -FRACUNIT, -47000_fix, 0_fix,  47000_fix };
+      return x[ dir ];
+   };
+
+   fixed_t y() const {
+      const fixed_t y[8] = { 0_fix,  47000_fix,  FRACUNIT,  47000_fix,
+                             0_fix, -47000_fix, -FRACUNIT, -47000_fix };
+      return y[ dir ];
+   }
+
+   bool valid() const {
+      return 0 <= dir && dir <= 7;
+   }
+
+   bool operator==( dirtype_t odir ) const {
+      return dir == odir.dir;
+   }
+
+   dirtype_t opposite() const {
+      const int opposites[] = { 4, 5, 6, 7, 0, 1, 2, 3, 8 };
+      return dirtype_t( opposites[ dir ] );
+   }
+};
+
 // Each sector has a degenmobj_t in its center
 //  for sound origin purposes.
 // I suppose this does not handle sound from
@@ -260,7 +310,7 @@ struct mobj_t : public degenmobj_t
     int			health;
 
     // Movement direction, movement generation (zig-zagging).
-    int                 movedir;	// 0-7
+    dirtype_t                 movedir;	// 0-7
     int			movecount;	// when 0, select a new dir
 
     // Thing being chased/attacked (or NULL),

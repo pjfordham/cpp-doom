@@ -41,41 +41,6 @@
 
 
 
-
-typedef enum
-{
-    DI_EAST,
-    DI_NORTHEAST,
-    DI_NORTH,
-    DI_NORTHWEST,
-    DI_WEST,
-    DI_SOUTHWEST,
-    DI_SOUTH,
-    DI_SOUTHEAST,
-    DI_NODIR,
-    NUMDIRS
-    
-} dirtype_t;
-
-
-//
-// P_NewChaseDir related LUT.
-//
-dirtype_t opposite[] =
-{
-  DI_WEST, DI_SOUTHWEST, DI_SOUTH, DI_SOUTHEAST,
-  DI_EAST, DI_NORTHEAST, DI_NORTH, DI_NORTHWEST, DI_NODIR
-};
-
-dirtype_t diags[] =
-{
-    DI_NORTHWEST, DI_NORTHEAST, DI_SOUTHWEST, DI_SOUTHEAST
-};
-
-
-
-
-
 void A_Fall (mobj_t *actor);
 
 
@@ -276,21 +241,19 @@ boolean P_CheckMissileRange (mobj_t* actor)
 // Move in the current direction,
 // returns false if the move is blocked.
 //
-fixed_t xspeed[8] = {FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix,0_fix,47000_fix};
-fixed_t yspeed[8] = {0_fix,47000_fix,FRACUNIT,47000_fix,0_fix,-47000_fix,-FRACUNIT,-47000_fix};
 
 static boolean P_Move (mobj_t*	actor)
 {
     // warning: 'catch', 'throw', and 'try'
     // are all C++ reserved words
-    if (actor->movedir == DI_NODIR)
+    if (actor->movedir == dirtype_t::NODIR())
 	return false;
 
-    if (0 > actor->movedir || actor->movedir > 7)
+    if (!actor->movedir.valid())
 	I_Error ("Weird actor->movedir!");
 
-    fixed_t tryx = actor->x + FixedMul(actor->info->speed,xspeed[actor->movedir]);
-    fixed_t tryy = actor->y + FixedMul(actor->info->speed,yspeed[actor->movedir]);
+    fixed_t tryx = actor->x + FixedMul(actor->info->speed,actor->movedir.x());
+    fixed_t tryy = actor->y + FixedMul(actor->info->speed,actor->movedir.y());
 
     bool try_ok = P_TryMove (actor, tryx, tryy);
 
@@ -312,7 +275,7 @@ static boolean P_Move (mobj_t*	actor)
 	if (!numspechit)
 	    return false;
 			
-	actor->movedir = DI_NODIR;
+	actor->movedir = dirtype_t::NODIR();
 	bool good = false;
 	while (numspechit--)
 	{
@@ -364,45 +327,42 @@ boolean P_TryWalk (mobj_t* actor)
 
 void P_NewChaseDir (mobj_t*	actor)
 {
-    fixed_t	deltax;
-    fixed_t	deltay;
-    
-    dirtype_t	d[3];
-    
-    int		tdir;
-    dirtype_t	olddir;
-    
-    dirtype_t	turnaround;
+    dirtype_t diags[] = {
+       dirtype_t::NORTHWEST(), dirtype_t::NORTHEAST(),
+       dirtype_t::SOUTHWEST(), dirtype_t::SOUTHEAST()
+    };
+
+    dirtype_t d[3];
 
     if (!actor->target)
 	I_Error ("P_NewChaseDir: called with no target");
-		
-    olddir = static_cast<dirtype_t>(actor->movedir);
-    turnaround=opposite[olddir];
 
-    deltax = actor->target->x - actor->x;
-    deltay = actor->target->y - actor->y;
+    dirtype_t olddir = actor->movedir;
+    dirtype_t turnaround = olddir.opposite();
+
+    fixed_t deltax = actor->target->x - actor->x;
+    fixed_t deltay = actor->target->y - actor->y;
 
     if (deltax>10*FRACUNIT)
-	d[1]= DI_EAST;
+        d[1]= dirtype_t::EAST();
     else if (deltax<-10*FRACUNIT)
-	d[1]= DI_WEST;
+        d[1]= dirtype_t::WEST();
     else
-	d[1]=DI_NODIR;
+        d[1]=dirtype_t::NODIR();
 
     if (deltay<-10*FRACUNIT)
-	d[2]= DI_SOUTH;
+	d[2]= dirtype_t::SOUTH();
     else if (deltay>10*FRACUNIT)
-	d[2]= DI_NORTH;
+	d[2]= dirtype_t::NORTH();
     else
-	d[2]=DI_NODIR;
+	d[2]=dirtype_t::NODIR();
 
     // try direct route
-    if (d[1] != DI_NODIR
-	&& d[2] != DI_NODIR)
+    if (d[1] != dirtype_t::NODIR()
+	&& d[2] != dirtype_t::NODIR())
     {
 	actor->movedir = diags[((deltay<0_fix)<<1)+(deltax>0_fix)];
-	if (actor->movedir != (int) turnaround && P_TryWalk(actor))
+	if (actor->movedir != turnaround && P_TryWalk(actor))
 	    return;
     }
 
@@ -410,17 +370,17 @@ void P_NewChaseDir (mobj_t*	actor)
     if (P_Random() > 200
 	||  abs(deltay)>abs(deltax))
     {
-	tdir=d[1];
+	auto tdir=d[1];
 	d[1]=d[2];
 	d[2]=static_cast<dirtype_t>(tdir);
     }
 
     if (d[1]==turnaround)
-	d[1]=DI_NODIR;
+	d[1]=dirtype_t::NODIR();
     if (d[2]==turnaround)
-	d[2]=DI_NODIR;
+	d[2]=dirtype_t::NODIR();
 	
-    if (d[1]!=DI_NODIR)
+    if (d[1]!=dirtype_t::NODIR())
     {
 	actor->movedir = d[1];
 	if (P_TryWalk(actor))
@@ -430,7 +390,7 @@ void P_NewChaseDir (mobj_t*	actor)
 	}
     }
 
-    if (d[2]!=DI_NODIR)
+    if (d[2]!=dirtype_t::NODIR())
     {
 	actor->movedir =d[2];
 
@@ -440,9 +400,9 @@ void P_NewChaseDir (mobj_t*	actor)
 
     // there is no direct path to the player,
     // so pick another direction.
-    if (olddir!=DI_NODIR)
+    if (olddir!=dirtype_t::NODIR())
     {
-	actor->movedir =olddir;
+	actor->movedir = olddir;
 
 	if (P_TryWalk(actor))
 	    return;
@@ -451,13 +411,13 @@ void P_NewChaseDir (mobj_t*	actor)
     // randomly determine direction of search
     if (P_Random()&1) 	
     {
-	for ( tdir=DI_EAST;
-	      tdir<=DI_SOUTHEAST;
-	      tdir++ )
+	for ( auto tdir=dirtype_t::EAST();
+	      tdir!=dirtype_t::NODIR();
+	      ++tdir )
 	{
-	    if (tdir != (int) turnaround)
+	    if (tdir != turnaround)
 	    {
-		actor->movedir =tdir;
+		actor->movedir = tdir;
 		
 		if ( P_TryWalk(actor) )
 		    return;
@@ -466,11 +426,11 @@ void P_NewChaseDir (mobj_t*	actor)
     }
     else
     {
-	for ( tdir=DI_SOUTHEAST;
-	      tdir != (DI_EAST-1);
-	      tdir-- )
+	for ( auto tdir=dirtype_t::SOUTHEAST();
+	      tdir != dirtype_t::_NODIR();
+	      --tdir )
 	{
-	    if (tdir != (int) turnaround)
+	    if (tdir != turnaround)
 	    {
 		actor->movedir = tdir;
 		
@@ -480,14 +440,14 @@ void P_NewChaseDir (mobj_t*	actor)
 	}
     }
 
-    if (turnaround !=  DI_NODIR)
+    if (turnaround != dirtype_t::NODIR())
     {
-	actor->movedir =turnaround;
+	actor->movedir = turnaround;
 	if ( P_TryWalk(actor) )
 	    return;
     }
 
-    actor->movedir = DI_NODIR;	// can not move
+    actor->movedir = dirtype_t::NODIR();	// can not move
 }
 
 
@@ -694,10 +654,10 @@ void A_Chase (mobj_t*	actor)
     }
     
     // turn towards movement direction if not there yet
-    if (actor->movedir < 8)
+    if (actor->movedir.valid())
     {
         actor->angle = actor->angle.snap_to_8ths();
-	angle_t delta = actor->angle - (actor->movedir << ANGLETOMOVEDIRSHIFT);
+	angle_t delta = actor->angle - actor->movedir.to_angle_t();
 
 	if ( delta == ANG0 ) {
            ;
@@ -1195,13 +1155,13 @@ void A_VileChase (mobj_t* actor)
     mobjinfo_t*		info;
     mobj_t*		temp;
 	
-    if (actor->movedir != DI_NODIR)
+    if (actor->movedir != dirtype_t::NODIR())
     {
 	// check for corpses to raise
 	viletryx =
-           actor->x + FixedMul(actor->info->speed,xspeed[actor->movedir]);
+           actor->x + FixedMul(actor->info->speed,actor->movedir.x());
 	viletryy =
-           actor->y + FixedMul(actor->info->speed,yspeed[actor->movedir]);
+           actor->y + FixedMul(actor->info->speed,actor->movedir.y());
 
 	xl = (viletryx - bmaporgx - MAXRADIUS*2)>>MAPBLOCKSHIFT;
 	xh = (viletryx - bmaporgx + MAXRADIUS*2)>>MAPBLOCKSHIFT;

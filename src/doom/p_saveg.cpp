@@ -171,6 +171,18 @@ static void saveg_write_pad(void)
 }
 
 
+// Dirtype
+
+static dirtype_t saveg_read_dirtype_t(void)
+{
+    return dirtype_t(saveg_read32());
+}
+
+static void saveg_write_dirtype_t(dirtype_t dir)
+{
+   saveg_write32(static_cast<int>(dir));
+}
+
 // Pointers
 
 static void *saveg_readp(void)
@@ -346,7 +358,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->health = saveg_read32();
 
     // int movedir;
-    str->movedir = saveg_read32();
+    str->movedir = saveg_read_dirtype_t();
 
     // int movecount;
     str->movecount = saveg_read32();
@@ -510,7 +522,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     saveg_write32(str->health);
 
     // int movedir;
-    saveg_write32(str->movedir);
+    saveg_write_dirtype_t(str->movedir);
 
     // int movecount;
     saveg_write32(str->movecount);
