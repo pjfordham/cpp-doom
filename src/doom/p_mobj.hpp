@@ -206,49 +206,49 @@ typedef enum
 class dirtype_t {
    int dir;
 public:
-   dirtype_t() : dir( 0 ) {}
-   explicit dirtype_t(int a) : dir( a ) {}
+   constexpr dirtype_t() : dir( 0 ) {}
+   constexpr explicit dirtype_t(int a) : dir( a ) {}
 
-   explicit operator int() const { return dir; }
+   constexpr explicit operator int() const { return dir; }
 
-   angle_t to_angle_t() const { return dir << ANGLETOMOVEDIRSHIFT; }
+   constexpr angle_t to_angle_t() const { return dir << ANGLETOMOVEDIRSHIFT; }
 
-   static const dirtype_t _NODIR()    { return dirtype_t(-1); }
-   static const dirtype_t EAST()      { return dirtype_t( 0); }
-   static const dirtype_t NORTHEAST() { return dirtype_t( 1); }
-   static const dirtype_t NORTH()     { return dirtype_t( 2); }
-   static const dirtype_t NORTHWEST() { return dirtype_t( 3); }
-   static const dirtype_t WEST()      { return dirtype_t( 4); }
-   static const dirtype_t SOUTHWEST() { return dirtype_t( 5); }
-   static const dirtype_t SOUTH()     { return dirtype_t( 6); }
-   static const dirtype_t SOUTHEAST() { return dirtype_t( 7); }
-   static const dirtype_t NODIR()     { return dirtype_t( 8); }
+   constexpr static const dirtype_t _NODIR()    { return dirtype_t(-1); }
+   constexpr static const dirtype_t EAST()      { return dirtype_t( 0); }
+   constexpr static const dirtype_t NORTHEAST() { return dirtype_t( 1); }
+   constexpr static const dirtype_t NORTH()     { return dirtype_t( 2); }
+   constexpr static const dirtype_t NORTHWEST() { return dirtype_t( 3); }
+   constexpr static const dirtype_t WEST()      { return dirtype_t( 4); }
+   constexpr static const dirtype_t SOUTHWEST() { return dirtype_t( 5); }
+   constexpr static const dirtype_t SOUTH()     { return dirtype_t( 6); }
+   constexpr static const dirtype_t SOUTHEAST() { return dirtype_t( 7); }
+   constexpr static const dirtype_t NODIR()     { return dirtype_t( 8); }
 
-   dirtype_t &operator--() { dir--; return *this; }
-   dirtype_t &operator++() { dir++; return *this; }
+   constexpr dirtype_t &operator--() { dir--; return *this; }
+   constexpr dirtype_t &operator++() { dir++; return *this; }
 
-   fixed_t x() const{
-      const fixed_t x[8] = {  FRACUNIT,  47000_fix, 0_fix, -47000_fix,
-                             -FRACUNIT, -47000_fix, 0_fix,  47000_fix };
+   constexpr fixed_t x() const {
+      constexpr fixed_t x[8] = {  FRACUNIT,  47000_fix, 0_fix, -47000_fix,
+                                 -FRACUNIT, -47000_fix, 0_fix,  47000_fix };
       return x[ dir ];
    };
 
-   fixed_t y() const {
-      const fixed_t y[8] = { 0_fix,  47000_fix,  FRACUNIT,  47000_fix,
-                             0_fix, -47000_fix, -FRACUNIT, -47000_fix };
+   constexpr fixed_t y() const {
+      constexpr fixed_t y[8] = { 0_fix,  47000_fix,  FRACUNIT,  47000_fix,
+                                 0_fix, -47000_fix, -FRACUNIT, -47000_fix };
       return y[ dir ];
    }
 
-   bool valid() const {
+   constexpr bool valid() const {
       return 0 <= dir && dir <= 7;
    }
 
-   bool operator==( dirtype_t odir ) const {
+   constexpr bool operator==( dirtype_t odir ) const {
       return dir == odir.dir;
    }
 
-   dirtype_t opposite() const {
-      const int opposites[] = { 4, 5, 6, 7, 0, 1, 2, 3, 8 };
+   constexpr dirtype_t opposite() const {
+      constexpr int opposites[] = { 4, 5, 6, 7, 0, 1, 2, 3, 8 };
       return dirtype_t( opposites[ dir ] );
    }
 };

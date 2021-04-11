@@ -11,13 +11,13 @@ template <typename Integer, int Precision,
 class ffixed_t {
 public:
    Integer value;
-   static int precision() { return Precision; }
-   explicit operator bool() const { return value != 0; }
-   ffixed_t() = default;
-   explicit ffixed_t(Integer _value) : value{ _value } {   }
-   explicit operator Integer() const { return value; }
+   constexpr static int precision() { return Precision; }
+   constexpr explicit operator bool() const { return value != 0; }
+   constexpr ffixed_t() = default;
+   constexpr explicit ffixed_t(Integer _value) : value{ _value } {   }
+   constexpr explicit operator Integer() const { return value; }
 
-   ffixed_t abs() {
+   constexpr ffixed_t abs() const {
       return value < 0 ? ffixed_t(-value) : ffixed_t(value);
    }
 };
@@ -26,14 +26,14 @@ template <typename Integer>
 class ffixed_t<Integer, 0> {
 public:
    Integer value;
-   static int precision() { return 0; }
-   ffixed_t() = default;
-   explicit operator bool() const { return value != 0; }
+   constexpr static int precision() { return 0; }
+   constexpr ffixed_t() = default;
+   constexpr explicit operator bool() const { return value != 0; }
 
-   ffixed_t(Integer _value) : value{ _value } {   }
-   operator Integer() const { return value; }
+   constexpr ffixed_t(Integer _value) : value{ _value } {   }
+   constexpr operator Integer() const { return value; }
 
-   ffixed_t abs() {
+   constexpr ffixed_t abs() const {
       return value < 0 ? ffixed_t(-value) : ffixed_t(value);
    }
 };
@@ -85,7 +85,7 @@ bool operator>=(ffixed_t<Integer,Precision> lhs, ffixed_t<Integer2,Precision> rh
 // unary negation of any combination
 template <typename Integer, int Precision,
           typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
-ffixed_t<Integer,Precision> operator-(ffixed_t<Integer,Precision> lhs) {
+constexpr ffixed_t<Integer,Precision> operator-(ffixed_t<Integer,Precision> lhs) {
    return ffixed_t<Integer,Precision>(-lhs.value);
 }
 

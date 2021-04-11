@@ -27,9 +27,9 @@ class fixed_t : public ffixed_t<int,16> {
 public:
    fixed_t() = default;
 
-   explicit fixed_t(int _value) : ffixed_t<int,16>( _value ) {   }
-   fixed_t(ffixed_t<int,16> _value) : ffixed_t<int,16>( _value ) {   }
-   explicit fixed_t(ffixed_t<int64_t,16> _value) : ffixed_t<int,16>( _value.value ) {   }
+   constexpr explicit fixed_t(int _value) : ffixed_t<int,16>( _value ) {   }
+   constexpr fixed_t(ffixed_t<int,16> _value) : ffixed_t<int,16>( _value ) {   }
+   constexpr explicit fixed_t(ffixed_t<int64_t,16> _value) : ffixed_t<int,16>( _value.value ) {   }
 
    explicit operator int64_t() const { return value; }
    explicit operator double() const { return static_cast<double>(value); }
@@ -69,7 +69,7 @@ public:
    friend struct fmt::formatter<fixed64_t>;
 };
 
-inline fixed_t operator"" _fix ( unsigned long long n ) {
+constexpr inline fixed_t operator"" _fix ( unsigned long long n ) {
    return fixed_t{static_cast<int>(n)};
 }
 
@@ -104,34 +104,34 @@ template <int SIZE>
 class fracbits_t {
 public:
    static const int size = SIZE;
-   friend fixed_t operator<<( int a, fracbits_t b) {
+   constexpr friend fixed_t operator<<( int a, fracbits_t b) {
       return fixed_t( a << size);
    }
-   friend int operator>>( fixed_t a, fracbits_t b) {
+   constexpr friend int operator>>( fixed_t a, fracbits_t b) {
       return a.value >> size;
    }
-   friend fixed64_t operator<<( int64_t a, fracbits_t b) {
+   constexpr friend fixed64_t operator<<( int64_t a, fracbits_t b) {
       return fixed64_t( a << size);
    }
-   friend int64_t operator>>( fixed64_t a, fracbits_t b) {
+   constexpr friend int64_t operator>>( fixed64_t a, fracbits_t b) {
       return a.value >> size;
    }
 
    template <typename Integer, int Precision,
              typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
-   friend auto operator<<( ffixed_t<Integer,Precision> a, fracbits_t b) {
+   constexpr friend auto operator<<( ffixed_t<Integer,Precision> a, fracbits_t b) {
       return ffixed_t<Integer,Precision + size>( a.value << size);
    }
 
    template <typename Integer, int Precision,
              typename = std::enable_if_t<std::is_integral_v<Integer>, bool>>
-   friend auto operator>>( ffixed_t<Integer,Precision> a, fracbits_t b) {
+   constexpr friend auto operator>>( ffixed_t<Integer,Precision> a, fracbits_t b) {
       return ffixed_t<Integer,Precision - size>( a.value >> size);
    }
 };
 
-const fracbits_t<16> FRACBITS;
-const fixed_t FRACUNIT{1<<FRACBITS};
+constexpr fracbits_t<16> FRACBITS;
+constexpr fixed_t FRACUNIT{1<<FRACBITS};
 inline double FIXED2DOUBLE( fixed_t x ) {
    return static_cast<double>(x) / static_cast<double>(FRACUNIT);
 }

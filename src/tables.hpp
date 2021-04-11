@@ -131,17 +131,17 @@ public:
 // in a few different ways with different shift. Try to caputre
 // those cases and make them typesafe.
 template <unsigned int shift> class angleshift_t {
-   friend auto operator>>( angle_t a, angleshift_t b) {
+   constexpr friend auto operator>>( angle_t a, angleshift_t b) {
       return a.value >> shift;
    }
-   friend auto operator<<( decltype(angle_t::value) a, angleshift_t b) {
+   constexpr friend auto operator<<( decltype(angle_t::value) a, angleshift_t b) {
       return angle_t(a << shift);
    }
 };
 
-const angleshift_t<19> ANGLETOFINESHIFT;
-const angleshift_t<29> ANGLETOMOVEDIRSHIFT;
-const angleshift_t<16> ANGLETURNBITS;
+constexpr angleshift_t<19> ANGLETOFINESHIFT;
+constexpr angleshift_t<29> ANGLETOMOVEDIRSHIFT;
+constexpr angleshift_t<16> ANGLETURNBITS;
 
 template <>
 struct fmt::formatter<angle_t> {
