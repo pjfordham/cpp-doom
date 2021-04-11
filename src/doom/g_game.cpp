@@ -242,17 +242,20 @@ int		bodyqueslot;
  
 int             vanilla_savegame_limit = 1;
 int             vanilla_demo_limit = 1;
- 
-int G_CmdChecksum (ticcmd_t* cmd) 
-{ 
-    size_t		i;
-    int		sum = 0; 
-	 
-    for (i=0 ; i< sizeof(*cmd)/4 - 1 ; i++) 
-	sum += ((int *)cmd)[i]; 
-		 
-    return sum; 
-} 
+
+
+int G_CmdChecksum (ticcmd_t* cmd)
+{
+    const size_t size = sizeof(ticcmd_t) / 4 - 1;
+    int data[size];
+    int sum = 0;
+
+    std::memcpy(&data, &cmd, size);
+    for (size_t i=0 ; i< size ; i++)
+	sum += data[i];
+
+    return sum;
+}
 
 static boolean WeaponSelectable(weapontype_t weapon)
 {
@@ -1194,7 +1197,7 @@ void G_Ticker (void)
 			     cmd->consistancy, consistancy[i][buf]); 
 		} 
 		if (players[i].mo) 
-                   consistancy[i][buf] = (byte)players[i].mo->x; 
+                   consistancy[i][buf] = static_cast<byte>( players[i].mo->x );
 		else 
 		    consistancy[i][buf] = rndindex; 
 	    } 
@@ -1438,7 +1441,7 @@ G_CheckSpot
         // This calculation overflows in Vanilla Doom, but here we deliberately
         // avoid integer overflow as it is undefined behavior, so the value of
         // 'an' will always be positive.
-        an = (ANG45 >> ANGLETOFINESHIFT) * ((signed int) mthing->angle / 45);
+        an = (ANG45 >> ANGLETOFINESHIFT) * (static_cast<signed int>(mthing->angle) / 45);
 
         switch (an)
         {
