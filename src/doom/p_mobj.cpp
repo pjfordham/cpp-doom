@@ -282,12 +282,15 @@ void P_XYMovement (mobj_t* mo)
 	    || (player->cmd.forwardmove== 0
 		&& player->cmd.sidemove == 0 ) ) )
     {
-	// if in a walking frame, stop moving
-	if ( player&&(unsigned)((player->mo->state - states)- S_PLAY_RUN1) < 4)
-	    P_SetMobjState (player->mo, S_PLAY);
-	
-	mo->momx = 0_fix;
-	mo->momy = 0_fix;
+       // if in a walking frame, stop moving
+       if ( player ) {
+          auto state = ( player->mo->state - states ) - S_PLAY_RUN1;
+          if ( 0 <= state && state < 4 ) {
+             P_SetMobjState (player->mo, S_PLAY);
+          }
+       }
+       mo->momx = 0_fix;
+       mo->momy = 0_fix;
     }
     else
     {
@@ -673,7 +676,7 @@ P_SpawnMobjSafe
     // [crispy] randomly flip corpse, blood and death animation sprites
     if (mobj->flags & MF_FLIPPABLE && !(mobj->flags & MF_SHOOTABLE))
     {
-	mobj->health = (mobj->health & (int)~1) - (Crispy_Random() & 1);
+       mobj->health = (mobj->health & ~1) - (Crispy_Random() & 1);
     }
     
     // [AM] Do not interpolate on spawn.
